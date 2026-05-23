@@ -624,7 +624,8 @@ const itemSchema = Yup.object({
       encodeUrl: Yup.boolean().nullable(),
       followRedirects: Yup.boolean().nullable(),
       maxRedirects: Yup.number().min(0).max(50).nullable(),
-      timeout: Yup.mixed().nullable()
+      timeout: Yup.mixed().nullable(),
+      throttleMs: Yup.number().min(0).max(60000).nullable()
     })
       .noUnknown(true)
       .strict()

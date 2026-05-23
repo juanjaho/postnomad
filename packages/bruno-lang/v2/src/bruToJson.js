@@ -542,6 +542,14 @@ const sem = grammar.createSemantics().addAttribute('ast', {
       }
     }
 
+    // Parse throttleMs as number (Postnomad: artificial latency before send).
+    if (settings.throttleMs !== undefined) {
+      const throttleMs = parseInt(settings.throttleMs, 10);
+      if (!isNaN(throttleMs) && throttleMs >= 0) {
+        parsedSettings.throttleMs = throttleMs;
+      }
+    }
+
     // Parse timeout as number or inherit
     if (settings.timeout !== undefined) {
       if (settings.timeout === 'inherit') {
@@ -565,6 +573,10 @@ const sem = grammar.createSemantics().addAttribute('ast', {
 
     if (parsedSettings.maxRedirects !== undefined) {
       _settings.maxRedirects = parsedSettings.maxRedirects;
+    }
+
+    if (parsedSettings.throttleMs !== undefined) {
+      _settings.throttleMs = parsedSettings.throttleMs;
     }
 
     if (keepAliveInterval) {

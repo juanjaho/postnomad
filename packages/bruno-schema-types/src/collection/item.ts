@@ -10,6 +10,9 @@ export interface HttpItemSettings {
   followRedirects?: boolean | null;
   maxRedirects?: number | null;
   timeout?: number | 'inherit' | null;
+  // Postnomad-only: per-request artificial latency before send.
+  // Capped at 60s. Persisted in .bru format only (not opencollection YML).
+  throttleMs?: number | null;
 }
 
 export interface WebSocketItemSettings {

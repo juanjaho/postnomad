@@ -14,7 +14,8 @@ const DEFAULT_SETTINGS = {
   encodeUrl: false,
   followRedirects: true,
   maxRedirects: 5,
-  timeout: 'inherit'
+  timeout: 'inherit',
+  throttleMs: 0
 };
 
 const Settings = ({ item, collection }) => {
@@ -26,7 +27,7 @@ const Settings = ({ item, collection }) => {
 
   const rawSettings = getPropertyFromDraftOrRequest('settings');
   const settings = { ...DEFAULT_SETTINGS, ...rawSettings };
-  const { encodeUrl, followRedirects, maxRedirects, timeout } = settings;
+  const { encodeUrl, followRedirects, maxRedirects, timeout, throttleMs } = settings;
 
   // Reusable function to update settings
   const updateSetting = useCallback(
@@ -70,6 +71,20 @@ const Settings = ({ item, collection }) => {
       if (value === '' || /^\d+$/.test(value)) {
         const numericValue = value === '' ? 0 : parseInt(value, 10);
         updateSetting({ timeout: numericValue });
+      }
+    },
+    [updateSetting]
+  );
+
+  const onThrottleMsChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      if (value === '' || /^\d+$/.test(value)) {
+        const numericValue = value === '' ? 0 : parseInt(value, 10);
+        // 60s cap matches the schema constraint
+        if (numericValue <= 60000) {
+          updateSetting({ throttleMs: numericValue });
+        }
       }
     },
     [updateSetting]
@@ -167,6 +182,16 @@ const Settings = ({ item, collection }) => {
             onDropdownSelect={handleTimeoutDropdownSelect}
             onValueChange={(e) => !isTimeoutInherited && onTimeoutChange(e)}
             onCustomValueReset={() => updateSetting({ timeout: 'inherit' })}
+          />
+
+          <SettingsInput
+            id="throttleMs"
+            label="Throttle (ms)"
+            value={throttleMs}
+            onChange={onThrottleMsChange}
+            description="Artificial latency added before each send (max 60000). Use to simulate slow networks. 0 disables."
+            onKeyDown={handleKeyDown}
+            data-testid="throttle-ms-input"
           />
         </div>
       </div>

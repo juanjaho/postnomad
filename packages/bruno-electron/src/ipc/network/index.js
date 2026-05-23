@@ -1018,6 +1018,13 @@ const registerNetworkIpc = (mainWindow) => {
         });
       }
 
+      // Throttle: per-request artificial latency before send (Postnomad).
+      // Simulates slow networks à la Proxyman. Capped at 60s by schema.
+      const throttleMs = Number(request.settings?.throttleMs) || 0;
+      if (throttleMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, Math.min(throttleMs, 60000)));
+      }
+
       let response, responseTime, axiosDataStream;
       try {
         /** @type {import('axios').AxiosResponse} */
