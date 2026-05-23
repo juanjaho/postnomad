@@ -16,6 +16,7 @@ import { postmanToBruno } from 'utils/importers/postman-collection';
 import { convertInsomniaToBruno } from 'utils/importers/insomnia-collection';
 import { convertOpenapiToBruno } from 'utils/importers/openapi-collection';
 import { processBrunoCollection } from 'utils/importers/bruno-collection';
+import { convertHarToBruno } from 'utils/importers/har-collection';
 import { wsdlToBruno } from '@usebruno/converters';
 import StyledWrapper from './StyledWrapper';
 import toast from 'react-hot-toast';
@@ -65,6 +66,10 @@ const getCollectionName = (format, rawData) => {
       return rawData.name || 'Postnomad Collection';
     case 'wsdl':
       return 'WSDL Collection';
+    case 'har':
+      return rawData?.log?.pages?.[0]?.title || rawData?.log?.creator?.name
+        ? `${rawData.log.creator.name} capture`
+        : 'HAR Capture';
     default:
       return 'Collection';
   }
@@ -86,6 +91,9 @@ const convertCollection = async (format, rawData, groupingType) => {
       break;
     case 'insomnia':
       collection = convertInsomniaToBruno(rawData);
+      break;
+    case 'har':
+      collection = convertHarToBruno(rawData);
       break;
     case 'bruno':
       collection = await processBrunoCollection(rawData);

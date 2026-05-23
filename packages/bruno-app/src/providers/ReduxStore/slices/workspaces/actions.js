@@ -77,6 +77,10 @@ const transformCollection = async (collection, type) => {
       const { convertInsomniaToBruno } = await import('utils/importers/insomnia-collection');
       return convertInsomniaToBruno(collection);
     }
+    case 'har': {
+      const { convertHarToBruno } = await import('utils/importers/har-collection');
+      return convertHarToBruno(collection);
+    }
     case 'openapi': {
       const { convertOpenapiToBruno } = await import('utils/importers/openapi-collection');
       return convertOpenapiToBruno(collection);

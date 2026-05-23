@@ -4,6 +4,7 @@ import { toastError } from 'utils/common/error';
 import jsyaml from 'js-yaml';
 import { isPostmanCollection } from 'utils/importers/postman-collection';
 import { isInsomniaCollection } from 'utils/importers/insomnia-collection';
+import { isHarFile } from 'utils/importers/har-collection';
 import { isOpenApiSpec } from 'utils/importers/openapi-collection';
 import { isWSDLCollection } from 'utils/importers/wsdl-collection';
 import { isBrunoCollection } from 'utils/importers/bruno-collection';
@@ -108,6 +109,8 @@ const FileTab = ({ setIsLoading, handleSubmit, setErrorMessage }) => {
             type = 'postman';
           } else if (isInsomniaCollection(data)) {
             type = 'insomnia';
+          } else if (isHarFile(data)) {
+            type = 'har';
           } else if (isOpenCollection(data)) {
             type = 'opencollection';
           } else if (isBrunoCollection(data)) {
@@ -154,6 +157,8 @@ const FileTab = ({ setIsLoading, handleSubmit, setErrorMessage }) => {
         type = 'postman';
       } else if (isInsomniaCollection(data)) {
         type = 'insomnia';
+      } else if (isHarFile(data)) {
+        type = 'har';
       } else if (isOpenCollection(data)) {
         type = 'opencollection';
       } else if (isBrunoCollection(data)) {
@@ -263,7 +268,7 @@ const FileTab = ({ setIsLoading, handleSubmit, setErrorMessage }) => {
             </button>
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            Supports Bruno, OpenCollection, Postman, Insomnia, OpenAPI 3.x / Swagger 2.0, WSDL, and ZIP formats
+            Supports Bruno, OpenCollection, Postman, Insomnia, OpenAPI 3.x / Swagger 2.0, WSDL, HAR, and ZIP formats
           </p>
         </div>
       </div>
