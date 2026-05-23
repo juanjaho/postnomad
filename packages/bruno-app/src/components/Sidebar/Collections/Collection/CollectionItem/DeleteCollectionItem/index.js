@@ -11,28 +11,30 @@ const DeleteCollectionItem = ({ onClose, item, collectionUid }) => {
   const dispatch = useDispatch();
   const isFolder = isItemAFolder(item);
   const onConfirm = () => {
-    dispatch(deleteItem(item.uid, collectionUid)).then(() => {
-      if (isFolder) {
-        // close all tabs that belong to the folder
-        // including the folder itself and its children
-        const tabUids = [...recursivelyGetAllItemUids(item.items), item.uid];
+    dispatch(deleteItem(item.uid, collectionUid))
+      .then(() => {
+        if (isFolder) {
+          // close all tabs that belong to the folder
+          // including the folder itself and its children
+          const tabUids = [...recursivelyGetAllItemUids(item.items), item.uid];
 
-        dispatch(
-          closeTabs({
-            tabUids: tabUids
-          })
-        );
-      } else {
-        dispatch(
-          closeTabs({
-            tabUids: [item.uid]
-          })
-        );
-      }
-    }).catch((error) => {
-      console.error('Error deleting item', error);
-      toast.error(error?.message || 'Error deleting item');
-    });
+          dispatch(
+            closeTabs({
+              tabUids: tabUids
+            })
+          );
+        } else {
+          dispatch(
+            closeTabs({
+              tabUids: [item.uid]
+            })
+          );
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting item', error);
+        toast.error(error?.message || 'Error deleting item');
+      });
     onClose();
   };
 

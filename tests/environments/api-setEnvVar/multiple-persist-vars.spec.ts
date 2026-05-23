@@ -36,7 +36,10 @@ test.describe.serial('bru.setEnvVar multiple persistent variables', () => {
     }
   });
 
-  test('should persist multiple environment variables from different requests', async ({ pageWithUserData: page, collectionFixturePath }) => {
+  test('should persist multiple environment variables from different requests', async ({
+    pageWithUserData: page,
+    collectionFixturePath
+  }) => {
     await test.step('Select collection', async () => {
       await page.locator('#sidebar-collection-name').click();
       // The collection name should be 'collection' based on the test setup
@@ -57,7 +60,11 @@ test.describe.serial('bru.setEnvVar multiple persistent variables', () => {
 
       // Hover on the folder and open context menu
       await page.getByText('multiple-persist-vars-folder', { exact: true }).hover();
-      await page.locator('.collection-item-name').filter({ hasText: 'multiple-persist-vars-folder' }).locator('.menu-icon').click();
+      await page
+        .locator('.collection-item-name')
+        .filter({ hasText: 'multiple-persist-vars-folder' })
+        .locator('.menu-icon')
+        .click();
 
       // Click on Run option
       await page.getByText('Run', { exact: true }).click();
@@ -82,9 +89,13 @@ test.describe.serial('bru.setEnvVar multiple persistent variables', () => {
       const envTab = page.locator('.request-tab').filter({ hasText: 'Environments' });
       await expect(envTab).toBeVisible();
 
-      await expect(page.getByRole('row', { name: 'multiple-persist-vars-key1' }).getByRole('cell').nth(1)).toBeVisible();
+      await expect(
+        page.getByRole('row', { name: 'multiple-persist-vars-key1' }).getByRole('cell').nth(1)
+      ).toBeVisible();
       await expect(page.getByRole('row', { name: 'value1' }).getByRole('cell').nth(2)).toBeVisible();
-      await expect(page.getByRole('row', { name: 'multiple-persist-vars-key2' }).getByRole('cell').nth(1)).toBeVisible();
+      await expect(
+        page.getByRole('row', { name: 'multiple-persist-vars-key2' }).getByRole('cell').nth(1)
+      ).toBeVisible();
       await expect(page.getByRole('row', { name: 'value2' }).getByRole('cell').nth(2)).toBeVisible();
       await envTab.hover();
       await envTab.getByTestId('request-tab-close-icon').click({ force: true });

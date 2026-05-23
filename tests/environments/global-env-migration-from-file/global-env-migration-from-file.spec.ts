@@ -52,10 +52,7 @@ test.describe('Global Environment Migration from workspace.yml', () => {
     // Inject activeEnvironmentUid into workspace.yml (simulating pre-migration state)
     const workspaceYmlPath = path.join(workspacePath, 'workspace.yml');
     let workspaceYml = fs.readFileSync(workspaceYmlPath, 'utf8');
-    workspaceYml = workspaceYml.replace(
-      'collections:',
-      `activeEnvironmentUid: "${alphaUid}"\n\ncollections:`
-    );
+    workspaceYml = workspaceYml.replace('collections:', `activeEnvironmentUid: "${alphaUid}"\n\ncollections:`);
     fs.writeFileSync(workspaceYmlPath, workspaceYml);
 
     // Launch with init-user-data pointing to the workspace

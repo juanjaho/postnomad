@@ -5,13 +5,18 @@ import MultiLineEditor from 'components/MultiLineEditor/index';
 import DotEnvErrorMessage from './DotEnvErrorMessage';
 import { MIN_TABLE_HEIGHT } from './utils';
 
-const TableRow = React.memo(({ children, item }) => (
-  <tr key={item.uid} data-testid={`dotenv-var-row-${item.name}`}>{children}</tr>
-), (prevProps, nextProps) => {
-  const prevUid = prevProps?.item?.uid;
-  const nextUid = nextProps?.item?.uid;
-  return prevUid === nextUid && prevProps.children === nextProps.children;
-});
+const TableRow = React.memo(
+  ({ children, item }) => (
+    <tr key={item.uid} data-testid={`dotenv-var-row-${item.name}`}>
+      {children}
+    </tr>
+  ),
+  (prevProps, nextProps) => {
+    const prevUid = prevProps?.item?.uid;
+    const nextUid = nextProps?.item?.uid;
+    return prevUid === nextUid && prevProps.children === nextProps.children;
+  }
+);
 
 const DotEnvTableView = ({
   formik,
@@ -27,9 +32,12 @@ const DotEnvTableView = ({
   onReset,
   isSaving
 }) => {
-  const handleTotalHeightChanged = useCallback((h) => {
-    onHeightChange(h);
-  }, [onHeightChange]);
+  const handleTotalHeightChanged = useCallback(
+    (h) => {
+      onHeightChange(h);
+    },
+    [onHeightChange]
+  );
 
   // Use refs for stable access to formik values in callbacks
   const formikRef = useRef(formik);
@@ -81,11 +89,7 @@ const DotEnvTableView = ({
         )}
         <td className="delete-col">
           {!isLastEmptyRow && (
-            <button
-              type="button"
-              aria-label="Delete variable"
-              onClick={() => onRemoveVar(variable.uid)}
-            >
+            <button type="button" aria-label="Delete variable" onClick={() => onRemoveVar(variable.uid)}>
               <IconTrash strokeWidth={1.5} size={18} />
             </button>
           )}
@@ -118,7 +122,13 @@ const DotEnvTableView = ({
           <button type="button" className="submit" onClick={onSave} disabled={isSaving} data-testid="save-dotenv">
             {isSaving ? 'Saving...' : 'Save'}
           </button>
-          <button type="button" className="submit reset ml-2" onClick={onReset} disabled={isSaving} data-testid="reset-dotenv">
+          <button
+            type="button"
+            className="submit reset ml-2"
+            onClick={onReset}
+            disabled={isSaving}
+            data-testid="reset-dotenv"
+          >
             Reset
           </button>
         </div>

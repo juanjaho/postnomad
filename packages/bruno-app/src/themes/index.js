@@ -30,7 +30,7 @@ const themes = {
 
 // Theme metadata for UI display
 export const themeRegistry = {
-  'light': {
+  light: {
     id: 'light',
     name: 'Light',
     mode: 'light'
@@ -50,7 +50,7 @@ export const themeRegistry = {
     name: 'Catppuccin Latte',
     mode: 'light'
   },
-  'dark': {
+  dark: {
     id: 'dark',
     name: 'Dark',
     mode: 'dark'
@@ -80,7 +80,7 @@ export const themeRegistry = {
     name: 'Catppuccin Mocha',
     mode: 'dark'
   },
-  'nord': {
+  nord: {
     id: 'nord',
     name: 'Nord',
     mode: 'dark'

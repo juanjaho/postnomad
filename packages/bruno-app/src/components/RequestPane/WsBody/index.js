@@ -31,11 +31,13 @@ const WSBody = ({ item, collection, handleRun }) => {
       content: '{}'
     });
 
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   if (!body?.ws || !Array.isArray(body.ws)) {

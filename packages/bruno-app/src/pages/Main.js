@@ -47,9 +47,7 @@ function Main({ children }) {
           <ToastProvider>
             <PromptVariablesProvider>
               <AppProvider>
-                <HotkeysProvider>
-                  {children}
-                </HotkeysProvider>
+                <HotkeysProvider>{children}</HotkeysProvider>
               </AppProvider>
             </PromptVariablesProvider>
           </ToastProvider>

@@ -353,7 +353,8 @@ describe('renderVarInfo', () => {
     if (!result) return { result: null, containerDiv: null, valueDisplay: null, copyButton: null };
 
     const containerDiv = result;
-    const valueDisplay = containerDiv.querySelector('.var-value-editable-display') || containerDiv.querySelector('.var-value-display');
+    const valueDisplay =
+      containerDiv.querySelector('.var-value-editable-display') || containerDiv.querySelector('.var-value-display');
     const copyButton = containerDiv.querySelector('.copy-button');
 
     return { result, containerDiv, valueDisplay, copyButton };

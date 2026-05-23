@@ -68,7 +68,10 @@ const StyledWrapper = styled.div`
     height: 2.5rem;
     border: 1px solid transparent;
     background-color: ${(props) => props.theme.bg};
-    transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
 
     &.is-selected {
       background-color: ${(props) => props.theme.background.mantle};

@@ -35,7 +35,10 @@ export function fastLookup(
   dns.resolve4(hostname, (err4, addresses4) => {
     if (!err4 && addresses4?.length) {
       return options?.all
-        ? callback(null, addresses4.map((a) => ({ address: a, family: 4 })))
+        ? callback(
+            null,
+            addresses4.map((a) => ({ address: a, family: 4 }))
+          )
         : callback(null, addresses4[0], 4);
     }
 

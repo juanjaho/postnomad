@@ -34,7 +34,10 @@ test.describe('Folder docs sticky edit/preview button', () => {
     // Type long content into the CodeMirror editor to make it scrollable
     const codeMirror = page.locator('.CodeMirror');
     await codeMirror.click();
-    const longContent = Array.from({ length: 60 }, (_, i) => `Line ${i + 1}: Some documentation content to make this area scrollable.`).join('\n');
+    const longContent = Array.from(
+      { length: 60 },
+      (_, i) => `Line ${i + 1}: Some documentation content to make this area scrollable.`
+    ).join('\n');
     await page.locator('.CodeMirror textarea').fill(longContent);
 
     // Save the docs

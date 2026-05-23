@@ -89,7 +89,7 @@ const evaluateJsTemplateLiteral = (templateLiteral, context) => {
     return templateLiteral.slice(1, -1);
   }
 
-  if (templateLiteral.startsWith('\'') && templateLiteral.endsWith('\'')) {
+  if (templateLiteral.startsWith("'") && templateLiteral.endsWith("'")) {
     return templateLiteral.slice(1, -1);
   }
 
@@ -171,7 +171,11 @@ const cleanJson = (data) => {
       seen.add(value);
 
       // instanceof + [[Class]] cover same-realm; duck-type fallback for cross-realm/cross-context Error-like objects
-      if (value instanceof Error || Object.prototype.toString.call(value) === '[object Error]' || (typeof value.message === 'string' && typeof value.stack === 'string')) {
+      if (
+        value instanceof Error ||
+        Object.prototype.toString.call(value) === '[object Error]' ||
+        (typeof value.message === 'string' && typeof value.stack === 'string')
+      ) {
         const error = {};
         // name/message are often on prototype; ensure they're in the output
         error.name = value.name;

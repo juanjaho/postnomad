@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconPlus, IconFolder, IconDownload } from '@tabler/icons';
-import { importCollection, openCollection, importCollectionFromZip } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  importCollection,
+  openCollection,
+  importCollectionFromZip
+} from 'providers/ReduxStore/slices/collections/actions';
 import { setIsCreatingCollection, toggleSidebarCollapse } from 'providers/ReduxStore/slices/app';
 import toast from 'react-hot-toast';
 import ImportCollection from 'components/Sidebar/ImportCollection';
@@ -80,11 +84,10 @@ const WorkspaceOverview = ({ workspace }) => {
       ? importCollectionFromZip(convertedCollection.zipFilePath, collectionLocation)
       : importCollection(convertedCollection, collectionLocation, options);
 
-    dispatch(importAction)
-      .then(() => {
-        setImportCollectionLocationModalOpen(false);
-        setImportData(null);
-      });
+    dispatch(importAction).then(() => {
+      setImportCollectionLocationModalOpen(false);
+      setImportData(null);
+    });
   };
 
   const handleCloseGitModal = () => {
@@ -101,24 +104,29 @@ const WorkspaceOverview = ({ workspace }) => {
         />
       )}
 
-      {importCollectionLocationModalOpen && importData && (importData.type !== 'multiple' && importData.type !== 'bulk') && (
-        <ImportCollectionLocation
-          rawData={importData.rawData}
-          format={importData.type}
-          sourceUrl={importData.sourceUrl}
-          filePath={importData.filePath}
-          rawContent={importData.rawContent}
-          onClose={() => setImportCollectionLocationModalOpen(false)}
-          handleSubmit={handleImportCollectionLocation}
-        />
-      )}
-      {importCollectionLocationModalOpen && importData && (importData.type === 'multiple' || importData.type === 'bulk') && (
-        <BulkImportCollectionLocation
-          importData={importData}
-          onClose={() => setImportCollectionLocationModalOpen(false)}
-          handleSubmit={handleImportCollectionLocation}
-        />
-      )}
+      {importCollectionLocationModalOpen &&
+        importData &&
+        importData.type !== 'multiple' &&
+        importData.type !== 'bulk' && (
+          <ImportCollectionLocation
+            rawData={importData.rawData}
+            format={importData.type}
+            sourceUrl={importData.sourceUrl}
+            filePath={importData.filePath}
+            rawContent={importData.rawContent}
+            onClose={() => setImportCollectionLocationModalOpen(false)}
+            handleSubmit={handleImportCollectionLocation}
+          />
+        )}
+      {importCollectionLocationModalOpen &&
+        importData &&
+        (importData.type === 'multiple' || importData.type === 'bulk') && (
+          <BulkImportCollectionLocation
+            importData={importData}
+            onClose={() => setImportCollectionLocationModalOpen(false)}
+            handleSubmit={handleImportCollectionLocation}
+          />
+        )}
       {showCloneGitModal && (
         <CloneGitRepository
           onClose={handleCloseGitModal}

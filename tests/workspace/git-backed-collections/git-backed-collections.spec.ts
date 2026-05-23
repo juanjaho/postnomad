@@ -35,7 +35,10 @@ function readGitignoreLines(workspacePath: string): string[] {
 
 test.describe('Git-backed collections', () => {
   test.describe('Workspace overview', () => {
-    test('connect to Git updates workspace.yml, shows badge + remote URL, and adds .gitignore entry', async ({ launchElectronApp, createTmpDir }) => {
+    test('connect to Git updates workspace.yml, shows badge + remote URL, and adds .gitignore entry', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const workspacePath = await createTmpDir('git-ws-connect');
       await copyFixture('workspace-with-collection', workspacePath);
 
@@ -82,7 +85,10 @@ test.describe('Git-backed collections', () => {
       await closeElectronApp(app);
     });
 
-    test('remove Git remote clears the badge, the workspace.yml field, and the .gitignore line', async ({ launchElectronApp, createTmpDir }) => {
+    test('remove Git remote clears the badge, the workspace.yml field, and the .gitignore line', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const workspacePath = await createTmpDir('git-ws-disconnect');
       await copyFixture('workspace-with-collection', workspacePath);
 
@@ -178,7 +184,10 @@ test.describe('Git-backed collections', () => {
       await closeElectronApp(app);
     });
 
-    test('default workspace does not expose Git options on the collection card', async ({ launchElectronApp, createTmpDir }) => {
+    test('default workspace does not expose Git options on the collection card', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       // No fixture: the playwright fixture default-seeds preferences to skip onboarding,
       // and Bruno auto-creates the default workspace under the userData path.
       const collectionDir = await createTmpDir('git-default-coll');
@@ -212,7 +221,10 @@ test.describe('Git-backed collections', () => {
   });
 
   test.describe('Sidebar ghost row', () => {
-    test('git-backed entry whose folder is missing renders as a clickable ghost row', async ({ launchElectronApp, createTmpDir }) => {
+    test('git-backed entry whose folder is missing renders as a clickable ghost row', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const workspacePath = await createTmpDir('git-ws-ghost');
       await copyFixture('workspace-with-ghost', workspacePath);
 
@@ -228,9 +240,7 @@ test.describe('Git-backed collections', () => {
       });
 
       await test.step('Ghost row is not also rendered as a normal sidebar collection row', async () => {
-        await expect(
-          page.getByTestId('sidebar-collection-row').filter({ hasText: 'Missing Coll' })
-        ).toHaveCount(0);
+        await expect(page.getByTestId('sidebar-collection-row').filter({ hasText: 'Missing Coll' })).toHaveCount(0);
       });
 
       await test.step('Clicking the ghost row opens the Clone Git Repository modal pre-filled with the remote URL', async () => {
@@ -243,7 +253,10 @@ test.describe('Git-backed collections', () => {
       await closeElectronApp(app);
     });
 
-    test('right-clicking a ghost row exposes Remove Git Remote, which prunes both the entry and the row', async ({ launchElectronApp, createTmpDir }) => {
+    test('right-clicking a ghost row exposes Remove Git Remote, which prunes both the entry and the row', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const workspacePath = await createTmpDir('git-ws-ghost-remove');
       await copyFixture('workspace-with-ghost', workspacePath);
 

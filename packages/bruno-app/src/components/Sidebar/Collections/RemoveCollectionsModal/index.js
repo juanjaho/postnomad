@@ -107,8 +107,8 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
       .filter(Boolean);
   }, [allDrafts, allCollections]);
 
-  const hasUnsavedChanges
-    = allDrafts.collectionDrafts.length > 0 || allDrafts.folderDrafts.length > 0 || allDrafts.requestDrafts.length > 0;
+  const hasUnsavedChanges =
+    allDrafts.collectionDrafts.length > 0 || allDrafts.folderDrafts.length > 0 || allDrafts.requestDrafts.length > 0;
 
   const handleCloseAllCollections = () => {
     const removalPromises = collectionUids.map((uid) => dispatch(removeCollection(uid)));
@@ -171,21 +171,22 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
     ? null
     : findCollectionByUid(allCollections, collectionUids[0])?.name;
 
-  const displayedCollections = useMemo(() => showAllCollections ? collectionsWithUnsavedChanges : getDisplayItems(collectionsWithUnsavedChanges),
-    [collectionsWithUnsavedChanges, showAllCollections]);
+  const displayedCollections = useMemo(
+    () => (showAllCollections ? collectionsWithUnsavedChanges : getDisplayItems(collectionsWithUnsavedChanges)),
+    [collectionsWithUnsavedChanges, showAllCollections]
+  );
   const hasMoreCollections = collectionsWithUnsavedChanges.length > displayedCollections.length;
   const hiddenCollectionsCount = collectionsWithUnsavedChanges.length - displayedCollections.length;
 
-  const toggleButton = hasMoreCollections || showAllCollections ? (
-    <span
-      className={`${showAllCollections ? 'show-less-link' : 'show-more-link'} w-fit flex items-center mt-2 cursor-pointer`}
-      onClick={() => setShowAllCollections(!showAllCollections)}
-    >
-      <span className="text-link">
-        {showAllCollections ? 'Show less' : `Show ${hiddenCollectionsCount} more`}
+  const toggleButton =
+    hasMoreCollections || showAllCollections ? (
+      <span
+        className={`${showAllCollections ? 'show-less-link' : 'show-more-link'} w-fit flex items-center mt-2 cursor-pointer`}
+        onClick={() => setShowAllCollections(!showAllCollections)}
+      >
+        <span className="text-link">{showAllCollections ? 'Show less' : `Show ${hiddenCollectionsCount} more`}</span>
       </span>
-    </span>
-  ) : null;
+    ) : null;
 
   return (
     <Portal>
@@ -209,7 +210,8 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
                 {collectionsWithUnsavedChanges.length === 1 ? 'collection' : 'collections'}?
               </div>
               <div className="mt-2 text-xs text-gray-500">
-                Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.
+                Collections will be removed from the current workspace but will still be available in the file system
+                and can be re-opened later.
               </div>
 
               <div className="mt-4">
@@ -235,9 +237,7 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
                   <Button className="mr-2" color="secondary" variant="ghost" onClick={handleCancel}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSave}>
-                    Save and Close
-                  </Button>
+                  <Button onClick={handleSave}>Save and Close</Button>
                 </div>
               </div>
             </>
@@ -248,15 +248,23 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
                   `Are you sure you want to close all ${collectionUids.length} collections in this workspace?`
                 ) : (
                   <>
-                    Are you sure you want to close the collection <strong>{singleCollectionName}</strong> from this workspace?
+                    Are you sure you want to close the collection <strong>{singleCollectionName}</strong> from this
+                    workspace?
                   </>
                 )}
               </div>
               <div className="mt-4 text-xs text-gray-500">
-                Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.
+                Collections will be removed from the current workspace but will still be available in the file system
+                and can be re-opened later.
               </div>
               <div className="flex justify-end mt-6">
-                <Button className="mr-2" color="secondary" variant="ghost" onClick={handleCancel} data-testid="modal-close-button">
+                <Button
+                  className="mr-2"
+                  color="secondary"
+                  variant="ghost"
+                  onClick={handleCancel}
+                  data-testid="modal-close-button"
+                >
                   Cancel
                 </Button>
                 <Button color="warning" onClick={handleCloseAllCollections}>

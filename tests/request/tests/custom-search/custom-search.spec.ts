@@ -5,7 +5,11 @@ const findShortcut = process.platform === 'darwin' ? 'Meta+f' : 'Control+f';
 
 test.describe('Custom Search Functionality in Scripts Tab', () => {
   test('should open search box when Cmd+F or Ctrl+F is pressed in scripts tab', async ({ pageWithUserData: page }) => {
-    await page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'custom-search' }).click();
+    await page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'custom-search' })
+      .click();
 
     await page.getByText('search-test-request').click();
 
@@ -65,7 +69,11 @@ test.describe('Custom Search Functionality in Scripts Tab', () => {
   });
 
   test('should handle search in different script editors independently', async ({ pageWithUserData: page }) => {
-    await page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'custom-search' }).click();
+    await page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'custom-search' })
+      .click();
 
     await page.getByText('search-test-request').click();
 
@@ -79,9 +87,13 @@ test.describe('Custom Search Functionality in Scripts Tab', () => {
     await preTextarea.focus();
     await page.keyboard.press(findShortcut);
 
-    const preSearchInput = page.getByTestId('pre-request-script-editor').locator('.bruno-search-bar input[placeholder="Search..."]');
+    const preSearchInput = page
+      .getByTestId('pre-request-script-editor')
+      .locator('.bruno-search-bar input[placeholder="Search..."]');
     await preSearchInput.fill('uniquePreVar');
-    await expect(page.getByTestId('pre-request-script-editor').locator('.searchbar-result-count')).toContainText('1 / 1');
+    await expect(page.getByTestId('pre-request-script-editor').locator('.searchbar-result-count')).toContainText(
+      '1 / 1'
+    );
     await page.keyboard.press('Escape');
 
     // Switch to Post Response tab
@@ -92,14 +104,22 @@ test.describe('Custom Search Functionality in Scripts Tab', () => {
     await postTextarea.focus();
     await page.keyboard.press(findShortcut);
 
-    const postSearchInput = page.getByTestId('post-response-script-editor').locator('.bruno-search-bar input[placeholder="Search..."]');
+    const postSearchInput = page
+      .getByTestId('post-response-script-editor')
+      .locator('.bruno-search-bar input[placeholder="Search..."]');
     await postSearchInput.fill('uniquePostVar');
-    await expect(page.getByTestId('post-response-script-editor').locator('.searchbar-result-count')).toContainText('1 / 1');
+    await expect(page.getByTestId('post-response-script-editor').locator('.searchbar-result-count')).toContainText(
+      '1 / 1'
+    );
     await page.keyboard.press('Escape');
   });
 
   test('should maintain search state when switching between tabs', async ({ pageWithUserData: page }) => {
-    await page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'custom-search' }).click();
+    await page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'custom-search' })
+      .click();
 
     await page.getByText('search-test-request').click();
 
@@ -113,9 +133,13 @@ test.describe('Custom Search Functionality in Scripts Tab', () => {
     await preTextarea.focus();
     await page.keyboard.press(findShortcut);
 
-    const preSearchInput = page.getByTestId('pre-request-script-editor').locator('.bruno-search-bar input[placeholder="Search..."]');
+    const preSearchInput = page
+      .getByTestId('pre-request-script-editor')
+      .locator('.bruno-search-bar input[placeholder="Search..."]');
     await preSearchInput.fill('commonVar');
-    await expect(page.getByTestId('pre-request-script-editor').locator('.searchbar-result-count')).toContainText('1 / 1');
+    await expect(page.getByTestId('pre-request-script-editor').locator('.searchbar-result-count')).toContainText(
+      '1 / 1'
+    );
 
     // Switch to Post Response tab while search is open
     await page.getByRole('button', { name: 'Post Response' }).click();
@@ -126,9 +150,13 @@ test.describe('Custom Search Functionality in Scripts Tab', () => {
     await postTextarea.focus();
     await page.keyboard.press(findShortcut);
 
-    const postSearchInput = page.getByTestId('post-response-script-editor').locator('.bruno-search-bar input[placeholder="Search..."]');
+    const postSearchInput = page
+      .getByTestId('post-response-script-editor')
+      .locator('.bruno-search-bar input[placeholder="Search..."]');
     await postSearchInput.fill('postVar');
-    await expect(page.getByTestId('post-response-script-editor').locator('.searchbar-result-count')).toContainText('1 / 1');
+    await expect(page.getByTestId('post-response-script-editor').locator('.searchbar-result-count')).toContainText(
+      '1 / 1'
+    );
 
     // Switch back to Pre Request tab
     await page.getByRole('button', { name: 'Pre Request' }).click();

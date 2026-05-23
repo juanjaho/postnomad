@@ -67,11 +67,7 @@ if (!SERVER_RENDERED) {
      */
     errors = filter(errors, (error) => {
       if (error.code === 'E058' || error.code === 'W024') {
-        if (
-          error.evidence
-          && error.evidence.includes('await')
-          && error.scope === '(main)'
-        ) {
+        if (error.evidence && error.evidence.includes('await') && error.scope === '(main)') {
           return false;
         }
 

@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTab, makeTabPermanent } from 'providers/ReduxStore/slices/tabs';
-import {
-  updateResponseExample,
-  cloneResponseExample
-} from 'providers/ReduxStore/slices/collections';
+import { updateResponseExample, cloneResponseExample } from 'providers/ReduxStore/slices/collections';
 import { saveRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { insertTaskIntoQueue } from 'providers/ReduxStore/slices/app';
 import { uuid } from 'utils/common';
@@ -39,15 +36,17 @@ const ExampleItem = ({ example, item, collection }) => {
   const handleExampleClick = () => {
     const exampleIndex = item?.examples?.findIndex((ex) => ex.uid === example.uid);
 
-    dispatch(addTab({
-      uid: example.uid,
-      collectionUid: collection.uid,
-      type: 'response-example',
-      itemUid: item.uid,
-      pathname: item.pathname,
-      exampleName: example.name,
-      exampleIndex: typeof exampleIndex === 'number' && exampleIndex >= 0 ? exampleIndex : undefined
-    }));
+    dispatch(
+      addTab({
+        uid: example.uid,
+        collectionUid: collection.uid,
+        type: 'response-example',
+        itemUid: item.uid,
+        pathname: item.pathname,
+        exampleName: example.name,
+        exampleIndex: typeof exampleIndex === 'number' && exampleIndex >= 0 ? exampleIndex : undefined
+      })
+    );
   };
 
   const handleDoubleClick = () => {
@@ -81,24 +80,28 @@ const ExampleItem = ({ example, item, collection }) => {
     const clonedExampleIndex = existingExamples.length;
     const clonedExampleUid = uuid();
 
-    dispatch(cloneResponseExample({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: example.uid,
-      clonedUid: clonedExampleUid
-    }));
+    dispatch(
+      cloneResponseExample({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: example.uid,
+        clonedUid: clonedExampleUid
+      })
+    );
 
     // Save the request
     await dispatch(saveRequest(item.uid, collection.uid, true));
 
     // Task middleware will track this and open the example in a new tab once the file is reloaded
-    dispatch(insertTaskIntoQueue({
-      uid: clonedExampleUid,
-      type: 'OPEN_EXAMPLE',
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      exampleIndex: clonedExampleIndex
-    }));
+    dispatch(
+      insertTaskIntoQueue({
+        uid: clonedExampleUid,
+        type: 'OPEN_EXAMPLE',
+        collectionUid: collection.uid,
+        itemUid: item.uid,
+        exampleIndex: clonedExampleIndex
+      })
+    );
   };
 
   const handleDelete = () => {
@@ -108,9 +111,9 @@ const ExampleItem = ({ example, item, collection }) => {
   const handleGenerateCode = () => {
     // Check if example has a request URL
     if (
-      (example?.request?.url !== '' && example?.request?.url !== undefined)
-      || (item?.request?.url !== '' && item?.request?.url !== undefined)
-      || (item?.draft?.request?.url !== undefined && item?.draft?.request?.url !== '')
+      (example?.request?.url !== '' && example?.request?.url !== undefined) ||
+      (item?.request?.url !== '' && item?.request?.url !== undefined) ||
+      (item?.draft?.request?.url !== undefined && item?.draft?.request?.url !== '')
     ) {
       setGenerateCodeItemModalOpen(true);
     } else {
@@ -120,19 +123,20 @@ const ExampleItem = ({ example, item, collection }) => {
 
   const handleRenameConfirm = (newName) => {
     // Find the example index in the original examples array
-    dispatch(updateResponseExample({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: example.uid,
-      example: {
-        name: newName
-      }
-    }));
-    dispatch(saveRequest(item.uid, collection.uid, true))
-      .then(() => {
-        toast.success(`Example renamed to "${newName}"`);
-        setShowRenameModal(false);
-      });
+    dispatch(
+      updateResponseExample({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: example.uid,
+        example: {
+          name: newName
+        }
+      })
+    );
+    dispatch(saveRequest(item.uid, collection.uid, true)).then(() => {
+      toast.success(`Example renamed to "${newName}"`);
+      setShowRenameModal(false);
+    });
   };
 
   // Build menu items for MenuDropdown
@@ -192,19 +196,12 @@ const ExampleItem = ({ example, item, collection }) => {
     >
       {indents && indents.length
         ? indents.map((i) => (
-            <div
-              className="indent-block"
-              key={i}
-              style={{ width: 16, minWidth: 16, height: '100%' }}
-            >
+            <div className="indent-block" key={i} style={{ width: 16, minWidth: 16, height: '100%' }}>
               &nbsp;{/* Indent */}
             </div>
           ))
         : null}
-      <div
-        className="flex flex-grow items-center h-full overflow-hidden"
-        style={{ paddingLeft: 8 }}
-      >
+      <div className="flex flex-grow items-center h-full overflow-hidden" style={{ paddingLeft: 8 }}>
         <div style={{ width: 16, minWidth: 16 }}></div>
         <ExampleIcon size={16} color="currentColor" className="example-icon mr-1 flex-shrink-0" />
         <span className="item-name truncate">{example.name}</span>

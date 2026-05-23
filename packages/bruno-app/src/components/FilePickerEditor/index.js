@@ -102,16 +102,9 @@ const FilePickerEditor = ({
           onClick={!readOnly ? browse : undefined}
         >
           <IconFile size={16} className="file-icon" />
-          <span className="file-name">
-            {renderButtonText(filenames)}
-          </span>
+          <span className="file-name">{renderButtonText(filenames)}</span>
           {!readOnly && (
-            <button
-              className="clear-btn"
-              onClick={clear}
-              title="Remove file"
-              type="button"
-            >
+            <button className="clear-btn" onClick={clear} title="Remove file" type="button">
               <IconX size={16} />
             </button>
           )}

@@ -10,7 +10,7 @@ const hasExecutableTestInScript = (script) => {
   // Remove string literals to avoid matching test() inside strings
   cleanScript = cleanScript
     .replace(/"(?:[^"\\]|\\.)*"/g, '""') // Remove double-quoted strings
-    .replace(/'(?:[^'\\]|\\.)*'/g, '\'\'') // Remove single-quoted strings
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''") // Remove single-quoted strings
     .replace(/`(?:[^`\\]|\\.)*`/g, '``'); // Remove template literals
 
   // Look for standalone test() calls (not object method calls like obj.test())

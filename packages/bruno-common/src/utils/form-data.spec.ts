@@ -65,7 +65,8 @@ describe('buildFormUrlEncodedPayload', () => {
       { name: 'item=equals', value: 'value=equals' },
       { name: 'item%percent', value: 'value%percent' }
     ];
-    const expected = 'item+with+spaces=value+with+spaces&item%26special=value%26special&item%3Dequals=value%3Dequals&item%25percent=value%25percent';
+    const expected =
+      'item+with+spaces=value+with+spaces&item%26special=value%26special&item%3Dequals=value%3Dequals&item%25percent=value%25percent';
     const result = buildFormUrlEncodedPayload(requestObj);
     expect(result).toEqual(expected);
   });
@@ -168,7 +169,9 @@ describe('extractBoundaryFromContentType', () => {
   });
 
   it('should extract boundary with dashes', () => {
-    expect(extractBoundaryFromContentType('multipart/mixed; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW')).toBe('----WebKitFormBoundary7MA4YWxkTrZu0gW');
+    expect(extractBoundaryFromContentType('multipart/mixed; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW')).toBe(
+      '----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    );
   });
 
   it('should extract boundary case-insensitively', () => {
@@ -206,6 +209,8 @@ describe('extractBoundaryFromContentType', () => {
   });
 
   it('should extract quoted boundary when other params exist', () => {
-    expect(extractBoundaryFromContentType('multipart/mixed; charset=utf-8; boundary="my-boundary"')).toBe('my-boundary');
+    expect(extractBoundaryFromContentType('multipart/mixed; charset=utf-8; boundary="my-boundary"')).toBe(
+      'my-boundary'
+    );
   });
 });

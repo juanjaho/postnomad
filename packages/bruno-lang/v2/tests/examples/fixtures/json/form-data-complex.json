@@ -35,9 +35,7 @@
     "multipartForm": [
       {
         "name": "document",
-        "value": [
-          "/path/to/file.pdf"
-        ],
+        "value": ["/path/to/file.pdf"],
         "enabled": true,
         "type": "file",
         "contentType": ""
@@ -80,9 +78,7 @@
           "multipartForm": [
             {
               "name": "document",
-              "value": [
-                "examples/sample.pdf"
-              ],
+              "value": ["examples/sample.pdf"],
               "enabled": true,
               "type": "file",
               "contentType": ""

@@ -8,7 +8,8 @@ test.describe('Postman URL Import', () => {
   });
 
   test('Postman URL import', async ({ page, createTmpDir }) => {
-    const postmanUrl = 'https://raw.githubusercontent.com/usebruno/bruno/refs/heads/main/tests/import/postman/fixtures/postman-v21.json';
+    const postmanUrl =
+      'https://raw.githubusercontent.com/usebruno/bruno/refs/heads/main/tests/import/postman/fixtures/postman-v21.json';
 
     await page.getByTestId('collections-header-add-menu').click();
     await page.locator('.tippy-box .dropdown-item').filter({ hasText: 'Import collection' }).click();

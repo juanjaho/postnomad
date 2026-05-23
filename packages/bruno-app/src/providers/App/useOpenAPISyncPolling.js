@@ -27,10 +27,11 @@ const useOpenAPISyncPolling = () => {
 
   // Derive a stable boolean so polling doesn't restart on every collection mutation
   const hasSyncableCollections = useMemo(
-    () => activeWorkspaceCollections.some((c) => {
-      const syncConfig = c.brunoConfig?.openapi?.[0];
-      return syncConfig?.sourceUrl && syncConfig.autoCheck !== false;
-    }),
+    () =>
+      activeWorkspaceCollections.some((c) => {
+        const syncConfig = c.brunoConfig?.openapi?.[0];
+        return syncConfig?.sourceUrl && syncConfig.autoCheck !== false;
+      }),
     [activeWorkspaceCollections]
   );
 

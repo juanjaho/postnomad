@@ -84,7 +84,12 @@ const normalizeAndResolvePath = (pathname) => {
 function isWSLPath(pathname) {
   // Check if the path starts with the WSL prefix
   // eg. "\\wsl.localhost\Ubuntu\home\user\bruno\collection\scripting\api\req\getHeaders.bru"
-  return pathname.startsWith('\\\\') || pathname.startsWith('//') || pathname.startsWith('/wsl.localhost/') || pathname.startsWith('\\wsl.localhost');
+  return (
+    pathname.startsWith('\\\\') ||
+    pathname.startsWith('//') ||
+    pathname.startsWith('/wsl.localhost/') ||
+    pathname.startsWith('\\wsl.localhost')
+  );
 }
 
 function normalizeWSLPath(pathname) {
@@ -257,11 +262,7 @@ const validateName = (name) => {
 
   if (reservedDeviceNames.test(name)) return false; // windows reserved names
 
-  return (
-    firstCharacter.test(name)
-    && middleCharacters.test(name)
-    && lastCharacter.test(name)
-  );
+  return firstCharacter.test(name) && middleCharacters.test(name) && lastCharacter.test(name);
 };
 
 const safeToRename = (oldPath, newPath) => {
@@ -366,7 +367,10 @@ function safeWriteFileSync(filePath, data) {
 const copyPath = async (source, destination) => {
   let targetPath = `${destination}/${path.basename(source)}`;
 
-  const targetPathExists = await fsPromises.access(targetPath).then(() => true).catch(() => false);
+  const targetPathExists = await fsPromises
+    .access(targetPath)
+    .then(() => true)
+    .catch(() => false);
   if (targetPathExists) {
     throw new Error(`Cannot copy, ${path.basename(source)} already exists in ${path.basename(destination)}`);
   }

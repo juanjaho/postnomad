@@ -34,14 +34,13 @@ const CreateWorkspace = ({ onClose }) => {
     validationSchema: Yup.object({
       workspaceName: Yup.string()
         .trim()
-        .min(1, 'Workspace name can\'t be empty')
+        .min(1, "Workspace name can't be empty")
         .max(255, 'Must be 255 characters or less')
         .required('Workspace name is required')
         .test('unique-name', 'A workspace with this name already exists', function (value) {
           if (!value) return true;
 
-          return !workspaces.some((w) =>
-            !w.isCreating && w.name && w.name.toLowerCase() === value.toLowerCase());
+          return !workspaces.some((w) => !w.isCreating && w.name && w.name.toLowerCase() === value.toLowerCase());
         }),
       workspaceFolderName: Yup.string()
         .min(1, 'Must be at least 1 character')
@@ -59,7 +58,9 @@ const CreateWorkspace = ({ onClose }) => {
       try {
         setIsSubmitting(true);
 
-        await dispatch(createWorkspaceAction(values.workspaceName.trim(), values.workspaceFolderName, values.workspaceLocation));
+        await dispatch(
+          createWorkspaceAction(values.workspaceName.trim(), values.workspaceFolderName, values.workspaceLocation)
+        );
         toast.success('Workspace created!');
         onClose();
       } catch (error) {
@@ -142,11 +143,10 @@ const CreateWorkspace = ({ onClose }) => {
                 <label htmlFor="workspaceFolderName" className="flex items-center font-semibold">
                   Folder Name
                   <Help width="300">
-                    <p>
-                      The name of the folder used to store the workspace.
-                    </p>
+                    <p>The name of the folder used to store the workspace.</p>
                     <p className="mt-2">
-                      You can choose a folder name different from your workspace's name or one compatible with filesystem rules.
+                      You can choose a folder name different from your workspace's name or one compatible with
+                      filesystem rules.
                     </p>
                   </Help>
                 </label>
@@ -192,12 +192,8 @@ const CreateWorkspace = ({ onClose }) => {
             <label htmlFor="workspaceLocation" className="font-semibold mb-2 flex items-center">
               Location
               <Help>
-                <p>
-                  Bruno stores your workspaces on your computer's filesystem.
-                </p>
-                <p className="mt-2">
-                  Choose the location where you want to store this workspace.
-                </p>
+                <p>Bruno stores your workspaces on your computer's filesystem.</p>
+                <p className="mt-2">Choose the location where you want to store this workspace.</p>
               </Help>
             </label>
             <input
@@ -217,10 +213,7 @@ const CreateWorkspace = ({ onClose }) => {
               <div className="text-red-500 text-sm mt-1">{formik.errors.workspaceLocation}</div>
             ) : null}
             <div className="mt-1">
-              <span
-                className="text-link cursor-pointer hover:underline"
-                onClick={browse}
-              >
+              <span className="text-link cursor-pointer hover:underline" onClick={browse}>
                 Browse
               </span>
             </div>

@@ -40,7 +40,9 @@ const RequestNotLoaded = ({ collection, item }) => {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2 px-3 py-2 title bg-yellow-50 dark:bg-yellow-900/20">
                   <IconAlertTriangle size={16} className="text-yellow-500" />
-                  <span>The request wasn't loaded due to its large size. Please try again with the following options:</span>
+                  <span>
+                    The request wasn't loaded due to its large size. Please try again with the following options:
+                  </span>
                 </div>
                 <div className="flex flex-row mt-6 items-center gap-2 w-full">
                   <button

@@ -56,10 +56,12 @@ const ResponseExample = ({ item, collection, example }) => {
       setDragging(false);
       if (!isVerticalLayout) {
         const mainRect = mainSectionRef.current.getBoundingClientRect();
-        dispatch(updateRequestPaneTabWidth({
-          uid: item.uid,
-          requestPaneWidth: e.clientX - mainRect.left
-        }));
+        dispatch(
+          updateRequestPaneTabWidth({
+            uid: item.uid,
+            requestPaneWidth: e.clientX - mainRect.left
+          })
+        );
       }
     }
   };
@@ -102,11 +104,13 @@ const ResponseExample = ({ item, collection, example }) => {
 
   const handleCancel = () => {
     if (item && collection && example?.uid) {
-      dispatch(cancelResponseExampleEdit({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: example.uid
-      }));
+      dispatch(
+        cancelResponseExampleEdit({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: example.uid
+        })
+      );
     }
     setEditMode(false);
   };
@@ -156,7 +160,9 @@ const ResponseExample = ({ item, collection, example }) => {
 
   return (
     <>
-      <StyledWrapper className={`flex flex-col flex-grow relative ${dragging ? 'dragging' : ''} ${isVerticalLayout ? 'vertical-layout' : ''}`}>
+      <StyledWrapper
+        className={`flex flex-col flex-grow relative ${dragging ? 'dragging' : ''} ${isVerticalLayout ? 'vertical-layout' : ''}`}
+      >
         <ResponseExampleTopBar
           item={item}
           collection={collection}
@@ -168,17 +174,24 @@ const ResponseExample = ({ item, collection, example }) => {
           onGenerateCode={handleGenerateCode}
           onTryExample={handleTryExample}
         />
-        <section ref={mainSectionRef} className={`main wrapper flex mt-4 ${isVerticalLayout ? 'flex-col' : ''} flex-grow pb-4 relative overflow-auto scrollbar-hover`}>
+        <section
+          ref={mainSectionRef}
+          className={`main wrapper flex mt-4 ${isVerticalLayout ? 'flex-col' : ''} flex-grow pb-4 relative overflow-auto scrollbar-hover`}
+        >
           <section className="request-pane" data-testid="request-pane">
             <div
               className="px-4 h-full"
-              style={isVerticalLayout ? {
-                height: `${Math.max(topPaneHeight, MIN_TOP_PANE_HEIGHT)}px`,
-                minHeight: `${MIN_TOP_PANE_HEIGHT}px`,
-                width: '100%'
-              } : {
-                width: `${Math.max(leftPaneWidth, MIN_LEFT_PANE_WIDTH)}px`
-              }}
+              style={
+                isVerticalLayout
+                  ? {
+                      height: `${Math.max(topPaneHeight, MIN_TOP_PANE_HEIGHT)}px`,
+                      minHeight: `${MIN_TOP_PANE_HEIGHT}px`,
+                      width: '100%'
+                    }
+                  : {
+                      width: `${Math.max(leftPaneWidth, MIN_LEFT_PANE_WIDTH)}px`
+                    }
+              }
             >
               <ResponseExampleRequestPane
                 item={item}

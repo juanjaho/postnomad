@@ -18,11 +18,7 @@ const ScriptErrorIcon = ({ itemUid, onClick, className }) => {
           <IconAlertCircle size={16} strokeWidth={1.5} className="stroke-current" />
         </div>
       </div>
-      <ToolHint
-        toolhintId={toolhintId}
-        text="Script execution error occurred"
-        place="bottom"
-      />
+      <ToolHint toolhintId={toolhintId} text="Script execution error occurred" place="bottom" />
     </>
   );
 };

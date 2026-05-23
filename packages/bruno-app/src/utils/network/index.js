@@ -82,12 +82,13 @@ export const startGrpcRequest = async (item, collection, environment, runtimeVar
     const { ipcRenderer } = window;
     const request = item.draft ? item.draft : item;
 
-    ipcRenderer.invoke('grpc:start-connection', {
-      request,
-      collection,
-      environment,
-      runtimeVariables
-    })
+    ipcRenderer
+      .invoke('grpc:start-connection', {
+        request,
+        collection,
+        environment,
+        runtimeVariables
+      })
       .then(() => {
         resolve();
       })
@@ -106,9 +107,7 @@ export const startGrpcRequest = async (item, collection, environment, runtimeVar
 export const sendGrpcMessage = async (item, collectionUid, message) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('grpc:send-message', item.uid, collectionUid, message)
-      .then(resolve)
-      .catch(reject);
+    ipcRenderer.invoke('grpc:send-message', item.uid, collectionUid, message).then(resolve).catch(reject);
   });
 };
 
@@ -120,9 +119,7 @@ export const sendGrpcMessage = async (item, collectionUid, message) => {
 export const cancelGrpcRequest = async (requestId) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('grpc:cancel', requestId)
-      .then(resolve)
-      .catch(reject);
+    ipcRenderer.invoke('grpc:cancel', requestId).then(resolve).catch(reject);
   });
 };
 
@@ -134,9 +131,7 @@ export const cancelGrpcRequest = async (requestId) => {
 export const endGrpcStream = async (requestId) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('grpc:end', requestId)
-      .then(resolve)
-      .catch(reject);
+    ipcRenderer.invoke('grpc:end', requestId).then(resolve).catch(reject);
   });
 };
 
@@ -170,7 +165,8 @@ export const endGrpcConnection = async (connectionId) => {
 export const isGrpcConnectionActive = async (connectionId) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('grpc:is-connection-active', connectionId)
+    ipcRenderer
+      .invoke('grpc:is-connection-active', connectionId)
       .then((response) => {
         if (response.success) {
           resolve(response.isActive);
@@ -199,11 +195,12 @@ export const generateGrpcSampleMessage = async (methodPath, existingMessage = nu
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
 
-    ipcRenderer.invoke('grpc:generate-sample-message', {
-      methodPath,
-      existingMessage,
-      options
-    })
+    ipcRenderer
+      .invoke('grpc:generate-sample-message', {
+        methodPath,
+        existingMessage,
+        options
+      })
       .then(resolve)
       .catch(reject);
   });
@@ -256,13 +253,16 @@ export const sendWsRequest = async (item, collection, environment, runtimeVariab
 export const queueWsMessage = async (item, collection, environment, runtimeVariables, messageContent) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('renderer:ws:queue-message', {
-      item,
-      collection,
-      environment,
-      runtimeVariables,
-      messageContent
-    }).then(resolve).catch(reject);
+    ipcRenderer
+      .invoke('renderer:ws:queue-message', {
+        item,
+        collection,
+        environment,
+        runtimeVariables,
+        messageContent
+      })
+      .then(resolve)
+      .catch(reject);
   });
 };
 

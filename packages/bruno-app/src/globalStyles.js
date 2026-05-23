@@ -295,14 +295,8 @@ const GlobalStyle = createGlobalStyle`
   .CodeMirror-hints {
     z-index: 50 !important;
     background: ${(props) => props.theme.dropdown.bg};
-    ${(props) =>
-      props.theme.dropdown.border !== 'none'
-        ? `border: 1px solid ${props.theme.dropdown.border};`
-        : ''}
-    ${(props) =>
-      props.theme.dropdown.shadow !== 'none'
-        ? `box-shadow: ${props.theme.dropdown.shadow};`
-        : ''}
+    ${(props) => (props.theme.dropdown.border !== 'none' ? `border: 1px solid ${props.theme.dropdown.border};` : '')}
+    ${(props) => (props.theme.dropdown.shadow !== 'none' ? `box-shadow: ${props.theme.dropdown.shadow};` : '')}
     border-radius: ${(props) => props.theme.border.radius.base};
     padding: 0.25rem;
     font-size: ${(props) => props.theme.font.size.sm};

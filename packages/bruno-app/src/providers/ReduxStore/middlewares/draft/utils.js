@@ -24,7 +24,8 @@ function handleMakeTabParmanent(state, action, dispatch) {
     if (item) {
       dispatch(makeTabPermanent({ uid: itemUid }));
     }
-  } else if (folderUid) { // Handle folder-level changes (folder settings tab)
+  } else if (folderUid) {
+    // Handle folder-level changes (folder settings tab)
     const folder = findItemInCollection(collection, folderUid);
     if (folder) {
       dispatch(makeTabPermanent({ uid: folderUid }));
@@ -35,6 +36,4 @@ function handleMakeTabParmanent(state, action, dispatch) {
   }
 }
 
-export {
-  handleMakeTabParmanent
-};
+export { handleMakeTabParmanent };

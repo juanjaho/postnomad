@@ -175,7 +175,18 @@ export const ossSchema = {
             subtext1: { type: 'string' },
             subtext0: { type: 'string' }
           },
-          required: ['white', 'green', 'danger', 'warning', 'muted', 'purple', 'yellow', 'subtext2', 'subtext1', 'subtext0'],
+          required: [
+            'white',
+            'green',
+            'danger',
+            'warning',
+            'muted',
+            'purple',
+            'yellow',
+            'subtext2',
+            'subtext1',
+            'subtext0'
+          ],
           additionalProperties: false
         },
         bg: {
@@ -382,7 +393,17 @@ export const ossSchema = {
           additionalProperties: false
         }
       },
-      required: ['url', 'dragbar', 'responseStatus', 'responseOk', 'responseError', 'responsePending', 'responseOverlayBg', 'card', 'graphqlDocsExplorer'],
+      required: [
+        'url',
+        'dragbar',
+        'responseStatus',
+        'responseOk',
+        'responseError',
+        'responsePending',
+        'responseOverlayBg',
+        'card',
+        'graphqlDocsExplorer'
+      ],
       additionalProperties: false
     },
 
@@ -705,14 +726,36 @@ export const ossSchema = {
             tag: { type: 'string' },
             tagBracket: { type: 'string' }
           },
-          required: ['definition', 'property', 'string', 'number', 'atom', 'variable', 'keyword', 'comment', 'operator', 'tag', 'tagBracket'],
+          required: [
+            'definition',
+            'property',
+            'string',
+            'number',
+            'atom',
+            'variable',
+            'keyword',
+            'comment',
+            'operator',
+            'tag',
+            'tagBracket'
+          ],
           additionalProperties: false
         },
         searchLineHighlightCurrent: { type: 'string' },
         searchMatch: { type: 'string' },
         searchMatchActive: { type: 'string' }
       },
-      required: ['bg', 'border', 'placeholder', 'gutter', 'variable', 'tokens', 'searchLineHighlightCurrent', 'searchMatch', 'searchMatchActive'],
+      required: [
+        'bg',
+        'border',
+        'placeholder',
+        'gutter',
+        'variable',
+        'tokens',
+        'searchLineHighlightCurrent',
+        'searchMatch',
+        'searchMatchActive'
+      ],
       additionalProperties: false
     },
 
@@ -821,7 +864,32 @@ export const ossSchema = {
         scrollbarThumb: { type: 'string' },
         scrollbarThumbHover: { type: 'string' }
       },
-      required: ['bg', 'headerBg', 'contentBg', 'border', 'titleColor', 'countColor', 'buttonColor', 'buttonHoverBg', 'buttonHoverColor', 'messageColor', 'timestampColor', 'emptyColor', 'logHoverBg', 'resizeHandleHover', 'resizeHandleActive', 'dropdownBg', 'dropdownHeaderBg', 'optionHoverBg', 'optionLabelColor', 'optionCountColor', 'checkboxColor', 'scrollbarTrack', 'scrollbarThumb', 'scrollbarThumbHover'],
+      required: [
+        'bg',
+        'headerBg',
+        'contentBg',
+        'border',
+        'titleColor',
+        'countColor',
+        'buttonColor',
+        'buttonHoverBg',
+        'buttonHoverColor',
+        'messageColor',
+        'timestampColor',
+        'emptyColor',
+        'logHoverBg',
+        'resizeHandleHover',
+        'resizeHandleActive',
+        'dropdownBg',
+        'dropdownHeaderBg',
+        'optionHoverBg',
+        'optionLabelColor',
+        'optionCountColor',
+        'checkboxColor',
+        'scrollbarTrack',
+        'scrollbarThumb',
+        'scrollbarThumbHover'
+      ],
       additionalProperties: false
     },
 
@@ -1144,7 +1212,17 @@ export const ossSchema = {
                       additionalProperties: false
                     }
                   },
-                  required: ['bg', 'border', 'icon', 'text', 'caret', 'separator', 'hoverBg', 'hoverBorder', 'noEnvironment'],
+                  required: [
+                    'bg',
+                    'border',
+                    'icon',
+                    'text',
+                    'caret',
+                    'separator',
+                    'hoverBg',
+                    'hoverBorder',
+                    'noEnvironment'
+                  ],
                   additionalProperties: false
                 },
                 sandboxMode: {
@@ -1186,11 +1264,45 @@ export const ossSchema = {
     }
   },
   required: [
-    'mode', 'brand', 'text', 'textLink', 'draftColor', 'bg', 'primary', 'accents', 'background', 'status', 'overlay', 'font', 'shadow', 'border', 'colors', 'input',
-    'sidebar', 'dropdown', 'workspace', 'request',
-    'requestTabPanel', 'notifications', 'modal', 'button', 'button2', 'tabs',
-    'requestTabs', 'codemirror', 'table', 'plainGrid', 'scrollbar', 'dragAndDrop',
-    'infoTip', 'statusBar', 'console', 'grpc', 'deprecationWarning', 'examples', 'app'
+    'mode',
+    'brand',
+    'text',
+    'textLink',
+    'draftColor',
+    'bg',
+    'primary',
+    'accents',
+    'background',
+    'status',
+    'overlay',
+    'font',
+    'shadow',
+    'border',
+    'colors',
+    'input',
+    'sidebar',
+    'dropdown',
+    'workspace',
+    'request',
+    'requestTabPanel',
+    'notifications',
+    'modal',
+    'button',
+    'button2',
+    'tabs',
+    'requestTabs',
+    'codemirror',
+    'table',
+    'plainGrid',
+    'scrollbar',
+    'dragAndDrop',
+    'infoTip',
+    'statusBar',
+    'console',
+    'grpc',
+    'deprecationWarning',
+    'examples',
+    'app'
   ],
   additionalProperties: false
 };

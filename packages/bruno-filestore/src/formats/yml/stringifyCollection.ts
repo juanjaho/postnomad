@@ -15,18 +15,16 @@ import type { Auth } from '@opencollection/types/common/auth';
 
 const hasCollectionConfig = (brunoConfig: any): boolean => {
   // protobuf
-  const hasProtobuf = (
-    brunoConfig.protobuf?.protoFiles?.length > 0
-    || brunoConfig.protobuf?.importPaths?.length > 0
-  );
+  const hasProtobuf = brunoConfig.protobuf?.protoFiles?.length > 0 || brunoConfig.protobuf?.importPaths?.length > 0;
 
   // proxy - check if proxy is configured in newer format
   // Valid newer format: has 'inherit' property and 'config' object
-  const isValidProxyFormat = brunoConfig.proxy
-    && typeof brunoConfig.proxy === 'object'
-    && 'inherit' in brunoConfig.proxy
-    && brunoConfig.proxy.config
-    && typeof brunoConfig.proxy.config === 'object';
+  const isValidProxyFormat =
+    brunoConfig.proxy &&
+    typeof brunoConfig.proxy === 'object' &&
+    'inherit' in brunoConfig.proxy &&
+    brunoConfig.proxy.config &&
+    typeof brunoConfig.proxy.config === 'object';
 
   const hasProxy = isValidProxyFormat;
 
@@ -39,11 +37,13 @@ const hasCollectionConfig = (brunoConfig: any): boolean => {
 const hasRequestDefaults = (collectionRoot: any): boolean => {
   const requestRoot = collectionRoot?.request;
 
-  return Boolean((requestRoot?.headers?.length)
-    || (requestRoot?.vars?.req?.length)
-    || (requestRoot?.vars?.res?.length)
-    || hasRequestScripts(collectionRoot)
-    || hasRequestAuth(collectionRoot));
+  return Boolean(
+    requestRoot?.headers?.length ||
+    requestRoot?.vars?.req?.length ||
+    requestRoot?.vars?.res?.length ||
+    hasRequestScripts(collectionRoot) ||
+    hasRequestAuth(collectionRoot)
+  );
 };
 
 const hasRequestAuth = (collectionRoot: any): boolean => {
@@ -54,14 +54,11 @@ const hasRequestAuth = (collectionRoot: any): boolean => {
 const hasRequestScripts = (collectionRoot: any): boolean => {
   if (!collectionRoot?.request) return false;
 
-  return (collectionRoot.request.script?.req)
-    || (collectionRoot.request.script?.res)
-    || (collectionRoot.request.tests);
+  return collectionRoot.request.script?.req || collectionRoot.request.script?.res || collectionRoot.request.tests;
 };
 
 const hasPresets = (brunoConfig: any): boolean => {
-  return brunoConfig?.presets?.requestType?.length
-    || brunoConfig?.presets?.requestUrl?.length;
+  return brunoConfig?.presets?.requestType?.length || brunoConfig?.presets?.requestUrl?.length;
 };
 
 const stringifyCollection = (collectionRoot: any, brunoConfig: any): string => {
@@ -81,30 +78,35 @@ const stringifyCollection = (collectionRoot: any, brunoConfig: any): string => {
         oc.config.protobuf = {};
 
         if (brunoConfig.protobuf.protoFiles?.length) {
-          oc.config.protobuf.protoFiles = brunoConfig.protobuf.protoFiles.map((protoFile: any): ProtoFileItem => ({
-            type: 'file' as const,
-            path: protoFile.path
-          }));
+          oc.config.protobuf.protoFiles = brunoConfig.protobuf.protoFiles.map(
+            (protoFile: any): ProtoFileItem => ({
+              type: 'file' as const,
+              path: protoFile.path
+            })
+          );
         }
 
         if (brunoConfig.protobuf.importPaths?.length) {
-          oc.config.protobuf.importPaths = brunoConfig.protobuf.importPaths.map((importPath: any): ProtoFileImportPath => {
-            const item: ProtoFileImportPath = { path: importPath.path };
-            if (importPath.enabled === false) {
-              item.disabled = true;
+          oc.config.protobuf.importPaths = brunoConfig.protobuf.importPaths.map(
+            (importPath: any): ProtoFileImportPath => {
+              const item: ProtoFileImportPath = { path: importPath.path };
+              if (importPath.enabled === false) {
+                item.disabled = true;
+              }
+              return item;
             }
-            return item;
-          });
+          );
         }
       }
 
       // proxy - only write newer format
       // Validate that brunoConfig.proxy is in newer format before writing
-      const isValidProxyFormat = brunoConfig.proxy
-        && typeof brunoConfig.proxy === 'object'
-        && 'inherit' in brunoConfig.proxy
-        && brunoConfig.proxy.config
-        && typeof brunoConfig.proxy.config === 'object';
+      const isValidProxyFormat =
+        brunoConfig.proxy &&
+        typeof brunoConfig.proxy === 'object' &&
+        'inherit' in brunoConfig.proxy &&
+        brunoConfig.proxy.config &&
+        typeof brunoConfig.proxy.config === 'object';
 
       if (isValidProxyFormat) {
         oc.config.proxy = {

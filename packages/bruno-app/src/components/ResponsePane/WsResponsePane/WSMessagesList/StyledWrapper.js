@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledWrapper = styled.div`
   flex: 1;
-  min-height: 0; 
+  min-height: 0;
   height: 100%;
 
   .empty-state {
@@ -59,7 +59,9 @@ const StyledWrapper = styled.div`
     border-radius: 0.25rem;
   }
 
-  .CodeMirror-foldgutter, .CodeMirror-linenumbers, .CodeMirror-lint-markers {
+  .CodeMirror-foldgutter,
+  .CodeMirror-linenumbers,
+  .CodeMirror-lint-markers {
     background: ${({ theme }) => theme.bg};
   }
 

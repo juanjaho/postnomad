@@ -1,21 +1,20 @@
 import { uuid } from '../../common/index.js';
-import type {
-  Assertion,
-  BrunoKeyValue
-} from '../types';
+import type { Assertion, BrunoKeyValue } from '../types';
 
 export const fromOpenCollectionAssertions = (assertions: Assertion[] | undefined): BrunoKeyValue[] => {
   if (!assertions?.length) {
     return [];
   }
 
-  return assertions.map((a): BrunoKeyValue => ({
-    uid: uuid(),
-    name: a.expression || '',
-    value: `${a.operator || 'eq'} ${a.value || ''}`.trim(),
-    description: typeof a.description === 'string' ? a.description : a.description?.content || null,
-    enabled: a.disabled !== true
-  }));
+  return assertions.map(
+    (a): BrunoKeyValue => ({
+      uid: uuid(),
+      name: a.expression || '',
+      value: `${a.operator || 'eq'} ${a.value || ''}`.trim(),
+      description: typeof a.description === 'string' ? a.description : a.description?.content || null,
+      enabled: a.disabled !== true
+    })
+  );
 };
 
 export const toOpenCollectionAssertions = (assertions: BrunoKeyValue[] | null | undefined): Assertion[] | undefined => {

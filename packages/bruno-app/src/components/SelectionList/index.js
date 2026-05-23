@@ -26,29 +26,16 @@ const SelectionList = ({
   }, [someSelected]);
 
   return (
-    <StyledWrapper
-      $visibleRows={visibleRows}
-      $rowHeight={rowHeight}
-      $rowGap={rowGap}
-      $listPadding={listPadding}
-    >
+    <StyledWrapper $visibleRows={visibleRows} $rowHeight={rowHeight} $rowGap={rowGap} $listPadding={listPadding}>
       <div className="selection-toolbar">
         <span className="selection-title">{title}</span>
         <label className="selection-toggle">
-          <input
-            ref={selectAllRef}
-            className="checkbox"
-            type="checkbox"
-            checked={allSelected}
-            onChange={onSelectAll}
-          />
+          <input ref={selectAllRef} className="checkbox" type="checkbox" checked={allSelected} onChange={onSelectAll} />
           Select All
         </label>
       </div>
       <ul className="selection-list scrollbar-hover">
-        {items.length === 0 && (
-          <li className="selection-empty">{emptyMessage}</li>
-        )}
+        {items.length === 0 && <li className="selection-empty">{emptyMessage}</li>}
         {items.map((item) => {
           const itemId = getItemId(item);
           const isSelected = selectedItems.includes(itemId);
@@ -56,11 +43,7 @@ const SelectionList = ({
           return (
             <li key={itemId}>
               <label className="selection-item">
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  onChange={() => onItemToggle(itemId)}
-                />
+                <input type="checkbox" checked={isSelected} onChange={() => onItemToggle(itemId)} />
                 <span className="selection-path">{renderItemLabel(item)}</span>
               </label>
             </li>

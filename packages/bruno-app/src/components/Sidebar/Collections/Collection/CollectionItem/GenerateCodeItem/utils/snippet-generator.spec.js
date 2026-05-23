@@ -139,7 +139,9 @@ describe('Snippet Generator - Simple Tests', () => {
       shouldInterpolate: false
     });
 
-    expect(result).toBe('curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d \'{"message": "{{greeting}}", "count": {{number}}}\'');
+    expect(result).toBe(
+      'curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d \'{"message": "{{greeting}}", "count": {{number}}}\''
+    );
   });
 
   it('should interpolate variables when enabled', () => {
@@ -154,7 +156,9 @@ describe('Snippet Generator - Simple Tests', () => {
   "message": "Hello World",
   "count": 42
 }`;
-    expect(result).toBe(`curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedBody}'`);
+    expect(result).toBe(
+      `curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedBody}'`
+    );
   });
 
   it('should handle GET requests', () => {
@@ -211,7 +215,9 @@ describe('Snippet Generator - Simple Tests', () => {
   "message": "Hello World",
   "count": 42
 }`;
-    expect(result).toBe(`curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedBody}'`);
+    expect(result).toBe(
+      `curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedBody}'`
+    );
   });
 
   it('should handle complex nested JSON body', () => {
@@ -259,21 +265,27 @@ describe('Snippet Generator - Simple Tests', () => {
       shouldInterpolate: true
     });
 
-    const expectedComplexBody = JSON.stringify({
-      user: {
-        name: 'Alice',
-        settings: {
-          theme: 'dark',
-          active: true
+    const expectedComplexBody = JSON.stringify(
+      {
+        user: {
+          name: 'Alice',
+          settings: {
+            theme: 'dark',
+            active: true
+          }
+        },
+        data: {
+          items: ['first', 'second'],
+          total: '100'
         }
       },
-      data: {
-        items: ['first', 'second'],
-        total: '100'
-      }
-    }, null, 2);
+      null,
+      2
+    );
 
-    expect(result).toBe(`curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedComplexBody}'`);
+    expect(result).toBe(
+      `curl -X POST https://api.example.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedComplexBody}'`
+    );
   });
 
   it('should handle errors gracefully', () => {
@@ -379,7 +391,9 @@ describe('Snippet Generator - Simple Tests', () => {
   "age": 30
 }`;
 
-    expect(result).toBe(`curl -X POST https://api.test.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedInterpolatedBody}'`);
+    expect(result).toBe(
+      `curl -X POST https://api.test.com/{{endpoint}} -H "Content-Type: application/json" -d '${expectedInterpolatedBody}'`
+    );
   });
 
   it('should NOT interpolate when shouldInterpolate is false', () => {
@@ -428,7 +442,9 @@ describe('Snippet Generator - Simple Tests', () => {
       shouldInterpolate: false
     });
 
-    expect(result).toBe('curl -X POST https://api.test.com/{{endpoint}} -H "Content-Type: application/json" -d \'{"name": "{{userName}}", "email": "{{userEmail}}", "age": {{userAge}}}\'');
+    expect(result).toBe(
+      'curl -X POST https://api.test.com/{{endpoint}} -H "Content-Type: application/json" -d \'{"name": "{{userName}}", "email": "{{userEmail}}", "age": {{userAge}}}\''
+    );
   });
 
   it('should interpolate auth credentials correctly', () => {
@@ -489,9 +505,7 @@ describe('generateSnippet – header inclusion in output', () => {
     const collection = {
       root: {
         request: {
-          headers: [
-            { name: 'X-Collection', value: 'c', enabled: true }
-          ],
+          headers: [{ name: 'X-Collection', value: 'c', enabled: true }],
           auth: { mode: 'none' }
         }
       }
@@ -502,9 +516,7 @@ describe('generateSnippet – header inclusion in output', () => {
       type: 'folder',
       root: {
         request: {
-          headers: [
-            { name: 'X-Folder', value: 'f', enabled: true }
-          ]
+          headers: [{ name: 'X-Folder', value: 'f', enabled: true }]
         }
       }
     };
@@ -622,17 +634,15 @@ describe('generateSnippet with OAuth2 authentication', () => {
         const tokenPlacement = oauth2Config.tokenPlacement || 'header';
         // Use the actual value from config, defaulting to 'Bearer' only if undefined
         // Empty string should be preserved to test no-prefix scenarios
-        const tokenHeaderPrefix = oauth2Config.tokenHeaderPrefix !== undefined
-          ? oauth2Config.tokenHeaderPrefix
-          : 'Bearer';
+        const tokenHeaderPrefix =
+          oauth2Config.tokenHeaderPrefix !== undefined ? oauth2Config.tokenHeaderPrefix : 'Bearer';
         let accessToken = oauth2Config.accessToken || '<access_token>';
 
         // If collection and item are provided, try to look up stored credentials
         if (collection && item && collection.oauth2Credentials) {
           const grantType = oauth2Config.grantType || '';
-          const urlToLookup = grantType === 'implicit'
-            ? oauth2Config.authorizationUrl || ''
-            : oauth2Config.accessTokenUrl || '';
+          const urlToLookup =
+            grantType === 'implicit' ? oauth2Config.authorizationUrl || '' : oauth2Config.accessTokenUrl || '';
           const credentialsId = oauth2Config.credentialsId || 'credentials';
           const collectionUid = collection.uid;
 
@@ -640,9 +650,9 @@ describe('generateSnippet with OAuth2 authentication', () => {
             // Look up stored credentials (simplified - assumes URL is already interpolated in test data)
             const credentialsData = collection.oauth2Credentials.find(
               (creds) =>
-                creds?.url === urlToLookup
-                && creds?.collectionUid === collectionUid
-                && creds?.credentialsId === credentialsId
+                creds?.url === urlToLookup &&
+                creds?.collectionUid === collectionUid &&
+                creds?.credentialsId === credentialsId
             );
 
             if (credentialsData?.credentials?.access_token) {
@@ -653,9 +663,7 @@ describe('generateSnippet with OAuth2 authentication', () => {
 
         if (tokenPlacement === 'header') {
           // Always trim the final result for consistent formatting
-          const headerValue = tokenHeaderPrefix
-            ? `${tokenHeaderPrefix} ${accessToken}`.trim()
-            : accessToken.trim();
+          const headerValue = tokenHeaderPrefix ? `${tokenHeaderPrefix} ${accessToken}`.trim() : accessToken.trim();
           return [
             {
               enabled: true,
@@ -1056,7 +1064,12 @@ describe('generateSnippet – encodeUrl setting', () => {
       rawUrl: 'https://example.com/my path/hello world?q=test'
     };
 
-    const result = generateSnippet({ language: pythonLanguage, item, collection: baseCollection, shouldInterpolate: false });
+    const result = generateSnippet({
+      language: pythonLanguage,
+      item,
+      collection: baseCollection,
+      shouldInterpolate: false
+    });
     expect(result).toContain('/my path/hello world?q=test');
     expect(result).not.toContain('%20');
   });
@@ -1090,7 +1103,12 @@ describe('generateSnippet – encodeUrl setting', () => {
       ...makeItem(encodedUrl, { encodeUrl: false }),
       rawUrl: 'https://example.com/api?token=abc 123==&type=test'
     };
-    const result = generateSnippet({ language: httpLanguage, item, collection: baseCollection, shouldInterpolate: false });
+    const result = generateSnippet({
+      language: httpLanguage,
+      item,
+      collection: baseCollection,
+      shouldInterpolate: false
+    });
     // Spaces must remain encoded for valid HTTP request line
     expect(result).toContain('%20');
     // But other chars like = should still be decoded
@@ -1155,7 +1173,12 @@ describe('generateSnippet – encodeUrl setting', () => {
     const rawUrl = 'https://example.com/api?token=abc123==&type=test';
     const item = makeItem(rawUrl, { encodeUrl: false });
 
-    const result = generateSnippet({ language: pythonLanguage, item, collection: baseCollection, shouldInterpolate: false });
+    const result = generateSnippet({
+      language: pythonLanguage,
+      item,
+      collection: baseCollection,
+      shouldInterpolate: false
+    });
     expect(result).toContain('/api?token=abc123==&type=test');
     // %3D = encoded '='
     expect(result).not.toContain('%3D');
@@ -1254,7 +1277,7 @@ describe('generateSnippet – encodeUrl setting', () => {
     const item = makeItem(rawUrl, { encodeUrl: true });
 
     const result = generateSnippet({ language, item, collection: baseCollection, shouldInterpolate: false });
-    expect(result).toBe('curl -X GET \'https://example.com/api?start=2026-02-01T00%3A00%3A00.000Z&a=b\'');
+    expect(result).toBe("curl -X GET 'https://example.com/api?start=2026-02-01T00%3A00%3A00.000Z&a=b'");
   });
 
   it('should preserve param order in raw URL when encodeUrl is false and params are reverse-alphabetical', () => {

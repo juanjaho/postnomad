@@ -2,11 +2,26 @@ import React, { useEffect, useCallback, useMemo, useRef } from 'react';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import classnames from 'classnames';
-import { IconWand, IconDots, IconBook, IconDownload, IconRefresh, IconFile, IconChevronDown, IconChevronRight } from '@tabler/icons';
+import {
+  IconWand,
+  IconDots,
+  IconBook,
+  IconDownload,
+  IconRefresh,
+  IconFile,
+  IconChevronDown,
+  IconChevronRight
+} from '@tabler/icons';
 import IconSidebarToggle from 'components/Icons/IconSidebarToggle';
 import ActionIcon from 'ui/ActionIcon';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateRequestPaneTab, updateQueryBuilderOpen, updateQueryBuilderWidth, updateVariablesPaneOpen, updateVariablesPaneHeight } from 'providers/ReduxStore/slices/tabs';
+import {
+  updateRequestPaneTab,
+  updateQueryBuilderOpen,
+  updateQueryBuilderWidth,
+  updateVariablesPaneOpen,
+  updateVariablesPaneHeight
+} from 'providers/ReduxStore/slices/tabs';
 import QueryEditor from 'components/RequestPane/QueryEditor';
 import QueryBuilder from 'components/RequestPane/QueryBuilder';
 import MenuDropdown from 'ui/MenuDropdown';
@@ -72,7 +87,13 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
   const environment = findEnvironmentInCollection(collection, collection.activeEnvironmentUid);
   const request = item.draft ? { ...item.draft.request, pathname, uid } : { ...item.request, pathname, uid };
 
-  const { schema, schemaSource, loadSchema, isLoading: isSchemaLoading, error: schemaError } = useGraphqlSchema(url, environment, request, collection);
+  const {
+    schema,
+    schemaSource,
+    loadSchema,
+    isLoading: isSchemaLoading,
+    error: schemaError
+  } = useGraphqlSchema(url, environment, request, collection);
 
   const schemaActionsRef = useRef(null);
 
@@ -87,27 +108,37 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
   const variablesOpenRef = useRef(variablesOpen);
   variablesOpenRef.current = variablesOpen;
 
-  const handleMouseMove = useCallback((e) => {
-    if (queryBuilderDraggingRef.current && queryBuilderContainerRef.current) {
-      e.preventDefault();
-      const containerRect = queryBuilderContainerRef.current.getBoundingClientRect();
-      const newWidth = e.clientX - containerRect.left;
-      const maxWidth = Math.min(600, containerRect.width * 0.5);
-      dispatch(updateQueryBuilderWidth({ uid: item.uid, queryBuilderWidth: Math.max(200, Math.min(newWidth, maxWidth)) }));
-    }
-    if (variablesDraggingRef.current && queryBuilderContainerRef.current) {
-      e.preventDefault();
-      const containerRect = queryBuilderContainerRef.current.getBoundingClientRect();
-      // Subtract the header height (~30px) from the drag calculation
-      const newHeight = containerRect.bottom - e.clientY - 30;
-      if (newHeight < 40) {
-        dispatch(updateVariablesPaneOpen({ uid: item.uid, variablesPaneOpen: false }));
-      } else {
-        if (!variablesOpenRef.current) dispatch(updateVariablesPaneOpen({ uid: item.uid, variablesPaneOpen: true }));
-        dispatch(updateVariablesPaneHeight({ uid: item.uid, variablesPaneHeight: Math.max(80, Math.min(newHeight, containerRect.height * 0.6)) }));
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (queryBuilderDraggingRef.current && queryBuilderContainerRef.current) {
+        e.preventDefault();
+        const containerRect = queryBuilderContainerRef.current.getBoundingClientRect();
+        const newWidth = e.clientX - containerRect.left;
+        const maxWidth = Math.min(600, containerRect.width * 0.5);
+        dispatch(
+          updateQueryBuilderWidth({ uid: item.uid, queryBuilderWidth: Math.max(200, Math.min(newWidth, maxWidth)) })
+        );
       }
-    }
-  }, [dispatch, item.uid]);
+      if (variablesDraggingRef.current && queryBuilderContainerRef.current) {
+        e.preventDefault();
+        const containerRect = queryBuilderContainerRef.current.getBoundingClientRect();
+        // Subtract the header height (~30px) from the drag calculation
+        const newHeight = containerRect.bottom - e.clientY - 30;
+        if (newHeight < 40) {
+          dispatch(updateVariablesPaneOpen({ uid: item.uid, variablesPaneOpen: false }));
+        } else {
+          if (!variablesOpenRef.current) dispatch(updateVariablesPaneOpen({ uid: item.uid, variablesPaneOpen: true }));
+          dispatch(
+            updateVariablesPaneHeight({
+              uid: item.uid,
+              variablesPaneHeight: Math.max(80, Math.min(newHeight, containerRect.height * 0.6))
+            })
+          );
+        }
+      }
+    },
+    [dispatch, item.uid]
+  );
 
   const handleMouseUp = useCallback(() => {
     queryBuilderDraggingRef.current = false;
@@ -116,11 +147,14 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
     document.removeEventListener('mouseup', handleMouseUp);
   }, [handleMouseMove]);
 
-  const startDrag = useCallback((ref) => {
-    ref.current = true;
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [handleMouseMove, handleMouseUp]);
+  const startDrag = useCallback(
+    (ref) => {
+      ref.current = true;
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [handleMouseMove, handleMouseUp]
+  );
 
   useEffect(() => {
     return () => {
@@ -155,10 +189,7 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
     [dispatch, item.uid, collection.uid]
   );
 
-  const onRun = useCallback(
-    () => dispatch(sendRequest(item, collection.uid)),
-    [dispatch, item, collection.uid]
-  );
+  const onRun = useCallback(() => dispatch(sendRequest(item, collection.uid)), [dispatch, item, collection.uid]);
 
   const onSave = useCallback(
     () => dispatch(saveRequest(item.uid, collection.uid)),
@@ -264,60 +295,75 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
       default:
         return <div className="mt-4">404 | Not found</div>;
     }
-  }, [requestPaneTab, item, collection, displayedTheme, schema, onSave, query, onRun, onQueryChange, handleGqlClickReference, handlePrettify, preferences, variables, variablesOpen, variablesHeight, dispatch]);
+  }, [
+    requestPaneTab,
+    item,
+    collection,
+    displayedTheme,
+    schema,
+    onSave,
+    query,
+    onRun,
+    onQueryChange,
+    handleGqlClickReference,
+    handlePrettify,
+    preferences,
+    variables,
+    variablesOpen,
+    variablesHeight,
+    dispatch
+  ]);
 
-  const queryMenuItems = useMemo(() => [
-    {
-      id: 'docs',
-      label: 'Docs',
-      leftSection: IconBook,
-      onClick: toggleDocs
-    },
-    {
-      id: 'schema-introspection',
-      label: schema && schemaSource === 'introspection' ? 'Refresh from Introspection' : 'Load from Introspection',
-      leftSection: schema && schemaSource === 'introspection' ? IconRefresh : IconDownload,
-      onClick: () => loadSchema('introspection'),
-      disabled: isSchemaLoading
-    },
-    {
-      id: 'schema-file',
-      label: 'Load from File',
-      leftSection: IconFile,
-      onClick: () => loadSchema('file'),
-      disabled: isSchemaLoading
-    }
-  ], [toggleDocs, schema, schemaSource, loadSchema, isSchemaLoading]);
+  const queryMenuItems = useMemo(
+    () => [
+      {
+        id: 'docs',
+        label: 'Docs',
+        leftSection: IconBook,
+        onClick: toggleDocs
+      },
+      {
+        id: 'schema-introspection',
+        label: schema && schemaSource === 'introspection' ? 'Refresh from Introspection' : 'Load from Introspection',
+        leftSection: schema && schemaSource === 'introspection' ? IconRefresh : IconDownload,
+        onClick: () => loadSchema('introspection'),
+        disabled: isSchemaLoading
+      },
+      {
+        id: 'schema-file',
+        label: 'Load from File',
+        leftSection: IconFile,
+        onClick: () => loadSchema('file'),
+        disabled: isSchemaLoading
+      }
+    ],
+    [toggleDocs, schema, schemaSource, loadSchema, isSchemaLoading]
+  );
 
   if (!activeTabUid || !focusedTab?.uid || !requestPaneTab) {
     return <div className="pb-4 px-4">An error occurred!</div>;
   }
 
-  const rightContent = requestPaneTab === 'auth' ? (
-    <div ref={schemaActionsRef} className="flex flex-grow justify-start items-center">
-      <AuthMode item={item} collection={collection} />
-    </div>
-  ) : requestPaneTab === 'query' ? (
-    <div ref={schemaActionsRef} className="flex items-center gap-2">
-      <ActionIcon
-        label="Prettify"
-        onClick={handlePrettify}
-      >
-        <IconWand size={14} strokeWidth={1.5} />
-      </ActionIcon>
-      <ActionIcon
-        label={showQueryBuilder ? 'Hide Query Builder' : 'Show Query Builder'}
-        onClick={toggleQueryBuilder}
-      >
-        <IconSidebarToggle collapsed={!showQueryBuilder} size={16} strokeWidth={1.5} />
-      </ActionIcon>
-      <MenuDropdown items={queryMenuItems} placement="bottom-end">
-        <ActionIcon label="More actions">
-          <IconDots size={16} strokeWidth={1.5} />
+  const rightContent =
+    requestPaneTab === 'auth' ? (
+      <div ref={schemaActionsRef} className="flex flex-grow justify-start items-center">
+        <AuthMode item={item} collection={collection} />
+      </div>
+    ) : requestPaneTab === 'query' ? (
+      <div ref={schemaActionsRef} className="flex items-center gap-2">
+        <ActionIcon label="Prettify" onClick={handlePrettify}>
+          <IconWand size={14} strokeWidth={1.5} />
         </ActionIcon>
-      </MenuDropdown>
-    </div>
-  ) : null;
+        <ActionIcon label={showQueryBuilder ? 'Hide Query Builder' : 'Show Query Builder'} onClick={toggleQueryBuilder}>
+          <IconSidebarToggle collapsed={!showQueryBuilder} size={16} strokeWidth={1.5} />
+        </ActionIcon>
+        <MenuDropdown items={queryMenuItems} placement="bottom-end">
+          <ActionIcon label="More actions">
+            <IconDots size={16} strokeWidth={1.5} />
+          </ActionIcon>
+        </MenuDropdown>
+      </div>
+    ) : null;
 
   return (
     <StyledWrapper className="flex flex-col h-full relative">
@@ -332,7 +378,10 @@ const GraphQLRequestPane = ({ item, collection, onSchemaLoad, toggleDocs, handle
       <section ref={queryBuilderContainerRef} className={classnames('flex w-full flex-1 mt-4 min-h-0')}>
         {requestPaneTab === 'query' && showQueryBuilder && (
           <>
-            <div className="graphql-query-builder-container" style={{ width: `${queryBuilderWidth}px`, minWidth: `${queryBuilderWidth}px` }}>
+            <div
+              className="graphql-query-builder-container"
+              style={{ width: `${queryBuilderWidth}px`, minWidth: `${queryBuilderWidth}px` }}
+            >
               <QueryBuilder
                 schema={schema}
                 onQueryChange={onQueryChange}

@@ -56,7 +56,7 @@ const StyledWrapper = styled.div`
   .tabs-switcher {
     border-bottom: 1px solid ${(props) => props.theme.border.border1};
     margin-bottom: 16px;
-    
+
     button {
       position: relative;
       padding: 8px 16px;
@@ -117,7 +117,7 @@ const StyledWrapper = styled.div`
       color: ${(props) => props.theme.colors.text.purple};
     }
   }
-    
+
   .request-label {
     font-size: ${(props) => props.theme.font.size.base};
     padding: 2px 6px;

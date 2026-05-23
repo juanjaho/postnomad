@@ -1,27 +1,25 @@
 import path from 'path';
 import { test, expect, closeElectronApp } from '../../playwright';
-import {
-  createCollection,
-  createRequest,
-  openRequest,
-  openWorkspaceFromDialog,
-  waitForReadyPage
-} from '../utils/page';
+import { createCollection, createRequest, openRequest, openWorkspaceFromDialog, waitForReadyPage } from '../utils/page';
 import fs from 'fs';
 
-const buildWorkspaceYml = (workspaceName: string) => [
-  'opencollection: 1.0.0',
-  'info:',
-  `  name: ${workspaceName}`,
-  '  type: workspace',
-  'collections:',
-  'specs: []',
-  'docs: \'\'',
-  ''
-].join('\n');
+const buildWorkspaceYml = (workspaceName: string) =>
+  [
+    'opencollection: 1.0.0',
+    'info:',
+    `  name: ${workspaceName}`,
+    '  type: workspace',
+    'collections:',
+    'specs: []',
+    "docs: ''",
+    ''
+  ].join('\n');
 
 test.describe('Snapshot: Deleted Workspace Restoration', () => {
-  test('falls back to default workspace when saved workspace is deleted', async ({ launchElectronApp, createTmpDir }) => {
+  test('falls back to default workspace when saved workspace is deleted', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-workspace-state');
     const workspacePath = await createTmpDir('demo-workspace');
     const defaultCollectionPath = await createTmpDir('default-workspace-col');
@@ -56,7 +54,9 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
       const app2 = await launchElectronApp({ userDataPath });
       const page2 = await waitForReadyPage(app2);
       await expect(page2.getByTestId('workspace-name')).toHaveText('My Workspace', { timeout: 10000 });
-      await expect(page2.getByTestId('sidebar-collection-row').filter({ hasText: 'Default Workspace Col' })).toBeVisible({ timeout: 10000 });
+      await expect(
+        page2.getByTestId('sidebar-collection-row').filter({ hasText: 'Default Workspace Col' })
+      ).toBeVisible({ timeout: 10000 });
       await openRequest(page2, 'Default Workspace Col', 'Default Workspace Req');
       await expect(page2.getByRole('tab', { name: 'Default Workspace Req' })).toBeVisible({ timeout: 10000 });
 
@@ -67,7 +67,10 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
     });
   });
 
-  test('falls back to default workspace when saved workspace exists but workspace.yml is missing', async ({ launchElectronApp, createTmpDir }) => {
+  test('falls back to default workspace when saved workspace exists but workspace.yml is missing', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-workspace-missing-yml');
     const workspacePath = await createTmpDir('demo-workspace-missing-yml');
     const defaultCollectionPath = await createTmpDir('default-workspace-col-missing-yml');
@@ -102,7 +105,9 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
       const page2 = await waitForReadyPage(app2);
 
       await expect(page2.getByTestId('workspace-name')).toHaveText('My Workspace', { timeout: 10000 });
-      await expect(page2.getByTestId('sidebar-collection-row').filter({ hasText: 'Default Workspace Col' })).toBeVisible({ timeout: 10000 });
+      await expect(
+        page2.getByTestId('sidebar-collection-row').filter({ hasText: 'Default Workspace Col' })
+      ).toBeVisible({ timeout: 10000 });
 
       await page2.getByTestId('workspace-menu').click();
       await expect(page2.locator('.workspace-item.active')).toContainText('My Workspace');
@@ -112,7 +117,10 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
     });
   });
 
-  test('falls back to default workspace when saved workspace.yml is malformed', async ({ launchElectronApp, createTmpDir }) => {
+  test('falls back to default workspace when saved workspace.yml is malformed', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-workspace-malformed-yml');
     const workspacePath = await createTmpDir('demo-workspace-malformed-yml');
     const defaultCollectionPath = await createTmpDir('default-workspace-col-malformed-yml');
@@ -156,7 +164,10 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
     });
   });
 
-  test('does not restore stale tabs from deleted workspace and remains interactive', async ({ launchElectronApp, createTmpDir }) => {
+  test('does not restore stale tabs from deleted workspace and remains interactive', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-workspace-stale-tabs-deleted');
     const workspacePath = await createTmpDir('demo-workspace-stale-tabs');
     const defaultCollectionPath = await createTmpDir('default-workspace-col-stale-tabs');
@@ -208,7 +219,10 @@ test.describe('Snapshot: Deleted Workspace Restoration', () => {
     });
   });
 
-  test('falls back when active workspace and active tab belong to malformed workspace snapshot', async ({ launchElectronApp, createTmpDir }) => {
+  test('falls back when active workspace and active tab belong to malformed workspace snapshot', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-workspace-malformed-with-active-tab');
     const workspacePath = await createTmpDir('demo-workspace-malformed-active-tab');
     const defaultCollectionPath = await createTmpDir('default-workspace-col-malformed-active-tab');

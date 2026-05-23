@@ -14,8 +14,7 @@ const Status = ({ statusCode, statusText }) => {
 
   return (
     <span className="timeline-status" style={{ color: statusColor, fontWeight: 'bold' }}>
-      {statusCode}{' '}
-      {statusText || ''}
+      {statusCode} {statusText || ''}
     </span>
   );
 };

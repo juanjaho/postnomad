@@ -1,10 +1,7 @@
 import React, { useEffect, useCallback, useRef } from 'react';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  savePreferences,
-  clearHttpHttpsAgentCache
-} from 'providers/ReduxStore/slices/app';
+import { savePreferences, clearHttpHttpsAgentCache } from 'providers/ReduxStore/slices/app';
 import toast from 'react-hot-toast';
 import StyledWrapper from './StyledWrapper';
 import * as Yup from 'yup';
@@ -105,8 +102,8 @@ const Cache = () => {
           </label>
         </div>
         <div className="text-xs mt-1 ml-6 opacity-70">
-          Reuses TLS sessions and connections across requests for faster handshakes. Disable to create a fresh connection for every
-          request.
+          Reuses TLS sessions and connections across requests for faster handshakes. Disable to create a fresh
+          connection for every request.
         </div>
 
         <div className="mt-6">

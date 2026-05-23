@@ -1,6 +1,13 @@
 import { saveRequest, saveCollectionSettings, saveFolderRoot, saveEnvironment } from '../../slices/collections/actions';
 import { saveGlobalEnvironment } from '../../slices/global-environments';
-import { flattenItems, isItemARequest, isItemAFolder, findItemInCollection, findCollectionByUid, isItemTransientRequest } from 'utils/collections';
+import {
+  flattenItems,
+  isItemARequest,
+  isItemAFolder,
+  findItemInCollection,
+  findCollectionByUid,
+  isItemTransientRequest
+} from 'utils/collections';
 
 const actionsToIntercept = [
   // Request-level actions
@@ -230,35 +237,38 @@ const determineSaveHandler = (actionType, payload, dispatch, getState) => {
   return null;
 };
 
-export const autosaveMiddleware = ({ dispatch, getState }) => (next) => (action) => {
-  // Let the action update the state first
-  const result = next(action);
+export const autosaveMiddleware =
+  ({ dispatch, getState }) =>
+  (next) =>
+  (action) => {
+    // Let the action update the state first
+    const result = next(action);
 
-  // Check if autosave is enabled
-  const { autoSave } = getState().app.preferences;
-  if (!autoSave?.enabled) return result;
+    // Check if autosave is enabled
+    const { autoSave } = getState().app.preferences;
+    if (!autoSave?.enabled) return result;
 
-  // When autosave is enabled (or settings change), save any existing drafts
-  if (action.type === 'app/updatePreferences' && action.payload?.autoSave?.enabled) {
-    saveExistingDrafts(dispatch, getState, autoSave.interval);
+    // When autosave is enabled (or settings change), save any existing drafts
+    if (action.type === 'app/updatePreferences' && action.payload?.autoSave?.enabled) {
+      saveExistingDrafts(dispatch, getState, autoSave.interval);
+      return result;
+    }
+
+    if (action.type === 'app/updatePreferences' && action.payload?.autoSave?.enabled === false) {
+      Object.keys(pendingTimers).forEach((key) => {
+        clearTimeout(pendingTimers[key]);
+        delete pendingTimers[key];
+      });
+      return result;
+    }
+
+    // Only handle actions that create dirty state
+    if (!actionsToIntercept.includes(action.type)) return result;
+
+    const handler = determineSaveHandler(action.type, action.payload, dispatch, getState);
+    if (handler) {
+      scheduleAutoSave(handler.key, handler.save, autoSave.interval);
+    }
+
     return result;
-  }
-
-  if (action.type === 'app/updatePreferences' && action.payload?.autoSave?.enabled === false) {
-    Object.keys(pendingTimers).forEach((key) => {
-      clearTimeout(pendingTimers[key]);
-      delete pendingTimers[key];
-    });
-    return result;
-  }
-
-  // Only handle actions that create dirty state
-  if (!actionsToIntercept.includes(action.type)) return result;
-
-  const handler = determineSaveHandler(action.type, action.payload, dispatch, getState);
-  if (handler) {
-    scheduleAutoSave(handler.key, handler.save, autoSave.interval);
-  }
-
-  return result;
-};
+  };

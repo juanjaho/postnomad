@@ -88,12 +88,7 @@ const StatusBar = () => {
             </ToolHint>
 
             <ThemeDropdown>
-              <button
-                className="status-bar-button"
-                data-trigger="theme"
-                tabIndex={0}
-                aria-label="Change Theme"
-              >
+              <button className="status-bar-button" data-trigger="theme" tabIndex={0} aria-label="Change Theme">
                 <IconPalette size={16} strokeWidth={1.5} aria-hidden="true" />
               </button>
             </ThemeDropdown>
@@ -157,17 +152,13 @@ const StatusBar = () => {
               <div className="console-button-content">
                 <IconTool size={16} strokeWidth={1.5} aria-hidden="true" />
                 <span className="console-label">Dev Tools</span>
-                {errorCount > 0 && (
-                  <span className="error-count-inline">{errorCount}</span>
-                )}
+                {errorCount > 0 && <span className="error-count-inline">{errorCount}</span>}
               </div>
             </button>
 
             <div className="status-bar-divider"></div>
 
-            <div className="status-bar-version">
-              v{version}
-            </div>
+            <div className="status-bar-version">v{version}</div>
           </div>
         </div>
       </div>

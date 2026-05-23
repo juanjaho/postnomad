@@ -16,7 +16,13 @@ import { isEqual } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePersistedState } from 'hooks/usePersistedState';
 import { useTrackScroll } from 'hooks/useTrackScroll';
-import { addGlobalEnvironment, renameGlobalEnvironment, selectGlobalEnvironment, setGlobalEnvironmentDraft, clearGlobalEnvironmentDraft } from 'providers/ReduxStore/slices/global-environments';
+import {
+  addGlobalEnvironment,
+  renameGlobalEnvironment,
+  selectGlobalEnvironment,
+  setGlobalEnvironmentDraft,
+  clearGlobalEnvironmentDraft
+} from 'providers/ReduxStore/slices/global-environments';
 import {
   saveWorkspaceDotEnvVariables,
   saveWorkspaceDotEnvRaw,
@@ -94,19 +100,26 @@ const EnvironmentList = ({
   const envUids = environments ? environments.map((env) => env.uid) : [];
   const prevEnvUids = usePrevious(envUids);
 
-  const globalEnvironmentDraftUid = useSelector((state) => state.globalEnvironments.globalEnvironmentDraft?.environmentUid);
+  const globalEnvironmentDraftUid = useSelector(
+    (state) => state.globalEnvironments.globalEnvironmentDraft?.environmentUid
+  );
 
-  const handleDotEnvModifiedChange = useCallback((modified) => {
-    setIsDotEnvModified(modified);
-    if (modified) {
-      dispatch(setGlobalEnvironmentDraft({
-        environmentUid: `dotenv:${selectedDotEnvFile}`,
-        variables: []
-      }));
-    } else if (globalEnvironmentDraftUid?.startsWith('dotenv:')) {
-      dispatch(clearGlobalEnvironmentDraft());
-    }
-  }, [dispatch, selectedDotEnvFile, globalEnvironmentDraftUid]);
+  const handleDotEnvModifiedChange = useCallback(
+    (modified) => {
+      setIsDotEnvModified(modified);
+      if (modified) {
+        dispatch(
+          setGlobalEnvironmentDraft({
+            environmentUid: `dotenv:${selectedDotEnvFile}`,
+            variables: []
+          })
+        );
+      } else if (globalEnvironmentDraftUid?.startsWith('dotenv:')) {
+        dispatch(clearGlobalEnvironmentDraft());
+      }
+    },
+    [dispatch, selectedDotEnvFile, globalEnvironmentDraftUid]
+  );
 
   useEffect(() => {
     if (dotEnvFiles.length === 0) {
@@ -204,16 +217,19 @@ const EnvironmentList = ({
     }, 50);
   };
 
-  const handleActivateEnvironment = useCallback((e, env) => {
-    e.stopPropagation();
-    dispatch(selectGlobalEnvironment({ environmentUid: env.uid }))
-      .then(() => {
-        toast.success(`Environment "${env.name}" activated`);
-      })
-      .catch(() => {
-        toast.error('Failed to activate environment');
-      });
-  }, [dispatch]);
+  const handleActivateEnvironment = useCallback(
+    (e, env) => {
+      e.stopPropagation();
+      dispatch(selectGlobalEnvironment({ environmentUid: env.uid }))
+        .then(() => {
+          toast.success(`Environment "${env.name}" activated`);
+        })
+        .catch(() => {
+          toast.error('Failed to activate environment');
+        });
+    },
+    [dispatch]
+  );
 
   const validateEnvironmentName = (name, excludeUid = null) => {
     if (!name || name.trim() === '') {
@@ -482,8 +498,8 @@ const EnvironmentList = ({
     setDotEnvViewMode(mode);
   };
 
-  const filteredEnvironments
-    = environments?.filter((env) => env.name.toLowerCase().includes(searchText.toLowerCase())) || [];
+  const filteredEnvironments =
+    environments?.filter((env) => env.name.toLowerCase().includes(searchText.toLowerCase())) || [];
 
   const selectedDotEnvData = dotEnvFiles.find((f) => f.filename === selectedDotEnvFile);
 
@@ -555,13 +571,12 @@ const EnvironmentList = ({
         )}
 
         <div className="sidebar">
-
           <div className="sections-container">
             <CollapsibleSection
               title="Environments"
               expanded={environmentsExpanded}
               onToggle={() => setEnvironmentsExpanded(!environmentsExpanded)}
-              actions={(
+              actions={
                 <>
                   <button
                     type="button"
@@ -603,7 +618,7 @@ const EnvironmentList = ({
                     <IconUpload size={14} strokeWidth={1.5} />
                   </button>
                 </>
-              )}
+              }
             >
               <div className="env-list-search">
                 <IconSearch size={13} strokeWidth={1.5} className="env-list-search-icon" />
@@ -620,7 +635,12 @@ const EnvironmentList = ({
                   spellCheck="false"
                 />
                 {searchText && (
-                  <button className="env-list-search-clear" title="Clear search" onClick={() => setSearchText('')} onMouseDown={(e) => e.preventDefault()}>
+                  <button
+                    className="env-list-search-clear"
+                    title="Clear search"
+                    onClick={() => setSearchText('')}
+                    onMouseDown={(e) => e.preventDefault()}
+                  >
                     <IconX size={12} strokeWidth={1.5} />
                   </button>
                 )}
@@ -731,7 +751,9 @@ const EnvironmentList = ({
                   </div>
                 )}
 
-                {envNameError && (isCreatingInline || renamingEnvUid) && <div className="env-error">{envNameError}</div>}
+                {envNameError && (isCreatingInline || renamingEnvUid) && (
+                  <div className="env-error">{envNameError}</div>
+                )}
 
                 {filteredEnvironments.length === 0 && !isCreatingInline && (
                   <div className="no-env-file">
@@ -747,7 +769,7 @@ const EnvironmentList = ({
               expanded={dotEnvExpanded}
               onToggle={() => setDotEnvExpanded(!dotEnvExpanded)}
               badge={dotEnvFiles.length}
-              actions={(
+              actions={
                 <button
                   className="btn-action"
                   onClick={handleCreateDotEnvInlineClick}
@@ -756,7 +778,7 @@ const EnvironmentList = ({
                 >
                   <IconPlus size={14} strokeWidth={1.5} />
                 </button>
-              )}
+              }
             >
               <div className="environments-list">
                 {dotEnvFiles.map((file) => (

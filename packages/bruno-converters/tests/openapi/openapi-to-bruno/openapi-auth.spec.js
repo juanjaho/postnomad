@@ -85,7 +85,9 @@ paths:
 servers:
   - url: https://example.com
 `;
-    const { items: [req] } = openApiToBruno(spec);
+    const {
+      items: [req]
+    } = openApiToBruno(spec);
     expect(req.request.auth.mode).toBe('apikey');
     expect(req.request.auth.apikey.placement).toBe('header');
     const apiKeyHeader = req.request.headers.find((h) => h.name === 'DEMO_API_KEY');
@@ -117,7 +119,9 @@ paths:
 servers:
   - url: https://example.com
 `;
-    const { items: [req] } = openApiToBruno(spec);
+    const {
+      items: [req]
+    } = openApiToBruno(spec);
     expect(req.request.auth.mode).toBe('oauth2');
     expect(req.request.auth.oauth2.grantType).toBe('authorization_code');
   });
@@ -137,7 +141,9 @@ paths:
 servers:
   - url: https://example.com
 `;
-    const { items: [req] } = openApiToBruno(spec);
+    const {
+      items: [req]
+    } = openApiToBruno(spec);
     expect(req.request.auth.mode).toBe('inherit');
   });
 });

@@ -3,7 +3,10 @@ import { test, expect } from '../../../playwright';
 test.describe('Multiline Variables - Write Test', () => {
   test('should create and use multiline environment variable dynamically', async ({ pageWithUserData: page }) => {
     // open the collection
-    const collection = page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'multiline-variables' });
+    const collection = page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'multiline-variables' });
     await expect(collection).toBeVisible();
     await collection.click();
 
@@ -69,8 +72,8 @@ test.describe('Multiline Variables - Write Test', () => {
     await expect(page.locator('.response-status-code')).toContainText('200');
 
     // verify multiline JSON variable resolution in response
-    const expectedBody
-      = '{\n  "user": {\n    "name": "John Doe",\n    "email": "john@example.com",\n    "preferences": {\n      "theme": "dark",\n      "notifications": true\n    }\n  },\n  "metadata": {\n    "created": "2025-09-03",\n    "version": "1.0"\n  }\n}';
+    const expectedBody =
+      '{\n  "user": {\n    "name": "John Doe",\n    "email": "john@example.com",\n    "preferences": {\n      "theme": "dark",\n      "notifications": true\n    }\n  },\n  "metadata": {\n    "created": "2025-09-03",\n    "version": "1.0"\n  }\n}';
     await expect(page.locator('.response-pane')).toContainText(`"body": ${JSON.stringify(expectedBody)}`);
   });
 });

@@ -29,7 +29,10 @@ test.describe('Bulk Import Selection List', () => {
     await closeAllCollections(page);
   });
 
-  test('shows the configured number of visible rows and reveals later rows when scrolled', async ({ page, createTmpDir }) => {
+  test('shows the configured number of visible rows and reveals later rows when scrolled', async ({
+    page,
+    createTmpDir
+  }) => {
     const sourceFile = path.join(testDataDir, 'sample-postman.json');
     const tempDir = await createTmpDir('bulk-import-selection-list');
     const sourceContent = JSON.parse(await fs.readFile(sourceFile, 'utf-8'));

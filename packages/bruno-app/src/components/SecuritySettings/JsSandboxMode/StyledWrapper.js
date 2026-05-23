@@ -161,7 +161,7 @@ const StyledWrapper = styled.div`
     margin-top: 0.5rem;
     padding: 0.25rem 0.5rem;
     display: inline-block;
-    background-color:   ${(props) => rgba(props.theme.colors.text.warning, 0.1)};
+    background-color: ${(props) => rgba(props.theme.colors.text.warning, 0.1)};
     border-radius: ${(props) => props.theme.border.radius.sm};
     color: ${(props) => props.theme.colors.text.warning};
   }

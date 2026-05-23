@@ -24,7 +24,11 @@ test.describe.serial('Response Example Menu Operations', () => {
       await page.getByRole('button', { name: 'Create Example' }).click();
       // Wait for modal to close
       await page.waitForSelector('text=Save Response as Example', { state: 'detached' });
-      await page.locator('.collection-item-name').filter({ hasText: 'menu-operations' }).getByTestId('request-item-chevron').click();
+      await page
+        .locator('.collection-item-name')
+        .filter({ hasText: 'menu-operations' })
+        .getByTestId('request-item-chevron')
+        .click();
 
       const exampleRow = page.locator('.collection-item-name').filter({ hasText: 'Example to Clone' });
       await expect(exampleRow).toBeVisible();

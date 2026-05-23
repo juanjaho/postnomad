@@ -60,7 +60,9 @@ test.describe('Assertions - BRU Collection', () => {
     await closeAllCollections(page);
   });
 
-  test('should add assertion to request, verify toast, and run request successfully', async ({ pageWithUserData: page }) => {
+  test('should add assertion to request, verify toast, and run request successfully', async ({
+    pageWithUserData: page
+  }) => {
     const locators = buildCommonLocators(page);
 
     await test.step('Add assertion to the request', async () => {

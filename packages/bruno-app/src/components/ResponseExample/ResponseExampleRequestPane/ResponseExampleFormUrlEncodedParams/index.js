@@ -28,31 +28,43 @@ const ResponseExampleFormUrlEncodedParams = ({ item, collection, exampleUid, edi
       : get(item, 'examples', []).find((e) => e.uid === exampleUid)?.request?.body?.formUrlEncoded || [];
   }, [item, exampleUid]);
 
-  const handleParamsChange = useCallback((updatedParams) => {
-    if (!editMode) return;
+  const handleParamsChange = useCallback(
+    (updatedParams) => {
+      if (!editMode) return;
 
-    dispatch(updateResponseExampleFormUrlEncodedParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: updatedParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid]);
+      dispatch(
+        updateResponseExampleFormUrlEncodedParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: updatedParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid]
+  );
 
-  const handleParamDrag = useCallback(({ updateReorderedItem }) => {
-    if (!editMode) return;
+  const handleParamDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      if (!editMode) return;
 
-    const reorderedParams = updateReorderedItem.map((uid) => {
-      return params.find((p) => p.uid === uid);
-    }).filter(Boolean);
+      const reorderedParams = updateReorderedItem
+        .map((uid) => {
+          return params.find((p) => p.uid === uid);
+        })
+        .filter(Boolean);
 
-    dispatch(updateResponseExampleFormUrlEncodedParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: reorderedParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid, params]);
+      dispatch(
+        updateResponseExampleFormUrlEncodedParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: reorderedParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid, params]
+  );
 
   const columns = [
     {

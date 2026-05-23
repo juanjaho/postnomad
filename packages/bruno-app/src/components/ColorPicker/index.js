@@ -6,14 +6,7 @@ import StyledWrapper from './StyledWrapper';
 import { parseToRgb, toColorString } from 'polished';
 import ColorRangePicker from 'components/ColorRange/index';
 
-const PRESET_COLORS = [
-  '#CE4F3B',
-  '#2E8A54',
-  '#346AB2',
-  '#C77A0F',
-  '#B83D7F',
-  '#8D44B2'
-];
+const PRESET_COLORS = ['#CE4F3B', '#2E8A54', '#346AB2', '#C77A0F', '#B83D7F', '#8D44B2'];
 
 const COLOR_RANGE_SEQUENCE = ['#D85D43', '#F4BB74', '#61DCB1', '#7EBDF2', '#D48ADE', '#B491E5'];
 
@@ -62,7 +55,9 @@ const findClosestPosition = (hex) => {
   for (let pos = 0; pos <= 100; pos++) {
     const color = hexToRgb(interpolateColor(pos));
     const distance = Math.sqrt(
-      Math.pow(target.red - color.red, 2) + Math.pow(target.green - color.green, 2) + Math.pow(target.blue - color.blue, 2)
+      Math.pow(target.red - color.red, 2) +
+        Math.pow(target.green - color.green, 2) +
+        Math.pow(target.blue - color.blue, 2)
     );
     if (distance < minDistance) {
       minDistance = distance;

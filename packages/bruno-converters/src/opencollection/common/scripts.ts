@@ -4,7 +4,9 @@ import type { HttpRequest as BrunoHttpRequest } from '@usebruno/schema-types/req
 import type { WebSocketRequest as BrunoWebSocketRequest } from '@usebruno/schema-types/requests/websocket';
 import type { GrpcRequest as BrunoGrpcRequest } from '@usebruno/schema-types/requests/grpc';
 
-export const toOpenCollectionScripts = (request: BrunoFolderRequest | BrunoHttpRequest | BrunoWebSocketRequest | BrunoGrpcRequest | null | undefined): Scripts | undefined => {
+export const toOpenCollectionScripts = (
+  request: BrunoFolderRequest | BrunoHttpRequest | BrunoWebSocketRequest | BrunoGrpcRequest | null | undefined
+): Scripts | undefined => {
   const ocScripts: Scripts = [];
 
   if (request?.script?.req?.trim().length) {
@@ -29,10 +31,14 @@ export const toOpenCollectionScripts = (request: BrunoFolderRequest | BrunoHttpR
   return ocScripts.length > 0 ? ocScripts : undefined;
 };
 
-export const fromOpenCollectionScripts = (scripts: Scripts | null | undefined): {
-  script?: { req?: string | null; res?: string | null };
-  tests?: string | null;
-} | undefined => {
+export const fromOpenCollectionScripts = (
+  scripts: Scripts | null | undefined
+):
+  | {
+      script?: { req?: string | null; res?: string | null };
+      tests?: string | null;
+    }
+  | undefined => {
   if (!scripts || !Array.isArray(scripts) || scripts.length === 0) {
     return undefined;
   }

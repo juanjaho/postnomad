@@ -3,9 +3,7 @@ import { sanitizeUrl, transformUrl, brunoToPostman } from '../../src/postman/bru
 describe('transformUrl', () => {
   it('should handle basic URL with path variables', () => {
     const url = 'https://example.com/{{username}}/api/resource/:id';
-    const params = [
-      { name: 'id', value: '123', type: 'path' }
-    ];
+    const params = [{ name: 'id', value: '123', type: 'path' }];
 
     const result = transformUrl(url, params);
 
@@ -15,9 +13,7 @@ describe('transformUrl', () => {
       host: ['example', 'com'],
       path: ['{{username}}', 'api', 'resource', ':id'],
       query: [],
-      variable: [
-        { key: 'id', value: '123' }
-      ]
+      variable: [{ key: 'id', value: '123' }]
     });
   });
 
@@ -962,12 +958,7 @@ describe('brunoToPostman item ordering', () => {
 
   it('should place folders before requests in export output', () => {
     const collection = {
-      items: [
-        makeRequest('Request A', 1),
-        makeFolder('Folder B'),
-        makeRequest('Request C', 2),
-        makeFolder('Folder A')
-      ]
+      items: [makeRequest('Request A', 1), makeFolder('Folder B'), makeRequest('Request C', 2), makeFolder('Folder A')]
     };
 
     const result = brunoToPostman(collection);
@@ -982,11 +973,7 @@ describe('brunoToPostman item ordering', () => {
 
   it('should sort requests by seq ascending', () => {
     const collection = {
-      items: [
-        makeRequest('Third', 3),
-        makeRequest('First', 1),
-        makeRequest('Second', 2)
-      ]
+      items: [makeRequest('Third', 3), makeRequest('First', 1), makeRequest('Second', 2)]
     };
 
     const result = brunoToPostman(collection);
@@ -997,11 +984,7 @@ describe('brunoToPostman item ordering', () => {
 
   it('should sort folders by name then sequence', () => {
     const collection = {
-      items: [
-        makeFolder('Gamma', undefined),
-        makeFolder('Alpha', undefined),
-        makeFolder('Beta', 1)
-      ]
+      items: [makeFolder('Gamma', undefined), makeFolder('Alpha', undefined), makeFolder('Beta', 1)]
     };
 
     const result = brunoToPostman(collection);
@@ -1034,11 +1017,7 @@ describe('brunoToPostman item ordering', () => {
 
   it('should handle folders without seq (older collections) alphabetically', () => {
     const collection = {
-      items: [
-        makeFolder('Zebra', undefined),
-        makeFolder('Apple', undefined),
-        makeFolder('Mango', undefined)
-      ]
+      items: [makeFolder('Zebra', undefined), makeFolder('Apple', undefined), makeFolder('Mango', undefined)]
     };
 
     const result = brunoToPostman(collection);

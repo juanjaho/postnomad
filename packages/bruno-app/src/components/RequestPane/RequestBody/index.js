@@ -18,7 +18,10 @@ const RequestBody = ({ item, collection }) => {
   const bodyMode = item.draft ? get(item, 'draft.request.body.mode') : get(item, 'request.body.mode');
   const { displayedTheme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
-  const [bodyScroll, setBodyScroll] = usePersistedState({ key: `request-body-${bodyMode}-scroll-${item.uid}`, default: 0 });
+  const [bodyScroll, setBodyScroll] = usePersistedState({
+    key: `request-body-${bodyMode}-scroll-${item.uid}`,
+    default: 0
+  });
 
   const onEdit = (value) => {
     dispatch(

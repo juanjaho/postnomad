@@ -49,10 +49,14 @@ if (!ref || ['-h', '--help'].includes(ref)) {
 // Validate ref exists
 try {
   const getRefs = execSync(`git show-ref`);
-  const refs = getRefs.toString().split('\n').filter((d) => d.includes('refs/heads') || d.includes('refs/tags')).map((d) => {
-    const [_, refPath] = d.split(/\s+/);
-    return refPath.replace('refs/heads/', '').replace('refs/tags/', '');
-  });
+  const refs = getRefs
+    .toString()
+    .split('\n')
+    .filter((d) => d.includes('refs/heads') || d.includes('refs/tags'))
+    .map((d) => {
+      const [_, refPath] = d.split(/\s+/);
+      return refPath.replace('refs/heads/', '').replace('refs/tags/', '');
+    });
 
   if (!refs.includes(ref)) {
     console.error('The passed in Ref cannot be found');
@@ -72,13 +76,19 @@ try {
   process.exit(1);
 }
 
-const changedPackageDirs = Array.from(new Set(changedFiles.map((f) => {
-  const parts = f.split('/');
-  if (parts[0] === 'packages' && parts.length >= 2) {
-    return `packages/${parts[1]}`;
-  }
-  return null;
-}).filter(Boolean))).sort();
+const changedPackageDirs = Array.from(
+  new Set(
+    changedFiles
+      .map((f) => {
+        const parts = f.split('/');
+        if (parts[0] === 'packages' && parts.length >= 2) {
+          return `packages/${parts[1]}`;
+        }
+        return null;
+      })
+      .filter(Boolean)
+  )
+).sort();
 
 if (changedPackageDirs.length === 0) {
   console.log('No changed packages found since', ref);
@@ -143,7 +153,7 @@ function printTree(rootName, map, seen = new Set(), indent = '') {
     out += `${indent}- ${child}\n`;
     seen.add(child);
     // For dependentsMap value is Set, convert to Array
-    const nextChildren = Array.isArray(map[child]) ? map[child] : (map[child] ? Array.from(map[child]) : []);
+    const nextChildren = Array.isArray(map[child]) ? map[child] : map[child] ? Array.from(map[child]) : [];
     if (nextChildren.length > 0) {
       out += printTree(child, map, seen, indent + '  ');
     }

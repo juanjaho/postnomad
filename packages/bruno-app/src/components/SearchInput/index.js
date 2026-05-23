@@ -2,14 +2,7 @@ import React from 'react';
 import { IconSearch, IconX } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
-const SearchInput = ({
-  searchText,
-  setSearchText,
-  placeholder = 'Search',
-  className = '',
-  onChange,
-  ...props
-}) => {
+const SearchInput = ({ searchText, setSearchText, placeholder = 'Search', className = '', onChange, ...props }) => {
   const handleChange = (e) => {
     setSearchText(e.target.value);
     if (onChange) {

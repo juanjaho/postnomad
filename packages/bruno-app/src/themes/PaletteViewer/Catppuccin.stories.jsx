@@ -187,9 +187,7 @@ export default {
 export const AllFlavors = {
   render: () => (
     <div style={{ padding: '24px', backgroundColor: '#1a1a2e', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px', color: '#cdd6f4' }}>
-        Catppuccin Palette
-      </h1>
+      <h1 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px', color: '#cdd6f4' }}>Catppuccin Palette</h1>
       <p style={{ fontSize: '14px', color: '#a6adc8', marginBottom: '32px' }}>
         All 4 flavors: Latte, Frappé, Macchiato, Mocha
       </p>
@@ -261,9 +259,7 @@ export const AccentComparison = {
           </div>
           {accentNames.map((name) => (
             <div key={name} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ width: '80px', fontSize: '11px', fontWeight: 600, color: '#a6adc8' }}>
-                {name}
-              </div>
+              <div style={{ width: '80px', fontSize: '11px', fontWeight: 600, color: '#a6adc8' }}>{name}</div>
               {themes.map((t) => (
                 <div
                   key={t.name}

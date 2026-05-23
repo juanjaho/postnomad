@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/interpolation/prompt-variables/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/interpolation/prompt-variables/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

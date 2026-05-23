@@ -30,7 +30,8 @@ async function measureCollectionMount(
     (window as any).__benchMountDone = new Promise<void>((resolve) => {
       const off = (window as any).ipcRenderer.on('main:collection-loading-state-updated', (val: any) => {
         if (!val.isLoading) {
-          off(); resolve();
+          off();
+          resolve();
         }
       });
     });
@@ -86,7 +87,9 @@ test.describe('Benchmark: Collection Mount', () => {
 
           const stats = summarize(timings);
           const r = (v: number) => Math.round(v);
-          console.log(`[BENCHMARK] ${format} ${size} requests — mean: ${r(stats.mean)}ms, median: ${r(stats.median)}ms, p90: ${r(stats.p90)}ms, stdDev: ${r(stats.stdDev)}ms, raw: [${timings.join(', ')}]`);
+          console.log(
+            `[BENCHMARK] ${format} ${size} requests — mean: ${r(stats.mean)}ms, median: ${r(stats.median)}ms, p90: ${r(stats.p90)}ms, stdDev: ${r(stats.stdDev)}ms, raw: [${timings.join(', ')}]`
+          );
 
           test.info().annotations.push({
             type: 'benchmark',

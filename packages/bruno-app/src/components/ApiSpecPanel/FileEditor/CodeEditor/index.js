@@ -61,7 +61,7 @@ export default class CodeEditor extends React.Component {
         'Ctrl-F': 'findPersistent',
         'Cmd-H': 'replace',
         'Ctrl-H': 'replace',
-        'Tab': function (cm) {
+        Tab: function (cm) {
           cm.getSelection().includes('\n') || editor.getLine(cm.getCursor().line) == cm.getSelection()
             ? cm.execCommand('indentMore')
             : cm.replaceSelection('  ', 'end');

@@ -76,22 +76,24 @@ const ProxySettings = ({ close }) => {
     }
   });
 
-  const onUpdate = useCallback((values) => {
-    proxySchema
-      .validate(values, { abortEarly: true })
-      .then((validatedProxy) => {
-        dispatch(
-          savePreferences({
-            ...preferences,
-            proxy: validatedProxy
-          })
-        ).catch(() => {
-          toast.error('Failed to save preferences');
-        });
-      })
-      .catch((error) => {
-      });
-  }, [dispatch, preferences, proxySchema]);
+  const onUpdate = useCallback(
+    (values) => {
+      proxySchema
+        .validate(values, { abortEarly: true })
+        .then((validatedProxy) => {
+          dispatch(
+            savePreferences({
+              ...preferences,
+              proxy: validatedProxy
+            })
+          ).catch(() => {
+            toast.error('Failed to save preferences');
+          });
+        })
+        .catch((error) => {});
+    },
+    [dispatch, preferences, proxySchema]
+  );
 
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;

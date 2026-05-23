@@ -70,5 +70,5 @@ module.exports = [
     cjsOutput: 'dist/utils/cjs/index.js',
     esmOutput: 'dist/utils/esm/index.js',
     dtsOutput: 'dist/utils/index.d.ts'
-  }),
+  })
 ];

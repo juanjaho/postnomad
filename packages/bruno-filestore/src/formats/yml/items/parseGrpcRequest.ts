@@ -58,10 +58,12 @@ const parseGrpcRequest = (ocRequest: GrpcRequest): BrunoItem => {
 
   // message
   if (isNonEmptyString(grpc?.message)) {
-    brunoRequest.body.grpc = [{
-      name: '',
-      content: grpc?.message as string
-    }];
+    brunoRequest.body.grpc = [
+      {
+        name: '',
+        content: grpc?.message as string
+      }
+    ];
   }
 
   // scripts

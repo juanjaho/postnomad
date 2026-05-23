@@ -6,21 +6,87 @@ export const KEY_BINDING_SECTIONS = [
       closeAllTabs: { mac: 'command+bind+shift+bind+w', windows: 'ctrl+bind+shift+bind+w', name: 'Close All Tabs' }, // D
       save: { mac: 'command+bind+s', windows: 'ctrl+bind+s', name: 'Save' }, // D
       saveAllTabs: { mac: 'command+bind+shift+bind+s', windows: 'ctrl+bind+shift+bind+s', name: 'Save All Tabs' }, // D
-      reopenLastClosedTab: { mac: 'command+bind+shift+bind+t', windows: 'ctrl+bind+shift+bind+t', name: 'Reopen Last Closed Tab' }, // D
-      switchToTabAtPosition: { mac: 'command+bind+1+bind+command+bind+8', windows: 'ctrl+bind+1+bind+ctrl+bind+8', name: 'Switch to Tab at Position', readOnly: true, displayValue: { mac: 'command+bind+1 - command+bind+8', windows: 'ctrl+bind+1 - ctrl+bind+8' } }, // D
+      reopenLastClosedTab: {
+        mac: 'command+bind+shift+bind+t',
+        windows: 'ctrl+bind+shift+bind+t',
+        name: 'Reopen Last Closed Tab'
+      }, // D
+      switchToTabAtPosition: {
+        mac: 'command+bind+1+bind+command+bind+8',
+        windows: 'ctrl+bind+1+bind+ctrl+bind+8',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        displayValue: { mac: 'command+bind+1 - command+bind+8', windows: 'ctrl+bind+1 - ctrl+bind+8' }
+      }, // D
       switchToLastTab: { mac: 'command+bind+9', windows: 'ctrl+bind+9', name: 'Switch to Last Tab' }, // D
-      switchToPreviousTab: { mac: 'shift+bind+command+bind+[', windows: 'shift+bind+ctrl+bind+[', name: 'Switch to Previous Tab' }, // D
-      switchToNextTab: { mac: 'shift+bind+command+bind+]', windows: 'shift+bind+ctrl+bind+]', name: 'Switch to Next Tab' },
+      switchToPreviousTab: {
+        mac: 'shift+bind+command+bind+[',
+        windows: 'shift+bind+ctrl+bind+[',
+        name: 'Switch to Previous Tab'
+      }, // D
+      switchToNextTab: {
+        mac: 'shift+bind+command+bind+]',
+        windows: 'shift+bind+ctrl+bind+]',
+        name: 'Switch to Next Tab'
+      },
       moveTabLeft: { mac: 'command+bind+[', windows: 'ctrl+bind+[', name: 'Move Tab Left' }, // D
       moveTabRight: { mac: 'command+bind+]', windows: 'ctrl+bind+]', name: 'Move Tab Right' }, // D
-      switchToTab1: { mac: 'command+bind+1', windows: 'ctrl+bind+1', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab2: { mac: 'command+bind+2', windows: 'ctrl+bind+2', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab3: { mac: 'command+bind+3', windows: 'ctrl+bind+3', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab4: { mac: 'command+bind+4', windows: 'ctrl+bind+4', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab5: { mac: 'command+bind+5', windows: 'ctrl+bind+5', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab6: { mac: 'command+bind+6', windows: 'ctrl+bind+6', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab7: { mac: 'command+bind+7', windows: 'ctrl+bind+7', name: 'Switch to Tab at Position', readOnly: true, hidden: true },
-      switchToTab8: { mac: 'command+bind+8', windows: 'ctrl+bind+8', name: 'Switch to Tab at Position', readOnly: true, hidden: true }
+      switchToTab1: {
+        mac: 'command+bind+1',
+        windows: 'ctrl+bind+1',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab2: {
+        mac: 'command+bind+2',
+        windows: 'ctrl+bind+2',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab3: {
+        mac: 'command+bind+3',
+        windows: 'ctrl+bind+3',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab4: {
+        mac: 'command+bind+4',
+        windows: 'ctrl+bind+4',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab5: {
+        mac: 'command+bind+5',
+        windows: 'ctrl+bind+5',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab6: {
+        mac: 'command+bind+6',
+        windows: 'ctrl+bind+6',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab7: {
+        mac: 'command+bind+7',
+        windows: 'ctrl+bind+7',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      },
+      switchToTab8: {
+        mac: 'command+bind+8',
+        windows: 'ctrl+bind+8',
+        name: 'Switch to Tab at Position',
+        readOnly: true,
+        hidden: true
+      }
     }
   },
   {

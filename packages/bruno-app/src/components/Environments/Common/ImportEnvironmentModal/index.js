@@ -47,7 +47,12 @@ const ImportEnvironmentModal = ({ type = 'collection', collection, onClose, onEn
       for (const environment of validEnvironments) {
         const action = isGlobal
           ? addGlobalEnvironment({ name: environment.name, variables: environment.variables, color: environment.color })
-          : importEnvironment({ name: environment.name, variables: environment.variables, color: environment.color, collectionUid: collection?.uid });
+          : importEnvironment({
+              name: environment.name,
+              variables: environment.variables,
+              color: environment.color,
+              collectionUid: collection?.uid
+            });
 
         await dispatch(action);
         importedCount++;
@@ -135,7 +140,14 @@ const ImportEnvironmentModal = ({ type = 'collection', collection, onClose, onEn
 
   return (
     <Portal>
-      <Modal size="md" title={modalTitle} hideFooter={true} handleConfirm={onClose} handleCancel={onClose} dataTestId={modalTestId}>
+      <Modal
+        size="md"
+        title={modalTitle}
+        hideFooter={true}
+        handleConfirm={onClose}
+        handleCancel={onClose}
+        dataTestId={modalTestId}
+      >
         <div className="py-2">
           <div
             className={`flex justify-center flex-col items-center w-full dark:bg-zinc-700 rounded-lg border-2 border-dashed p-12 text-center cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 ${

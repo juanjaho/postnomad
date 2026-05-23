@@ -15,10 +15,7 @@ const ImportPathsTab = ({
         <div className="content-wrapper">
           <div className="header-wrapper">
             <div className="header-text">From Collection Settings</div>
-            <button
-              onClick={onOpenCollectionProtobufSettings}
-              className="settings-button"
-            >
+            <button onClick={onOpenCollectionProtobufSettings} className="settings-button">
               <IconSettings size={16} strokeWidth={1.5} />
             </button>
           </div>
@@ -27,12 +24,8 @@ const ImportPathsTab = ({
             <div className="error-wrapper">
               <p className="error-text">
                 <IconAlertCircle size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
-                Some import paths could not be found.
-                {' '}
-                <button
-                  onClick={onOpenCollectionProtobufSettings}
-                  className="error-link"
-                >
+                Some import paths could not be found.{' '}
+                <button onClick={onOpenCollectionProtobufSettings} className="error-link">
                   Manage import paths
                 </button>
               </p>
@@ -44,10 +37,7 @@ const ImportPathsTab = ({
               const isInvalid = !importPath.exists;
 
               return (
-                <div
-                  key={`collection-import-${index}`}
-                  className={`item-wrapper ${!isInvalid ? 'valid' : ''}`}
-                >
+                <div key={`collection-import-${index}`} className={`item-wrapper ${!isInvalid ? 'valid' : ''}`}>
                   <div className="item-content">
                     <div className="item-left">
                       <div className="checkbox-wrapper">
@@ -80,17 +70,12 @@ const ImportPathsTab = ({
 
       {(!collectionImportPaths || collectionImportPaths.length === 0) && (
         <div className="empty-wrapper">
-          <div className="empty-text">
-            No import paths configured in collection settings
-          </div>
+          <div className="empty-text">No import paths configured in collection settings</div>
         </div>
       )}
 
       <div className="button-wrapper">
-        <button
-          className="browse-button"
-          onClick={onBrowseImportPath}
-        >
+        <button className="browse-button" onClick={onBrowseImportPath}>
           <IconFileImport size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
           Browse for Import Path
         </button>

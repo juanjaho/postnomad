@@ -30,5 +30,10 @@ export const isPlainTextContentType = (contentType) => {
 };
 
 export const isStructuredContentType = (contentType) => {
-  return isNDJsonLikeContentType(contentType) || isJsonLikeContentType(contentType) || isXmlLikeContentType(contentType) || isPlainTextContentType(contentType);
+  return (
+    isNDJsonLikeContentType(contentType) ||
+    isJsonLikeContentType(contentType) ||
+    isXmlLikeContentType(contentType) ||
+    isPlainTextContentType(contentType)
+  );
 };

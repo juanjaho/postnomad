@@ -7,7 +7,7 @@ import { IconCheck } from '@tabler/icons';
 import Button from 'ui/Button';
 import Help from 'components/Help';
 
-const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+const capitalize = (str) => (str ? str.charAt(0).toUpperCase() + str.slice(1) : str);
 
 const SUMMARY_CARDS = [
   {
@@ -38,7 +38,16 @@ const SUMMARY_CARDS = [
   }
 ];
 
-const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, remoteDrift, onTabSelect, error, onOpenSettings }) => {
+const OverviewSection = ({
+  collection,
+  storedSpec,
+  collectionDrift,
+  specDrift,
+  remoteDrift,
+  onTabSelect,
+  error,
+  onOpenSettings
+}) => {
   const openApiSyncConfig = collection?.brunoConfig?.openapi?.[0];
 
   const reduxError = useSelector((state) => state.openapiSync?.collectionUpdates?.[collection.uid]?.error);
@@ -59,12 +68,12 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
 
   const totalInCollection = getTotalRequestCountInCollection(collection);
 
-  const inSyncCount = remoteDrift
-    ? (remoteDrift.inSync?.length || 0)
-    : null;
+  const inSyncCount = remoteDrift ? remoteDrift.inSync?.length || 0 : null;
 
   const changedInCollection = hasDriftData
-    ? (collectionDrift.modified?.length || 0) + (collectionDrift.missing?.length || 0) + (collectionDrift.localOnly?.length || 0)
+    ? (collectionDrift.modified?.length || 0) +
+      (collectionDrift.missing?.length || 0) +
+      (collectionDrift.localOnly?.length || 0)
     : 0;
 
   const specUpdatesPending = hasDriftData
@@ -72,12 +81,13 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
     : (remoteDrift?.modified?.length || 0) + (remoteDrift?.missing?.length || 0);
 
   // Conflict count: endpoints modified in both spec and collection
-  const conflictCount = hasDriftData && specDrift?.modified
-    ? (() => {
-        const localModifiedIds = new Set((collectionDrift.modified || []).map((ep) => ep.id));
-        return specDrift.modified.filter((ep) => localModifiedIds.has(ep.id)).length;
-      })()
-    : 0;
+  const conflictCount =
+    hasDriftData && specDrift?.modified
+      ? (() => {
+          const localModifiedIds = new Set((collectionDrift.modified || []).map((ep) => ep.id));
+          return specDrift.modified.filter((ep) => localModifiedIds.has(ep.id)).length;
+        })()
+      : 0;
 
   const summaryValues = {
     total: totalInCollection,
@@ -89,7 +99,11 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
   const details = [
     { label: 'Spec Version', value: version ? `v${version}` : '–' },
     { label: 'Endpoints in Spec', value: endpointCount != null ? endpointCount : '–' },
-    { label: 'Last Synced At', value: lastSyncDate ? moment(lastSyncDate).fromNow() : '–', tooltip: lastSyncDate ? moment(lastSyncDate).format('MMMM D, YYYY [at] h:mm A') : undefined },
+    {
+      label: 'Last Synced At',
+      value: lastSyncDate ? moment(lastSyncDate).fromNow() : '–',
+      tooltip: lastSyncDate ? moment(lastSyncDate).format('MMMM D, YYYY [at] h:mm A') : undefined
+    },
     { label: 'Folder Grouping', value: capitalize(groupBy) },
     { label: 'Auto Check for Updates', value: autoCheckEnabled ? `Every ${autoCheckInterval} min` : 'Disabled' }
   ];
@@ -98,9 +112,10 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
   const hasSpecUpdates = specUpdatesPending > 0;
 
   const bannerState = useMemo(() => {
-    const versionInfo = (specDrift?.storedVersion && specDrift?.newVersion && specDrift.storedVersion !== specDrift.newVersion)
-      ? ` (v${specDrift.storedVersion} → v${specDrift.newVersion})`
-      : '';
+    const versionInfo =
+      specDrift?.storedVersion && specDrift?.newVersion && specDrift.storedVersion !== specDrift.newVersion
+        ? ` (v${specDrift.storedVersion} → v${specDrift.newVersion})`
+        : '';
 
     if (activeError) {
       return {
@@ -138,7 +153,8 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
       return {
         variant: 'warning',
         title: 'Last synced spec not found',
-        subtitle: 'The last synced spec is missing in the storage. Restore the latest spec from the source to track collection changes.',
+        subtitle:
+          'The last synced spec is missing in the storage. Restore the latest spec from the source to track collection changes.',
         buttons: ['spec-details']
       };
     }
@@ -152,7 +168,16 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
       };
     }
     return null;
-  }, [activeError, hasDriftData, hasSpecUpdates, hasCollectionChanges, specDrift?.storedSpecMissing, specDrift?.storedVersion, specDrift?.newVersion, lastSyncDate]);
+  }, [
+    activeError,
+    hasDriftData,
+    hasSpecUpdates,
+    hasCollectionChanges,
+    specDrift?.storedSpecMissing,
+    specDrift?.storedVersion,
+    specDrift?.newVersion,
+    lastSyncDate
+  ]);
 
   return (
     <div className="overview-section">
@@ -160,14 +185,14 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
         <div className={`overview-status-banner ${bannerState.variant}`}>
           <div className="banner-text">
             <div className="banner-title-row">
-              {bannerState.variant === 'success'
-                ? <IconCheck size={16} className="status-check-icon" />
-                : <div className={`status-dot ${bannerState.variant}`} />}
+              {bannerState.variant === 'success' ? (
+                <IconCheck size={16} className="status-check-icon" />
+              ) : (
+                <div className={`status-dot ${bannerState.variant}`} />
+              )}
               <span className="banner-title">{bannerState.title}</span>
             </div>
-            {bannerState.subtitle && (
-              <p className="banner-subtitle">{bannerState.subtitle}</p>
-            )}
+            {bannerState.subtitle && <p className="banner-subtitle">{bannerState.subtitle}</p>}
           </div>
           {bannerState.buttons.length > 0 && (
             <div className="banner-button-row">
@@ -214,17 +239,19 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
               onClick={isClickable ? () => onTabSelect(tab) : undefined}
             >
               <span className="card-info-icon">
-                <Help icon="info" size={12} placement="top" width={220}>{tooltip}</Help>
+                <Help icon="info" size={12} placement="top" width={220}>
+                  {tooltip}
+                </Help>
               </span>
               <div className="summary-count-row">
                 <span className={`summary-count ${resolvedColor}`}>{count != null ? count : '–'}</span>
                 {key === 'pending' && conflictCount > 0 && (
-                  <span className="conflict-annotation">({conflictCount} {conflictCount === 1 ? 'conflict' : 'conflicts'})</span>
+                  <span className="conflict-annotation">
+                    ({conflictCount} {conflictCount === 1 ? 'conflict' : 'conflicts'})
+                  </span>
                 )}
               </div>
-              <div className="summary-label">
-                {label}
-              </div>
+              <div className="summary-label">{label}</div>
             </div>
           );
         })}
@@ -238,7 +265,9 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
             <div className="spec-detail-value">
               {value}
               {tooltip && (
-                <Help icon="info" size={11} placement="top" width={200}>{tooltip}</Help>
+                <Help icon="info" size={11} placement="top" width={200}>
+                  {tooltip}
+                </Help>
               )}
             </div>
           </div>

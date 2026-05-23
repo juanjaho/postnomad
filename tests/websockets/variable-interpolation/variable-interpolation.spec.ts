@@ -36,7 +36,12 @@ test.describe.serial('WebSocket Variable Interpolation', () => {
 
     // Verify the connection message shows interpolated URL
     // The URL should be wss://echo.websocket.org (not wss://echo.{{url}}.org)
-    await expect(locators.messages().first().getByText(/Connected to wss:\/\/echo\.websocket\.org/)).toBeAttached({
+    await expect(
+      locators
+        .messages()
+        .first()
+        .getByText(/Connected to wss:\/\/echo\.websocket\.org/)
+    ).toBeAttached({
       timeout: 2000
     });
   });
@@ -45,7 +50,9 @@ test.describe.serial('WebSocket Variable Interpolation', () => {
     const locators = buildWebsocketCommonLocators(page);
 
     // Wait for collection to be visible (it should auto-load from preferences)
-    await expect(page.locator('#sidebar-collection-name').filter({ hasText: 'variable-interpolation' })).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#sidebar-collection-name').filter({ hasText: 'variable-interpolation' })).toBeVisible({
+      timeout: 5000
+    });
 
     // Click to expand the collection
     await page.locator('#sidebar-collection-name').filter({ hasText: 'variable-interpolation' }).click();

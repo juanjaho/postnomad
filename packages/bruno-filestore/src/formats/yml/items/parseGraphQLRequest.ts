@@ -1,4 +1,7 @@
-import type { Item as BrunoItem, HttpItemSettings as BrunoHttpItemSettings } from '@usebruno/schema-types/collection/item';
+import type {
+  Item as BrunoItem,
+  HttpItemSettings as BrunoHttpItemSettings
+} from '@usebruno/schema-types/collection/item';
 import type { HttpRequest as BrunoHttpRequest } from '@usebruno/schema-types/requests/http';
 import type { GraphQLRequest, GraphQLRequestSettings, GraphQLBody } from '@opencollection/types/requests/graphql';
 import { toBrunoAuth } from '../common/auth';

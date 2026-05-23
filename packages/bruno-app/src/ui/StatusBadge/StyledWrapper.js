@@ -16,13 +16,29 @@ import styled, { css } from 'styled-components';
 const getStatusTokens = (theme, status) => {
   switch (status) {
     case 'danger':
-      return { background: theme.status.danger.background, text: theme.status.danger.text, border: theme.status.danger.border };
+      return {
+        background: theme.status.danger.background,
+        text: theme.status.danger.text,
+        border: theme.status.danger.border
+      };
     case 'warning':
-      return { background: theme.status.warning.background, text: theme.status.warning.text, border: theme.status.warning.border };
+      return {
+        background: theme.status.warning.background,
+        text: theme.status.warning.text,
+        border: theme.status.warning.border
+      };
     case 'info':
-      return { background: theme.status.info.background, text: theme.status.info.text, border: theme.status.info.border };
+      return {
+        background: theme.status.info.background,
+        text: theme.status.info.text,
+        border: theme.status.info.border
+      };
     case 'success':
-      return { background: theme.status.success.background, text: theme.status.success.text, border: theme.status.success.border };
+      return {
+        background: theme.status.success.background,
+        text: theme.status.success.text,
+        border: theme.status.success.border
+      };
     case 'muted':
     default:
       return { background: theme.background.surface1, text: theme.colors.text.muted, border: theme.border.border1 };

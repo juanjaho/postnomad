@@ -39,10 +39,7 @@
     "version": "1",
     "name": "test_collection",
     "type": "collection",
-    "ignore": [
-      "node_modules",
-      ".git"
-    ],
+    "ignore": ["node_modules", ".git"],
     "size": 0.000133514404296875,
     "filesCount": 1,
     "proxy": {

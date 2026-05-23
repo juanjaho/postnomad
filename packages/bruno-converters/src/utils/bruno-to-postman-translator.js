@@ -1,7 +1,4 @@
-import {
-  getMemberExpressionString,
-  buildMemberExpressionFromString
-} from './ast-utils';
+import { getMemberExpressionString, buildMemberExpressionFromString } from './ast-utils';
 import brunoSendRequestTransformer from './bruno-send-request-transformer';
 const j = require('jscodeshift');
 
@@ -219,10 +216,7 @@ const complexTransformations = [
   {
     pattern: 'bru.runner.stopExecution',
     transform: (path) => {
-      return j.callExpression(
-        buildMemberExpressionFromString('pm.execution.setNextRequest'),
-        [j.literal(null)]
-      );
+      return j.callExpression(buildMemberExpressionFromString('pm.execution.setNextRequest'), [j.literal(null)]);
     }
   },
 
@@ -239,10 +233,7 @@ const complexTransformations = [
       return getMemberExpressionString(arg.callee) === 'res.getBody';
     },
     transform: () => {
-      return j.callExpression(
-        buildMemberExpressionFromString('pm.response.text'),
-        []
-      );
+      return j.callExpression(buildMemberExpressionFromString('pm.response.text'), []);
     }
   },
 
@@ -331,11 +322,7 @@ const complexTransformations = [
         return buildMemberExpressionFromString('pm.request.url');
       }
       // Transform req.setUrl(url) to pm.request.url = url
-      return j.assignmentExpression(
-        '=',
-        buildMemberExpressionFromString('pm.request.url'),
-        args[0]
-      );
+      return j.assignmentExpression('=', buildMemberExpressionFromString('pm.request.url'), args[0]);
     }
   },
   // req.setMethod(method) -> pm.request.method = method
@@ -349,11 +336,7 @@ const complexTransformations = [
         return buildMemberExpressionFromString('pm.request.method');
       }
       // Transform req.setMethod(method) to pm.request.method = method
-      return j.assignmentExpression(
-        '=',
-        buildMemberExpressionFromString('pm.request.method'),
-        args[0]
-      );
+      return j.assignmentExpression('=', buildMemberExpressionFromString('pm.request.method'), args[0]);
     }
   },
   // req.setBody(data) -> pm.request.body.update({mode: "raw", raw: JSON.stringify(data)})
@@ -369,17 +352,11 @@ const complexTransformations = [
       // Transform req.setBody(data) to pm.request.body.update({mode: "raw", raw: JSON.stringify(data)})
       const bodyArg = args[0];
       const updateCall = j.callExpression(
-        j.memberExpression(
-          buildMemberExpressionFromString('pm.request.body'),
-          j.identifier('update')
-        ),
+        j.memberExpression(buildMemberExpressionFromString('pm.request.body'), j.identifier('update')),
         [
           j.objectExpression([
             j.property('init', j.identifier('mode'), j.literal('raw')),
-            j.property('init', j.identifier('raw'), j.callExpression(
-              j.identifier('JSON.stringify'),
-              [bodyArg]
-            ))
+            j.property('init', j.identifier('raw'), j.callExpression(j.identifier('JSON.stringify'), [bodyArg]))
           ])
         ]
       );
@@ -392,20 +369,14 @@ const complexTransformations = [
     transform: (path) => {
       const args = path.value.arguments;
       if (!args || args.length < 2) {
-        return j.callExpression(
-          buildMemberExpressionFromString('pm.request.headers.upsert'),
-          args || []
-        );
+        return j.callExpression(buildMemberExpressionFromString('pm.request.headers.upsert'), args || []);
       }
-      return j.callExpression(
-        buildMemberExpressionFromString('pm.request.headers.upsert'),
-        [
-          j.objectExpression([
-            j.property('init', j.identifier('key'), args[0]),
-            j.property('init', j.identifier('value'), args[1])
-          ])
-        ]
-      );
+      return j.callExpression(buildMemberExpressionFromString('pm.request.headers.upsert'), [
+        j.objectExpression([
+          j.property('init', j.identifier('key'), args[0]),
+          j.property('init', j.identifier('value'), args[1])
+        ])
+      ]);
     }
   },
   // req.setHeaders(headers) -> loop calling pm.request.headers.upsert() for each header
@@ -432,10 +403,7 @@ const complexTransformations = [
         j.blockStatement([
           j.expressionStatement(
             j.callExpression(
-              j.memberExpression(
-                buildMemberExpressionFromString('pm.request.headers'),
-                j.identifier('upsert')
-              ),
+              j.memberExpression(buildMemberExpressionFromString('pm.request.headers'), j.identifier('upsert')),
               [
                 j.objectExpression([
                   j.property('init', j.identifier('key'), keyVar),
@@ -454,12 +422,7 @@ const complexTransformations = [
         j.functionExpression(
           null,
           [],
-          j.blockStatement([
-            j.variableDeclaration('const', [
-              j.variableDeclarator(headersVar, headersArg)
-            ]),
-            forLoop
-          ])
+          j.blockStatement([j.variableDeclaration('const', [j.variableDeclarator(headersVar, headersArg)]), forLoop])
         ),
         []
       );
@@ -559,9 +522,10 @@ function transformCookieJarMethods(ast) {
     if (!cookieMethodMapping[methodName]) return;
 
     // Check if object is a direct jar() call or a jar variable
-    const isDirectJarCall = callee.object.type === 'CallExpression'
-      && callee.object.callee.type === 'MemberExpression'
-      && ['bru.cookies.jar', 'pm.cookies.jar'].includes(getMemberExpressionString(callee.object.callee));
+    const isDirectJarCall =
+      callee.object.type === 'CallExpression' &&
+      callee.object.callee.type === 'MemberExpression' &&
+      ['bru.cookies.jar', 'pm.cookies.jar'].includes(getMemberExpressionString(callee.object.callee));
 
     const isJarVariable = callee.object.type === 'Identifier' && cookieJarVars.has(callee.object.name);
 
@@ -578,20 +542,14 @@ function transformCookieJarMethods(ast) {
  */
 function transformTestsAndExpect(ast) {
   // Transform test(...) -> pm.test(...)
-  ast.find(j.CallExpression, { callee: { type: 'Identifier', name: 'test' } })
-    .forEach((path) => {
-      j(path.get('callee')).replaceWith(
-        j.memberExpression(j.identifier('pm'), j.identifier('test'))
-      );
-    });
+  ast.find(j.CallExpression, { callee: { type: 'Identifier', name: 'test' } }).forEach((path) => {
+    j(path.get('callee')).replaceWith(j.memberExpression(j.identifier('pm'), j.identifier('test')));
+  });
 
   // Transform expect(...) -> pm.expect(...)
-  ast.find(j.CallExpression, { callee: { type: 'Identifier', name: 'expect' } })
-    .forEach((path) => {
-      j(path.get('callee')).replaceWith(
-        j.memberExpression(j.identifier('pm'), j.identifier('expect'))
-      );
-    });
+  ast.find(j.CallExpression, { callee: { type: 'Identifier', name: 'expect' } }).forEach((path) => {
+    j(path.get('callee')).replaceWith(j.memberExpression(j.identifier('pm'), j.identifier('expect')));
+  });
 }
 
 // =============================================================================

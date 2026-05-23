@@ -8,9 +8,13 @@ const { parseEnvironment } = require('@usebruno/filestore');
 describe('create collection json from pathname', () => {
   it('should throw an error when the pathname is not a valid bruno collection root', () => {
     const invalidCollectionPathname = path.join(__dirname, './fixtures/collection-invalid');
-    jest.spyOn(console, 'error').mockImplementation(() => { });
-    let mockProcessExit = jest.spyOn(process, 'exit').mockImplementation((code) => { throw new Error(code); });
-    try { createCollectionJsonFromPathname(invalidCollectionPathname); } catch { }
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    let mockProcessExit = jest.spyOn(process, 'exit').mockImplementation((code) => {
+      throw new Error(code);
+    });
+    try {
+      createCollectionJsonFromPathname(invalidCollectionPathname);
+    } catch {}
     expect(mockProcessExit).toHaveBeenCalledWith(constants.EXIT_STATUS.ERROR_NOT_IN_COLLECTION);
     jest.restoreAllMocks();
   });
@@ -64,7 +68,10 @@ describe('create collection json from pathname', () => {
     expect(c).toHaveProperty('root.request.vars.res[0].value', 'collection_post_var_value');
     expect(c).toHaveProperty('root.request.vars.res[0].enabled', true);
     // tests
-    expect(c).toHaveProperty('root.request.tests', 'test(\"collection level script\", function() {\n  expect(\"test\").to.equal(\"test\");\n});');
+    expect(c).toHaveProperty(
+      'root.request.tests',
+      'test(\"collection level script\", function() {\n  expect(\"test\").to.equal(\"test\");\n});'
+    );
 
     /* collection items names and sequences */
     // <collection-root>/folder_2
@@ -168,7 +175,10 @@ describe('create collection json from pathname', () => {
     expect(c).toHaveProperty('items[4].request.vars.res[0].value', 'request_post_var_value');
     expect(c).toHaveProperty('items[4].request.vars.res[0].enabled', true);
     // tests
-    expect(c).toHaveProperty('items[4].request.tests', 'test(\"request level script\", function() {\n  expect(\"test\").to.equal(\"test\");\n});');
+    expect(c).toHaveProperty(
+      'items[4].request.tests',
+      'test(\"request level script\", function() {\n  expect(\"test\").to.equal(\"test\");\n});'
+    );
   });
 
   it('creates a collection json from OpenCollection yml files', () => {

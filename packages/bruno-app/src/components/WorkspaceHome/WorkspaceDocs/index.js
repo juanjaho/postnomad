@@ -91,9 +91,7 @@ const WorkspaceDocs = ({ workspace }) => {
               fontSize={get(preferences, 'font.codeFontSize')}
             />
             <div className="editor-actions">
-              <Button onClick={onSave}>
-                Save
-              </Button>
+              <Button onClick={onSave}>Save</Button>
             </div>
           </div>
         ) : hasDocs ? (
@@ -105,9 +103,7 @@ const WorkspaceDocs = ({ workspace }) => {
             <div className="empty-icon-wrapper">
               <IconFileText size={52} strokeWidth={1} />
             </div>
-            <p className="empty-text">
-              Add documentation to help your team work smoothly.
-            </p>
+            <p className="empty-text">Add documentation to help your team work smoothly.</p>
             <p className="empty-subtext">You can include:</p>
             <ul className="suggestions-list">
               <li>Project overview</li>
@@ -115,7 +111,12 @@ const WorkspaceDocs = ({ workspace }) => {
               <li>Key workflows</li>
               <li>Resources & FAQs</li>
             </ul>
-            <Button color="light" size="sm" icon={<IconPlus size={14} strokeWidth={1.5} />} onClick={handleAddDocumentation}>
+            <Button
+              color="light"
+              size="sm"
+              icon={<IconPlus size={14} strokeWidth={1.5} />}
+              onClick={handleAddDocumentation}
+            >
               Add Documentation
             </Button>
           </div>

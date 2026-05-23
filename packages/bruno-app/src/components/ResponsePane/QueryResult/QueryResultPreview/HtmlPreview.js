@@ -14,8 +14,7 @@ const HtmlPreview = React.memo(({ data, baseUrl }) => {
     };
 
     // Watch from a common ancestor where .dragging gets added
-    const watchTarget = webviewContainerRef.current.closest('.main-section')
-      || document.body;
+    const watchTarget = webviewContainerRef.current.closest('.main-section') || document.body;
 
     const mutationObserver = new MutationObserver(checkDragging);
     mutationObserver.observe(watchTarget, {
@@ -38,11 +37,7 @@ const HtmlPreview = React.memo(({ data, baseUrl }) => {
     const dragStyles = isDragging ? { pointerEvents: 'none', userSelect: 'none' } : {};
 
     return (
-      <div
-        ref={webviewContainerRef}
-        className="h-full bg-white webview-container"
-        style={dragStyles}
-      >
+      <div ref={webviewContainerRef} className="h-full bg-white webview-container" style={dragStyles}>
         <webview
           src={`data:text/html; charset=utf-8,${encodeURIComponent(htmlContent)}`}
           webpreferences="disableDialogs=true, javascript=yes"
@@ -63,9 +58,7 @@ const HtmlPreview = React.memo(({ data, baseUrl }) => {
     displayContent = String(data);
   }
 
-  return (
-    <>{renderHtmlPreview(displayContent, baseUrl, isDragging, webviewContainerRef)}</>
-  );
+  return <>{renderHtmlPreview(displayContent, baseUrl, isDragging, webviewContainerRef)}</>;
 });
 
 export default HtmlPreview;

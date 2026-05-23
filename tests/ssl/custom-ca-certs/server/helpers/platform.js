@@ -20,10 +20,14 @@ function execCommandSilent(command, cwd = process.cwd()) {
 function detectPlatform() {
   const platform = os.platform();
   switch (platform) {
-    case 'darwin': return 'macos';
-    case 'linux': return 'linux';
-    case 'win32': return 'windows';
-    default: throw new Error(`Unsupported platform: ${platform}`);
+    case 'darwin':
+      return 'macos';
+    case 'linux':
+      return 'linux';
+    case 'win32':
+      return 'windows';
+    default:
+      throw new Error(`Unsupported platform: ${platform}`);
   }
 }
 

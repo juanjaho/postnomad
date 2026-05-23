@@ -3,7 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'components/Modal';
 import SearchInput from 'components/SearchInput';
 import Button from 'ui/Button';
-import { IconFolder, IconChevronRight, IconCheck, IconX, IconEye, IconEyeOff, IconEdit, IconArrowBackUp } from '@tabler/icons';
+import {
+  IconFolder,
+  IconChevronRight,
+  IconCheck,
+  IconX,
+  IconEye,
+  IconEyeOff,
+  IconEdit,
+  IconArrowBackUp
+} from '@tabler/icons';
 import PathDisplay from 'components/PathDisplay/index';
 import Help from 'components/Help';
 import filter from 'lodash/filter';
@@ -14,11 +23,22 @@ import FolderBreadcrumbs from './FolderBreadcrumbs';
 import useCollectionFolderTree from 'hooks/useCollectionFolderTree';
 import { removeSaveTransientRequestModal } from 'providers/ReduxStore/slices/collections';
 import { insertTaskIntoQueue } from 'providers/ReduxStore/slices/app';
-import { newFolder, closeTabs, mountCollection, createCollection, browseDirectory } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  newFolder,
+  closeTabs,
+  mountCollection,
+  createCollection,
+  browseDirectory
+} from 'providers/ReduxStore/slices/collections/actions';
 import { sanitizeName, validateName, validateNameError } from 'utils/common/regex';
 import { resolveRequestFilename } from 'utils/common/platform';
 import path, { normalizePath } from 'utils/common/path';
-import { transformRequestToSaveToFilesystem, findCollectionByUid, findItemInCollection, areItemsLoading } from 'utils/collections';
+import {
+  transformRequestToSaveToFilesystem,
+  findCollectionByUid,
+  findItemInCollection,
+  areItemsLoading
+} from 'utils/collections';
 import { DEFAULT_COLLECTION_FORMAT } from 'utils/common/constants';
 import { itemSchema } from '@usebruno/schema';
 import { uuid } from 'utils/common';
@@ -44,17 +64,21 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
   const isDefaultWorkspace = activeWorkspace?.type === 'default';
   const defaultCollectionLocation = isDefaultWorkspace
     ? get(preferences, 'general.defaultLocation', '')
-    : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
 
   const availableCollections = useMemo(() => {
     if (!isScratchCollection || !activeWorkspace) return [];
 
-    return (activeWorkspace.collections || []).map((wc) => {
-      const fullCollection = allCollections.find((c) => normalizePath(c.pathname) === normalizePath(wc.path));
-      // Use stable deterministic UID based on path to avoid duplicate Redux entries
-      const stableUid = wc.path ? `pending-${wc.path.replace(/[^a-zA-Z0-9]/g, '-')}` : uuid();
-      return fullCollection || { ...wc, uid: stableUid, mountStatus: 'unmounted' };
-    }).filter((c) => !workspaces.some((w) => w.scratchCollectionUid === c.uid));
+    return (activeWorkspace.collections || [])
+      .map((wc) => {
+        const fullCollection = allCollections.find((c) => normalizePath(c.pathname) === normalizePath(wc.path));
+        // Use stable deterministic UID based on path to avoid duplicate Redux entries
+        const stableUid = wc.path ? `pending-${wc.path.replace(/[^a-zA-Z0-9]/g, '-')}` : uuid();
+        return fullCollection || { ...wc, uid: stableUid, mountStatus: 'unmounted' };
+      })
+      .filter((c) => !workspaces.some((w) => w.scratchCollectionUid === c.uid));
   }, [isScratchCollection, activeWorkspace, allCollections, workspaces]);
 
   const handleClose = () => {
@@ -74,7 +98,12 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
   const [pendingFolderNavigation, setPendingFolderNavigation] = useState(null);
 
   // State for new collection creation
-  const [newCollection, setNewCollection] = useState({ show: false, name: '', location: '', format: DEFAULT_COLLECTION_FORMAT });
+  const [newCollection, setNewCollection] = useState({
+    show: false,
+    name: '',
+    location: '',
+    format: DEFAULT_COLLECTION_FORMAT
+  });
 
   const [selectedTargetCollectionPath, setSelectedTargetCollectionPath] = useState(null);
   const [isSelectingCollection, setIsSelectingCollection] = useState(isScratchCollection);
@@ -152,28 +181,31 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
     handleClose();
   };
 
-  const handleSelectCollection = useCallback((selectedCollection) => {
-    const collectionPath = selectedCollection.path || selectedCollection.pathname;
-    const isMounted = selectedCollection.mountStatus === 'mounted';
-    const isFullyLoaded = isMounted && !areItemsLoading(selectedCollection);
+  const handleSelectCollection = useCallback(
+    (selectedCollection) => {
+      const collectionPath = selectedCollection.path || selectedCollection.pathname;
+      const isMounted = selectedCollection.mountStatus === 'mounted';
+      const isFullyLoaded = isMounted && !areItemsLoading(selectedCollection);
 
-    setSelectedTargetCollectionPath(collectionPath);
+      setSelectedTargetCollectionPath(collectionPath);
 
-    if (isFullyLoaded) {
-      setIsSelectingCollection(false);
-      return;
-    }
+      if (isFullyLoaded) {
+        setIsSelectingCollection(false);
+        return;
+      }
 
-    if (!isMounted && selectedCollection.mountStatus !== 'mounting') {
-      dispatch(
-        mountCollection({
-          collectionUid: selectedCollection.uid || uuid(),
-          collectionPathname: collectionPath,
-          brunoConfig: selectedCollection.brunoConfig
-        })
-      );
-    }
-  }, [dispatch]);
+      if (!isMounted && selectedCollection.mountStatus !== 'mounting') {
+        dispatch(
+          mountCollection({
+            collectionUid: selectedCollection.uid || uuid(),
+            collectionPathname: collectionPath,
+            brunoConfig: selectedCollection.brunoConfig
+          })
+        );
+      }
+    },
+    [dispatch]
+  );
 
   const handleConfirm = async () => {
     if (!item || !collection || !latestItem) {
@@ -336,7 +368,11 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
       return;
     }
     try {
-      await dispatch(createCollection(trimmedName, sanitizeName(trimmedName), newCollection.location, { format: newCollection.format }));
+      await dispatch(
+        createCollection(trimmedName, sanitizeName(trimmedName), newCollection.location, {
+          format: newCollection.format
+        })
+      );
       toast.success('Collection created!');
       handleCancelNewCollection();
     } catch (err) {
@@ -349,16 +385,20 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
     setSearchText('');
   };
 
-  const handleBreadcrumbNavigate = useCallback((index) => {
-    navigateToBreadcrumb(index);
-    setSearchText('');
-  }, [navigateToBreadcrumb]);
+  const handleBreadcrumbNavigate = useCallback(
+    (index) => {
+      navigateToBreadcrumb(index);
+      setSearchText('');
+    },
+    [navigateToBreadcrumb]
+  );
 
   if (!isOpen) {
     return null;
   }
 
-  const showNewFolderFooterButton = !showNewFolderInput && !isSelectingCollection && (filteredFolders.length > 0 && !searchText.trim());
+  const showNewFolderFooterButton =
+    !showNewFolderInput && !isSelectingCollection && filteredFolders.length > 0 && !searchText.trim();
 
   return (
     <StyledWrapper>
@@ -400,11 +440,15 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
               <div className="collection-name">
                 <span
                   className={isSelectingCollection ? '' : 'collection-name-breadcrumb'}
-                  onClick={!isSelectingCollection ? () => {
-                    setIsSelectingCollection(true);
-                    setSelectedTargetCollectionPath(null);
-                    reset();
-                  } : undefined}
+                  onClick={
+                    !isSelectingCollection
+                      ? () => {
+                          setIsSelectingCollection(true);
+                          setSelectedTargetCollectionPath(null);
+                          reset();
+                        }
+                      : undefined
+                  }
                 >
                   Collections
                 </span>
@@ -443,9 +487,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                     {newCollection.show && (
                       <li className="new-collection-item">
                         <div className="new-collection-field">
-                          <label className="new-collection-label">
-                            Collection name
-                          </label>
+                          <label className="new-collection-label">Collection name</label>
                           <input
                             ref={(node) => node?.focus()}
                             type="text"
@@ -470,12 +512,8 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                           <label className="new-collection-label flex items-center">
                             Location
                             <Help width={250} placement="top">
-                              <p>
-                                Bruno stores your collections on your computer's filesystem.
-                              </p>
-                              <p className="mt-2">
-                                Choose the location where you want to store this collection.
-                              </p>
+                              <p>Bruno stores your collections on your computer's filesystem.</p>
+                              <p className="mt-2">Choose the location where you want to store this collection.</p>
                             </Help>
                           </label>
                           <div className="new-collection-location-row">
@@ -504,9 +542,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                           <label className="new-collection-label flex items-center">
                             File Format
                             <Help width={300} placement="top">
-                              <p>
-                                Choose the file format for storing requests in this collection.
-                              </p>
+                              <p>Choose the file format for storing requests in this collection.</p>
                               <p className="mt-2">
                                 <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
                               </p>
@@ -535,12 +571,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                           >
                             Cancel
                           </Button>
-                          <Button
-                            type="button"
-                            color="primary"
-                            size="sm"
-                            onClick={handleCreateNewCollection}
-                          >
+                          <Button type="button" color="primary" size="sm" onClick={handleCreateNewCollection}>
                             Create
                           </Button>
                         </div>
@@ -550,7 +581,9 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                 ) : (
                   <div className="collection-empty-state">
                     <p>No Collections Yet</p>
-                    <p className="collection-empty-state-subtitle">Collections help you organize your requests. Create your first one to save this request.</p>
+                    <p className="collection-empty-state-subtitle">
+                      Collections help you organize your requests. Create your first one to save this request.
+                    </p>
                     <Button
                       type="button"
                       color="primary"
@@ -657,7 +690,8 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                   Folder Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
                                   <Help width={300} placement="top">
                                     <p>
-                                      You can choose to save the folder as a different name on your file system versus what is displayed in the app.
+                                      You can choose to save the folder as a different name on your file system versus
+                                      what is displayed in the app.
                                     </p>
                                   </Help>
                                 </label>
@@ -703,10 +737,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                 </div>
                               ) : (
                                 <div className="relative flex flex-row gap-1 items-center justify-between">
-                                  <PathDisplay
-                                    iconType="folder"
-                                    baseName={newFolderDirectoryName}
-                                  />
+                                  <PathDisplay iconType="folder" baseName={newFolderDirectoryName} />
                                 </div>
                               )}
                             </div>
@@ -739,9 +770,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                   ) : (
                     <div className="folder-empty-state">
                       <div className="flex flex-col items-center">
-                        <span>
-                          {searchText.trim() ? 'No folders found' : 'No folders available' }
-                        </span>
+                        <span>{searchText.trim() ? 'No folders found' : 'No folders available'}</span>
                         <Button
                           type="button"
                           color="primary"

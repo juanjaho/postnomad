@@ -12,11 +12,16 @@ import { usePersistedState } from 'hooks/usePersistedState';
 const Tests = ({ collection }) => {
   const dispatch = useDispatch();
   const testsEditorRef = useRef(null);
-  const tests = collection.draft?.root ? get(collection, 'draft.root.request.tests', '') : get(collection, 'root.request.tests', '');
+  const tests = collection.draft?.root
+    ? get(collection, 'draft.root.request.tests', '')
+    : get(collection, 'root.request.tests', '');
 
   const { displayedTheme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
-  const [testsScroll, setTestsScroll] = usePersistedState({ key: `collection-tests-scroll-${collection.uid}`, default: 0 });
+  const [testsScroll, setTestsScroll] = usePersistedState({
+    key: `collection-tests-scroll-${collection.uid}`,
+    default: 0
+  });
 
   const onEdit = (value) => {
     dispatch(

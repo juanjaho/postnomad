@@ -5,7 +5,7 @@ const StyledWrapper = styled.div`
   .appearance-container {
     padding-bottom: 16px;
   }
-        
+
   .theme-mode-option {
     border: 1px solid ${(props) => props.theme.input.border};
     border-radius: ${(props) => props.theme.border.radius.md};

@@ -38,9 +38,7 @@ const Info = ({ collection }) => {
             </div>
             <div className="ml-4">
               <div className="font-medium">Location</div>
-              <div className="mt-1 text-muted break-all">
-                {collection.pathname}
-              </div>
+              <div className="mt-1 text-muted break-all">{collection.pathname}</div>
             </div>
           </div>
 
@@ -94,9 +92,9 @@ const Info = ({ collection }) => {
             <div className="ml-4">
               <div className="font-medium">Requests</div>
               <div className="mt-1 text-muted">
-                {
-                  isCollectionLoading ? `${totalItems - itemsLoadingCount} out of ${totalItems} requests in the collection loaded` : `${totalRequestsInCollection} request${totalRequestsInCollection !== 1 ? 's' : ''} in collection`
-                }
+                {isCollectionLoading
+                  ? `${totalItems - itemsLoadingCount} out of ${totalItems} requests in the collection loaded`
+                  : `${totalRequestsInCollection} request${totalRequestsInCollection !== 1 ? 's' : ''} in collection`}
               </div>
             </div>
           </div>
@@ -107,25 +105,31 @@ const Info = ({ collection }) => {
             </div>
             <div className="ml-4 h-full flex flex-col justify-start">
               <div className="font-medium h-fit my-auto">Share</div>
-              <div className="group-hover:underline text-link">
-                Share Collection
-              </div>
+              <div className="group-hover:underline text-link">Share Collection</div>
             </div>
           </div>
-          {showShareCollectionModal && <ShareCollection collectionUid={collection.uid} onClose={handleToggleShowShareCollectionModal(false)} />}
+          {showShareCollectionModal && (
+            <ShareCollection collectionUid={collection.uid} onClose={handleToggleShowShareCollectionModal(false)} />
+          )}
 
-          <div className="flex items-start group cursor-pointer" onClick={() => setShowGenerateDocumentationModal(true)}>
+          <div
+            className="flex items-start group cursor-pointer"
+            onClick={() => setShowGenerateDocumentationModal(true)}
+          >
             <div className="icon-box generate-docs flex-shrink-0 p-3 rounded-lg">
               <IconBook className="w-5 h-5" stroke={1.5} />
             </div>
             <div className="ml-4 h-full flex flex-col justify-start">
               <div className="font-medium h-fit my-auto">Documentation</div>
-              <div className="group-hover:underline text-link">
-                Generate Docs
-              </div>
+              <div className="group-hover:underline text-link">Generate Docs</div>
             </div>
           </div>
-          {showGenerateDocumentationModal && <GenerateDocumentation collectionUid={collection.uid} onClose={() => setShowGenerateDocumentationModal(false)} />}
+          {showGenerateDocumentationModal && (
+            <GenerateDocumentation
+              collectionUid={collection.uid}
+              onClose={() => setShowGenerateDocumentationModal(false)}
+            />
+          )}
         </div>
       </div>
     </StyledWrapper>

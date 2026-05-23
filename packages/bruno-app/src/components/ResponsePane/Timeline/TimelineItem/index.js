@@ -24,12 +24,19 @@ const TimelineItem = ({ timestamp, request, response, item, collection, isOauth2
   return (
     <StyledWrapper>
       <div className={`timeline-item ${isOauth2 ? 'timeline-item--oauth2' : ''}`}>
-        <div className="oauth-request-item-header relative cursor-pointer flex items-center justify-between gap-3 min-w-0" onClick={toggleCollapse}>
+        <div
+          className="oauth-request-item-header relative cursor-pointer flex items-center justify-between gap-3 min-w-0"
+          onClick={toggleCollapse}
+        >
           <Status statusCode={responseStatus || responseStatusCode} statusText={responseStatusText} />
           <div className="flex items-center gap-1">
             <Method method={method} />
             <div className="truncate flex-1 min-w-0">{url}</div>
-            {isOauth2 && <span className="text-xs flex-shrink-0" style={{ color: theme.colors.text.muted }}>[oauth2.0]</span>}
+            {isOauth2 && (
+              <span className="text-xs flex-shrink-0" style={{ color: theme.colors.text.muted }}>
+                [oauth2.0]
+              </span>
+            )}
           </div>
           {!hideTimestamp && (
             <span className="flex-shrink-0 ml-auto">
@@ -66,19 +73,13 @@ const TimelineItem = ({ timestamp, request, response, item, collection, isOauth2
             {/* Tab Content */}
             <div className="timeline-item-tab-content">
               {/* Request Tab */}
-              {activeTab === 'request' && (
-                <Request request={request} item={item} collection={collection} />
-              )}
+              {activeTab === 'request' && <Request request={request} item={item} collection={collection} />}
 
               {/* Response Tab */}
-              {activeTab === 'response' && (
-                <Response response={response} item={item} collection={collection} />
-              )}
+              {activeTab === 'response' && <Response response={response} item={item} collection={collection} />}
 
               {/* Network Logs Tab */}
-              {activeTab === 'networkLogs' && showNetworkLogs && (
-                <Network logs={response?.timeline} />
-              )}
+              {activeTab === 'networkLogs' && showNetworkLogs && <Network logs={response?.timeline} />}
             </div>
           </div>
         )}

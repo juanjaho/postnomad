@@ -140,7 +140,8 @@ const StyledWrapper = styled.div`
     .value {
       font-size: ${(props) => props.theme.font.size.sm};
       color: ${(props) => props.theme.console.messageColor};
-      font-family: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-family:
+        ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
       word-break: break-all;
       padding: 4px 8px;
       background: ${(props) => props.theme.console.headerBg};
@@ -267,7 +268,7 @@ const StyledWrapper = styled.div`
       flex-direction: column !important;
     }
 
-    div[role="tablist"] {
+    div[role='tablist'] {
       padding: 4px 8px;
       border-bottom: 1px solid ${(props) => props.theme.console.border};
       display: flex !important;

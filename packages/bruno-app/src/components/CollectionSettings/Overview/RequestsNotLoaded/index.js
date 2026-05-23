@@ -48,27 +48,19 @@ const RequestsNotLoaded = ({ collection }) => {
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="py-2 px-3 text-left font-medium">
-              Pathname
-            </th>
-            <th className="py-2 px-3 text-left font-medium">
-              Size
-            </th>
+            <th className="py-2 px-3 text-left font-medium">Pathname</th>
+            <th className="py-2 px-3 text-left font-medium">Size</th>
           </tr>
         </thead>
         <tbody>
-          {flattenedItems?.map((item, index) => (
+          {flattenedItems?.map((item, index) =>
             item?.partial && !item?.loading ? (
               <tr key={index} className="cursor-pointer" onClick={handleRequestClick(item)}>
-                <td className="py-1.5 px-3">
-                  {item?.pathname?.split(`${collection?.pathname}/`)?.[1]}
-                </td>
-                <td className="py-1.5 px-3">
-                  {item?.size?.toFixed?.(2)}&nbsp;MB
-                </td>
+                <td className="py-1.5 px-3">{item?.pathname?.split(`${collection?.pathname}/`)?.[1]}</td>
+                <td className="py-1.5 px-3">{item?.size?.toFixed?.(2)}&nbsp;MB</td>
               </tr>
             ) : null
-          ))}
+          )}
         </tbody>
       </table>
     </StyledWrapper>

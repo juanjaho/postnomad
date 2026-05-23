@@ -96,56 +96,62 @@ const EnvironmentVariablesTable = ({
   const columnWidthsRef = useRef(columnWidths);
   columnWidthsRef.current = columnWidths;
 
-  const handleResizeStart = useCallback((e, columnKey) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleResizeStart = useCallback(
+    (e, columnKey) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const currentCell = e.target.closest('td');
-    const nextCell = currentCell?.nextElementSibling;
-    if (!currentCell || !nextCell) return;
+      const currentCell = e.target.closest('td');
+      const nextCell = currentCell?.nextElementSibling;
+      if (!currentCell || !nextCell) return;
 
-    const startX = e.clientX;
-    const startWidth = currentCell.offsetWidth;
-    const nextColumnKey = 'value';
-    const nextColumnStartWidth = nextCell.offsetWidth;
+      const startX = e.clientX;
+      const startWidth = currentCell.offsetWidth;
+      const nextColumnKey = 'value';
+      const nextColumnStartWidth = nextCell.offsetWidth;
 
-    setResizing(columnKey);
+      setResizing(columnKey);
 
-    const handleMouseMove = (moveEvent) => {
-      const diff = moveEvent.clientX - startX;
-      const maxGrow = nextColumnStartWidth - MIN_COLUMN_WIDTH;
-      const maxShrink = startWidth - MIN_COLUMN_WIDTH;
-      const clampedDiff = Math.max(-maxShrink, Math.min(maxGrow, diff));
+      const handleMouseMove = (moveEvent) => {
+        const diff = moveEvent.clientX - startX;
+        const maxGrow = nextColumnStartWidth - MIN_COLUMN_WIDTH;
+        const maxShrink = startWidth - MIN_COLUMN_WIDTH;
+        const clampedDiff = Math.max(-maxShrink, Math.min(maxGrow, diff));
 
-      const newWidths = {
-        [columnKey]: `${startWidth + clampedDiff}px`,
-        [nextColumnKey]: `${nextColumnStartWidth - clampedDiff}px`
+        const newWidths = {
+          [columnKey]: `${startWidth + clampedDiff}px`,
+          [nextColumnKey]: `${nextColumnStartWidth - clampedDiff}px`
+        };
+        setColumnWidths(newWidths);
       };
-      setColumnWidths(newWidths);
-    };
 
-    const handleMouseUp = () => {
-      setResizing(null);
-      // Save to Redux after resize ends using ref for latest values
-      handleColumnWidthsChange(tableId, columnWidthsRef.current);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+      const handleMouseUp = () => {
+        setResizing(null);
+        // Save to Redux after resize ends using ref for latest values
+        handleColumnWidthsChange(tableId, columnWidthsRef.current);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [handleColumnWidthsChange]);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [handleColumnWidthsChange]
+  );
 
   const handleTotalHeightChanged = useCallback((h) => {
     setTableHeight(h);
   }, []);
 
-  const handleRowFocus = useCallback((uid) => {
-    setPinnedData((prev) => ({
-      query: searchQuery,
-      uids: prev.query === searchQuery ? new Set([...prev.uids, uid]) : new Set([uid])
-    }));
-  }, [searchQuery]);
+  const handleRowFocus = useCallback(
+    (uid) => {
+      setPinnedData((prev) => ({
+        query: searchQuery,
+        uids: prev.query === searchQuery ? new Set([...prev.uids, uid]) : new Set([uid])
+      }));
+    },
+    [searchQuery]
+  );
 
   const prevEnvUidRef = useRef(null);
   const prevEnvVariablesRef = useRef(environment.variables);
@@ -221,8 +227,8 @@ const EnvironmentVariablesTable = ({
           errors[index].name = 'Name cannot be empty';
         } else if (!variableNameRegex.test(variable.name)) {
           if (!errors[index]) errors[index] = {};
-          errors[index].name
-            = 'Name contains invalid characters. Must only contain alphanumeric characters, "-", "_", "." and cannot start with a digit.';
+          errors[index].name =
+            'Name contains invalid characters. Must only contain alphanumeric characters, "-", "_", "." and cannot start with a digit.';
         }
       });
       return Object.keys(errors).length > 0 ? errors : {};
@@ -279,7 +285,9 @@ const EnvironmentVariablesTable = ({
       const hasActualChanges = currentValuesJson !== savedValuesJson;
 
       const existingDraftVariables = hasDraftForThisEnv ? draft?.variables : null;
-      const existingDraftJson = existingDraftVariables ? JSON.stringify(existingDraftVariables.map(stripEnvVarUid)) : null;
+      const existingDraftJson = existingDraftVariables
+        ? JSON.stringify(existingDraftVariables.map(stripEnvVarUid))
+        : null;
 
       if (hasActualChanges) {
         if (currentValuesJson !== existingDraftJson) {
@@ -291,7 +299,15 @@ const EnvironmentVariablesTable = ({
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [formik.values, savedValuesJson, environment.uid, hasDraftForThisEnv, draft?.variables, onDraftChange, onDraftClear]);
+  }, [
+    formik.values,
+    savedValuesJson,
+    environment.uid,
+    hasDraftForThisEnv,
+    draft?.variables,
+    onDraftChange,
+    onDraftClear
+  ]);
 
   const ErrorMessage = ({ name, index }) => {
     const meta = formik.getFieldMeta(name);
@@ -333,10 +349,10 @@ const EnvironmentVariablesTable = ({
 
       const filteredValues = currentValues.filter((variable) => variable.uid !== id);
 
-      const hasEmptyLastRow
-        = filteredValues.length > 0
-          && (!filteredValues[filteredValues.length - 1].name
-            || filteredValues[filteredValues.length - 1].name.trim() === '');
+      const hasEmptyLastRow =
+        filteredValues.length > 0 &&
+        (!filteredValues[filteredValues.length - 1].name ||
+          filteredValues[filteredValues.length - 1].name.trim() === '');
 
       const newValues = hasEmptyLastRow
         ? filteredValues
@@ -392,7 +408,8 @@ const EnvironmentVariablesTable = ({
     const savedValues = environment.variables || [];
 
     // Compare without UIDs since they can be different but the actual data is the same
-    const hasChanges = JSON.stringify(variablesToSave.map(stripEnvVarUid)) !== JSON.stringify(savedValues.map(stripEnvVarUid));
+    const hasChanges =
+      JSON.stringify(variablesToSave.map(stripEnvVarUid)) !== JSON.stringify(savedValues.map(stripEnvVarUid));
     if (!hasChanges) {
       toast.error('No changes to save');
       return;
@@ -481,8 +498,8 @@ const EnvironmentVariablesTable = ({
     return allVariables.filter(({ variable }) => {
       if (effectivePins.has(variable.uid)) return true;
       const nameMatch = variable.name ? variable.name.toLowerCase().includes(query) : false;
-      const valueText
-        = typeof variable.value === 'string'
+      const valueText =
+        typeof variable.value === 'string'
           ? variable.value
           : typeof variable.value === 'number' || typeof variable.value === 'boolean'
             ? String(variable.value)
@@ -556,7 +573,11 @@ const EnvironmentVariablesTable = ({
                         id={`${actualIndex}.name`}
                         name={`${actualIndex}.name`}
                         value={variable.name}
-                        placeholder={!variable.name || (typeof variable.name === 'string' && variable.name.trim() === '') ? 'Name' : ''}
+                        placeholder={
+                          !variable.name || (typeof variable.name === 'string' && variable.name.trim() === '')
+                            ? 'Name'
+                            : ''
+                        }
                         onChange={(e) => handleNameChange(actualIndex, e)}
                         onFocus={() => handleRowFocus(variable.uid)}
                         onBlur={() => {
@@ -568,20 +589,18 @@ const EnvironmentVariablesTable = ({
                     <ErrorMessage name={`${actualIndex}.name`} index={actualIndex} />
                   </div>
                 </td>
-                <td
-                  className="flex flex-row flex-nowrap items-center"
-                  style={{ width: columnWidths.value }}
-                >
-                  <div
-                    className="overflow-hidden grow w-full relative"
-                    onFocus={() => handleRowFocus(variable.uid)}
-                  >
+                <td className="flex flex-row flex-nowrap items-center" style={{ width: columnWidths.value }}>
+                  <div className="overflow-hidden grow w-full relative" onFocus={() => handleRowFocus(variable.uid)}>
                     <MultiLineEditor
                       theme={storedTheme}
                       collection={_collection}
                       name={`${actualIndex}.value`}
                       value={variable.value}
-                      placeholder={variable.value == null || (typeof variable.value === 'string' && variable.value.trim() === '') ? 'Value' : ''}
+                      placeholder={
+                        variable.value == null || (typeof variable.value === 'string' && variable.value.trim() === '')
+                          ? 'Value'
+                          : ''
+                      }
                       isSecret={variable.secret}
                       readOnly={typeof variable.value !== 'string'}
                       onChange={(newValue) => {
@@ -594,14 +613,18 @@ const EnvironmentVariablesTable = ({
                         // Append a new empty row when editing value on the last row
                         if (isLastRow) {
                           setTimeout(() => {
-                            formik.setFieldValue(formik.values.length, {
-                              uid: uuid(),
-                              name: '',
-                              value: '',
-                              type: 'text',
-                              secret: false,
-                              enabled: true
-                            }, false);
+                            formik.setFieldValue(
+                              formik.values.length,
+                              {
+                                uid: uuid(),
+                                name: '',
+                                value: '',
+                                type: 'text',
+                                secret: false,
+                                enabled: true
+                              },
+                              false
+                            );
                           }, 0);
                         }
                       }}

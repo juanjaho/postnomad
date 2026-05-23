@@ -57,7 +57,9 @@ const StyledWrapper = styled.div`
     opacity: 0.6;
     padding: 4px;
     border-radius: 4px;
-    transition: opacity 0.15s ease, background-color 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
       opacity: 1;
@@ -151,12 +153,12 @@ const StyledWrapper = styled.div`
     color: ${(props) => props.theme.colors.text.danger};
     margin-left: 8px;
   }
-  .display-icon{
+  .display-icon {
     padding: 4px;
     box-sizing: content-box;
     &:hover {
       background: ${(props) => props.theme.sidebar.collection.item.hoverBg};
-      border-radius: ${(props) => props.theme.border.radius.sm}
+      border-radius: ${(props) => props.theme.border.radius.sm};
     }
   }
 `;

@@ -21,15 +21,15 @@ function normalizeExportedContent(content: any) {
 
 test.describe.serial('Collection Environment Export Tests', () => {
   test.describe.serial('folder exports', () => {
-    test('should export single collection environment', async ({
-      pageWithUserData: page,
-      createTmpDir
-    }) => {
+    test('should export single collection environment', async ({ pageWithUserData: page, createTmpDir }) => {
       const exportDir = await createTmpDir('collection-env-export-single');
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open environment settings
         await page.getByTestId('environment-selector-trigger').click();
@@ -78,15 +78,15 @@ test.describe.serial('Collection Environment Export Tests', () => {
       });
     });
 
-    test('should export multiple collection environments', async ({
-      pageWithUserData: page,
-      createTmpDir
-    }) => {
+    test('should export multiple collection environments', async ({ pageWithUserData: page, createTmpDir }) => {
       const exportDir = await createTmpDir('collection-env-export-multiple');
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open environment settings
         await page.getByTestId('environment-selector-trigger').click();
@@ -122,10 +122,7 @@ test.describe.serial('Collection Environment Export Tests', () => {
         const exportPath = path.join(exportDir, 'bruno-collection-environments');
         expect(fs.existsSync(exportPath)).toBe(true);
 
-        const expectedFiles = [
-          'local.json',
-          'prod.json'
-        ];
+        const expectedFiles = ['local.json', 'prod.json'];
 
         for (const fileName of expectedFiles) {
           const filePath = path.join(exportPath, fileName);
@@ -154,7 +151,10 @@ test.describe.serial('Collection Environment Export Tests', () => {
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open environment settings
         await page.getByTestId('environment-selector-trigger').click();
@@ -204,15 +204,15 @@ test.describe.serial('Collection Environment Export Tests', () => {
   });
 
   test.describe.serial('json file exports', () => {
-    test('should export single collection environment as object', async ({
-      pageWithUserData: page,
-      createTmpDir
-    }) => {
+    test('should export single collection environment as object', async ({ pageWithUserData: page, createTmpDir }) => {
       const exportDir = await createTmpDir('collection-env-export-single-object');
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open collection environment settings
         await page.getByTestId('environment-selector-trigger').click();
@@ -267,7 +267,10 @@ test.describe.serial('Collection Environment Export Tests', () => {
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open collection environment settings
         await page.getByTestId('environment-selector-trigger').click();
@@ -322,7 +325,10 @@ test.describe.serial('Collection Environment Export Tests', () => {
 
       await test.step('Open collection and navigate to environment settings', async () => {
         // Open the collection from sidebar
-        await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Export Test Collection' }).click();
+        await page
+          .locator('#sidebar-collection-name')
+          .filter({ hasText: 'Environment Export Test Collection' })
+          .click();
 
         // Open collection environment settings
         await page.getByTestId('environment-selector-trigger').click();

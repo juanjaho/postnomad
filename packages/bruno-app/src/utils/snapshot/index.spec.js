@@ -670,10 +670,12 @@ describe('hydrateCollectionTabs', () => {
     );
 
     expect(dispatch).toHaveBeenCalledTimes(1);
-    expect(restoreTabs).toHaveBeenCalledWith(expect.objectContaining({
-      tabs: [],
-      activeTab: null
-    }));
+    expect(restoreTabs).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tabs: [],
+        activeTab: null
+      })
+    );
   });
 
   it('restores tabs when snapshot has persisted tabs', async () => {

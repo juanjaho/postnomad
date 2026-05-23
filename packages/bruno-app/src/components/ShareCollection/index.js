@@ -105,8 +105,8 @@ const ShareCollection = ({ onClose, collectionUid }) => {
             className="opencollection-link"
           >
             OpenCollection
-          </a>
-          {' '}- An open format for API collections
+          </a>{' '}
+          - An open format for API collections
         </p>
 
         {/* Bruno Format Section */}
@@ -188,11 +188,7 @@ const ShareCollection = ({ onClose, collectionUid }) => {
         )}
 
         <div className="modal-footer">
-          <Button
-            onClick={handleProceed}
-            disabled={isDisabled}
-            loading={isExporting}
-          >
+          <Button onClick={handleProceed} disabled={isDisabled} loading={isExporting}>
             {isExporting ? 'Exporting...' : 'Proceed'}
           </Button>
         </div>

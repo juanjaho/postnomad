@@ -29,7 +29,12 @@ const Headers = ({ collection }) => {
   const [isBulkEditMode, setIsBulkEditMode] = useState(false);
   const wrapperRef = useRef(null);
   const [scroll, setScroll] = usePersistedState({ key: `collection-headers-scroll-${collection.uid}`, default: 0 });
-  useTrackScroll({ ref: wrapperRef, selector: '.collection-settings-content', onChange: setScroll, initialValue: scroll });
+  useTrackScroll({
+    ref: wrapperRef,
+    selector: '.collection-settings-content',
+    onChange: setScroll,
+    initialValue: scroll
+  });
 
   // Get column widths from Redux
   const focusedTab = tabs?.find((t) => t.uid === activeTabUid);
@@ -43,9 +48,12 @@ const Headers = ({ collection }) => {
     setIsBulkEditMode(!isBulkEditMode);
   };
 
-  const handleHeadersChange = useCallback((updatedHeaders) => {
-    dispatch(setCollectionHeaders({ collectionUid: collection.uid, headers: updatedHeaders }));
-  }, [dispatch, collection.uid]);
+  const handleHeadersChange = useCallback(
+    (updatedHeaders) => {
+      dispatch(setCollectionHeaders({ collectionUid: collection.uid, headers: updatedHeaders }));
+    },
+    [dispatch, collection.uid]
+  );
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));
 
@@ -114,12 +122,7 @@ const Headers = ({ collection }) => {
         <div className="text-xs mb-4 text-muted">
           Add request headers that will be sent with every request in this collection.
         </div>
-        <BulkEditor
-          params={headers}
-          onChange={handleHeadersChange}
-          onToggle={toggleBulkEditMode}
-          onSave={handleSave}
-        />
+        <BulkEditor params={headers} onChange={handleHeadersChange} onToggle={toggleBulkEditMode} onSave={handleSave} />
       </StyledWrapper>
     );
   }

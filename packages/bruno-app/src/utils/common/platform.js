@@ -37,7 +37,14 @@ export const isLinuxOS = () => {
   const os = platform.os;
   const osFamily = os.family.toLowerCase();
 
-  return osFamily.includes('linux') || osFamily.includes('ubuntu') || osFamily.includes('debian') || osFamily.includes('fedora') || osFamily.includes('centos') || osFamily.includes('arch');
+  return (
+    osFamily.includes('linux') ||
+    osFamily.includes('ubuntu') ||
+    osFamily.includes('debian') ||
+    osFamily.includes('fedora') ||
+    osFamily.includes('centos') ||
+    osFamily.includes('arch')
+  );
 };
 
 export const getRevealInFolderLabel = () => {

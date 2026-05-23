@@ -12,7 +12,9 @@ test.describe.serial('Environment Color Import Tests', () => {
 
     await test.step('Open collection and navigate to global environment import', async () => {
       // Open the collection from sidebar
-      const collectionName = page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Color Import Test Collection' });
+      const collectionName = page
+        .locator('#sidebar-collection-name')
+        .filter({ hasText: 'Environment Color Import Test Collection' });
       await expect(collectionName).toBeVisible();
       await collectionName.click();
 

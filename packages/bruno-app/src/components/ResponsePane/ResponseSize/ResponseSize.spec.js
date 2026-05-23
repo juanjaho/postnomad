@@ -18,11 +18,7 @@ const theme = {
 
 // Wrap component with theme provider for styled-components
 const renderWithTheme = (component) => {
-  return render(
-    <ThemeProvider theme={theme}>
-      {component}
-    </ThemeProvider>
-  );
+  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
 describe('ResponseSize', () => {

@@ -154,9 +154,7 @@ const addJwtShimToContext = async (vm) => {
     }
 
     try {
-      const decoded = nativeOptions
-        ? jwt.decode(nativeToken, nativeOptions)
-        : jwt.decode(nativeToken);
+      const decoded = nativeOptions ? jwt.decode(nativeToken, nativeOptions) : jwt.decode(nativeToken);
       return marshallToVm(decoded, vm);
     } catch (err) {
       throw vm.newError(err.message || String(err));

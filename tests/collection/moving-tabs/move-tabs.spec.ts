@@ -89,10 +89,16 @@ test.describe('Move tabs', () => {
 
   test('Verify tab move by keyboard shortcut', async ({ page, createTmpDir }) => {
     // Create a collection
-    await createCollection(page, 'source-collection-keyboard-shortcut', await createTmpDir('source-collection-keyboard-shortcut'));
+    await createCollection(
+      page,
+      'source-collection-keyboard-shortcut',
+      await createTmpDir('source-collection-keyboard-shortcut')
+    );
 
     // Create a folder in the collection
-    const sourceCollection = page.locator('.collection-name').filter({ hasText: 'source-collection-keyboard-shortcut' });
+    const sourceCollection = page
+      .locator('.collection-name')
+      .filter({ hasText: 'source-collection-keyboard-shortcut' });
     await sourceCollection.hover();
     await sourceCollection.locator('.collection-actions .icon').click();
     await page.locator('.dropdown-item').filter({ hasText: 'New Folder' }).click();

@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { isGitRepositoryUrl } from 'utils/git';
 import toast from 'react-hot-toast';
 import Button from 'ui/Button';
-const GitHubTab = ({
-  handleSubmit,
-  setErrorMessage
-}) => {
+const GitHubTab = ({ handleSubmit, setErrorMessage }) => {
   const [urlInput, setUrlInput] = useState('');
 
   const handleGitRepositoryImport = (url) => {

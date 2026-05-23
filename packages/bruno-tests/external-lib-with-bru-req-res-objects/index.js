@@ -7,17 +7,35 @@
 
 module.exports = {
   // bru accessors
-  getVar: function (name) { return bru.getVar(name); },
-  setVar: function (name, value) { bru.setVar(name, value); },
-  getEnvVar: function (name) { return bru.getEnvVar(name); },
+  getVar: function (name) {
+    return bru.getVar(name);
+  },
+  setVar: function (name, value) {
+    bru.setVar(name, value);
+  },
+  getEnvVar: function (name) {
+    return bru.getEnvVar(name);
+  },
 
   // req accessors
-  getReqBody: function (options) { return req.getBody(options); },
-  getReqHeaders: function () { return req.getHeaders(); },
-  getReqMethod: function () { return req.getMethod(); },
+  getReqBody: function (options) {
+    return req.getBody(options);
+  },
+  getReqHeaders: function () {
+    return req.getHeaders();
+  },
+  getReqMethod: function () {
+    return req.getMethod();
+  },
 
   // res accessors
-  getResBody: function () { return res.getBody(); },
-  getResHeaders: function () { return res.getHeaders(); },
-  getResStatus: function () { return res.getStatus(); }
+  getResBody: function () {
+    return res.getBody();
+  },
+  getResHeaders: function () {
+    return res.getHeaders();
+  },
+  getResStatus: function () {
+    return res.getStatus();
+  }
 };

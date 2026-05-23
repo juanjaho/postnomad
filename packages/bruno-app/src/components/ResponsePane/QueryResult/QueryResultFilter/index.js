@@ -52,9 +52,7 @@ const QueryResultFilter = ({ filter, filterExpanded, onChange, onExpandChange, m
   }, [mode]);
 
   return (
-    <div
-      className="response-filter absolute bottom-2 w-full justify-end right-0 flex flex-row items-center gap-2 py-4 px-2 pointer-events-none"
-    >
+    <div className="response-filter absolute bottom-2 w-full justify-end right-0 flex flex-row items-center gap-2 py-4 px-2 pointer-events-none">
       {infotipText && !isExpanded && <ReactInfotip anchorId="request-filter-icon" html={infotipText} />}
       <input
         ref={inputRef}
@@ -72,7 +70,11 @@ const QueryResultFilter = ({ filter, filterExpanded, onChange, onExpandChange, m
         }`}
         onChange={handleInputChange}
       />
-      <div className="text-gray-500 cursor-pointer pointer-events-auto" id="request-filter-icon" onClick={handleFilterClick}>
+      <div
+        className="text-gray-500 cursor-pointer pointer-events-auto"
+        id="request-filter-icon"
+        onClick={handleFilterClick}
+      >
         {isExpanded ? <IconX size={20} strokeWidth={1.5} /> : <IconFilter size={20} strokeWidth={1.5} />}
       </div>
     </div>

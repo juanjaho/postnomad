@@ -21,12 +21,33 @@ const interpolateVars = require('./interpolate-vars');
 const { makeAxiosInstance } = require('./axios-instance');
 const { resolveInheritedSettings } = require('../../utils/collection');
 const { cancelTokens, saveCancelToken, deleteCancelToken } = require('../../utils/cancel-token');
-const { uuid, safeStringifyJSON, safeParseJSON, parseDataFromResponse, parseDataFromRequest } = require('../../utils/common');
+const {
+  uuid,
+  safeStringifyJSON,
+  safeParseJSON,
+  parseDataFromResponse,
+  parseDataFromRequest
+} = require('../../utils/common');
 const { chooseFileToSave, writeFile, getCollectionFormat, hasRequestExtension } = require('../../utils/filesystem');
 const { addCookieToJar, getDomainsWithCookies, getCookieStringForUrl } = require('../../utils/cookies');
 const { createFormData } = require('../../utils/form-data');
-const { findItemInCollectionByPathname, sortFolder, getAllRequestsInFolderRecursively, getEnvVars, getTreePathFromCollectionToItem, mergeVars, sortByNameThenSequence } = require('../../utils/collection');
-const { getOAuth2TokenUsingAuthorizationCode, getOAuth2TokenUsingClientCredentials, getOAuth2TokenUsingPasswordCredentials, getOAuth2TokenUsingImplicitGrant, updateCollectionOauth2Credentials, clearOauth2CredentialsByCredentialsId } = require('../../utils/oauth2');
+const {
+  findItemInCollectionByPathname,
+  sortFolder,
+  getAllRequestsInFolderRecursively,
+  getEnvVars,
+  getTreePathFromCollectionToItem,
+  mergeVars,
+  sortByNameThenSequence
+} = require('../../utils/collection');
+const {
+  getOAuth2TokenUsingAuthorizationCode,
+  getOAuth2TokenUsingClientCredentials,
+  getOAuth2TokenUsingPasswordCredentials,
+  getOAuth2TokenUsingImplicitGrant,
+  updateCollectionOauth2Credentials,
+  clearOauth2CredentialsByCredentialsId
+} = require('../../utils/oauth2');
 const { preferencesUtil } = require('../../store/preferences');
 const { getProcessEnvVars } = require('../../store/process-env');
 const { getBrunoConfig } = require('../../store/bruno-config');
@@ -44,9 +65,7 @@ const saveCookies = (url, headers) => {
   if (preferencesUtil.shouldStoreCookies()) {
     let setCookieHeaders = [];
     if (headers['set-cookie']) {
-      setCookieHeaders = Array.isArray(headers['set-cookie'])
-        ? headers['set-cookie']
-        : [headers['set-cookie']];
+      setCookieHeaders = Array.isArray(headers['set-cookie']) ? headers['set-cookie'] : [headers['set-cookie']];
       for (let setCookieHeader of setCookieHeaders) {
         if (typeof setCookieHeader === 'string' && setCookieHeader.length) {
           addCookieToJar(setCookieHeader, url);
@@ -169,7 +188,20 @@ const configureRequest = async (
 
   if (request.oauth2) {
     let requestCopy = cloneDeep(request);
-    const { oauth2: { grantType, tokenPlacement, tokenHeaderPrefix, tokenQueryKey, tokenSource, accessTokenUrl, refreshTokenUrl } = {}, collectionVariables, folderVariables, requestVariables } = requestCopy || {};
+    const {
+      oauth2: {
+        grantType,
+        tokenPlacement,
+        tokenHeaderPrefix,
+        tokenQueryKey,
+        tokenSource,
+        accessTokenUrl,
+        refreshTokenUrl
+      } = {},
+      collectionVariables,
+      folderVariables,
+      requestVariables
+    } = requestCopy || {};
 
     // Get cert/proxy configs for token and refresh URLs
     let certsAndProxyConfigForTokenUrl = certsAndProxyConfig;
@@ -228,8 +260,25 @@ const configureRequest = async (
     switch (grantType) {
       case 'authorization_code':
         interpolateVars(requestCopy, envVars, runtimeVariables, processEnvVars, promptVariables);
-        ({ credentials, url: oauth2Url, credentialsId, debugInfo } = await getOAuth2TokenUsingAuthorizationCode({ request: requestCopy, collectionUid, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }));
-        request.oauth2Credentials = { credentials, url: oauth2Url, collectionUid, credentialsId, debugInfo, folderUid: request.oauth2Credentials?.folderUid };
+        ({
+          credentials,
+          url: oauth2Url,
+          credentialsId,
+          debugInfo
+        } = await getOAuth2TokenUsingAuthorizationCode({
+          request: requestCopy,
+          collectionUid,
+          certsAndProxyConfigForTokenUrl,
+          certsAndProxyConfigForRefreshUrl
+        }));
+        request.oauth2Credentials = {
+          credentials,
+          url: oauth2Url,
+          collectionUid,
+          credentialsId,
+          debugInfo,
+          folderUid: request.oauth2Credentials?.folderUid
+        };
         {
           const tokenValue = tokenSource === 'id_token' ? credentials?.id_token : credentials?.access_token;
           if (tokenPlacement == 'header' && tokenValue) {
@@ -239,14 +288,26 @@ const configureRequest = async (
               const url = new URL(request.url);
               url.searchParams.set(tokenQueryKey, tokenValue);
               request.url = url.toString();
-            } catch (error) { }
+            } catch (error) {}
           }
         }
         break;
       case 'implicit':
         interpolateVars(requestCopy, envVars, runtimeVariables, processEnvVars, promptVariables);
-        ({ credentials, url: oauth2Url, credentialsId, debugInfo } = await getOAuth2TokenUsingImplicitGrant({ request: requestCopy, collectionUid }));
-        request.oauth2Credentials = { credentials, url: oauth2Url, collectionUid, credentialsId, debugInfo, folderUid: request.oauth2Credentials?.folderUid };
+        ({
+          credentials,
+          url: oauth2Url,
+          credentialsId,
+          debugInfo
+        } = await getOAuth2TokenUsingImplicitGrant({ request: requestCopy, collectionUid }));
+        request.oauth2Credentials = {
+          credentials,
+          url: oauth2Url,
+          collectionUid,
+          credentialsId,
+          debugInfo,
+          folderUid: request.oauth2Credentials?.folderUid
+        };
         {
           const tokenValue = tokenSource === 'id_token' ? credentials?.id_token : credentials?.access_token;
           if (tokenPlacement == 'header' && tokenValue) {
@@ -256,14 +317,31 @@ const configureRequest = async (
               const url = new URL(request.url);
               url.searchParams.set(tokenQueryKey, tokenValue);
               request.url = url.toString();
-            } catch (error) { }
+            } catch (error) {}
           }
         }
         break;
       case 'client_credentials':
         interpolateVars(requestCopy, envVars, runtimeVariables, processEnvVars, promptVariables);
-        ({ credentials, url: oauth2Url, credentialsId, debugInfo } = await getOAuth2TokenUsingClientCredentials({ request: requestCopy, collectionUid, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }));
-        request.oauth2Credentials = { credentials, url: oauth2Url, collectionUid, credentialsId, debugInfo, folderUid: request.oauth2Credentials?.folderUid };
+        ({
+          credentials,
+          url: oauth2Url,
+          credentialsId,
+          debugInfo
+        } = await getOAuth2TokenUsingClientCredentials({
+          request: requestCopy,
+          collectionUid,
+          certsAndProxyConfigForTokenUrl,
+          certsAndProxyConfigForRefreshUrl
+        }));
+        request.oauth2Credentials = {
+          credentials,
+          url: oauth2Url,
+          collectionUid,
+          credentialsId,
+          debugInfo,
+          folderUid: request.oauth2Credentials?.folderUid
+        };
         {
           const tokenValue = tokenSource === 'id_token' ? credentials?.id_token : credentials?.access_token;
           if (tokenPlacement == 'header' && tokenValue) {
@@ -273,14 +351,31 @@ const configureRequest = async (
               const url = new URL(request.url);
               url.searchParams.set(tokenQueryKey, tokenValue);
               request.url = url.toString();
-            } catch (error) { }
+            } catch (error) {}
           }
         }
         break;
       case 'password':
         interpolateVars(requestCopy, envVars, runtimeVariables, processEnvVars, promptVariables);
-        ({ credentials, url: oauth2Url, credentialsId, debugInfo } = await getOAuth2TokenUsingPasswordCredentials({ request: requestCopy, collectionUid, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }));
-        request.oauth2Credentials = { credentials, url: oauth2Url, collectionUid, credentialsId, debugInfo, folderUid: request.oauth2Credentials?.folderUid };
+        ({
+          credentials,
+          url: oauth2Url,
+          credentialsId,
+          debugInfo
+        } = await getOAuth2TokenUsingPasswordCredentials({
+          request: requestCopy,
+          collectionUid,
+          certsAndProxyConfigForTokenUrl,
+          certsAndProxyConfigForRefreshUrl
+        }));
+        request.oauth2Credentials = {
+          credentials,
+          url: oauth2Url,
+          collectionUid,
+          credentialsId,
+          debugInfo,
+          folderUid: request.oauth2Credentials?.folderUid
+        };
         {
           const tokenValue = tokenSource === 'id_token' ? credentials?.id_token : credentials?.access_token;
           if (tokenPlacement == 'header' && tokenValue) {
@@ -290,7 +385,7 @@ const configureRequest = async (
               const url = new URL(request.url);
               url.searchParams.set(tokenQueryKey, tokenValue);
               request.url = url.toString();
-            } catch (error) { }
+            } catch (error) {}
           }
         }
         break;
@@ -315,19 +410,18 @@ const configureRequest = async (
   if (preferencesUtil.shouldSendCookies()) {
     const cookieString = getCookieStringForUrl(request.url);
     if (cookieString && typeof cookieString === 'string' && cookieString.length) {
-      const existingCookieHeaderName = Object.keys(request.headers).find(
-        (name) => name.toLowerCase() === 'cookie'
-      );
+      const existingCookieHeaderName = Object.keys(request.headers).find((name) => name.toLowerCase() === 'cookie');
       const existingCookieString = existingCookieHeaderName ? request.headers[existingCookieHeaderName] : '';
 
       // Helper function to parse cookies into an object
-      const parseCookies = (str) => str.split(';').reduce((cookies, cookie) => {
-        const [name, ...rest] = cookie.split('=');
-        if (name && name.trim()) {
-          cookies[name.trim()] = rest.join('=').trim();
-        }
-        return cookies;
-      }, {});
+      const parseCookies = (str) =>
+        str.split(';').reduce((cookies, cookie) => {
+          const [name, ...rest] = cookie.split('=');
+          if (name && name.trim()) {
+            cookies[name.trim()] = rest.join('=').trim();
+          }
+          return cookies;
+        }, {});
 
       const mergedCookies = {
         ...parseCookies(existingCookieString),
@@ -462,7 +556,7 @@ const registerNetworkIpc = (mainWindow) => {
     mainWindow.webContents.send(channel, {
       type: `${scriptType}-script-execution`,
       ...basePayload,
-      errorMessage: error ? (error.message || `An error occurred in ${scriptType.replace('-', ' ')} script`) : null,
+      errorMessage: error ? error.message || `An error occurred in ${scriptType.replace('-', ' ')} script` : null,
       errorContext
     });
   };
@@ -473,13 +567,13 @@ const registerNetworkIpc = (mainWindow) => {
     }
 
     const descriptionMap = {
-      'test': 'Test Script Error',
+      test: 'Test Script Error',
       'post-response': 'Post-Response Script Error',
       'pre-request': 'Pre-Request Script Error'
     };
 
     const messageMap = {
-      'test': 'An error occurred while executing the test script.',
+      test: 'An error occurred while executing the test script.',
       'post-response': 'An error occurred while executing the post-response script.',
       'pre-request': 'An error occurred while executing the pre-request script.'
     };
@@ -570,7 +664,11 @@ const registerNetworkIpc = (mainWindow) => {
 
       collection.globalEnvironmentVariables = scriptResult.globalEnvironmentVariables;
 
-      resetOauth2Credentials({ oauth2CredentialsToReset: scriptResult.oauth2CredentialsToReset, request, collectionUid });
+      resetOauth2Credentials({
+        oauth2CredentialsToReset: scriptResult.oauth2CredentialsToReset,
+        request,
+        collectionUid
+      });
 
       const domainsWithCookies = await getDomainsWithCookies();
       mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookies)));
@@ -725,7 +823,11 @@ const registerNetworkIpc = (mainWindow) => {
 
       collection.globalEnvironmentVariables = scriptResult.globalEnvironmentVariables;
 
-      resetOauth2Credentials({ oauth2CredentialsToReset: scriptResult.oauth2CredentialsToReset, request, collectionUid });
+      resetOauth2Credentials({
+        oauth2CredentialsToReset: scriptResult.oauth2CredentialsToReset,
+        request,
+        collectionUid
+      });
 
       const domainsWithCookiesPost = await getDomainsWithCookies();
       mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookiesPost)));
@@ -733,7 +835,14 @@ const registerNetworkIpc = (mainWindow) => {
     return scriptResult;
   };
 
-  const runRequest = async ({ item, collection, envVars, processEnvVars, runtimeVariables, runInBackground = false }) => {
+  const runRequest = async ({
+    item,
+    collection,
+    envVars,
+    processEnvVars,
+    runtimeVariables,
+    runInBackground = false
+  }) => {
     const collectionUid = collection.uid;
     const collectionPath = collection.pathname;
     const cancelTokenUid = uuid();
@@ -749,20 +858,28 @@ const registerNetworkIpc = (mainWindow) => {
         }
         const _item = cloneDeep(findItemInCollectionByPathname(collection, itemPathname));
         if (_item) {
-          const res = await runRequest({ item: _item, collection, envVars, processEnvVars, runtimeVariables, runInBackground: true });
+          const res = await runRequest({
+            item: _item,
+            collection,
+            envVars,
+            processEnvVars,
+            runtimeVariables,
+            runInBackground: true
+          });
           resolve(res);
         }
         reject(`bru.runRequest: invalid request path - ${itemPathname}`);
       });
     };
 
-    !runInBackground && mainWindow.webContents.send('main:run-request-event', {
-      type: 'request-queued',
-      requestUid,
-      collectionUid,
-      itemUid: item.uid,
-      cancelTokenUid
-    });
+    !runInBackground &&
+      mainWindow.webContents.send('main:run-request-event', {
+        type: 'request-queued',
+        requestUid,
+        collectionUid,
+        itemUid: item.uid,
+        cancelTokenUid
+      });
 
     const abortController = new AbortController();
     const request = await prepareRequest(item, collection, abortController);
@@ -829,14 +946,15 @@ const registerNetworkIpc = (mainWindow) => {
         });
       }
 
-      !runInBackground && notifyScriptExecution({
-        channel: 'main:run-request-event',
-        basePayload: { requestUid, collectionUid, itemUid: item.uid },
-        scriptType: 'pre-request',
-        error: preRequestError,
-        collectionPath,
-        scriptMetadata: request.script?.reqMetadata
-      });
+      !runInBackground &&
+        notifyScriptExecution({
+          channel: 'main:run-request-event',
+          basePayload: { requestUid, collectionUid, itemUid: item.uid },
+          scriptType: 'pre-request',
+          error: preRequestError,
+          collectionPath,
+          scriptMetadata: request.script?.reqMetadata
+        });
 
       if (preRequestError) {
         return Promise.reject(preRequestError);
@@ -871,14 +989,15 @@ const registerNetworkIpc = (mainWindow) => {
         timestamp: Date.now()
       };
 
-      !runInBackground && mainWindow.webContents.send('main:run-request-event', {
-        type: 'request-sent',
-        requestSent,
-        collectionUid,
-        itemUid: item.uid,
-        requestUid,
-        cancelTokenUid
-      });
+      !runInBackground &&
+        mainWindow.webContents.send('main:run-request-event', {
+          type: 'request-sent',
+          requestSent,
+          collectionUid,
+          itemUid: item.uid,
+          requestUid,
+          cancelTokenUid
+        });
 
       if (request.oauth2Credentials?.credentials && request.oauth2Credentials?.credentialsId) {
         mainWindow.webContents.send('main:credentials-update', {
@@ -886,7 +1005,9 @@ const registerNetworkIpc = (mainWindow) => {
           url: request?.oauth2Credentials?.url,
           collectionUid,
           credentialsId: request?.oauth2Credentials?.credentialsId,
-          ...(request?.oauth2Credentials?.folderUid ? { folderUid: request.oauth2Credentials.folderUid } : { itemUid: item.uid }),
+          ...(request?.oauth2Credentials?.folderUid
+            ? { folderUid: request.oauth2Credentials.folderUid }
+            : { itemUid: item.uid }),
           debugInfo: request?.oauth2Credentials?.debugInfo
         });
 
@@ -976,7 +1097,8 @@ const registerNetworkIpc = (mainWindow) => {
         let postResponseScriptResult = null;
         let postResponseError = null;
         try {
-          postResponseScriptResult = await runPostResponse(request,
+          postResponseScriptResult = await runPostResponse(
+            request,
             response,
             requestUid,
             envVars,
@@ -986,7 +1108,8 @@ const registerNetworkIpc = (mainWindow) => {
             runtimeVariables,
             processEnvVars,
             scriptingConfig,
-            runRequestByItemPathname);
+            runRequestByItemPathname
+          );
         } catch (error) {
           console.error('Post-response script error:', error);
           postResponseError = error;
@@ -999,7 +1122,11 @@ const registerNetworkIpc = (mainWindow) => {
           postResponseScriptResult = postResponseError.partialResults;
         }
 
-        postResponseScriptResult = appendScriptErrorResult('post-response', postResponseScriptResult, postResponseError);
+        postResponseScriptResult = appendScriptErrorResult(
+          'post-response',
+          postResponseScriptResult,
+          postResponseError
+        );
 
         if (postResponseScriptResult?.results) {
           mainWindow.webContents.send('main:run-request-event', {
@@ -1011,34 +1138,38 @@ const registerNetworkIpc = (mainWindow) => {
           });
         }
 
-        !runInBackground && notifyScriptExecution({
-          channel: 'main:run-request-event',
-          basePayload: { requestUid, collectionUid, itemUid: item.uid },
-          scriptType: 'post-response',
-          error: postResponseError,
-          itemPathname: item.pathname,
-          collectionPath,
-          scriptMetadata: request.script?.resMetadata
-        });
+        !runInBackground &&
+          notifyScriptExecution({
+            channel: 'main:run-request-event',
+            basePayload: { requestUid, collectionUid, itemUid: item.uid },
+            scriptType: 'post-response',
+            error: postResponseError,
+            itemPathname: item.pathname,
+            collectionPath,
+            scriptMetadata: request.script?.resMetadata
+          });
 
         // run assertions
         const assertions = get(request, 'assertions');
         if (assertions) {
           const assertRuntime = new AssertRuntime({ runtime: scriptingConfig?.runtime });
-          const results = assertRuntime.runAssertions(assertions,
+          const results = assertRuntime.runAssertions(
+            assertions,
             request,
             response,
             envVars,
             runtimeVariables,
-            processEnvVars);
+            processEnvVars
+          );
 
-          !runInBackground && mainWindow.webContents.send('main:run-request-event', {
-            type: 'assertion-results',
-            results: results,
-            itemUid: item.uid,
-            requestUid,
-            collectionUid
-          });
+          !runInBackground &&
+            mainWindow.webContents.send('main:run-request-event', {
+              type: 'assertion-results',
+              results: results,
+              itemUid: item.uid,
+              requestUid,
+              collectionUid
+            });
         }
 
         const testFile = get(request, 'tests');
@@ -1049,7 +1180,8 @@ const registerNetworkIpc = (mainWindow) => {
           let testError = null;
 
           try {
-            testResults = await testRuntime.runTests(decomment(testFile, { space: true }),
+            testResults = await testRuntime.runTests(
+              decomment(testFile, { space: true }),
               request,
               response,
               envVars,
@@ -1059,7 +1191,8 @@ const registerNetworkIpc = (mainWindow) => {
               processEnvVars,
               scriptingConfig,
               runRequestByItemPathname,
-              collectionName);
+              collectionName
+            );
           } catch (error) {
             testError = error;
 
@@ -1079,13 +1212,14 @@ const registerNetworkIpc = (mainWindow) => {
 
           testResults = appendScriptErrorResult('test', testResults, testError);
 
-          !runInBackground && mainWindow.webContents.send('main:run-request-event', {
-            type: 'test-results',
-            results: testResults.results,
-            itemUid: item.uid,
-            requestUid,
-            collectionUid
-          });
+          !runInBackground &&
+            mainWindow.webContents.send('main:run-request-event', {
+              type: 'test-results',
+              results: testResults.results,
+              itemUid: item.uid,
+              requestUid,
+              collectionUid
+            });
 
           mainWindow.webContents.send('main:script-environment-update', {
             envVariables: testResults.envVariables,
@@ -1105,17 +1239,22 @@ const registerNetworkIpc = (mainWindow) => {
 
           collection.globalEnvironmentVariables = testResults.globalEnvironmentVariables;
 
-          resetOauth2Credentials({ oauth2CredentialsToReset: testResults.oauth2CredentialsToReset, request, collectionUid });
-
-          !runInBackground && notifyScriptExecution({
-            channel: 'main:run-request-event',
-            basePayload: { requestUid, collectionUid, itemUid: item.uid },
-            scriptType: 'test',
-            error: testError,
-            itemPathname: item.pathname,
-            collectionPath,
-            scriptMetadata: request.testsMetadata
+          resetOauth2Credentials({
+            oauth2CredentialsToReset: testResults.oauth2CredentialsToReset,
+            request,
+            collectionUid
           });
+
+          !runInBackground &&
+            notifyScriptExecution({
+              channel: 'main:run-request-event',
+              basePayload: { requestUid, collectionUid, itemUid: item.uid },
+              scriptType: 'test',
+              error: testError,
+              itemPathname: item.pathname,
+              collectionPath,
+              scriptMetadata: request.testsMetadata
+            });
 
           const domainsWithCookiesTest = await getDomainsWithCookies();
           mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookiesTest)));
@@ -1164,8 +1303,15 @@ const registerNetworkIpc = (mainWindow) => {
    * @param {*} request - request object built by prepareRequest
    * @returns {string[]} An array of extracted prompt variables
    */
-  const extractPromptVariablesForRequest = async ({ request, collection, envVars: collectionEnvironmentVars, runtimeVariables, processEnvVars }) => {
-    const { globalEnvironmentVariables, collectionVariables, folderVariables, requestVariables, ...requestObj } = request;
+  const extractPromptVariablesForRequest = async ({
+    request,
+    collection,
+    envVars: collectionEnvironmentVars,
+    runtimeVariables,
+    processEnvVars
+  }) => {
+    const { globalEnvironmentVariables, collectionVariables, folderVariables, requestVariables, ...requestObj } =
+      request;
 
     const allVariables = {
       ...globalEnvironmentVariables,
@@ -1206,7 +1352,14 @@ const registerNetworkIpc = (mainWindow) => {
     const collectionUid = collection.uid;
     const envVars = getEnvVars(environment);
     const processEnvVars = getProcessEnvVars(collectionUid);
-    const response = await runRequest({ item, collection, envVars, processEnvVars, runtimeVariables, runInBackground: false });
+    const response = await runRequest({
+      item,
+      collection,
+      envVars,
+      processEnvVars,
+      runtimeVariables,
+      runInBackground: false
+    });
     if (response.stream) {
       const stream = response.stream;
       response.stream = { running: response.status >= 200 && response.status < 300 };
@@ -1270,7 +1423,8 @@ const registerNetworkIpc = (mainWindow) => {
   ipcMain.handle('fetch-gql-schema', fetchGqlSchemaHandler);
 
   ipcMain.handle(
-    'renderer:run-collection-folder', async (event, folder, collection, environment, runtimeVariables, recursive, delay, tags, selectedRequestUids) => {
+    'renderer:run-collection-folder',
+    async (event, folder, collection, environment, runtimeVariables, recursive, delay, tags, selectedRequestUids) => {
       const collectionUid = collection.uid;
       const collectionPath = collection.pathname;
       const folderUid = folder ? folder.uid : null;
@@ -1301,7 +1455,14 @@ const registerNetworkIpc = (mainWindow) => {
           }
           const _item = cloneDeep(findItemInCollectionByPathname(collection, itemPathname));
           if (_item) {
-            const res = await runRequest({ item: _item, collection, envVars, processEnvVars, runtimeVariables, runInBackground: true });
+            const res = await runRequest({
+              item: _item,
+              collection,
+              envVars,
+              processEnvVars,
+              runtimeVariables,
+              runInBackground: true
+            });
             resolve(res);
           }
           reject(`bru.runRequest: invalid request path - ${itemPathname}`);
@@ -1416,7 +1577,13 @@ const registerNetworkIpc = (mainWindow) => {
 
           const requestUid = uuid();
 
-          const promptVars = await extractPromptVariablesForRequest({ request, collection, envVars, runtimeVariables, processEnvVars });
+          const promptVars = await extractPromptVariablesForRequest({
+            request,
+            collection,
+            envVars,
+            runtimeVariables,
+            processEnvVars
+          });
 
           if (promptVars.length > 0) {
             mainWindow.webContents.send('main:run-folder-event', {
@@ -1497,7 +1664,10 @@ const registerNetworkIpc = (mainWindow) => {
             });
 
             const domainsWithCookiesPreRequest = await getDomainsWithCookies();
-            mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookiesPreRequest)));
+            mainWindow.webContents.send(
+              'main:cookies-update',
+              safeParseJSON(safeStringifyJSON(domainsWithCookiesPreRequest))
+            );
 
             if (preRequestError) {
               throw preRequestError;
@@ -1576,7 +1746,9 @@ const registerNetworkIpc = (mainWindow) => {
                 url: request?.oauth2Credentials?.url,
                 collectionUid,
                 credentialsId: request?.oauth2Credentials?.credentialsId,
-                ...(request?.oauth2Credentials?.folderUid ? { folderUid: request.oauth2Credentials.folderUid } : { itemUid: item.uid }),
+                ...(request?.oauth2Credentials?.folderUid
+                  ? { folderUid: request.oauth2Credentials.folderUid }
+                  : { itemUid: item.uid }),
                 debugInfo: request?.oauth2Credentials?.debugInfo
               });
 
@@ -1642,7 +1814,9 @@ const registerNetworkIpc = (mainWindow) => {
                   data: response.data,
                   responseTime: response.responseTime,
                   timeline: response.timeline,
-                  url: response.request ? response.request.protocol + '//' + response.request.host + response.request.path : null
+                  url: response.request
+                    ? response.request.protocol + '//' + response.request.host + response.request.path
+                    : null
                 },
                 ...eventData
               });
@@ -1720,7 +1894,11 @@ const registerNetworkIpc = (mainWindow) => {
               postResponseScriptResult = postResponseError.partialResults;
             }
 
-            postResponseScriptResult = appendScriptErrorResult('post-response', postResponseScriptResult, postResponseError);
+            postResponseScriptResult = appendScriptErrorResult(
+              'post-response',
+              postResponseScriptResult,
+              postResponseError
+            );
 
             notifyScriptExecution({
               channel: 'main:run-folder-event',
@@ -1733,7 +1911,10 @@ const registerNetworkIpc = (mainWindow) => {
             });
 
             const domainsWithCookiesPostResponse = await getDomainsWithCookies();
-            mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookiesPostResponse)));
+            mainWindow.webContents.send(
+              'main:cookies-update',
+              safeParseJSON(safeStringifyJSON(domainsWithCookiesPostResponse))
+            );
 
             if (postResponseScriptResult?.nextRequestName !== undefined) {
               nextRequestName = postResponseScriptResult.nextRequestName;
@@ -1835,7 +2016,11 @@ const registerNetworkIpc = (mainWindow) => {
 
               collection.globalEnvironmentVariables = testResults.globalEnvironmentVariables;
 
-              resetOauth2Credentials({ oauth2CredentialsToReset: testResults.oauth2CredentialsToReset, request, collectionUid });
+              resetOauth2Credentials({
+                oauth2CredentialsToReset: testResults.oauth2CredentialsToReset,
+                request,
+                collectionUid
+              });
 
               notifyScriptExecution({
                 channel: 'main:run-folder-event',
@@ -1848,7 +2033,10 @@ const registerNetworkIpc = (mainWindow) => {
               });
 
               const domainsWithCookiesTest = await getDomainsWithCookies();
-              mainWindow.webContents.send('main:cookies-update', safeParseJSON(safeStringifyJSON(domainsWithCookiesTest)));
+              mainWindow.webContents.send(
+                'main:cookies-update',
+                safeParseJSON(safeStringifyJSON(domainsWithCookiesTest))
+              );
             }
           } catch (error) {
             mainWindow.webContents.send('main:run-folder-event', {
@@ -1883,7 +2071,7 @@ const registerNetworkIpc = (mainWindow) => {
             if (nextRequestIdx >= 0) {
               currentRequestIndex = nextRequestIdx;
             } else {
-              console.error('Could not find request with name \'' + nextRequestName + '\'');
+              console.error("Could not find request with name '" + nextRequestName + "'");
               currentRequestIndex++;
             }
           } else {
@@ -1931,7 +2119,7 @@ const registerNetworkIpc = (mainWindow) => {
         try {
           const disposition = contentDispositionParser.parse(contentDisposition);
           return disposition && disposition.parameters['filename'];
-        } catch (error) { }
+        } catch (error) {}
       };
 
       const getFileNameFromUrlPath = () => {

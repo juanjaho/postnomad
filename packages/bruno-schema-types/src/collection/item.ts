@@ -3,13 +3,7 @@ import type { Request } from '../requests';
 import type { Example } from './examples';
 import type { FolderRoot } from './folder';
 
-export type ItemType
-  = | 'http-request'
-    | 'graphql-request'
-    | 'folder'
-    | 'js'
-    | 'grpc-request'
-    | 'ws-request';
+export type ItemType = 'http-request' | 'graphql-request' | 'folder' | 'js' | 'grpc-request' | 'ws-request';
 
 export interface HttpItemSettings {
   encodeUrl?: boolean | null;

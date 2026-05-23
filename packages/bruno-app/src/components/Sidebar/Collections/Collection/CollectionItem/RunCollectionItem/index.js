@@ -17,7 +17,8 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
   const [delay, setDelay] = useState('');
 
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
-  const isCollectionRunInProgress = collection?.runnerResult?.info?.status && (collection?.runnerResult?.info?.status !== 'ended');
+  const isCollectionRunInProgress =
+    collection?.runnerResult?.info?.status && collection?.runnerResult?.info?.status !== 'ended';
 
   // tags for the collection run
   const tags = get(collection, 'runnerTags', { include: [], exclude: [] });
@@ -31,7 +32,9 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
       })
     );
     if (!isCollectionRunInProgress) {
-      dispatch(runCollectionFolder(collection.uid, item ? item.uid : null, recursive, delay ? Number(delay) : null, tags));
+      dispatch(
+        runCollectionFolder(collection.uid, item ? item.uid : null, recursive, delay ? Number(delay) : null, tags)
+      );
     }
     onClose();
   };
@@ -50,11 +53,19 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
 
   const isFolderLoading = areItemsLoading(item);
 
-  const requestItemsForRecursiveFolderRun = getRequestItemsForCollectionRun({ recursive: true, tags, items: item ? item.items : collection.items });
+  const requestItemsForRecursiveFolderRun = getRequestItemsForCollectionRun({
+    recursive: true,
+    tags,
+    items: item ? item.items : collection.items
+  });
   const totalRequestItemsCountForRecursiveFolderRun = requestItemsForRecursiveFolderRun.length;
   const shouldDisableRecursiveFolderRun = totalRequestItemsCountForRecursiveFolderRun <= 0;
 
-  const requestItemsForFolderRun = getRequestItemsForCollectionRun({ recursive: false, tags, items: item ? item.items : collection.items });
+  const requestItemsForFolderRun = getRequestItemsForCollectionRun({
+    recursive: false,
+    tags,
+    items: item ? item.items : collection.items
+  });
   const totalRequestItemsCountForFolderRun = requestItemsForFolderRun.length;
   const shouldDisableFolderRun = totalRequestItemsCountForFolderRun <= 0;
 
@@ -71,15 +82,21 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
             <span className="font-medium">Recursive Run</span>
             <span className="ml-1 text-xs">({totalRequestItemsCountForRecursiveFolderRun} requests)</span>
           </div>
-          <div className={`description ${isFolderLoading ? 'mb-2' : 'mb-6'}`}>This will run all the requests in this folder and all its subfolders.</div>
+          <div className={`description ${isFolderLoading ? 'mb-2' : 'mb-6'}`}>
+            This will run all the requests in this folder and all its subfolders.
+          </div>
           {isFolderLoading ? <div className="mb-8 warning">Requests in this folder are still loading.</div> : null}
-          {isCollectionRunInProgress ? <div className="mb-6 warning">A Collection Run is already in progress.</div> : null}
+          {isCollectionRunInProgress ? (
+            <div className="mb-6 warning">A Collection Run is already in progress.</div>
+          ) : null}
 
           <hr className="divider" />
 
           {/* Timings */}
           <div className="flex flex-col items-start gap-2 mb-8">
-            <label htmlFor="runner-delay" className="block text-sm">Delay between requests (ms)</label>
+            <label htmlFor="runner-delay" className="block text-sm">
+              Delay between requests (ms)
+            </label>
             <input
               id="runner-delay"
               type="number"
@@ -101,24 +118,25 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
             <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-3">
               Cancel
             </Button>
-            {
-              isCollectionRunInProgress
-                ? (
-                    <Button type="submit" onClick={handleViewRunner}>
-                      View Run
-                    </Button>
-                  )
-                : (
-                    <>
-                      <Button type="submit" disabled={shouldDisableRecursiveFolderRun} onClick={() => onSubmit(true)} className="mr-3">
-                        Recursive Run
-                      </Button>
-                      <Button type="submit" disabled={shouldDisableFolderRun} onClick={() => onSubmit(false)}>
-                        Run
-                      </Button>
-                    </>
-                  )
-            }
+            {isCollectionRunInProgress ? (
+              <Button type="submit" onClick={handleViewRunner}>
+                View Run
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="submit"
+                  disabled={shouldDisableRecursiveFolderRun}
+                  onClick={() => onSubmit(true)}
+                  className="mr-3"
+                >
+                  Recursive Run
+                </Button>
+                <Button type="submit" disabled={shouldDisableFolderRun} onClick={() => onSubmit(false)}>
+                  Run
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </Modal>

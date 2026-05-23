@@ -102,7 +102,7 @@ const StyledWrapper = styled.div`
       font-size: ${(props) => props.theme.font.size.base};
       color: ${(props) => props.theme.text};
 
-      input[type="checkbox"] {
+      input[type='checkbox'] {
         cursor: pointer;
         margin: 0;
       }

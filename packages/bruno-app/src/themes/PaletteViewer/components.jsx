@@ -31,7 +31,9 @@ export const ColorSwatch = ({ name, color, textColor = '#cccccc', size = 56 }) =
     />
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: '10px', fontWeight: 600, color: textColor }}>{formatName(name)}</div>
-      <div style={{ fontSize: '9px', color: textColor, opacity: 0.7, fontFamily: 'monospace' }}>{formatColor(color)}</div>
+      <div style={{ fontSize: '9px', color: textColor, opacity: 0.7, fontFamily: 'monospace' }}>
+        {formatColor(color)}
+      </div>
     </div>
   </div>
 );

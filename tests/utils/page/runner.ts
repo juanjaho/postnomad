@@ -46,7 +46,10 @@ export const getRunnerResultCounts = async (page: Page) => {
  */
 export const openRunnerTab = async (page: Page, collectionName: string) => {
   await test.step(`Open runner tab for "${collectionName}"`, async () => {
-    const collectionContainer = page.getByTestId('collections').locator('.collection-name').filter({ hasText: collectionName });
+    const collectionContainer = page
+      .getByTestId('collections')
+      .locator('.collection-name')
+      .filter({ hasText: collectionName });
     await collectionContainer.waitFor({ state: 'visible' });
 
     const actionsContainer = collectionContainer.locator('.collection-actions');
@@ -77,7 +80,10 @@ export const openRunnerTab = async (page: Page, collectionName: string) => {
 export const runCollection = async (page: Page, collectionName: string) => {
   await test.step(`Run collection "${collectionName}"`, async () => {
     // Ensure collection is visible and loaded (scope to sidebar)
-    const collectionContainer = page.getByTestId('collections').locator('.collection-name').filter({ hasText: collectionName });
+    const collectionContainer = page
+      .getByTestId('collections')
+      .locator('.collection-name')
+      .filter({ hasText: collectionName });
     await collectionContainer.waitFor({ state: 'visible' });
 
     // Open collection actions menu - hover first to reveal the hidden actions button
@@ -98,7 +104,10 @@ export const runCollection = async (page: Page, collectionName: string) => {
     const locators = buildRunnerLocators(page);
 
     // Check if Reset button is visible (means there are existing results)
-    const resetVisible = await locators.resetButton().isVisible({ timeout: 1000 }).catch(() => false);
+    const resetVisible = await locators
+      .resetButton()
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
     if (resetVisible) {
       await locators.resetButton().click();
       // Wait for the Run Collection button to become visible after reset
@@ -150,7 +159,10 @@ export const runFolder = async (page: Page, collectionName: string, folderPath: 
     }
 
     // The target folder row is the last one we found — hover to reveal menu
-    const targetRow = scope.locator('.collection-item-name').filter({ hasText: folderPath[folderPath.length - 1] }).first();
+    const targetRow = scope
+      .locator('.collection-item-name')
+      .filter({ hasText: folderPath[folderPath.length - 1] })
+      .first();
     await targetRow.hover();
 
     // Click the menu icon
@@ -186,12 +198,19 @@ export const setSandboxMode = async (page: Page, collectionName: string, mode: '
     const sandboxLocators = buildSandboxLocators(page);
 
     // Click on the collection name in the sidebar
-    const sidebarCollection = page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: collectionName }).first();
+    const sidebarCollection = page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: collectionName })
+      .first();
     await sidebarCollection.waitFor({ state: 'visible' });
     await sidebarCollection.click();
 
     // Check if there's already a mode selected - if so, we need to click the badge to open settings tab
-    const sandboxBadgeVisible = await sandboxLocators.sandboxModeSelector().isVisible().catch(() => false);
+    const sandboxBadgeVisible = await sandboxLocators
+      .sandboxModeSelector()
+      .isVisible()
+      .catch(() => false);
     // If a badge exists, click it to open the security settings tab
     if (sandboxBadgeVisible) {
       await sandboxLocators.sandboxModeSelector().click();
@@ -203,8 +222,14 @@ export const setSandboxMode = async (page: Page, collectionName: string, mode: '
 
     // Wait for security settings form to be visible - wait for either radio button
     await Promise.race([
-      sandboxLocators.safeModeRadio().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {}),
-      sandboxLocators.developerModeRadio().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {})
+      sandboxLocators
+        .safeModeRadio()
+        .waitFor({ state: 'visible', timeout: 10000 })
+        .catch(() => {}),
+      sandboxLocators
+        .developerModeRadio()
+        .waitFor({ state: 'visible', timeout: 10000 })
+        .catch(() => {})
     ]);
 
     if (mode === 'developer') {
@@ -225,13 +250,15 @@ export const setSandboxMode = async (page: Page, collectionName: string, mode: '
  * @param expected - Expected counts
  * @returns void
  */
-export const validateRunnerResults = async (page: Page,
+export const validateRunnerResults = async (
+  page: Page,
   expected: {
     totalRequests?: number;
     passed?: number;
     failed?: number;
     skipped?: number;
-  }) => {
+  }
+) => {
   const { totalRequests, passed, failed, skipped } = await getRunnerResultCounts(page);
 
   if (expected.totalRequests !== undefined) {

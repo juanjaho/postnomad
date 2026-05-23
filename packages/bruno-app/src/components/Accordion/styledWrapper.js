@@ -15,7 +15,8 @@ const AccordionHeader = styled.button`
   cursor: pointer;
   font-weight: 500;
 
-  &.open, &:hover {
+  &.open,
+  &:hover {
     background-color: ${(props) => props.theme.plainGrid.hoverBg};
   }
 `;

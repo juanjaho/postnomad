@@ -29,20 +29,22 @@ const getSimpleGitInstanceForPath = (gitRootPath) => {
   return git;
 };
 
-const handleGitOutput = ({ win, processUid, sendStdout = false }) => (command, stdout, stderr) => {
-  const sendProgressUpdate = (data) => {
-    win.webContents.send('main:update-git-operation-progress', {
-      uid: processUid,
-      data: data.toString()
-    });
+const handleGitOutput =
+  ({ win, processUid, sendStdout = false }) =>
+  (command, stdout, stderr) => {
+    const sendProgressUpdate = (data) => {
+      win.webContents.send('main:update-git-operation-progress', {
+        uid: processUid,
+        data: data.toString()
+      });
+    };
+
+    stderr.on('data', sendProgressUpdate);
+
+    if (sendStdout) {
+      stdout.on('data', sendProgressUpdate);
+    }
   };
-
-  stderr.on('data', sendProgressUpdate);
-
-  if (sendStdout) {
-    stdout.on('data', sendProgressUpdate);
-  }
-};
 
 const findGitRootPath = (collectionPath) => {
   const gitPath = path.join(collectionPath, '.git');
@@ -122,9 +124,8 @@ const unstageChanges = async (gitRootPath, files) => {
         const relativePath = path.relative(gitRootPath, fullPath);
         // Normalize path separators for cross-platform compatibility
         const normalizedPath = relativePath.replace(/\\/g, '/');
-        return status.files.some((file) =>
-          file.path === normalizedPath
-          && (file.index === 'M' || file.index === 'A' || file.index === 'D')
+        return status.files.some(
+          (file) => file.path === normalizedPath && (file.index === 'M' || file.index === 'A' || file.index === 'D')
         );
       });
 
@@ -170,8 +171,7 @@ const discardChanges = async (gitRootPath, filePaths) => {
 
         filePaths.forEach((filePath) => {
           // Normalize paths for comparison
-          const relativePath = filePath.startsWith(gitRootPath)
-            ? path.relative(gitRootPath, filePath) : filePath;
+          const relativePath = filePath.startsWith(gitRootPath) ? path.relative(gitRootPath, filePath) : filePath;
 
           // Normalize path separators for cross-platform compatibility
           const normalizedPath = relativePath.replace(/\\/g, '/');
@@ -311,14 +311,12 @@ const getUnstagedFileDiff = async (gitRootPath, filePath) => {
             return;
           }
 
-          const prefixedLines = content
-            .split('\n')
-            .map((line) => `+${line}`);
+          const prefixedLines = content.split('\n').map((line) => `+${line}`);
           const lineCount = prefixedLines.length;
           const lines = prefixedLines.join('\n');
 
-          let diff
-            = [
+          let diff =
+            [
               `diff --git a/${filePath} b/${filePath}`,
               `new file mode 100644`,
               `--- a/${filePath}`,
@@ -449,12 +447,7 @@ const getCollectionGitLogs = async (gitRootPath) => {
 
   try {
     // Get logs with shortstat for file change info
-    const result = await git.raw([
-      'log',
-      '--format=%H|%s|%an|%aI',
-      '--shortstat',
-      '-n', '500'
-    ]);
+    const result = await git.raw(['log', '--format=%H|%s|%an|%aI', '--shortstat', '-n', '500']);
 
     if (!result || !result.trim()) {
       return [];
@@ -610,13 +603,15 @@ const pullGitChanges = async (win, data) => {
   }
   return new Promise((resolve, reject) => {
     const git = getSimpleGitInstanceForPath(gitRootPath);
-    git.outputHandler(handleGitOutput({ win, processUid, sendStdout: true })).pull(remote, remoteBranch, [strategy], (err, res) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(res);
-      }
-    });
+    git
+      .outputHandler(handleGitOutput({ win, processUid, sendStdout: true }))
+      .pull(remote, remoteBranch, [strategy], (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
   });
 };
 
@@ -659,8 +654,8 @@ async function getChangedFilesInCollectionGit(_gitRootPath, _collectionPath) {
         status.files
           .filter(
             (file) =>
-              (file.index === 'M' || file.index === 'A' || file.index === 'D')
-              && (file.working_dir === 'M' || file.working_dir === ' ')
+              (file.index === 'M' || file.index === 'A' || file.index === 'D') &&
+              (file.working_dir === 'M' || file.working_dir === ' ')
           )
           .map(async (file) => {
             return { path: file.path, type: 'staged', fileIndex: file.index, working_dir: file.working_dir };
@@ -668,9 +663,11 @@ async function getChangedFilesInCollectionGit(_gitRootPath, _collectionPath) {
       );
 
       const conflicted = await Promise.all(
-        status.files.filter((file) => file.index === 'U' || file.working_dir === 'U').map(async (file) => {
-          return { path: file.path, type: 'conflicted', fileIndex: file.index, working_dir: file.working_dir };
-        }) || []
+        status.files
+          .filter((file) => file.index === 'U' || file.working_dir === 'U')
+          .map(async (file) => {
+            return { path: file.path, type: 'conflicted', fileIndex: file.index, working_dir: file.working_dir };
+          }) || []
       );
 
       resolve({
@@ -725,7 +722,8 @@ const fetchRemotes = (gitRootPath) => {
   return new Promise((resolve, reject) => {
     if (!gitRootPath) return resolve([]);
     const git = getSimpleGitInstanceForPath(gitRootPath);
-    git.getRemotes(true)
+    git
+      .getRemotes(true)
       .then((remoteList) => {
         resolve(remoteList);
       })
@@ -951,10 +949,7 @@ const getAheadCount = async (gitRootPath) => {
 
 const getAheadBehindCount = async (gitRootPath) => {
   try {
-    const [behindStatus, aheadStatus] = await Promise.all([
-      getBehindCount(gitRootPath),
-      getAheadCount(gitRootPath)
-    ]);
+    const [behindStatus, aheadStatus] = await Promise.all([getBehindCount(gitRootPath), getAheadCount(gitRootPath)]);
 
     return {
       behind: behindStatus.behind,
@@ -1042,7 +1037,10 @@ const getCommitFiles = async (gitRootPath, commitHash) => {
         return;
       }
 
-      const lines = result.trim().split('\n').filter((line) => line.trim());
+      const lines = result
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       const files = [];
 
       for (const line of lines) {
@@ -1052,7 +1050,16 @@ const getCommitFiles = async (gitRootPath, commitHash) => {
           const [, status, filePath] = match;
           files.push({
             path: filePath,
-            status: status === 'A' ? 'added' : status === 'D' ? 'deleted' : status === 'M' ? 'modified' : status === 'R' ? 'renamed' : 'changed'
+            status:
+              status === 'A'
+                ? 'added'
+                : status === 'D'
+                  ? 'deleted'
+                  : status === 'M'
+                    ? 'modified'
+                    : status === 'R'
+                      ? 'renamed'
+                      : 'changed'
           });
         }
       }
@@ -1093,7 +1100,10 @@ const getCommitCompareFiles = async (gitRootPath, fromCommit, toCommit) => {
         return;
       }
 
-      const lines = result.trim().split('\n').filter((line) => line.trim());
+      const lines = result
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       const files = [];
 
       for (const line of lines) {
@@ -1103,7 +1113,16 @@ const getCommitCompareFiles = async (gitRootPath, fromCommit, toCommit) => {
           const [, status, filePath] = match;
           files.push({
             path: filePath,
-            status: status === 'A' ? 'added' : status === 'D' ? 'deleted' : status === 'M' ? 'modified' : status === 'R' ? 'renamed' : 'changed'
+            status:
+              status === 'A'
+                ? 'added'
+                : status === 'D'
+                  ? 'deleted'
+                  : status === 'M'
+                    ? 'modified'
+                    : status === 'R'
+                      ? 'renamed'
+                      : 'changed'
           });
         }
       }
@@ -1145,13 +1164,7 @@ const getFileGitHistory = async (gitRootPath, filePath) => {
   const git = getSimpleGitInstanceForPath(gitRootPath);
 
   try {
-    const result = await git.raw([
-      'log',
-      '--format=%H|%s|%an|%aI',
-      '--follow',
-      '-n', '100',
-      '--', filePath
-    ]);
+    const result = await git.raw(['log', '--format=%H|%s|%an|%aI', '--follow', '-n', '100', '--', filePath]);
 
     if (!result || !result.trim()) {
       return [];
@@ -1221,7 +1234,10 @@ const getStashStats = async (git, stashIndex) => {
     const trackedResult = await git.raw(['stash', 'show', '--numstat', `stash@{${stashIndex}}`]);
 
     if (trackedResult) {
-      const lines = trackedResult.trim().split('\n').filter((line) => line.trim());
+      const lines = trackedResult
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       filesChanged += lines.length;
 
       lines.forEach((line) => {
@@ -1241,10 +1257,18 @@ const getStashStats = async (git, stashIndex) => {
   try {
     // Get stats for untracked files (stored in stash^3)
     // First check if the third parent exists (untracked files commit)
-    const untrackedResult = await git.raw(['diff', '--numstat', '4b825dc642cb6eb9a060e54bf8d69288fbee4904', `stash@{${stashIndex}}^3`]);
+    const untrackedResult = await git.raw([
+      'diff',
+      '--numstat',
+      '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
+      `stash@{${stashIndex}}^3`
+    ]);
 
     if (untrackedResult) {
-      const lines = untrackedResult.trim().split('\n').filter((line) => line.trim());
+      const lines = untrackedResult
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       filesChanged += lines.length;
 
       lines.forEach((line) => {
@@ -1350,14 +1374,26 @@ const getStashFiles = async (gitRootPath, stashIndex) => {
     const trackedResult = await git.raw(['stash', 'show', '--name-status', `stash@{${stashIndex}}`]);
 
     if (trackedResult) {
-      const lines = trackedResult.trim().split('\n').filter((line) => line.trim());
+      const lines = trackedResult
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       for (const line of lines) {
         const match = line.match(/^([AMDRC])\t(.+)$/);
         if (match) {
           const [, status, filePath] = match;
           files.push({
             path: filePath,
-            status: status === 'A' ? 'added' : status === 'D' ? 'deleted' : status === 'M' ? 'modified' : status === 'R' ? 'renamed' : 'changed',
+            status:
+              status === 'A'
+                ? 'added'
+                : status === 'D'
+                  ? 'deleted'
+                  : status === 'M'
+                    ? 'modified'
+                    : status === 'R'
+                      ? 'renamed'
+                      : 'changed',
             isUntracked: false
           });
         }
@@ -1372,7 +1408,10 @@ const getStashFiles = async (gitRootPath, stashIndex) => {
     const untrackedResult = await git.raw(['ls-tree', '-r', '--name-only', `stash@{${stashIndex}}^3`]);
 
     if (untrackedResult) {
-      const lines = untrackedResult.trim().split('\n').filter((line) => line.trim());
+      const lines = untrackedResult
+        .trim()
+        .split('\n')
+        .filter((line) => line.trim());
       for (const filePath of lines) {
         files.push({
           path: filePath,
@@ -1660,7 +1699,8 @@ const getGitGraph = async (gitRootPath, branchName, limit = 50) => {
       'log',
       '--format=%H|%P|%s|%an|%aI',
       '--first-parent',
-      '-n', String(limit + 1), // Request one extra to check hasMore
+      '-n',
+      String(limit + 1), // Request one extra to check hasMore
       branchName || 'HEAD'
     ]);
 
@@ -1705,12 +1745,7 @@ const getGitGraph = async (gitRootPath, branchName, limit = 50) => {
       if (commit.isMerge && commit.parents[1]) {
         try {
           // Build git log command with --since to limit to main line time range
-          const logArgs = [
-            'log',
-            '--format=%H|%P|%s|%an|%aI',
-            '--first-parent',
-            '-n', '50'
-          ];
+          const logArgs = ['log', '--format=%H|%P|%s|%an|%aI', '--first-parent', '-n', '50'];
 
           // Only include commits since the oldest main line commit
           if (oldestMainCommitDate) {

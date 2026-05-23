@@ -90,9 +90,7 @@ const transformBrunoTypes = (obj, seen = new WeakSet()) => {
       case 'Set':
         // Transform Set to display values at top level with numeric indices
         if (Array.isArray(obj.__brunoValue)) {
-          return Object.fromEntries(
-            obj.__brunoValue.map((value, index) => [index, transformBrunoTypes(value, seen)])
-          );
+          return Object.fromEntries(obj.__brunoValue.map((value, index) => [index, transformBrunoTypes(value, seen)]));
         }
         return {};
       case 'Map':
@@ -197,9 +195,9 @@ const LogMessage = ({ message, args }) => {
 
   return (
     <span className="log-message">
-      {Array.isArray(formattedMessage) ? formattedMessage.map((item, index) => (
-        <span key={index}>{item} </span>
-      )) : formattedMessage}
+      {Array.isArray(formattedMessage)
+        ? formattedMessage.map((item, index) => <span key={index}>{item} </span>)
+        : formattedMessage}
     </span>
   );
 };
@@ -224,14 +222,12 @@ const FilterDropdown = ({ filters, logCounts, onFilterToggle, onToggleAll }) => 
 
   return (
     <div className="filter-dropdown" ref={dropdownRef}>
-      <button
-        className="filter-dropdown-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-        title="Filter logs by type"
-      >
+      <button className="filter-dropdown-trigger" onClick={() => setIsOpen(!isOpen)} title="Filter logs by type">
         <IconFilter size={16} strokeWidth={1.5} />
         <span className="filter-summary">
-          {activeFilters.length === Object.keys(filters).length ? 'All' : `${activeFilters.length}/${Object.keys(filters).length}`}
+          {activeFilters.length === Object.keys(filters).length
+            ? 'All'
+            : `${activeFilters.length}/${Object.keys(filters).length}`}
         </span>
         <IconChevronDown size={14} strokeWidth={1.5} />
       </button>
@@ -240,10 +236,7 @@ const FilterDropdown = ({ filters, logCounts, onFilterToggle, onToggleAll }) => 
         <div className="filter-dropdown-menu right">
           <div className="filter-dropdown-header">
             <span>Filter by Type</span>
-            <button
-              className="filter-toggle-all"
-              onClick={() => onToggleAll(!allFiltersEnabled)}
-            >
+            <button className="filter-toggle-all" onClick={() => onToggleAll(!allFiltersEnabled)}>
               {allFiltersEnabled ? 'Hide All' : 'Show All'}
             </button>
           </div>
@@ -290,14 +283,12 @@ const NetworkFilterDropdown = ({ filters, requestCounts, onFilterToggle, onToggl
 
   return (
     <div className="filter-dropdown" ref={dropdownRef}>
-      <button
-        className="filter-dropdown-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-        title="Filter requests by method"
-      >
+      <button className="filter-dropdown-trigger" onClick={() => setIsOpen(!isOpen)} title="Filter requests by method">
         <IconFilter size={16} strokeWidth={1.5} />
         <span className="filter-summary">
-          {activeFilters.length === Object.keys(filters).length ? 'All' : `${activeFilters.length}/${Object.keys(filters).length}`}
+          {activeFilters.length === Object.keys(filters).length
+            ? 'All'
+            : `${activeFilters.length}/${Object.keys(filters).length}`}
         </span>
         <IconChevronDown size={14} strokeWidth={1.5} />
       </button>
@@ -306,10 +297,7 @@ const NetworkFilterDropdown = ({ filters, requestCounts, onFilterToggle, onToggl
         <div className="filter-dropdown-menu right">
           <div className="filter-dropdown-header">
             <span>Filter by Method</span>
-            <button
-              className="filter-toggle-all"
-              onClick={() => onToggleAll(!allFiltersEnabled)}
-            >
+            <button className="filter-toggle-all" onClick={() => onToggleAll(!allFiltersEnabled)}>
               {allFiltersEnabled ? 'Hide All' : 'Show All'}
             </button>
           </div>
@@ -317,11 +305,7 @@ const NetworkFilterDropdown = ({ filters, requestCounts, onFilterToggle, onToggl
           <div className="filter-dropdown-options">
             {Object.entries(filters).map(([method, enabled]) => (
               <label key={method} className="filter-option">
-                <input
-                  type="checkbox"
-                  checked={enabled}
-                  onChange={(e) => onFilterToggle(method, e.target.checked)}
-                />
+                <input type="checkbox" checked={enabled} onChange={(e) => onFilterToggle(method, e.target.checked)} />
                 <div className="filter-option-content">
                   <span className="filter-option-label">{method}</span>
                   <span className="filter-option-count">({requestCounts[method] || 0})</span>
@@ -379,7 +363,9 @@ const ConsoleTab = ({ logs, filters, logCounts, onFilterToggle, onToggleAll, onC
 
 const Console = () => {
   const dispatch = useDispatch();
-  const { logs, filters, activeTab, selectedRequest, selectedError, networkFilters, debugErrors } = useSelector((state) => state.logs);
+  const { logs, filters, activeTab, selectedRequest, selectedError, networkFilters, debugErrors } = useSelector(
+    (state) => state.logs
+  );
   const collections = useSelector((state) => state.collections.collections);
   const consoleRef = useRef(null);
 
@@ -501,11 +487,7 @@ const Console = () => {
               />
             </div>
             <div className="action-controls">
-              <button
-                className="control-button"
-                onClick={handleClearLogs}
-                title="Clear all logs"
-              >
+              <button className="control-button" onClick={handleClearLogs} title="Clear all logs">
                 <IconTrash size={16} strokeWidth={1.5} />
               </button>
             </div>
@@ -549,9 +531,7 @@ const Console = () => {
 
   return (
     <StyledWrapper ref={consoleRef}>
-      <div
-        className="console-resize-handle"
-      />
+      <div className="console-resize-handle" />
 
       <div className="console-header">
         <div className="console-tabs">
@@ -598,11 +578,7 @@ const Console = () => {
 
         <div className="console-controls">
           {renderTabControls()}
-          <button
-            className="control-button close-button"
-            onClick={handlecloseConsole}
-            title="Close console"
-          >
+          <button className="control-button close-button" onClick={handlecloseConsole} title="Close console">
             <IconX size={16} strokeWidth={1.5} />
           </button>
         </div>
@@ -611,16 +587,12 @@ const Console = () => {
       <div className="console-content">
         {activeTab === 'network' && selectedRequest ? (
           <div className="network-with-details">
-            <div className="network-main">
-              {renderTabContent()}
-            </div>
+            <div className="network-main">{renderTabContent()}</div>
             <RequestDetailsPanel />
           </div>
         ) : activeTab === 'debug' && selectedError ? (
           <div className="debug-with-details">
-            <div className="debug-main">
-              {renderTabContent()}
-            </div>
+            <div className="debug-main">{renderTabContent()}</div>
             <ErrorDetailsPanel />
           </div>
         ) : (

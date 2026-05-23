@@ -7,7 +7,7 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        
+
         # navigate to basic SSL test collection directory
         cd tests/ssl/basic-ssl/collections/badssl
 

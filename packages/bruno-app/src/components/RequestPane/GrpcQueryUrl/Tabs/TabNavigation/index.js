@@ -12,9 +12,7 @@ const TabNavigation = ({ activeTab, onTabChange, collectionProtoFiles, collectio
             onTabChange('protofiles');
           }}
         >
-          Proto Files (
-          {collectionProtoFiles?.length || 0}
-          )
+          Proto Files ({collectionProtoFiles?.length || 0})
         </button>
         <button
           className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors tab-button ${activeTab === 'importpaths' ? 'active' : ''}`}
@@ -23,9 +21,7 @@ const TabNavigation = ({ activeTab, onTabChange, collectionProtoFiles, collectio
             onTabChange('importpaths');
           }}
         >
-          Import Paths (
-          {collectionImportPaths?.length || 0}
-          )
+          Import Paths ({collectionImportPaths?.length || 0})
         </button>
       </div>
     </StyledWrapper>

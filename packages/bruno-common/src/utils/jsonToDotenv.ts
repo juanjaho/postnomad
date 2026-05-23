@@ -41,7 +41,7 @@ export const jsonToDotenv = (variables: DotenvVariable[]): string => {
       // Hash (#) requires quoting — dotenv treats it as comment start in unquoted values
       if (value.includes('#')) {
         // Prefer single quotes (fully literal)
-        if (!value.includes('\'')) {
+        if (!value.includes("'")) {
           return `${v.name}='${value}'`;
         }
         // Fall back to backtick quotes (also fully literal, supports both ' and ")
@@ -55,7 +55,7 @@ export const jsonToDotenv = (variables: DotenvVariable[]): string => {
 
       // Leading/trailing whitespace requires quoting — dotenv trims unquoted values
       if (value !== value.trim()) {
-        if (!value.includes('\'')) {
+        if (!value.includes("'")) {
           return `${v.name}='${value}'`;
         }
         if (!value.includes('`')) {

@@ -37,12 +37,7 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
   };
 
   return (
-    <Modal
-      size="md"
-      title="Connection Settings"
-      hideFooter={true}
-      handleCancel={onClose}
-    >
+    <Modal size="md" title="Connection Settings" hideFooter={true} handleCancel={onClose}>
       <div className="settings-modal">
         <div className="settings-body">
           <div className="settings-field">
@@ -111,9 +106,7 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
             <label className="settings-label">Auto-check for updates</label>
             <div className="settings-toggle-row">
               <div className="toggle-info">
-                <div className="toggle-description">
-                  Automatically check for spec changes at a regular interval
-                </div>
+                <div className="toggle-description">Automatically check for spec changes at a regular interval</div>
               </div>
               <button
                 className={`toggle-switch ${autoCheck ? 'active' : ''}`}
@@ -149,8 +142,12 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
             Disconnect sync
           </button>
           <div className="settings-actions">
-            <Button variant="ghost" color="secondary" size="sm" onClick={onClose}>Cancel</Button>
-            <Button size="sm" onClick={handleSave} loading={isSaving} disabled={!canSave || isSaving}>Save</Button>
+            <Button variant="ghost" color="secondary" size="sm" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleSave} loading={isSaving} disabled={!canSave || isSaving}>
+              Save
+            </Button>
           </div>
         </div>
       </div>

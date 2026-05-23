@@ -68,7 +68,11 @@ const EndpointChangeSection = ({
         <span className="section-count">{endpoints.length}</span>
         {subtitle && <span className="section-subtitle">{subtitle}</span>}
         {!isExpanded && headerExtra}
-        {actions && <div className="section-actions" onClick={(e) => e.stopPropagation()}>{actions}</div>}
+        {actions && (
+          <div className="section-actions" onClick={(e) => e.stopPropagation()}>
+            {actions}
+          </div>
+        )}
       </div>
       {isExpanded && (
         <div className={`section-body${expandableLayout ? ' expandable-mode' : ''}`}>

@@ -35,43 +35,47 @@ function transformBrunoConfigBeforeSave(brunoConfig) {
 async function transformBrunoConfigAfterRead(brunoConfig, collectionPathname) {
   // add exists to importPaths and protoFiles by checking actual file/directory existence
   if (brunoConfig.protobuf?.importPaths) {
-    brunoConfig.protobuf.importPaths = await Promise.all(brunoConfig.protobuf.importPaths.map(async (importPath) => {
-      try {
-        // Resolve the relative path against the collection pathname
-        const absolutePath = path.resolve(collectionPathname, importPath.path);
-        // Check if it's a directory
-        const exists = isDirectory(absolutePath);
-        return {
-          ...importPath,
-          exists
-        };
-      } catch (error) {
-        return {
-          ...importPath,
-          exists: false
-        };
-      }
-    }));
+    brunoConfig.protobuf.importPaths = await Promise.all(
+      brunoConfig.protobuf.importPaths.map(async (importPath) => {
+        try {
+          // Resolve the relative path against the collection pathname
+          const absolutePath = path.resolve(collectionPathname, importPath.path);
+          // Check if it's a directory
+          const exists = isDirectory(absolutePath);
+          return {
+            ...importPath,
+            exists
+          };
+        } catch (error) {
+          return {
+            ...importPath,
+            exists: false
+          };
+        }
+      })
+    );
   }
 
   if (brunoConfig.protobuf?.protoFiles) {
-    brunoConfig.protobuf.protoFiles = await Promise.all(brunoConfig.protobuf.protoFiles.map(async (protoFile) => {
-      try {
-        // Resolve the relative path against the collection pathname
-        const absolutePath = path.resolve(collectionPathname, protoFile.path);
-        // Check if it's a file
-        const exists = isFile(absolutePath);
-        return {
-          ...protoFile,
-          exists
-        };
-      } catch (error) {
-        return {
-          ...protoFile,
-          exists: false
-        };
-      }
-    }));
+    brunoConfig.protobuf.protoFiles = await Promise.all(
+      brunoConfig.protobuf.protoFiles.map(async (protoFile) => {
+        try {
+          // Resolve the relative path against the collection pathname
+          const absolutePath = path.resolve(collectionPathname, protoFile.path);
+          // Check if it's a file
+          const exists = isFile(absolutePath);
+          return {
+            ...protoFile,
+            exists
+          };
+        } catch (error) {
+          return {
+            ...protoFile,
+            exists: false
+          };
+        }
+      })
+    );
   }
 
   // Migrate proxy configuration from old format to new format

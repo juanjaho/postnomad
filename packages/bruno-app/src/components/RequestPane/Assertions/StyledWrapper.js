@@ -19,12 +19,12 @@ const Wrapper = styled.div`
     }
     td {
       padding: 6px 10px;
-      }
+    }
 
     select {
-        background-color: transparent;
-      }
+      background-color: transparent;
     }
+  }
 
   .btn-add-assertion {
     font-size: ${(props) => props.theme.font.size.base};

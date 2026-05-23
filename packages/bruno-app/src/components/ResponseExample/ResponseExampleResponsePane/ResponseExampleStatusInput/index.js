@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateResponseExampleStatusCode, updateResponseExampleStatusText } from 'providers/ReduxStore/slices/collections';
+import {
+  updateResponseExampleStatusCode,
+  updateResponseExampleStatusText
+} from 'providers/ReduxStore/slices/collections';
 import statusCodePhraseMap from 'components/ResponsePane/StatusCode/get-status-code-phrase';
 import StyledWrapper from './StyledWrapper';
 
@@ -40,10 +43,12 @@ const ResponseExampleStatusInput = ({ item, collection, exampleUid, status, stat
 
     if (value.trim()) {
       // Filter suggestions based on input
-      const filtered = suggestions.filter((suggestion) =>
-        suggestion.display.toLowerCase().includes(value.toLowerCase())
-        || suggestion.code.toString().includes(value)
-        || suggestion.phrase.toLowerCase().includes(value.toLowerCase()));
+      const filtered = suggestions.filter(
+        (suggestion) =>
+          suggestion.display.toLowerCase().includes(value.toLowerCase()) ||
+          suggestion.code.toString().includes(value) ||
+          suggestion.phrase.toLowerCase().includes(value.toLowerCase())
+      );
       setFilteredSuggestions(filtered);
       setShowSuggestions(true);
     } else {
@@ -76,19 +81,23 @@ const ResponseExampleStatusInput = ({ item, collection, exampleUid, status, stat
     setInputValue(newValue);
 
     // Save the status and statusText
-    dispatch(updateResponseExampleStatusCode({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      statusCode: String(suggestion.code)
-    }));
+    dispatch(
+      updateResponseExampleStatusCode({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        statusCode: String(suggestion.code)
+      })
+    );
 
-    dispatch(updateResponseExampleStatusText({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      statusText: suggestion.phrase
-    }));
+    dispatch(
+      updateResponseExampleStatusText({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        statusText: suggestion.phrase
+      })
+    );
   };
 
   const parseAndSaveStatus = (value) => {
@@ -108,19 +117,23 @@ const ResponseExampleStatusInput = ({ item, collection, exampleUid, status, stat
     }
 
     // Save both as strings - no validation needed
-    dispatch(updateResponseExampleStatusCode({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      statusCode: statusCode
-    }));
+    dispatch(
+      updateResponseExampleStatusCode({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        statusCode: statusCode
+      })
+    );
 
-    dispatch(updateResponseExampleStatusText({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      statusText: statusText
-    }));
+    dispatch(
+      updateResponseExampleStatusText({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        statusText: statusText
+      })
+    );
 
     setShowSuggestions(false);
   };
@@ -143,10 +156,12 @@ const ResponseExampleStatusInput = ({ item, collection, exampleUid, status, stat
 
   const handleFocus = () => {
     if (inputValue.trim()) {
-      const filtered = suggestions.filter((suggestion) =>
-        suggestion.display.toLowerCase().includes(inputValue.toLowerCase())
-        || suggestion.code.toString().includes(inputValue)
-        || suggestion.phrase.toLowerCase().includes(inputValue.toLowerCase()));
+      const filtered = suggestions.filter(
+        (suggestion) =>
+          suggestion.display.toLowerCase().includes(inputValue.toLowerCase()) ||
+          suggestion.code.toString().includes(inputValue) ||
+          suggestion.phrase.toLowerCase().includes(inputValue.toLowerCase())
+      );
       setFilteredSuggestions(filtered);
       setShowSuggestions(true);
     }

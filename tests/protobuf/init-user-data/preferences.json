@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{collectionPath}}"
-  ],
+  "lastOpenedCollections": ["{{collectionPath}}"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

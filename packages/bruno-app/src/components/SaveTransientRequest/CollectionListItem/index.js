@@ -29,9 +29,7 @@ const CollectionListItem = memo(({ collectionUid, collectionPath, collectionName
         <IconBox size={16} strokeWidth={1.5} />
         <span className="collection-item-name">{collectionName}</span>
       </div>
-      {isLoading && (
-        <IconLoader2 size={16} strokeWidth={1.5} className="animate-spin" />
-      )}
+      {isLoading && <IconLoader2 size={16} strokeWidth={1.5} className="animate-spin" />}
     </li>
   );
 });

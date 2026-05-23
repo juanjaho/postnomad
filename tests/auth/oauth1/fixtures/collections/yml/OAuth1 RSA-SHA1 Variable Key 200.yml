@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{localhost}}/api/auth/oauth1/resource"
+  url: '{{localhost}}/api/auth/oauth1/resource'
   auth:
     type: oauth1
     consumerKey: consumer_key_1
@@ -14,8 +14,8 @@ http:
     signatureMethod: RSA-SHA1
     privateKey:
       type: text
-      value: "{{private-key}}"
-    version: "1.0"
+      value: '{{private-key}}'
+    version: '1.0'
     placement: header
     includeBodyHash: false
 
@@ -54,7 +54,7 @@ runtime:
   assertions:
     - expression: res.status
       operator: eq
-      value: "200"
+      value: '200'
     - expression: res.body.resource.name
       operator: eq
       value: oauth1-test-resource

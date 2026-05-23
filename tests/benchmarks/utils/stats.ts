@@ -25,9 +25,7 @@ export function median(values: number[]): number {
   const s = sorted(values);
   const mid = Math.floor(s.length / 2);
 
-  return s.length % 2 === 0
-    ? (s[mid - 1] + s[mid]) / 2
-    : s[mid];
+  return s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid];
 }
 
 export function percentile(values: number[], p: number): number {
@@ -56,8 +54,7 @@ export function populationStdDev(values: number[]): number {
   assertValid(values);
   const avg = mean(values);
 
-  const variance
-    = values.reduce((sum, v) => sum + (v - avg) ** 2, 0) / values.length;
+  const variance = values.reduce((sum, v) => sum + (v - avg) ** 2, 0) / values.length;
 
   return Math.sqrt(variance);
 }
@@ -74,9 +71,7 @@ export function sampleStdDev(values: number[]): number {
 
   const avg = mean(values);
 
-  const variance
-    = values.reduce((sum, v) => sum + (v - avg) ** 2, 0)
-      / (values.length - 1);
+  const variance = values.reduce((sum, v) => sum + (v - avg) ** 2, 0) / (values.length - 1);
 
   return Math.sqrt(variance);
 }

@@ -40,7 +40,12 @@ const ProtoFileDropdown = ({
       return;
     }
 
-    const { success: addSuccess, relativePath, alreadyExists, error: addError } = await protoFileManagement.addProtoFileFromRequest(filePath);
+    const {
+      success: addSuccess,
+      relativePath,
+      alreadyExists,
+      error: addError
+    } = await protoFileManagement.addProtoFileFromRequest(filePath);
     if (!addSuccess) {
       if (addError) {
         toast.error(`Failed to add proto file: ${addError.message}`);
@@ -54,11 +59,13 @@ const ProtoFileDropdown = ({
       toast.success('Added proto file to collection');
     }
 
-    dispatch(updateRequestProtoPath({
-      protoPath: relativePath,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestProtoPath({
+        protoPath: relativePath,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
 
     setShowProtoDropdown(false);
 
@@ -73,11 +80,13 @@ const ProtoFileDropdown = ({
 
     setShowProtoDropdown(false);
 
-    dispatch(updateRequestProtoPath({
-      protoPath: protoFile.path,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestProtoPath({
+        protoPath: protoFile.path,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
 
     onProtoFileLoad(protoFile.path);
   };
@@ -122,12 +131,19 @@ const ProtoFileDropdown = ({
 
   const ProtoFileDropdownIcon = forwardRef((props, ref) => {
     return (
-      <div ref={ref} className="proto-file-dropdown-container" onClick={() => setShowProtoDropdown((prev) => !prev)} data-testid="grpc-proto-file-dropdown-icon">
-        {!isReflectionMode && (
-          <IconFile size={20} strokeWidth={1.5} className="proto-file-dropdown-icon" />
-        )}
+      <div
+        ref={ref}
+        className="proto-file-dropdown-container"
+        onClick={() => setShowProtoDropdown((prev) => !prev)}
+        data-testid="grpc-proto-file-dropdown-icon"
+      >
+        {!isReflectionMode && <IconFile size={20} strokeWidth={1.5} className="proto-file-dropdown-icon" />}
         <span className="proto-file-dropdown-text">
-          {isReflectionMode ? 'Using Reflection' : (protoFilePath ? getBasename(collection.pathname, protoFilePath) : 'Select Proto File')}
+          {isReflectionMode
+            ? 'Using Reflection'
+            : protoFilePath
+              ? getBasename(collection.pathname, protoFilePath)
+              : 'Select Proto File'}
         </span>
         <IconChevronDown className="proto-file-dropdown-caret" size={14} strokeWidth={2} />
       </div>
@@ -150,7 +166,10 @@ const ProtoFileDropdown = ({
               <div className="proto-file-dropdown-mode-controls">
                 <span>Mode</span>
                 <div className="proto-file-dropdown-mode-options">
-                  <span className={`proto-file-dropdown-mode-option ${!isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`} style={{ color: !isReflectionMode ? theme.primary.text : undefined }}>
+                  <span
+                    className={`proto-file-dropdown-mode-option ${!isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`}
+                    style={{ color: !isReflectionMode ? theme.primary.text : undefined }}
+                  >
                     Proto File
                   </span>
                   <ToggleSwitch
@@ -159,7 +178,10 @@ const ProtoFileDropdown = ({
                     size="2xs"
                     activeColor={theme.primary.solid}
                   />
-                  <span className={`proto-file-dropdown-mode-option ${isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`} style={{ color: isReflectionMode ? theme.primary.text : undefined }}>
+                  <span
+                    className={`proto-file-dropdown-mode-option ${isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`}
+                    style={{ color: isReflectionMode ? theme.primary.text : undefined }}
+                  >
                     Reflection
                   </span>
                 </div>

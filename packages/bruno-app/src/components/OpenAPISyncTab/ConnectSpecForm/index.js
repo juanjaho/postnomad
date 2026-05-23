@@ -21,14 +21,16 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
       <div className="setup-header">
         <h2 className="setup-title">Connect to OpenAPI Spec</h2>
         <p className="setup-description">
-          Keep your collection synchronized with an OpenAPI specification. Changes in the spec will be detected automatically.
+          Keep your collection synchronized with an OpenAPI specification. Changes in the spec will be detected
+          automatically.
         </p>
       </div>
 
       <form
         className="setup-form"
         onSubmit={(e) => {
-          e.preventDefault(); onConnect();
+          e.preventDefault();
+          onConnect();
         }}
       >
         <label className="url-label">OpenAPI Specification</label>
@@ -38,7 +40,8 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
               type="button"
               className={`setup-mode-btn ${mode === 'url' ? 'active' : ''}`}
               onClick={() => {
-                setMode('url'); setSourceUrl('');
+                setMode('url');
+                setSourceUrl('');
               }}
             >
               URL
@@ -47,7 +50,8 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
               type="button"
               className={`setup-mode-btn ${mode === 'file' ? 'active' : ''}`}
               onClick={() => {
-                setMode('file'); setSourceUrl('');
+                setMode('file');
+                setSourceUrl('');
               }}
             >
               File
@@ -91,11 +95,7 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
                   }
                 }}
               />
-              <button
-                type="button"
-                className="url-input file-pick-btn"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <button type="button" className="url-input file-pick-btn" onClick={() => fileInputRef.current?.click()}>
                 {sourceUrl ? sourceUrl.split(/[\\/]/).pop() : 'Select File'}
               </button>
             </>
@@ -115,9 +115,7 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
             ? 'Supports OpenAPI 3.x specifications in JSON or YAML format'
             : 'Select a local OpenAPI/Swagger JSON or YAML file'}
         </p>
-        {error && (
-          <p className="setup-error">{error}</p>
-        )}
+        {error && <p className="setup-error">{error}</p>}
       </form>
 
       <div className="setup-features">

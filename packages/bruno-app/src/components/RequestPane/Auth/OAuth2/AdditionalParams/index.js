@@ -14,13 +14,10 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
   const { storedTheme } = useTheme();
 
   const oAuth = get(request, 'auth.oauth2', {});
-  const {
-    grantType,
-    additionalParameters = {}
-  } = oAuth;
+  const { grantType, additionalParameters = {} } = oAuth;
 
   const [activeTab, setActiveTab] = useState(
-    (grantType == 'authorization_code' || grantType == 'implicit') ? 'authorization' : 'token'
+    grantType == 'authorization_code' || grantType == 'implicit' ? 'authorization' : 'token'
   );
 
   const isEmptyParam = (param) => {
@@ -37,8 +34,8 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
 
     Object.keys(filteredParams).forEach((paramType) => {
       if (filteredParams[paramType]?.length) {
-        filteredParams[paramType] = filteredParams[paramType].filter((param) =>
-          param.name.trim() || param.value.trim()
+        filteredParams[paramType] = filteredParams[paramType].filter(
+          (param) => param.name.trim() || param.value.trim()
         );
 
         if (filteredParams[paramType].length === 0) {
@@ -89,7 +86,9 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
     const updatedAdditionalParameters = cloneDeep(additionalParameters);
 
     if (updatedAdditionalParameters[paramType]?.length) {
-      updatedAdditionalParameters[paramType] = updatedAdditionalParameters[paramType].filter((_, index) => index !== paramIndex);
+      updatedAdditionalParameters[paramType] = updatedAdditionalParameters[paramType].filter(
+        (_, index) => index !== paramIndex
+      );
 
       // If the array is now empty, ensure we're not sending empty arrays
       if (updatedAdditionalParameters[paramType].length === 0) {
@@ -155,11 +154,7 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
   const availableTabs = getAvailableTabs(grantType);
 
   const renderTab = (tabKey, tabLabel) => (
-    <div
-      key={tabKey}
-      className={`tab ${activeTab === tabKey ? 'active' : ''}`}
-      onClick={() => setActiveTab(tabKey)}
-    >
+    <div key={tabKey} className={`tab ${activeTab === tabKey ? 'active' : ''}`} onClick={() => setActiveTab(tabKey)}>
       {tabLabel}
     </div>
   );
@@ -170,9 +165,7 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
         <div className="flex items-center px-2.5 py-1.5 oauth2-icon-container rounded-md">
           <IconAdjustmentsHorizontal size={14} className="oauth2-icon" />
         </div>
-        <span className="oauth2-section-label">
-          Additional Parameters
-        </span>
+        <span className="oauth2-section-label">Additional Parameters</span>
       </div>
 
       <div className="tabs flex w-full gap-2 my-2">
@@ -195,12 +188,14 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
                 <SingleLineEditor
                   value={param?.name || ''}
                   theme={storedTheme}
-                  onChange={(value) => handleUpdateAdditionalParam({
-                    paramType: activeTab,
-                    key: 'name',
-                    paramIndex: index,
-                    value
-                  })}
+                  onChange={(value) =>
+                    handleUpdateAdditionalParam({
+                      paramType: activeTab,
+                      key: 'name',
+                      paramIndex: index,
+                      value
+                    })
+                  }
                   collection={collection}
                   onSave={handleSave}
                   isCompact
@@ -210,12 +205,14 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
                 <MultiLineEditor
                   value={param?.value || ''}
                   theme={storedTheme}
-                  onChange={(value) => handleUpdateAdditionalParam({
-                    paramType: activeTab,
-                    key: 'value',
-                    paramIndex: index,
-                    value
-                  })}
+                  onChange={(value) =>
+                    handleUpdateAdditionalParam({
+                      paramType: activeTab,
+                      key: 'value',
+                      paramIndex: index,
+                      value
+                    })
+                  }
                   collection={collection}
                   onSave={handleSave}
                 />
@@ -272,8 +269,7 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
                 </div>
               </td>
             </tr>
-          )
-          )}
+          ))}
         </tbody>
       </Table>
       <div

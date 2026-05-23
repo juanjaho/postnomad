@@ -16,7 +16,9 @@ import OAuth1 from './Oauth1';
 import Button from 'ui/Button';
 
 const Auth = ({ collection }) => {
-  const authMode = collection.draft?.root ? get(collection, 'draft.root.request.auth.mode') : get(collection, 'root.request.auth.mode');
+  const authMode = collection.draft?.root
+    ? get(collection, 'draft.root.request.auth.mode')
+    : get(collection, 'root.request.auth.mode');
   const dispatch = useDispatch();
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));

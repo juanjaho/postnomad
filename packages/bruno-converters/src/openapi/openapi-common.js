@@ -61,7 +61,7 @@ export const getStatusText = (statusCode) => {
     415: 'Unsupported Media Type',
     416: 'Range Not Satisfiable',
     417: 'Expectation Failed',
-    418: 'I\'m a teapot',
+    418: "I'm a teapot",
     421: 'Misdirected Request',
     422: 'Unprocessable Entity',
     423: 'Locked',
@@ -226,9 +226,7 @@ export const buildXmlBody = (bodySchema) => {
     ? Object.entries(bodySchema.properties).map(([k, p]) => [k, p, exampleValues?.[k]])
     : Object.entries(exampleValues || {}).map(([k, v]) => [k, {}, v]);
 
-  const children = entries
-    .map(([name, prop, value]) => buildElement(name, prop, value))
-    .filter(Boolean);
+  const children = entries.map(([name, prop, value]) => buildElement(name, prop, value)).filter(Boolean);
 
   const attrStr = attributes.length ? ' ' + attributes.join(' ') : '';
   const childrenStr = children.length ? '\n' + children.join('\n') + '\n' : '';
@@ -311,7 +309,7 @@ export const BODY_TYPE_HANDLERS = [
           uid: uuid(),
           type: isFileField ? 'file' : 'text',
           name,
-          value: isFileField ? [] : (value !== undefined ? String(value) : ''),
+          value: isFileField ? [] : value !== undefined ? String(value) : '',
           description: prop.description || '',
           enabled: true
         });
@@ -430,8 +428,19 @@ export const populateRequestBody = ({ body, bodySchema, contentType }) => {
  * @param {string} [params.requestBodyContentType] - Optional request body content type
  * @returns {Object} Bruno example object
  */
-export const createBrunoExample = ({ brunoRequestItem, exampleValue, exampleName, exampleDescription, statusCode, contentType, requestBodySchema = null, requestBodyContentType = null }) => {
-  const sanitized = String(exampleName ?? '').replace(/\r?\n/g, ' ').trim();
+export const createBrunoExample = ({
+  brunoRequestItem,
+  exampleValue,
+  exampleName,
+  exampleDescription,
+  statusCode,
+  contentType,
+  requestBodySchema = null,
+  requestBodyContentType = null
+}) => {
+  const sanitized = String(exampleName ?? '')
+    .replace(/\r?\n/g, ' ')
+    .trim();
   const name = sanitized || `${statusCode} Response`;
   const numericStatus = Number(statusCode);
   const safeStatus = Number.isFinite(numericStatus) ? numericStatus : null;
@@ -450,11 +459,12 @@ export const createBrunoExample = ({ brunoRequestItem, exampleValue, exampleName
   };
 
   const responseBodyType = getBodyTypeFromContentType(contentType);
-  const responseBodyContent = responseBodyType === 'xml' && exampleValue !== null && typeof exampleValue === 'object'
-    ? buildXmlBody({ example: exampleValue })
-    : typeof exampleValue === 'object'
-      ? JSON.stringify(exampleValue, null, 2)
-      : exampleValue;
+  const responseBodyContent =
+    responseBodyType === 'xml' && exampleValue !== null && typeof exampleValue === 'object'
+      ? buildXmlBody({ example: exampleValue })
+      : typeof exampleValue === 'object'
+        ? JSON.stringify(exampleValue, null, 2)
+        : exampleValue;
 
   const brunoExample = {
     uid: uuid(),
@@ -472,15 +482,17 @@ export const createBrunoExample = ({ brunoRequestItem, exampleValue, exampleName
     response: {
       status: safeStatus,
       statusText: safeStatus ? getStatusText(safeStatus) : null,
-      headers: contentType ? [
-        {
-          uid: uuid(),
-          name: 'Content-Type',
-          value: contentType,
-          description: '',
-          enabled: true
-        }
-      ] : [],
+      headers: contentType
+        ? [
+            {
+              uid: uuid(),
+              name: 'Content-Type',
+              value: contentType,
+              description: '',
+              enabled: true
+            }
+          ]
+        : [],
       body: {
         type: responseBodyType,
         content: responseBodyContent
@@ -490,7 +502,11 @@ export const createBrunoExample = ({ brunoRequestItem, exampleValue, exampleName
 
   // Populate request body from schema if provided (reuses BODY_TYPE_HANDLERS)
   if (requestBodySchema !== null) {
-    populateRequestBody({ body: brunoExample.request.body, bodySchema: requestBodySchema, contentType: requestBodyContentType });
+    populateRequestBody({
+      body: brunoExample.request.body,
+      bodySchema: requestBodySchema,
+      contentType: requestBodyContentType
+    });
   }
 
   return brunoExample;

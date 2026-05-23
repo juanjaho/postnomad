@@ -39,19 +39,25 @@ function createServer(certsDir, port = 8090) {
       }
       if (isJSON) {
         if ('func' in obj && obj.func === 'headers') {
-          return ws.send(JSON.stringify({
-            headers: request.headers
-          }));
+          return ws.send(
+            JSON.stringify({
+              headers: request.headers
+            })
+          );
         } else if ('func' in obj && obj.func === 'query') {
           const url = new URL(request.url, `https://${request.headers.host}`);
           const query = Object.fromEntries(url.searchParams.entries());
-          return ws.send(JSON.stringify({
-            query: query
-          }));
+          return ws.send(
+            JSON.stringify({
+              query: query
+            })
+          );
         } else {
-          return ws.send(JSON.stringify({
-            data: obj
-          }));
+          return ws.send(
+            JSON.stringify({
+              data: obj
+            })
+          );
         }
       }
       return ws.send(Buffer.from(data).toString());

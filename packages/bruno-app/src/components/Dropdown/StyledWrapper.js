@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   max-width: unset !important;
   padding: 0.25rem;
 
-  [role="menu"] {
+  [role='menu'] {
     outline: none;
     &:focus {
       outline: none;

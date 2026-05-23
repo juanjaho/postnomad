@@ -4,14 +4,7 @@ import StyledWrapper from './StyledWrapper';
 import { useSidebarAccordion } from '../SidebarAccordionContext';
 import ActionIcon from 'ui/ActionIcon/index';
 
-const SidebarSection = ({
-  id,
-  title,
-  icon: Icon,
-  actions,
-  children,
-  className = ''
-}) => {
+const SidebarSection = ({ id, title, icon: Icon, actions, children, className = '' }) => {
   const { isExpanded, setSectionExpanded, getExpandedCount } = useSidebarAccordion();
   const [localExpanded, setLocalExpanded] = useState(() => isExpanded(id));
   const sectionRef = useRef(null);
@@ -38,17 +31,15 @@ const SidebarSection = ({
         ref={sectionRef}
         className={`sidebar-section ${localExpanded ? 'expanded' : ''} ${isOnlyExpanded ? 'single-expanded' : ''} ${expandedCount > 1 && localExpanded ? 'multi-expanded' : ''}`}
       >
-        <div
-          className="section-header"
-          onClick={handleToggle}
-        >
+        <div className="section-header" onClick={handleToggle}>
           <div className="section-header-left">
             <div
               className="section-icon-wrapper"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault(); handleToggle();
+                  e.preventDefault();
+                  handleToggle();
                 }
               }}
             >
@@ -77,11 +68,7 @@ const SidebarSection = ({
             </div>
           )}
         </div>
-        {localExpanded && (
-          <div className="section-content">
-            {children}
-          </div>
-        )}
+        {localExpanded && <div className="section-content">{children}</div>}
       </div>
     </StyledWrapper>
   );

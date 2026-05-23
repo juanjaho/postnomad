@@ -9,9 +9,7 @@ const METHOD_CHANGING_REDIRECTS = [301, 302, 303];
 
 const saveCookies = (url, headers) => {
   if (headers['set-cookie']) {
-    let setCookieHeaders = Array.isArray(headers['set-cookie'])
-      ? headers['set-cookie']
-      : [headers['set-cookie']];
+    let setCookieHeaders = Array.isArray(headers['set-cookie']) ? headers['set-cookie'] : [headers['set-cookie']];
     for (let setCookieHeader of setCookieHeaders) {
       if (typeof setCookieHeader === 'string' && setCookieHeader.length) {
         addCookieToJar(setCookieHeader, url);
@@ -42,8 +40,12 @@ const createRedirectConfig = (error, redirectUrl) => {
     delete requestConfig.headers['Content-Type'];
   } else {
     // For 307, 308 and other status codes: preserve method and body
-    if (requestConfig.data && typeof requestConfig.data === 'object'
-      && requestConfig.data.constructor && requestConfig.data.constructor.name === 'FormData') {
+    if (
+      requestConfig.data &&
+      typeof requestConfig.data === 'object' &&
+      requestConfig.data.constructor &&
+      requestConfig.data.constructor.name === 'FormData'
+    ) {
       const formData = requestConfig.data;
       if (formData._released || (formData._streams && formData._streams.length === 0)) {
         if (error.config._originalMultipartData && error.config.collectionPath) {

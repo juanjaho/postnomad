@@ -104,12 +104,7 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
                   )}
                 </td>
                 <td className="checkbox-cell">
-                  <input
-                    type="checkbox"
-                    checked={item.enabled !== false}
-                    readOnly
-                    disabled
-                  />
+                  <input type="checkbox" checked={item.enabled !== false} readOnly disabled />
                 </td>
                 <td className="key-cell">{item.name}</td>
                 <td className="value-cell">{item.value}</td>
@@ -176,9 +171,10 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
 
     return messages.map((msg, index) => {
       const otherMsg = (otherMessages || [])[index];
-      const contentDiff = showSide === 'old'
-        ? computeLineDiffForOld(msg.content || '', otherMsg?.content || '')
-        : computeLineDiffForNew(otherMsg?.content || '', msg.content || '');
+      const contentDiff =
+        showSide === 'old'
+          ? computeLineDiffForOld(msg.content || '', otherMsg?.content || '')
+          : computeLineDiffForNew(otherMsg?.content || '', msg.content || '');
 
       let msgStatus = 'unchanged';
       if (!otherMsg) {
@@ -190,7 +186,10 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
       return (
         <div key={index}>
           <div className="diff-section-header">
-            <span>{typeLabel}: {msg.name || `Message ${index + 1}`}{msg.type ? ` (${msg.type})` : ''}</span>
+            <span>
+              {typeLabel}: {msg.name || `Message ${index + 1}`}
+              {msg.type ? ` (${msg.type})` : ''}
+            </span>
             {msgStatus !== 'unchanged' && (
               <span className={`status-badge ${msgStatus}`}>
                 {msgStatus === 'added' ? 'A' : msgStatus === 'deleted' ? 'D' : 'M'}
@@ -209,13 +208,15 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
     const currentVariables = graphql?.variables || '';
     const otherVariables = otherGraphql?.variables || '';
 
-    const queryDiff = showSide === 'old'
-      ? computeLineDiffForOld(currentQuery, otherQuery)
-      : computeLineDiffForNew(otherQuery, currentQuery);
+    const queryDiff =
+      showSide === 'old'
+        ? computeLineDiffForOld(currentQuery, otherQuery)
+        : computeLineDiffForNew(otherQuery, currentQuery);
 
-    const variablesDiff = showSide === 'old'
-      ? computeLineDiffForOld(currentVariables, otherVariables)
-      : computeLineDiffForNew(otherVariables, currentVariables);
+    const variablesDiff =
+      showSide === 'old'
+        ? computeLineDiffForOld(currentVariables, otherVariables)
+        : computeLineDiffForNew(otherVariables, currentVariables);
 
     return (
       <>
@@ -236,15 +237,12 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
   };
 
   const renderTextBody = (currentContent, otherContent) => {
-    const diffSegments = showSide === 'old'
-      ? computeLineDiffForOld(currentContent || '', otherContent || '')
-      : computeLineDiffForNew(otherContent || '', currentContent || '');
+    const diffSegments =
+      showSide === 'old'
+        ? computeLineDiffForOld(currentContent || '', otherContent || '')
+        : computeLineDiffForNew(otherContent || '', currentContent || '');
 
-    return (
-      <div className="code-diff-content">
-        {renderLineDiff(diffSegments)}
-      </div>
-    );
+    return <div className="code-diff-content">{renderLineDiff(diffSegments)}</div>;
   };
 
   const renderBodyType = (type) => {
@@ -290,7 +288,14 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
   // Show body mode if present
   const currentMode = currentBody.mode;
   const otherMode = otherBody.mode;
-  const modeStatus = currentMode !== otherMode ? (otherMode === undefined ? (showSide === 'old' ? 'deleted' : 'added') : 'modified') : 'unchanged';
+  const modeStatus =
+    currentMode !== otherMode
+      ? otherMode === undefined
+        ? showSide === 'old'
+          ? 'deleted'
+          : 'added'
+        : 'modified'
+      : 'unchanged';
 
   if (bodyTypes.length === 0 && !currentMode) {
     return null;
@@ -337,7 +342,9 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
             <div className="diff-section-header">
               <span>{BODY_TYPE_LABELS[type] || type}</span>
               {hasChanges && (
-                <span className={`status-badge ${otherVal === undefined ? (showSide === 'old' ? 'deleted' : 'added') : 'modified'}`}>
+                <span
+                  className={`status-badge ${otherVal === undefined ? (showSide === 'old' ? 'deleted' : 'added') : 'modified'}`}
+                >
                   {otherVal === undefined ? (showSide === 'old' ? 'D' : 'A') : 'M'}
                 </span>
               )}

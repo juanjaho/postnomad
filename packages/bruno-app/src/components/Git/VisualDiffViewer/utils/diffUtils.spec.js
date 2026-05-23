@@ -22,12 +22,8 @@ describe('diffUtils', () => {
     });
 
     it('should return deleted for entire old string when new is empty', () => {
-      expect(computeWordDiffForOld('old text', '')).toEqual([
-        { text: 'old text', status: 'deleted' }
-      ]);
-      expect(computeWordDiffForOld('old text', null)).toEqual([
-        { text: 'old text', status: 'deleted' }
-      ]);
+      expect(computeWordDiffForOld('old text', '')).toEqual([{ text: 'old text', status: 'deleted' }]);
+      expect(computeWordDiffForOld('old text', null)).toEqual([{ text: 'old text', status: 'deleted' }]);
     });
 
     it('should detect deleted words', () => {
@@ -37,10 +33,7 @@ describe('diffUtils', () => {
     });
 
     it('should handle URL paths', () => {
-      const result = computeWordDiffForOld(
-        'https://api.example.com/users/123',
-        'https://api.example.com/users/456'
-      );
+      const result = computeWordDiffForOld('https://api.example.com/users/123', 'https://api.example.com/users/456');
       expect(result.some((s) => s.status === 'unchanged')).toBe(true);
       expect(result.some((s) => s.status === 'deleted')).toBe(true);
     });
@@ -65,12 +58,8 @@ describe('diffUtils', () => {
     });
 
     it('should return added for entire new string when old is empty', () => {
-      expect(computeWordDiffForNew('', 'new text')).toEqual([
-        { text: 'new text', status: 'added' }
-      ]);
-      expect(computeWordDiffForNew(null, 'new text')).toEqual([
-        { text: 'new text', status: 'added' }
-      ]);
+      expect(computeWordDiffForNew('', 'new text')).toEqual([{ text: 'new text', status: 'added' }]);
+      expect(computeWordDiffForNew(null, 'new text')).toEqual([{ text: 'new text', status: 'added' }]);
     });
 
     it('should detect added words', () => {
@@ -80,10 +69,7 @@ describe('diffUtils', () => {
     });
 
     it('should handle URL paths', () => {
-      const result = computeWordDiffForNew(
-        'https://api.example.com/users/123',
-        'https://api.example.com/users/456'
-      );
+      const result = computeWordDiffForNew('https://api.example.com/users/123', 'https://api.example.com/users/456');
       expect(result.some((s) => s.status === 'unchanged')).toBe(true);
       expect(result.some((s) => s.status === 'added')).toBe(true);
     });

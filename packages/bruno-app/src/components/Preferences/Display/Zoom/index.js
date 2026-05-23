@@ -112,13 +112,7 @@ const Zoom = () => {
           )}
         </div>
         {!isDefault && (
-          <Button
-            size="sm"
-            icon={<IconReload />}
-            color="secondary"
-            variant="ghost"
-            onClick={handleResetToDefault}
-          />
+          <Button size="sm" icon={<IconReload />} color="secondary" variant="ghost" onClick={handleResetToDefault} />
         )}
       </div>
     </StyledWrapper>

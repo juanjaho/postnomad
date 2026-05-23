@@ -344,7 +344,8 @@ class DefaultWorkspaceManager {
         let existingEnvNames = [];
         if (fs.existsSync(environmentsDir)) {
           try {
-            existingEnvNames = fs.readdirSync(environmentsDir)
+            existingEnvNames = fs
+              .readdirSync(environmentsDir)
               .filter((f) => f.endsWith('.yml'))
               .map((f) => f.replace('.yml', ''));
           } catch (error) {

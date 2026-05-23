@@ -83,11 +83,7 @@ const WelcomeModal = ({ onDismiss, onImportCollection, onCreateCollection, onOpe
       themeVariantDark={themeVariantDark}
       setThemeVariantDark={setThemeVariantDark}
     />,
-    <StorageStep
-      key="storage"
-      collectionLocation={collectionLocation}
-      onBrowse={handleBrowse}
-    />,
+    <StorageStep key="storage" collectionLocation={collectionLocation} onBrowse={handleBrowse} />,
     <GetStartedStep
       key="getstarted"
       onCreateCollection={handleActionAndDismiss(onCreateCollection)}
@@ -109,11 +105,7 @@ const WelcomeModal = ({ onDismiss, onImportCollection, onCreateCollection, onOpe
           <h1 className="welcome-heading">
             {step === 1 ? 'Welcome to Bruno' : step === 4 ? 'Ready to go!' : 'Set up Bruno'}
           </h1>
-          {step === 1 && (
-            <p className="welcome-tagline">
-              A fast, Git-friendly, and open-source API client.
-            </p>
-          )}
+          {step === 1 && <p className="welcome-tagline">A fast, Git-friendly, and open-source API client.</p>}
         </div>
 
         {steps[step - 1]}

@@ -1,5 +1,11 @@
 import { test, expect } from '../../../playwright';
-import { closeAllCollections, createCollection, createRequest, saveRequest, selectRequestPaneTab } from '../../utils/page';
+import {
+  closeAllCollections,
+  createCollection,
+  createRequest,
+  saveRequest,
+  selectRequestPaneTab
+} from '../../utils/page';
 import { buildCommonLocators } from '../../utils/page/locators';
 
 test.describe('Tag persistence', () => {

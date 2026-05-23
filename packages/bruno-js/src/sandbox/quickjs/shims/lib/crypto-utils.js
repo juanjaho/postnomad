@@ -21,7 +21,8 @@ const addCryptoUtilsShimToContext = async (vm) => {
         throw new RangeError('The "size" argument must be >= 0');
       }
 
-      if (size > 65536) { // 2^31 - 1 (max safe integer for practical use)
+      if (size > 65536) {
+        // 2^31 - 1 (max safe integer for practical use)
         throw new RangeError('The "size" argument is too large');
       }
 

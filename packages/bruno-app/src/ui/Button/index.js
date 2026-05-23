@@ -66,13 +66,9 @@ const Button = ({
             </svg>
           </span>
         )}
-        {icon && iconPosition === 'left' && !loading && (
-          <span className="button-icon button-icon-left">{icon}</span>
-        )}
+        {icon && iconPosition === 'left' && !loading && <span className="button-icon button-icon-left">{icon}</span>}
         {children && <span className="button-content">{children}</span>}
-        {icon && iconPosition === 'right' && !loading && (
-          <span className="button-icon button-icon-right">{icon}</span>
-        )}
+        {icon && iconPosition === 'right' && !loading && <span className="button-icon button-icon-right">{icon}</span>}
       </button>
     </StyledWrapper>
   );

@@ -18,7 +18,15 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
   const [selectedTab, setSelectedTab] = useState('response');
   const [showScriptErrorCard, setShowScriptErrorCard] = useState(false);
 
-  const { requestSent, responseReceived, testResults, assertionResults, preRequestTestResults, postResponseTestResults, error } = item;
+  const {
+    requestSent,
+    responseReceived,
+    testResults,
+    assertionResults,
+    preRequestTestResults,
+    postResponseTestResults,
+    error
+  } = item;
 
   useEffect(() => {
     if (item?.preRequestScriptErrorMessage || item?.postResponseScriptErrorMessage || item?.testScriptErrorMessage) {
@@ -31,7 +39,8 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
   const size = get(item, 'responseReceived.size', 0);
   const duration = get(item, 'responseReceived.duration', 0);
 
-  const hasScriptError = item?.preRequestScriptErrorMessage || item?.postResponseScriptErrorMessage || item?.testScriptErrorMessage;
+  const hasScriptError =
+    item?.preRequestScriptErrorMessage || item?.postResponseScriptErrorMessage || item?.testScriptErrorMessage;
 
   const selectTab = (tab) => setSelectedTab(tab);
 
@@ -56,14 +65,7 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
         return <ResponseHeaders headers={headers} />;
       }
       case 'timeline': {
-        return (
-          <RunnerTimeline
-            request={requestSent}
-            response={responseReceived}
-            item={item}
-            collection={collection}
-          />
-        );
+        return <RunnerTimeline request={requestSent} response={responseReceived} item={item} collection={collection} />;
       }
       case 'tests': {
         return (
@@ -119,11 +121,7 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
         </div>
         <div className="flex flex-grow justify-end items-center">
           {hasScriptError && !showScriptErrorCard && (
-            <ScriptErrorIcon
-              className="mr-2"
-              itemUid={item.uid}
-              onClick={() => setShowScriptErrorCard(true)}
-            />
+            <ScriptErrorIcon className="mr-2" itemUid={item.uid} onClick={() => setShowScriptErrorCard(true)} />
           )}
           <StatusCode status={status} />
           <ResponseTime duration={duration} />
@@ -132,15 +130,9 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
       </div>
       <section className="flex flex-col pt-3 flex-grow overflow-auto">
         {hasScriptError && showScriptErrorCard && (
-          <ScriptError
-            item={item}
-            onClose={() => setShowScriptErrorCard(false)}
-            collection={collection}
-          />
+          <ScriptError item={item} onClose={() => setShowScriptErrorCard(false)} collection={collection} />
         )}
-        <div className="flex-1">
-          {getTabPanel(selectedTab)}
-        </div>
+        <div className="flex-1">{getTabPanel(selectedTab)}</div>
       </section>
     </StyledWrapper>
   );

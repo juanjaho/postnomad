@@ -3,11 +3,7 @@ import get from 'lodash/get';
 import InfoTip from 'components/InfoTip';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
-import {
-  moveQueryParam,
-  updatePathParam,
-  setQueryParams
-} from 'providers/ReduxStore/slices/collections';
+import { moveQueryParam, updatePathParam, setQueryParams } from 'providers/ReduxStore/slices/collections';
 import { saveRequest, sendRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { updateTableColumnWidths } from 'providers/ReduxStore/slices/tabs';
 import MultiLineEditor from 'components/MultiLineEditor';
@@ -43,33 +39,48 @@ const QueryParams = ({ item, collection }) => {
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
   const handleRun = () => dispatch(sendRequest(item, collection.uid));
 
-  const handleQueryParamsChange = useCallback((updatedParams) => {
-    const paramsWithType = updatedParams.map((p) => ({ ...p, type: 'query' }));
-    dispatch(setQueryParams({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      params: paramsWithType
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleQueryParamsChange = useCallback(
+    (updatedParams) => {
+      const paramsWithType = updatedParams.map((p) => ({ ...p, type: 'query' }));
+      dispatch(
+        setQueryParams({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          params: paramsWithType
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
-  const handlePathParamChange = useCallback((rowUid, key, value) => {
-    const pathParam = pathParams.find((p) => p.uid === rowUid);
-    if (pathParam) {
-      dispatch(updatePathParam({
-        pathParam: { ...pathParam, [key]: value },
-        itemUid: item.uid,
-        collectionUid: collection.uid
-      }));
-    }
-  }, [dispatch, pathParams, item.uid, collection.uid]);
+  const handlePathParamChange = useCallback(
+    (rowUid, key, value) => {
+      const pathParam = pathParams.find((p) => p.uid === rowUid);
+      if (pathParam) {
+        dispatch(
+          updatePathParam({
+            pathParam: { ...pathParam, [key]: value },
+            itemUid: item.uid,
+            collectionUid: collection.uid
+          })
+        );
+      }
+    },
+    [dispatch, pathParams, item.uid, collection.uid]
+  );
 
-  const handleQueryParamDrag = useCallback(({ updateReorderedItem }) => {
-    dispatch(moveQueryParam({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      updateReorderedItem
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleQueryParamDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      dispatch(
+        moveQueryParam({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          updateReorderedItem
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
   const toggleBulkEditMode = () => {
     setIsBulkEditMode(!isBulkEditMode);

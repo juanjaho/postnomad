@@ -66,14 +66,20 @@ const StyledWrapper = styled.div`
           font-size: ${(props) => props.theme.font.size.sm};
           color: ${(props) => props.theme.colors.text.muted};
 
-          p, li {
+          p,
+          li {
             font-size: ${(props) => props.theme.font.size.sm};
             color: ${(props) => props.theme.colors.text.muted};
             margin: 3px 0;
             line-height: 1.5;
           }
 
-          h1, h2, h3, h4, h5, h6 {
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
             color: ${(props) => props.theme.text};
           }
 
@@ -147,7 +153,8 @@ const StyledWrapper = styled.div`
           .opblock-summary-path {
             font-size: ${(props) => props.theme.font.size.sm};
 
-            a, span {
+            a,
+            span {
               color: ${(props) => props.theme.text} !important;
             }
           }
@@ -197,7 +204,7 @@ const StyledWrapper = styled.div`
             padding: 2px 6px;
           }
 
-          input[type="text"] {
+          input[type='text'] {
             color: ${(props) => props.theme.text};
             background: ${(props) => props.theme.bg};
             border: 1px solid ${(props) => props.theme.border.border1};
@@ -208,15 +215,29 @@ const StyledWrapper = styled.div`
       }
 
       /* Method badge colors — keep them but tone down */
-      .opblock.opblock-get .opblock-summary-method { background: #61affe; color: #fff; }
-      .opblock.opblock-post .opblock-summary-method { background: #49cc90; color: #fff; }
-      .opblock.opblock-put .opblock-summary-method { background: #fca130; color: #fff; }
-      .opblock.opblock-delete .opblock-summary-method { background: #f93e3e; color: #fff; }
-      .opblock.opblock-patch .opblock-summary-method { background: #50e3c2; color: #000; }
+      .opblock.opblock-get .opblock-summary-method {
+        background: #61affe;
+        color: #fff;
+      }
+      .opblock.opblock-post .opblock-summary-method {
+        background: #49cc90;
+        color: #fff;
+      }
+      .opblock.opblock-put .opblock-summary-method {
+        background: #fca130;
+        color: #fff;
+      }
+      .opblock.opblock-delete .opblock-summary-method {
+        background: #f93e3e;
+        color: #fff;
+      }
+      .opblock.opblock-patch .opblock-summary-method {
+        background: #50e3c2;
+        color: #000;
+      }
 
       /* Lock / authorization icons */
       .authorization__btn {
-
         svg {
           fill: ${(props) => props.theme.colors.text.muted};
           width: 14px;
@@ -329,7 +350,6 @@ const StyledWrapper = styled.div`
       }
 
       .model-example {
-
         .tab li {
           color: ${(props) => props.theme.colors.text.muted} !important;
         }
@@ -508,7 +528,7 @@ const StyledWrapper = styled.div`
 
       /* enum/keyword example values container */
       .json-schema-2020-12-keyword--examples,
-      [data-json-schema-keyword="examples"] {
+      [data-json-schema-keyword='examples'] {
         color: ${(props) => props.theme.text} !important;
       }
 
@@ -519,7 +539,8 @@ const StyledWrapper = styled.div`
       }
 
       /* Brace styling in models */
-      .brace-open, .brace-close {
+      .brace-open,
+      .brace-close {
         color: ${(props) => props.theme.colors.text.muted};
         font-size: 11px;
       }
@@ -559,7 +580,8 @@ const StyledWrapper = styled.div`
       }
 
       .responses-inner {
-        h4, h5 {
+        h4,
+        h5 {
           font-size: ${(props) => props.theme.font.size.sm};
           color: ${(props) => props.theme.text};
         }
@@ -696,7 +718,7 @@ const StyledWrapper = styled.div`
           border: 1px solid ${(props) => props.theme.border.border1};
           border-radius: 6px;
           color: ${(props) => props.theme.text};
-          box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
           .modal-ux-header {
             border-bottom: 1px solid ${(props) => props.theme.border.border1};
@@ -710,8 +732,12 @@ const StyledWrapper = styled.div`
 
             .close-modal {
               opacity: 0.6;
-              &:hover { opacity: 1; }
-              svg { fill: ${(props) => props.theme.text}; }
+              &:hover {
+                opacity: 1;
+              }
+              svg {
+                fill: ${(props) => props.theme.text};
+              }
             }
           }
 
@@ -725,7 +751,9 @@ const StyledWrapper = styled.div`
             }
 
             /* Section headings like "api_key (apiKey)" */
-            h4, h5, h6 {
+            h4,
+            h5,
+            h6 {
               font-size: ${(props) => props.theme.font.size.sm};
               font-weight: 600;
               color: ${(props) => props.theme.textLink};
@@ -767,9 +795,9 @@ const StyledWrapper = styled.div`
             }
 
             /* Text inputs */
-            input[type="text"],
-            input[type="password"],
-            input[type="email"] {
+            input[type='text'],
+            input[type='password'],
+            input[type='email'] {
               background: ${(props) => props.theme.background.mantle} !important;
               color: ${(props) => props.theme.text} !important;
               border: 1px solid ${(props) => props.theme.border.border1} !important;
@@ -787,7 +815,7 @@ const StyledWrapper = styled.div`
             }
 
             /* Checkboxes — custom styled to match theme */
-            input[type="checkbox"] {
+            input[type='checkbox'] {
               appearance: none !important;
               -webkit-appearance: none !important;
               width: 14px !important;

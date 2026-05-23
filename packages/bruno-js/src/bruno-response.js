@@ -102,9 +102,7 @@ class BrunoResponse {
     const headerLines = [
       `HTTP/1.1 ${this.res.status} ${this.res.statusText}`,
       ...Object.entries(this.res.headers || {}).flatMap(([key, value]) =>
-        Array.isArray(value)
-          ? value.map((v) => `${key}: ${v}`)
-          : [`${key}: ${value}`]
+        Array.isArray(value) ? value.map((v) => `${key}: ${v}`) : [`${key}: ${value}`]
       ),
       '',
       ''

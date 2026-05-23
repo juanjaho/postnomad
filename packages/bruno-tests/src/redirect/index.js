@@ -120,9 +120,7 @@ router.get('/:count', function (req, res) {
           <p>You should be redirected automatically to target URL: <a href="${nextCount}">${nextCount}</a>.  If not click the link.</p>
     `);
   } else {
-    res.status(302)
-      .set('Location', '/api/redirect/anything')
-      .send(`<!doctype html>
+    res.status(302).set('Location', '/api/redirect/anything').send(`<!doctype html>
           <title>Redirecting...</title>
           <h1>Redirecting...</h1>
           <p>You should be redirected automatically to target URL: <a href="../anything">../anything</a>.  If not click the link.</p>

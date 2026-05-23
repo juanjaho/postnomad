@@ -1,10 +1,5 @@
 import { uuid } from '../common/index.js';
-import type {
-  Environment,
-  Variable,
-  BrunoEnvironment,
-  BrunoEnvironmentVariable
-} from './types';
+import type { Environment, Variable, BrunoEnvironment, BrunoEnvironmentVariable } from './types';
 
 interface OCVariable extends Omit<Variable, 'value'> {
   name: string;
@@ -18,36 +13,40 @@ export const fromOpenCollectionEnvironments = (environments: Environment[] | und
     return [];
   }
 
-  return environments.map((env): BrunoEnvironment => ({
-    uid: uuid(),
-    name: env.name || 'Untitled Environment',
-    variables: (env.variables || []).map((v): BrunoEnvironmentVariable => {
-      const variable = v as OCVariable;
-      const isSecret = variable.secret === true;
+  return environments.map(
+    (env): BrunoEnvironment => ({
+      uid: uuid(),
+      name: env.name || 'Untitled Environment',
+      variables: (env.variables || []).map((v): BrunoEnvironmentVariable => {
+        const variable = v as OCVariable;
+        const isSecret = variable.secret === true;
 
-      let value = '';
-      if (!isSecret && variable.value !== undefined) {
-        if (typeof variable.value === 'string') {
-          value = variable.value;
-        } else if (variable.value && typeof variable.value === 'object' && 'data' in variable.value) {
-          value = variable.value.data;
+        let value = '';
+        if (!isSecret && variable.value !== undefined) {
+          if (typeof variable.value === 'string') {
+            value = variable.value;
+          } else if (variable.value && typeof variable.value === 'object' && 'data' in variable.value) {
+            value = variable.value.data;
+          }
         }
-      }
 
-      return {
-        uid: uuid(),
-        name: variable.name || '',
-        value,
-        type: 'text',
-        enabled: variable.disabled !== true,
-        secret: isSecret
-      };
-    }),
-    color: env.color || null
-  }));
+        return {
+          uid: uuid(),
+          name: variable.name || '',
+          value,
+          type: 'text',
+          enabled: variable.disabled !== true,
+          secret: isSecret
+        };
+      }),
+      color: env.color || null
+    })
+  );
 };
 
-export const toOpenCollectionEnvironments = (environments: BrunoEnvironment[] | undefined): Environment[] | undefined => {
+export const toOpenCollectionEnvironments = (
+  environments: BrunoEnvironment[] | undefined
+): Environment[] | undefined => {
   if (!environments?.length) {
     return undefined;
   }

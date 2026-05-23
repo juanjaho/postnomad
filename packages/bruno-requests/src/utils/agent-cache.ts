@@ -2,7 +2,15 @@ import crypto from 'node:crypto';
 import tls from 'node:tls';
 import type { Agent as HttpAgent } from 'node:http';
 import type { Agent as HttpsAgent } from 'node:https';
-import { createTimelineAgentClass, createTimelineHttpAgentClass, type TimelineEntry, type AgentOptions, type HttpAgentOptions, type AgentClass, type HttpAgentClass } from './timeline-agent';
+import {
+  createTimelineAgentClass,
+  createTimelineHttpAgentClass,
+  type TimelineEntry,
+  type AgentOptions,
+  type HttpAgentOptions,
+  type AgentClass,
+  type HttpAgentClass
+} from './timeline-agent';
 import { defaultAgentOptions } from '../network/agent-defaults';
 
 /**
@@ -154,7 +162,12 @@ function hashCaValue(value: string | Buffer | (string | Buffer)[] | undefined): 
  * Generate a cache key from HTTPS agent options.
  * Uses a hash of the serialized options to create a compact key.
  */
-function getAgentCacheKey(agentClassId: number, options: AgentOptions, proxyUri: string | null = null, hostname: string | null = null): string {
+function getAgentCacheKey(
+  agentClassId: number,
+  options: AgentOptions,
+  proxyUri: string | null = null,
+  hostname: string | null = null
+): string {
   // Extract the TLS-relevant options for the cache key
   const keyData = {
     agentClassId,
@@ -178,7 +191,12 @@ function getAgentCacheKey(agentClassId: number, options: AgentOptions, proxyUri:
  * Generate a cache key from HTTP agent options.
  * Simpler than HTTPS since no TLS options are involved.
  */
-function getHttpAgentCacheKey(agentClassId: number, options: HttpAgentOptions, proxyUri: string | null = null, hostname: string | null = null): string {
+function getHttpAgentCacheKey(
+  agentClassId: number,
+  options: HttpAgentOptions,
+  proxyUri: string | null = null,
+  hostname: string | null = null
+): string {
   const keyData = {
     agentClassId,
     hostname: proxyUri?.length ? null : hostname,

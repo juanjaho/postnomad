@@ -23,10 +23,7 @@ describe('node-vm sandbox', () => {
   describe('createCustomRequire - local modules', () => {
     it('should load local module with ./ path', async () => {
       // Create a local module
-      fs.writeFileSync(
-        path.join(collectionPath, 'helper.js'),
-        'module.exports = { value: 42 };'
-      );
+      fs.writeFileSync(path.join(collectionPath, 'helper.js'), 'module.exports = { value: 42 };');
 
       const script = `
         const helper = require('./helper');
@@ -47,14 +44,8 @@ describe('node-vm sandbox', () => {
       // Create a subdirectory and modules
       const subDir = path.join(collectionPath, 'subdir');
       fs.mkdirSync(subDir);
-      fs.writeFileSync(
-        path.join(collectionPath, 'parent.js'),
-        'module.exports = { name: "parent" };'
-      );
-      fs.writeFileSync(
-        path.join(subDir, 'child.js'),
-        'const parent = require("../parent"); module.exports = parent;'
-      );
+      fs.writeFileSync(path.join(collectionPath, 'parent.js'), 'module.exports = { name: "parent" };');
+      fs.writeFileSync(path.join(subDir, 'child.js'), 'const parent = require("../parent"); module.exports = parent;');
 
       const script = `
         const child = require('./subdir/child');
@@ -74,10 +65,7 @@ describe('node-vm sandbox', () => {
     it('should handle backslashes on Windows', async () => {
       const subDir = path.join(collectionPath, 'utils');
       fs.mkdirSync(subDir);
-      fs.writeFileSync(
-        path.join(subDir, 'module.js'),
-        'module.exports = { platform: "cross-platform" };'
-      );
+      fs.writeFileSync(path.join(subDir, 'module.js'), 'module.exports = { platform: "cross-platform" };');
 
       // Simulate Windows-style path with backslashes
       const script = `
@@ -102,9 +90,9 @@ describe('node-vm sandbox', () => {
 
       const context = { console: console };
 
-      await expect(
-        runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-      ).rejects.toThrow('Access to files outside of the allowed context roots is not allowed');
+      await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow(
+        'Access to files outside of the allowed context roots is not allowed'
+      );
     });
 
     it('should block absolute paths outside allowed roots', async () => {
@@ -115,17 +103,14 @@ describe('node-vm sandbox', () => {
 
       const context = { console: console };
 
-      await expect(
-        runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-      ).rejects.toThrow('Access to files outside of the allowed context roots is not allowed');
+      await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow(
+        'Access to files outside of the allowed context roots is not allowed'
+      );
     });
 
     it('should allow absolute paths within allowed roots', async () => {
       // Create a module in the collection
-      fs.writeFileSync(
-        path.join(collectionPath, 'absolute-test.js'),
-        'module.exports = { loaded: true };'
-      );
+      fs.writeFileSync(path.join(collectionPath, 'absolute-test.js'), 'module.exports = { loaded: true };');
 
       // Use absolute path to require it
       const absolutePath = path.join(collectionPath, 'absolute-test.js');
@@ -150,10 +135,7 @@ describe('node-vm sandbox', () => {
       // Create an additional context root at same level as collection
       const additionalRoot = path.join(testDir, 'shared');
       fs.mkdirSync(additionalRoot);
-      fs.writeFileSync(
-        path.join(additionalRoot, 'shared.js'),
-        'module.exports = { shared: true };'
-      );
+      fs.writeFileSync(path.join(additionalRoot, 'shared.js'), 'module.exports = { shared: true };');
 
       // From collection, traverse up to testDir, then into shared directory
       const script = `
@@ -179,10 +161,7 @@ describe('node-vm sandbox', () => {
       // Create a sibling directory to collection
       const libsDir = path.join(testDir, 'libs');
       fs.mkdirSync(libsDir);
-      fs.writeFileSync(
-        path.join(libsDir, 'lib.js'),
-        'module.exports = { fromLib: "yes" };'
-      );
+      fs.writeFileSync(path.join(libsDir, 'lib.js'), 'module.exports = { fromLib: "yes" };');
 
       const script = `
         const lib = require('../libs/lib');
@@ -207,10 +186,7 @@ describe('node-vm sandbox', () => {
       // Create an additional context root
       const additionalRoot = path.join(testDir, 'shared');
       fs.mkdirSync(additionalRoot);
-      fs.writeFileSync(
-        path.join(additionalRoot, 'allowed.js'),
-        'module.exports = { allowed: true };'
-      );
+      fs.writeFileSync(path.join(additionalRoot, 'allowed.js'), 'module.exports = { allowed: true };');
 
       // Create a nested module that tries to require from additional root
       fs.writeFileSync(
@@ -407,10 +383,7 @@ describe('node-vm sandbox', () => {
       // Create a mock npm module in collection's node_modules
       const nodeModulesDir = path.join(collectionPath, 'node_modules', 'test-module');
       fs.mkdirSync(nodeModulesDir, { recursive: true });
-      fs.writeFileSync(
-        path.join(nodeModulesDir, 'index.js'),
-        'module.exports = { name: "test-module", value: 123 };'
-      );
+      fs.writeFileSync(path.join(nodeModulesDir, 'index.js'), 'module.exports = { name: "test-module", value: 123 };');
 
       const script = `
         const testMod = require('test-module');
@@ -431,10 +404,7 @@ describe('node-vm sandbox', () => {
       // Create a mock npm module with internal dependencies
       const nodeModulesDir = path.join(collectionPath, 'node_modules', 'parent-module');
       fs.mkdirSync(nodeModulesDir, { recursive: true });
-      fs.writeFileSync(
-        path.join(nodeModulesDir, 'helper.js'),
-        'module.exports = { helper: true };'
-      );
+      fs.writeFileSync(path.join(nodeModulesDir, 'helper.js'), 'module.exports = { helper: true };');
       fs.writeFileSync(
         path.join(nodeModulesDir, 'index.js'),
         'const helper = require("./helper"); module.exports = { hasHelper: helper.helper };'
@@ -627,10 +597,7 @@ describe('node-vm sandbox', () => {
       it('should handle module.exports = object pattern', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'cjs-object');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.js'),
-          'module.exports = { foo: "bar", num: 42 };'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.js'), 'module.exports = { foo: "bar", num: 42 };');
 
         const script = `
           const mod = require('cjs-object');
@@ -650,10 +617,7 @@ describe('node-vm sandbox', () => {
       it('should handle module.exports = function pattern', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'cjs-function');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.js'),
-          'module.exports = function(x) { return x * 2; };'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.js'), 'module.exports = function(x) { return x * 2; };');
 
         const script = `
           const double = require('cjs-function');
@@ -753,14 +717,8 @@ describe('node-vm sandbox', () => {
       it('should load .cjs files as CommonJS', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'cjs-ext-module');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'package.json'),
-          '{"name": "cjs-ext-module", "main": "index.cjs"}'
-        );
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.cjs'),
-          'module.exports = { format: "cjs", value: 100 };'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'package.json'), '{"name": "cjs-ext-module", "main": "index.cjs"}');
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.cjs'), 'module.exports = { format: "cjs", value: 100 };');
 
         const script = `
           const mod = require('cjs-ext-module');
@@ -780,14 +738,8 @@ describe('node-vm sandbox', () => {
       it('should fail when loading .mjs files (ES modules)', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'mjs-ext-module');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'package.json'),
-          '{"name": "mjs-ext-module", "main": "index.mjs"}'
-        );
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.mjs'),
-          'export default { format: "esm" };'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'package.json'), '{"name": "mjs-ext-module", "main": "index.mjs"}');
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.mjs'), 'export default { format: "esm" };');
 
         const script = `
           const mod = require('mjs-ext-module');
@@ -795,18 +747,13 @@ describe('node-vm sandbox', () => {
 
         const context = { console: console };
 
-        await expect(
-          runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-        ).rejects.toThrow();
+        await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow();
       });
 
       it('should load module with package.json main field', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'custom-main');
         fs.mkdirSync(path.join(nodeModulesDir, 'lib'), { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'package.json'),
-          '{"name": "custom-main", "main": "lib/entry.js"}'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'package.json'), '{"name": "custom-main", "main": "lib/entry.js"}');
         fs.writeFileSync(
           path.join(nodeModulesDir, 'lib', 'entry.js'),
           'module.exports = { entry: "custom-main-lib" };'
@@ -830,10 +777,7 @@ describe('node-vm sandbox', () => {
       it('should require relative .cjs files within npm module', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'cjs-relative');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'helper.cjs'),
-          'module.exports = { helperValue: "from-cjs" };'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'helper.cjs'), 'module.exports = { helperValue: "from-cjs" };');
         fs.writeFileSync(
           path.join(nodeModulesDir, 'index.js'),
           'const helper = require("./helper.cjs"); module.exports = helper;'
@@ -857,14 +801,8 @@ describe('node-vm sandbox', () => {
       it('should load .json files directly', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'json-direct');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'package.json'),
-          '{"name": "json-direct", "main": "data.json"}'
-        );
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'data.json'),
-          '{"type": "json-main", "count": 42}'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'package.json'), '{"name": "json-direct", "main": "data.json"}');
+        fs.writeFileSync(path.join(nodeModulesDir, 'data.json'), '{"type": "json-main", "count": 42}');
 
         const script = `
           const data = require('json-direct');
@@ -1035,18 +973,15 @@ describe('node-vm sandbox', () => {
 
         const context = { console: console };
 
-        await expect(
-          runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-        ).rejects.toThrow('Could not resolve module');
+        await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow(
+          'Could not resolve module'
+        );
       });
 
       it('should throw error for module with syntax error', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'syntax-error-module');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.js'),
-          'module.exports = { invalid syntax here'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.js'), 'module.exports = { invalid syntax here');
 
         const script = `
           const mod = require('syntax-error-module');
@@ -1054,18 +989,13 @@ describe('node-vm sandbox', () => {
 
         const context = { console: console };
 
-        await expect(
-          runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-        ).rejects.toThrow();
+        await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow();
       });
 
       it('should throw error for module with runtime error', async () => {
         const nodeModulesDir = path.join(collectionPath, 'node_modules', 'runtime-error-module');
         fs.mkdirSync(nodeModulesDir, { recursive: true });
-        fs.writeFileSync(
-          path.join(nodeModulesDir, 'index.js'),
-          'throw new Error("Module initialization failed");'
-        );
+        fs.writeFileSync(path.join(nodeModulesDir, 'index.js'), 'throw new Error("Module initialization failed");');
 
         const script = `
           const mod = require('runtime-error-module');
@@ -1073,9 +1003,9 @@ describe('node-vm sandbox', () => {
 
         const context = { console: console };
 
-        await expect(
-          runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-        ).rejects.toThrow('Module initialization failed');
+        await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow(
+          'Module initialization failed'
+        );
       });
     });
   });
@@ -1114,9 +1044,9 @@ describe('node-vm sandbox', () => {
 
       const script = `const x = someUndeclaredVar`;
 
-      await expect(
-        runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })
-      ).rejects.toThrow('someUndeclaredVar is not defined');
+      await expect(runScriptInNodeVm({ script, context, collectionPath, scriptingConfig: {} })).rejects.toThrow(
+        'someUndeclaredVar is not defined'
+      );
     });
 
     it('should have access to context objects via globalThis', async () => {

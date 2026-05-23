@@ -46,9 +46,8 @@ const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthC
   });
 
   const effectiveWidth = dragging ? dragWidth : leftPaneWidth;
-  const leftPaneStyle = effectiveWidth != null
-    ? { width: `${effectiveWidth}px`, flexShrink: 0 }
-    : { flex: '1 1 50%', minWidth: 0 };
+  const leftPaneStyle =
+    effectiveWidth != null ? { width: `${effectiveWidth}px`, flexShrink: 0 } : { flex: '1 1 50%', minWidth: 0 };
 
   const [swaggerReady, setSwaggerReady] = useState(false);
 
@@ -65,14 +64,8 @@ const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthC
   }, []);
 
   return (
-    <section
-      ref={mainSectionRef}
-      className={`main flex flex-grow pl-4 relative ${dragging ? 'dragging' : ''}`}
-    >
-      <div
-        className="api-spec-left-pane flex flex-grow relative h-full"
-        style={leftPaneStyle}
-      >
+    <section ref={mainSectionRef} className={`main flex flex-grow pl-4 relative ${dragging ? 'dragging' : ''}`}>
+      <div className="api-spec-left-pane flex flex-grow relative h-full" style={leftPaneStyle}>
         <CodeEditor
           theme={displayedTheme}
           value={readOnly ? content : editorContent}
@@ -97,18 +90,12 @@ const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthC
       <div className="dragbar-wrapper" {...dragbarProps}>
         <div className="dragbar-handle" />
       </div>
-      <div
-        className="api-spec-right-pane relative"
-        style={{ flex: '1 1 50%', minWidth: 0 }}
-      >
+      <div className="api-spec-right-pane relative" style={{ flex: '1 1 50%', minWidth: 0 }}>
         <div style={{ visibility: swaggerReady ? 'visible' : 'hidden', height: '100%' }}>
           <Swagger spec={content} onComplete={handleSwaggerComplete} />
         </div>
         {!swaggerReady && (
-          <div
-            className="absolute inset-0 flex items-center justify-center gap-2"
-            style={{ background: theme.bg }}
-          >
+          <div className="absolute inset-0 flex items-center justify-center gap-2" style={{ background: theme.bg }}>
             <div className="flex items-center justify-center gap-2 opacity-70">
               <IconLoader2 size={20} className="animate-spin" />
               <span>Generating preview…</span>

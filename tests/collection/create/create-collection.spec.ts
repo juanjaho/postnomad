@@ -48,7 +48,7 @@ test.describe('Create collection', () => {
 
     await expect(createCollectionModal).toBeVisible();
     await expect(submitButton).toBeEnabled();
-    await expect(createCollectionModal.getByText('Collection name can\'t be empty')).toBeVisible({ timeout: 2000 });
+    await expect(createCollectionModal.getByText("Collection name can't be empty")).toBeVisible({ timeout: 2000 });
 
     await createCollectionModal.getByRole('button', { name: 'Cancel' }).click();
   });

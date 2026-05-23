@@ -17,14 +17,16 @@ const ResponseExampleDescription = ({ editMode, item, collection, exampleUid }) 
     const newValue = e.target.value;
 
     if (editMode && item && collection && exampleUid) {
-      dispatch(updateResponseExampleDetails({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        details: {
-          description: newValue
-        }
-      }));
+      dispatch(
+        updateResponseExampleDetails({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          details: {
+            description: newValue
+          }
+        })
+      );
     }
   };
 

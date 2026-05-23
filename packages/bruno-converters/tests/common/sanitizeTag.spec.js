@@ -176,6 +176,10 @@ describe('sanitizeTags', () => {
 
   it('should handle mixed valid and invalid tags', () => {
     // Spaces are replaced with underscores
-    expect(sanitizeTags(['valid-tag', 'invalid.tag', 'another valid'])).toEqual(['valid-tag', 'invalid_tag', 'another_valid']);
+    expect(sanitizeTags(['valid-tag', 'invalid.tag', 'another valid'])).toEqual([
+      'valid-tag',
+      'invalid_tag',
+      'another_valid'
+    ]);
   });
 });

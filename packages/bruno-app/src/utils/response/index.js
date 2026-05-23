@@ -80,16 +80,19 @@ const isLikelyText = (buffer) => {
   for (let i = 0; i < sampleSize; i++) {
     const byte = buffer[i];
     // Check for common text characters (printable ASCII + common control chars)
-    if ((byte >= 0x20 && byte <= 0x7E) // Printable ASCII
-      || byte === 0x09 // Tab
-      || byte === 0x0A // Line feed
-      || byte === 0x0D) { // Carriage return
+    if (
+      (byte >= 0x20 && byte <= 0x7e) || // Printable ASCII
+      byte === 0x09 || // Tab
+      byte === 0x0a || // Line feed
+      byte === 0x0d
+    ) {
+      // Carriage return
       textChars++;
     }
   }
 
   // If more than 85% are text characters, likely text
-  return (textChars / sampleSize) > 0.85;
+  return textChars / sampleSize > 0.85;
 };
 
 /**
@@ -100,7 +103,7 @@ const isLikelyText = (buffer) => {
  */
 const isSvgContent = (buffer) => {
   const length = buffer.length;
-  if (length < 4 || buffer[0] !== 0x3C) return false;
+  if (length < 4 || buffer[0] !== 0x3c) return false;
 
   // Fast path: <svg
   if (buffer[1] === 0x73 && buffer[2] === 0x76 && buffer[3] === 0x67) {
@@ -108,13 +111,12 @@ const isSvgContent = (buffer) => {
   }
 
   // Slow path: <?xml or <!DOCTYPE or <!--
-  if (buffer[1] !== 0x3F && buffer[1] !== 0x21) return false;
+  if (buffer[1] !== 0x3f && buffer[1] !== 0x21) return false;
 
   // Search for <svg in first 512 bytes
   const limit = Math.min(512, length - 3);
   for (let i = 2; i < limit; i++) {
-    if (buffer[i] === 0x3C && buffer[i + 1] === 0x73
-      && buffer[i + 2] === 0x76 && buffer[i + 3] === 0x67) {
+    if (buffer[i] === 0x3c && buffer[i + 1] === 0x73 && buffer[i + 2] === 0x76 && buffer[i + 3] === 0x67) {
       return true;
     }
   }
@@ -164,10 +166,10 @@ const decodeBase64Head = (base64, byteCount) => {
 };
 
 /**
-* Detects content type from buffer by checking magic numbers (file signatures)
-* @param {Buffer} buffer - The data buffer to analyze
-* @returns {string|null} - Detected MIME type or null
-*/
+ * Detects content type from buffer by checking magic numbers (file signatures)
+ * @param {Buffer} buffer - The data buffer to analyze
+ * @returns {string|null} - Detected MIME type or null
+ */
 export const detectContentTypeFromBuffer = (buffer) => {
   if (!buffer || buffer.length < 4) {
     return null;
@@ -177,10 +179,10 @@ export const detectContentTypeFromBuffer = (buffer) => {
   const bytes = buffer.subarray(0, 12);
 
   // Image formats
-  if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) {
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
     return 'image/jpeg';
   }
-  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
     return 'image/png';
   }
   if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) {
@@ -189,21 +191,31 @@ export const detectContentTypeFromBuffer = (buffer) => {
   if (bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
     return 'image/webp';
   }
-  if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70
-    && bytes[8] === 0x61 && bytes[9] === 0x76 && bytes[10] === 0x69 && bytes[11] === 0x66) {
+  if (
+    bytes[4] === 0x66 &&
+    bytes[5] === 0x74 &&
+    bytes[6] === 0x79 &&
+    bytes[7] === 0x70 &&
+    bytes[8] === 0x61 &&
+    bytes[9] === 0x76 &&
+    bytes[10] === 0x69 &&
+    bytes[11] === 0x66
+  ) {
     return 'image/avif';
   }
-  if (bytes[0] === 0x42 && bytes[1] === 0x4D) {
+  if (bytes[0] === 0x42 && bytes[1] === 0x4d) {
     return 'image/bmp';
   }
-  if ((bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2A && bytes[3] === 0x00)
-    || (bytes[0] === 0x4D && bytes[1] === 0x4D && bytes[2] === 0x00 && bytes[3] === 0x2A)) {
+  if (
+    (bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2a && bytes[3] === 0x00) ||
+    (bytes[0] === 0x4d && bytes[1] === 0x4d && bytes[2] === 0x00 && bytes[3] === 0x2a)
+  ) {
     return 'image/tiff';
   }
   if (bytes[0] === 0x00 && bytes[1] === 0x00 && bytes[2] === 0x01 && bytes[3] === 0x00) {
     return 'image/x-icon';
   }
-  if (bytes[0] === 0x3C && bytes[1] === 0x73 && bytes[2] === 0x76 && bytes[3] === 0x67 && bytes[4] === 0x20) {
+  if (bytes[0] === 0x3c && bytes[1] === 0x73 && bytes[2] === 0x76 && bytes[3] === 0x67 && bytes[4] === 0x20) {
     return 'image/svg+xml';
   }
   // PDF
@@ -212,41 +224,70 @@ export const detectContentTypeFromBuffer = (buffer) => {
   }
 
   // Video formats
-  if (bytes[0] === 0x00 && bytes[1] === 0x00 && bytes[2] === 0x00
-    && (bytes[3] === 0x18 || bytes[3] === 0x20)
-    && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
+  if (
+    bytes[0] === 0x00 &&
+    bytes[1] === 0x00 &&
+    bytes[2] === 0x00 &&
+    (bytes[3] === 0x18 || bytes[3] === 0x20) &&
+    bytes[4] === 0x66 &&
+    bytes[5] === 0x74 &&
+    bytes[6] === 0x79 &&
+    bytes[7] === 0x70
+  ) {
     return 'video/mp4';
   }
-  if ((bytes[0] === 0x1A && bytes[1] === 0x45 && bytes[2] === 0xDF && bytes[3] === 0xA3)) {
+  if (bytes[0] === 0x1a && bytes[1] === 0x45 && bytes[2] === 0xdf && bytes[3] === 0xa3) {
     return 'video/webm';
   }
-  if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
-    && bytes[8] === 0x41 && bytes[9] === 0x56 && bytes[10] === 0x49 && bytes[11] === 0x20) {
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x41 &&
+    bytes[9] === 0x56 &&
+    bytes[10] === 0x49 &&
+    bytes[11] === 0x20
+  ) {
     return 'video/x-msvideo'; // AVI
   }
 
   // Audio formats
-  if (bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) {
+  if (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) {
     return 'audio/mpeg'; // MP3
   }
-  if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
-    && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) {
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x41 &&
+    bytes[10] === 0x56 &&
+    bytes[11] === 0x45
+  ) {
     return 'audio/wav';
   }
-  if (bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) {
+  if (bytes[0] === 0x4f && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) {
     return 'audio/ogg';
   }
-  if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70
-    && bytes[8] === 0x4D && bytes[9] === 0x34 && bytes[10] === 0x41) {
+  if (
+    bytes[4] === 0x66 &&
+    bytes[5] === 0x74 &&
+    bytes[6] === 0x79 &&
+    bytes[7] === 0x70 &&
+    bytes[8] === 0x4d &&
+    bytes[9] === 0x34 &&
+    bytes[10] === 0x41
+  ) {
     return 'audio/m4a';
   }
 
   // Archive formats
-  if (bytes[0] === 0x50 && bytes[1] === 0x4B
-    && (bytes[2] === 0x03 || bytes[2] === 0x05 || bytes[2] === 0x07)) {
+  if (bytes[0] === 0x50 && bytes[1] === 0x4b && (bytes[2] === 0x03 || bytes[2] === 0x05 || bytes[2] === 0x07)) {
     return 'application/zip';
   }
-  if (bytes[0] === 0x1F && bytes[1] === 0x8B) {
+  if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
     return 'application/gzip';
   }
 

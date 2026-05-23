@@ -48,7 +48,7 @@ const StyledWrapper = styled.div`
   .show-less-link {
     display: inline-flex;
     align-items: center;
-    
+
     &:hover {
       span {
         text-decoration: underline;

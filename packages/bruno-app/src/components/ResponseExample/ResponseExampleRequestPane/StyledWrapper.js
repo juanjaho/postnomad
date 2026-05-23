@@ -26,7 +26,6 @@ const StyledWrapper = styled.div`
     color: rgb(140, 140, 140);
     fill: rgb(140 140 140);
   }
-
 `;
 
 export default StyledWrapper;

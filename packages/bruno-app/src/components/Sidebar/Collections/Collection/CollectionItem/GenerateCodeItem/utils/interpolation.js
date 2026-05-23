@@ -72,10 +72,7 @@ export const interpolateBody = (body, variables = {}) => {
       interpolatedBody.multipartForm = Array.isArray(body.multipartForm)
         ? body.multipartForm.map((param) => ({
             ...param,
-            value:
-              param.type === 'text' && param.enabled
-                ? interpolate(param.value, variables)
-                : param.value
+            value: param.type === 'text' && param.enabled ? interpolate(param.value, variables) : param.value
           }))
         : [];
       break;

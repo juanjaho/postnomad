@@ -35,7 +35,9 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
   const isDefaultWorkspace = !activeWorkspace || activeWorkspace.type === 'default';
   const defaultLocation = isDefaultWorkspace
     ? get(preferences, 'general.defaultLocation', '')
-    : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
   const inputRef = useRef();
   const dispatch = useDispatch();
 
@@ -71,9 +73,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
   const cloneFinished = () => {
     setSteps((prev) =>
       prev.map((step) =>
-        step.step === 'clone'
-          ? { ...step, title: 'Cloning successful', completed: true, info: '' }
-          : step
+        step.step === 'clone' ? { ...step, title: 'Cloning successful', completed: true, info: '' } : step
       )
     );
   };
@@ -81,9 +81,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
   const cloneError = () => {
     setSteps((prev) =>
       prev.map((step) =>
-        step.step === 'clone'
-          ? { ...step, title: 'Cloning failed', completed: true, error: true }
-          : step
+        step.step === 'clone' ? { ...step, title: 'Cloning failed', completed: true, error: true } : step
       )
     );
   };
@@ -159,9 +157,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
 
   const handleCollectionSelect = (collection) => {
     setSelectedCollectionPaths((prevSelected) =>
-      prevSelected.includes(collection)
-        ? prevSelected.filter((c) => c !== collection)
-        : [...prevSelected, collection]
+      prevSelected.includes(collection) ? prevSelected.filter((c) => c !== collection) : [...prevSelected, collection]
     );
   };
 
@@ -177,7 +173,8 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
 
   const isScanCompleted = () => steps.some((step) => step.step === 'scan' && step.completed);
 
-  const isConfirmDisabled = () => isScanCompleted() && collectionPaths?.length > 0 && selectedCollectionPaths?.length === 0;
+  const isConfirmDisabled = () =>
+    isScanCompleted() && collectionPaths?.length > 0 && selectedCollectionPaths?.length === 0;
 
   const isFooterHidden = () => steps.some((step) => !step.completed);
 
@@ -239,40 +236,36 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
           {view === 'form' && (
             <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
               <div>
-                {collectionRepositoryUrl
-                  ? (
-                      <div className="flex items-start">
-                        <div className="flex-shrink-0 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                          <IconBrandGit className="w-6 h-6 text-purple-500" stroke={1.5} />
-                        </div>
-                        <div className="ml-4">
-                          <div className="font-semibold text-sm">{getRepoNameFromUrl(collectionRepositoryUrl)}</div>
-                          <div className="mt-1 text-xs text-muted font-mono">
-                            {collectionRepositoryUrl}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  : (
-                      <>
-                        <label htmlFor="repository-url" className="flex items-center font-semibold">
-                          Git Repository URL
-                        </label>
-                        <input
-                          id="repository-url"
-                          type="text"
-                          name="repositoryUrl"
-                          ref={inputRef}
-                          className="block textbox mt-2 w-full"
-                          autoComplete="off"
-                          autoCorrect="off"
-                          autoCapitalize="off"
-                          spellCheck="false"
-                          onChange={formik.handleChange}
-                          value={formik.values.repositoryUrl || ''}
-                        />
-                      </>
-                    )}
+                {collectionRepositoryUrl ? (
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                      <IconBrandGit className="w-6 h-6 text-purple-500" stroke={1.5} />
+                    </div>
+                    <div className="ml-4">
+                      <div className="font-semibold text-sm">{getRepoNameFromUrl(collectionRepositoryUrl)}</div>
+                      <div className="mt-1 text-xs text-muted font-mono">{collectionRepositoryUrl}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <label htmlFor="repository-url" className="flex items-center font-semibold">
+                      Git Repository URL
+                    </label>
+                    <input
+                      id="repository-url"
+                      type="text"
+                      name="repositoryUrl"
+                      ref={inputRef}
+                      className="block textbox mt-2 w-full"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                      onChange={formik.handleChange}
+                      value={formik.values.repositoryUrl || ''}
+                    />
+                  </>
+                )}
                 {formik.touched.repositoryUrl && formik.errors.repositoryUrl && (
                   <div className="text-red-500">{formik.errors.repositoryUrl}</div>
                 )}

@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/response-examples/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/response-examples/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

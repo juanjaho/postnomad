@@ -361,10 +361,12 @@ describe('node-vault', () => {
         data: { errors: ['invalid role or secret ID'] }
       });
 
-      await expect(vault.approleLogin({
-        role_id: 'bad-role-id',
-        secret_id: 'bad-secret-id'
-      })).rejects.toThrow('invalid role or secret ID');
+      await expect(
+        vault.approleLogin({
+          role_id: 'bad-role-id',
+          secret_id: 'bad-secret-id'
+        })
+      ).rejects.toThrow('invalid role or secret ID');
     });
   });
 

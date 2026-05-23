@@ -1,12 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { test, expect, closeElectronApp } from '../../playwright';
-import {
-  createCollection,
-  createRequest,
-  openRequest,
-  waitForReadyPage
-} from '../utils/page';
+import { createCollection, createRequest, openRequest, waitForReadyPage } from '../utils/page';
 import { buildCommonLocators } from '../utils/page/locators';
 
 const WORKSPACE_YML_WORKSPACEB = [
@@ -16,7 +11,7 @@ const WORKSPACE_YML_WORKSPACEB = [
   '  type: workspace',
   'collections:',
   'specs: []',
-  'docs: \'\'',
+  "docs: ''",
   ''
 ].join('\n');
 
@@ -47,13 +42,10 @@ test.describe('Close tab stays in workspace', () => {
       });
 
       await test.step('Stub open-dialog and switch to WorkspaceB', async () => {
-        await app.evaluate(
-          ({ dialog }, targetPath: string) => {
-            (dialog as { showOpenDialog: typeof dialog.showOpenDialog }).showOpenDialog = () =>
-              Promise.resolve({ canceled: false, filePaths: [targetPath] });
-          },
-          workspaceBPath
-        );
+        await app.evaluate(({ dialog }, targetPath: string) => {
+          (dialog as { showOpenDialog: typeof dialog.showOpenDialog }).showOpenDialog = () =>
+            Promise.resolve({ canceled: false, filePaths: [targetPath] });
+        }, workspaceBPath);
         await page.getByTestId('workspace-menu').click();
         await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
         await expect(page.getByTestId('workspace-name')).toHaveText('WorkspaceB', { timeout: 10000 });

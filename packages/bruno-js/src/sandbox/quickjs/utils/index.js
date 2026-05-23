@@ -53,7 +53,11 @@ async function invokeFunction(vm, quickFn, args = []) {
   }
 
   // Check if the result is a QuickJS Promise handle (async functions)
-  if (vm.typeof(result.value) === 'object' && result.value.constructor && vm.typeof(result.value.constructor) === 'function') {
+  if (
+    vm.typeof(result.value) === 'object' &&
+    result.value.constructor &&
+    vm.typeof(result.value.constructor) === 'function'
+  ) {
     try {
       const promiseHandle = vm.unwrapResult(result);
       const resolvedResult = await vm.resolvePromise(promiseHandle);
@@ -72,9 +76,7 @@ async function invokeFunction(vm, quickFn, args = []) {
   const value = vm.dump(result.value);
   result.value.dispose();
 
-  return (value && typeof value.then === 'function')
-    ? value
-    : Promise.resolve(value);
+  return value && typeof value.then === 'function' ? value : Promise.resolve(value);
 }
 
 module.exports = {

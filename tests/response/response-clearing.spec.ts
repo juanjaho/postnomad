@@ -48,10 +48,7 @@ test.describe('Response Clearing', () => {
   };
 
   const runScenario = (mode: 'all-pass' | 'all-fail' | 'mixed', expectedCount: string) => {
-    test(`should clear response and test results (${mode})`, async ({
-      page,
-      createTmpDir
-    }) => {
+    test(`should clear response and test results (${mode})`, async ({ page, createTmpDir }) => {
       const collectionName = `response-clear-${mode}`;
       const requestName = `test-${mode}`;
 

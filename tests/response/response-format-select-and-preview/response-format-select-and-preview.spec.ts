@@ -15,7 +15,9 @@ test.describe.serial('Response Format Select and Preview', () => {
     await closeAllCollections(page);
   });
 
-  test('Verify Response Format Select and Preview features are rendering properly for JSON response', async ({ pageWithUserData: page }) => {
+  test('Verify Response Format Select and Preview features are rendering properly for JSON response', async ({
+    pageWithUserData: page
+  }) => {
     await openRequest(page, 'collection', 'request-json');
     await sendRequestAndWaitForResponse(page);
 
@@ -87,7 +89,9 @@ test.describe.serial('Response Format Select and Preview', () => {
     });
   });
 
-  test('Verify Response Format Select and Preview features are rendering properly for HTML response', async ({ pageWithUserData: page }) => {
+  test('Verify Response Format Select and Preview features are rendering properly for HTML response', async ({
+    pageWithUserData: page
+  }) => {
     await openRequest(page, 'collection', 'request-html');
     await sendRequestAndWaitForResponse(page);
 

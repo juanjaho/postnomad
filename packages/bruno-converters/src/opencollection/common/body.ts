@@ -16,7 +16,10 @@ import type {
   BrunoGraphqlBody
 } from '../types';
 
-export const fromOpenCollectionBody = (body: HttpRequestBody | GraphQLBody | undefined, requestType: string = 'http'): BrunoHttpRequestBody => {
+export const fromOpenCollectionBody = (
+  body: HttpRequestBody | GraphQLBody | undefined,
+  requestType: string = 'http'
+): BrunoHttpRequestBody => {
   const defaultBody: BrunoHttpRequestBody = {
     mode: 'none',
     json: null,
@@ -90,13 +93,16 @@ export const fromOpenCollectionBody = (body: HttpRequestBody | GraphQLBody | und
         return {
           ...defaultBody,
           mode: 'formUrlEncoded',
-          formUrlEncoded: (formBody.data || []).map((field): BrunoKeyValue => ({
-            uid: uuid(),
-            name: field.name || '',
-            value: field.value || '',
-            description: typeof field.description === 'string' ? field.description : field.description?.content || null,
-            enabled: field.disabled !== true
-          }))
+          formUrlEncoded: (formBody.data || []).map(
+            (field): BrunoKeyValue => ({
+              uid: uuid(),
+              name: field.name || '',
+              value: field.value || '',
+              description:
+                typeof field.description === 'string' ? field.description : field.description?.content || null,
+              enabled: field.disabled !== true
+            })
+          )
         };
       }
 
@@ -105,15 +111,18 @@ export const fromOpenCollectionBody = (body: HttpRequestBody | GraphQLBody | und
         return {
           ...defaultBody,
           mode: 'multipartForm',
-          multipartForm: (multipartBody.data || []).map((field): BrunoMultipartFormEntry => ({
-            uid: uuid(),
-            type: field.type || 'text',
-            name: field.name || '',
-            value: Array.isArray(field.value) ? field.value : (field.value || ''),
-            description: typeof field.description === 'string' ? field.description : field.description?.content || null,
-            contentType: null,
-            enabled: field.disabled !== true
-          }))
+          multipartForm: (multipartBody.data || []).map(
+            (field): BrunoMultipartFormEntry => ({
+              uid: uuid(),
+              type: field.type || 'text',
+              name: field.name || '',
+              value: Array.isArray(field.value) ? field.value : field.value || '',
+              description:
+                typeof field.description === 'string' ? field.description : field.description?.content || null,
+              contentType: null,
+              enabled: field.disabled !== true
+            })
+          )
         };
       }
 
@@ -122,12 +131,14 @@ export const fromOpenCollectionBody = (body: HttpRequestBody | GraphQLBody | und
         return {
           ...defaultBody,
           mode: 'file',
-          file: (fileBody.data || []).map((file): BrunoFileEntry => ({
-            uid: uuid(),
-            filePath: file.filePath || '',
-            contentType: file.contentType || '',
-            selected: file.selected !== false
-          }))
+          file: (fileBody.data || []).map(
+            (file): BrunoFileEntry => ({
+              uid: uuid(),
+              filePath: file.filePath || '',
+              contentType: file.contentType || '',
+              selected: file.selected !== false
+            })
+          )
         };
       }
     }
@@ -198,11 +209,13 @@ export const toOpenCollectionBody = (body: BrunoHttpRequestBody | null | undefin
     }
 
     case 'file': {
-      const fileData: FileBodyVariant[] = (body.file || []).map((file): FileBodyVariant => ({
-        filePath: file.filePath || '',
-        contentType: file.contentType || '',
-        selected: file.selected !== false
-      }));
+      const fileData: FileBodyVariant[] = (body.file || []).map(
+        (file): FileBodyVariant => ({
+          filePath: file.filePath || '',
+          contentType: file.contentType || '',
+          selected: file.selected !== false
+        })
+      );
 
       return { type: 'file', data: fileData };
     }

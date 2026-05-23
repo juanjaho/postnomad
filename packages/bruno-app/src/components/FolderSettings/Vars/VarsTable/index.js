@@ -27,14 +27,19 @@ const VarsTable = ({ folder, collection, vars, varType, initialScroll = 0 }) => 
 
   const onSave = () => dispatch(saveFolderRoot(collection.uid, folder.uid));
 
-  const handleVarsChange = useCallback((updatedVars) => {
-    dispatch(setFolderVars({
-      collectionUid: collection.uid,
-      folderUid: folder.uid,
-      vars: updatedVars,
-      type: varType
-    }));
-  }, [dispatch, collection.uid, folder.uid, varType]);
+  const handleVarsChange = useCallback(
+    (updatedVars) => {
+      dispatch(
+        setFolderVars({
+          collectionUid: collection.uid,
+          folderUid: folder.uid,
+          vars: updatedVars,
+          type: varType
+        })
+      );
+    },
+    [dispatch, collection.uid, folder.uid, varType]
+  );
 
   const getRowError = useCallback((row, index, key) => {
     if (key !== 'name') return null;
@@ -55,12 +60,15 @@ const VarsTable = ({ folder, collection, vars, varType, initialScroll = 0 }) => 
     },
     {
       key: 'value',
-      name: varType === 'request' ? 'Value' : (
-        <div className="flex items-center">
-          <span>Expr</span>
-          <InfoTip content="You can write any valid JS expression here" infotipId={`folder-${varType}-var`} />
-        </div>
-      ),
+      name:
+        varType === 'request' ? (
+          'Value'
+        ) : (
+          <div className="flex items-center">
+            <span>Expr</span>
+            <InfoTip content="You can write any valid JS expression here" infotipId={`folder-${varType}-var`} />
+          </div>
+        ),
       placeholder: varType === 'request' ? 'Value' : 'Expr',
       render: ({ value, onChange }) => (
         <MultiLineEditor

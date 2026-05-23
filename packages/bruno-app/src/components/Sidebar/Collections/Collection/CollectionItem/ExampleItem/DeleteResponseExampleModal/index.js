@@ -11,15 +11,16 @@ const DeleteResponseExampleModal = ({ onClose, example, item, collection }) => {
   const onConfirm = (e) => {
     e.stopPropagation();
     dispatch(closeTabs({ tabUids: [example.uid] }));
-    dispatch(deleteResponseExample({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: example.uid
-    }));
-    dispatch(saveRequest(item.uid, collection.uid, true))
-      .then(() => {
-        onClose();
-      });
+    dispatch(
+      deleteResponseExample({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: example.uid
+      })
+    );
+    dispatch(saveRequest(item.uid, collection.uid, true)).then(() => {
+      onClose();
+    });
   };
 
   return (

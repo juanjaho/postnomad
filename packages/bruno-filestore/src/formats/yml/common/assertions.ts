@@ -48,7 +48,7 @@ const UNARY_OPERATORS = [
   'isArray'
 ] as const;
 
-type Operator = typeof OPERATORS[number];
+type Operator = (typeof OPERATORS)[number];
 
 const parseAssertionOperator = (str: string = ''): { operator: Operator; value: string | undefined } => {
   if (!str || typeof str !== 'string' || !str.length) {

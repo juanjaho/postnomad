@@ -98,9 +98,16 @@ export const exportApiSpec = ({ variables, items, name, environments }) => {
       const baseUrlOverride = requestVars.find((v) => v.name === 'baseUrl' && v.enabled);
       if (baseUrlOverride) {
         const reqVarsMap = {};
-        requestVars.filter((v) => v.enabled).forEach((v) => { reqVarsMap[v.name] = v.value; });
+        requestVars
+          .filter((v) => v.enabled)
+          .forEach((v) => {
+            reqVarsMap[v.name] = v.value;
+          });
         const path = rawUrl.slice('{{baseUrl}}'.length) || '/';
-        return { url: interpolate(path, reqVarsMap), operationLevelServer: buildServerEntry(baseUrlOverride.value, reqVarsMap) };
+        return {
+          url: interpolate(path, reqVarsMap),
+          operationLevelServer: buildServerEntry(baseUrlOverride.value, reqVarsMap)
+        };
       }
     }
 
@@ -142,19 +149,19 @@ export const exportApiSpec = ({ variables, items, name, environments }) => {
       const pathMatches = url.match(pathParamsRegex) || [];
 
       // Build known path param names from the params array
-      const knownPathParamNames = new Set(
-        params?.filter((p) => p?.type === 'path').map((p) => p?.name) || []
-      );
+      const knownPathParamNames = new Set(params?.filter((p) => p?.type === 'path').map((p) => p?.name) || []);
 
       const parameters = [
         // Query params (exclude path-type params to avoid duplication)
-        ...params?.filter((p) => p?.type !== 'path').map((param) => ({
-          name: param?.name,
-          in: 'query',
-          description: '',
-          required: param?.enabled,
-          example: param?.value
-        })),
+        ...params
+          ?.filter((p) => p?.type !== 'path')
+          .map((param) => ({
+            name: param?.name,
+            in: 'query',
+            description: '',
+            required: param?.enabled,
+            example: param?.value
+          })),
         ...headers?.map((header) => ({
           name: header?.name,
           in: 'header',
@@ -163,12 +170,14 @@ export const exportApiSpec = ({ variables, items, name, environments }) => {
           example: header?.value
         })),
         // Path params from the params array (have values from Bruno)
-        ...params?.filter((p) => p?.type === 'path').map((param) => ({
-          name: param?.name,
-          in: 'path',
-          required: true,
-          example: param?.value
-        })),
+        ...params
+          ?.filter((p) => p?.type === 'path')
+          .map((param) => ({
+            name: param?.name,
+            in: 'path',
+            required: true,
+            example: param?.value
+          })),
         // Path params from URL regex that aren't already in the params array
         ...pathMatches
           ?.map((path) => path.slice(1, path.length - 1))
@@ -427,9 +436,9 @@ export const exportApiSpec = ({ variables, items, name, environments }) => {
             break;
           case 'awsv4':
             components.securitySchemes[securitySchemaId] = {
-              'type': 'apiKey',
-              'name': 'Authorization',
-              'in': 'header',
+              type: 'apiKey',
+              name: 'Authorization',
+              in: 'header',
               'x-amazon-apigateway-authtype': 'awsSigv4'
             };
             pathBody['security'] = {

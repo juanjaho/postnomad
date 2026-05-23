@@ -43,7 +43,10 @@ test.describe('Onboarding', () => {
     await closeElectronApp(app);
   });
 
-  test('should not create duplicate collections on subsequent launches', async ({ launchElectronApp, createTmpDir }) => {
+  test('should not create duplicate collections on subsequent launches', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     // Use a fresh app instance to avoid contamination from previous tests
     const userDataPath = await createTmpDir('duplicate-collections');
     const app = await launchElectronApp({ userDataPath, initUserDataPath, dotEnv: env });
@@ -87,14 +90,21 @@ test.describe('Onboarding', () => {
     await closeElectronApp(newApp);
   });
 
-  test('should not recreate sample collection after user deletes it', async ({ launchElectronApp, reuseOrLaunchElectronApp, createTmpDir }) => {
+  test('should not recreate sample collection after user deletes it', async ({
+    launchElectronApp,
+    reuseOrLaunchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('first-launch');
     const app = await launchElectronApp({ userDataPath, initUserDataPath, dotEnv: env });
     const page = await waitForReadyPage(app);
     await dismissWelcomeModalIfVisible(page);
 
     // First launch - sample collection should be created
-    const sampleCollection = page.getByTestId('collections').locator('.collection-name').filter({ hasText: 'Sample API Collection' });
+    const sampleCollection = page
+      .getByTestId('collections')
+      .locator('.collection-name')
+      .filter({ hasText: 'Sample API Collection' });
     await expect(sampleCollection).toBeVisible();
 
     // User removes the sample collection from workspace (hover on the collection and open context menu)
@@ -111,7 +121,10 @@ test.describe('Onboarding', () => {
     await removeModal.waitFor({ state: 'visible', timeout: 5000 });
 
     // Check if it's the drafts confirmation modal (has "Discard All and Remove" button)
-    const hasDiscardButton = await page.getByRole('button', { name: 'Discard All and Remove' }).isVisible().catch(() => false);
+    const hasDiscardButton = await page
+      .getByRole('button', { name: 'Discard All and Remove' })
+      .isVisible()
+      .catch(() => false);
 
     if (hasDiscardButton) {
       // Drafts modal - click "Discard All and Remove"
@@ -133,7 +146,9 @@ test.describe('Onboarding', () => {
     await expect(sampleCollections).not.toBeVisible();
   });
 
-  test('should not create sample collection if user has already opened a collection', async ({ pageWithUserData: page }) => {
+  test('should not create sample collection if user has already opened a collection', async ({
+    pageWithUserData: page
+  }) => {
     // Wait for the app to be loaded / onboarding to be completed
     await page.locator('[data-app-state="loaded"]').waitFor();
 

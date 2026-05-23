@@ -185,32 +185,36 @@ describe('runtime', () => {
       const script = `bru.setEnvVar('number', 42, {persist: true});`;
       const runtime = new ScriptRuntime({ runtime: 'nodevm' });
 
-      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env))
-        .rejects.toThrow('Persistent environment variables must be strings. Received number for key "number".');
+      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env)).rejects.toThrow(
+        'Persistent environment variables must be strings. Received number for key "number".'
+      );
     });
 
     it('should throw error when trying to persist boolean values', async () => {
       const script = `bru.setEnvVar('isActive', true, {persist: true});`;
       const runtime = new ScriptRuntime({ runtime: 'nodevm' });
 
-      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env))
-        .rejects.toThrow('Persistent environment variables must be strings. Received boolean for key "isActive".');
+      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env)).rejects.toThrow(
+        'Persistent environment variables must be strings. Received boolean for key "isActive".'
+      );
     });
 
     it('should throw error when trying to persist object values', async () => {
       const script = `bru.setEnvVar('config', {port: 3000}, {persist: true});`;
       const runtime = new ScriptRuntime({ runtime: 'nodevm' });
 
-      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env))
-        .rejects.toThrow('Persistent environment variables must be strings. Received object for key "config".');
+      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env)).rejects.toThrow(
+        'Persistent environment variables must be strings. Received object for key "config".'
+      );
     });
 
     it('should throw error when trying to persist array values', async () => {
       const script = `bru.setEnvVar('items', ['item1', 'item2'], {persist: true});`;
       const runtime = new ScriptRuntime({ runtime: 'nodevm' });
 
-      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env))
-        .rejects.toThrow('Persistent environment variables must be strings. Received object for key "items".');
+      await expect(runtime.runRequestScript(script, {}, {}, {}, '.', null, process.env)).rejects.toThrow(
+        'Persistent environment variables must be strings. Received object for key "items".'
+      );
     });
 
     it('should allow string values when persist is true', async () => {
@@ -382,21 +386,19 @@ describe('runtime', () => {
           `res.setBody({ id: 2, name: 'updated' });`,
           { ...baseRequest },
           response,
-          {}, {}, '.', null, process.env
+          {},
+          {},
+          '.',
+          null,
+          process.env
         );
 
-        const results = runAssertions(
-          [{ name: 'res.body', value: 'isJson', enabled: true }],
-          response
-        );
+        const results = runAssertions([{ name: 'res.body', value: 'isJson', enabled: true }], response);
         expect(results[0].status).toBe('pass');
       });
 
       it('should pass for an array', () => {
-        const results = runAssertions(
-          [{ name: 'res.body', value: 'isJson', enabled: true }],
-          makeResponse([1, 2, 3])
-        );
+        const results = runAssertions([{ name: 'res.body', value: 'isJson', enabled: true }], makeResponse([1, 2, 3]));
         expect(results[0].status).toBe('pass');
       });
 
@@ -409,10 +411,7 @@ describe('runtime', () => {
       });
 
       it('should pass for an empty array', () => {
-        const results = runAssertions(
-          [{ name: 'res.body', value: 'isJson', enabled: true }],
-          makeResponse([])
-        );
+        const results = runAssertions([{ name: 'res.body', value: 'isJson', enabled: true }], makeResponse([]));
         expect(results[0].status).toBe('pass');
       });
 
@@ -425,18 +424,12 @@ describe('runtime', () => {
       });
 
       it('should fail for a string', () => {
-        const results = runAssertions(
-          [{ name: 'res.body', value: 'isJson', enabled: true }],
-          makeResponse('hello')
-        );
+        const results = runAssertions([{ name: 'res.body', value: 'isJson', enabled: true }], makeResponse('hello'));
         expect(results[0].status).toBe('fail');
       });
 
       it('should fail for null', () => {
-        const results = runAssertions(
-          [{ name: 'res.body', value: 'isJson', enabled: true }],
-          makeResponse(null)
-        );
+        const results = runAssertions([{ name: 'res.body', value: 'isJson', enabled: true }], makeResponse(null));
         expect(results[0].status).toBe('fail');
       });
     });
@@ -509,7 +502,9 @@ describe('runtime', () => {
           type: 'object',
           properties: { name: { type: 'string' } }
         };
-        expect(() => chai.expect(body).to.have.jsonSchema(schema)).toThrow(/Unsupported JSON Schema version.*2020-12.*only supports Draft-07/);
+        expect(() => chai.expect(body).to.have.jsonSchema(schema)).toThrow(
+          /Unsupported JSON Schema version.*2020-12.*only supports Draft-07/
+        );
       });
 
       it('should throw a clear error for unsupported Draft 2019-09 $schema', () => {
@@ -519,7 +514,9 @@ describe('runtime', () => {
           type: 'object',
           properties: { name: { type: 'string' } }
         };
-        expect(() => chai.expect(body).to.have.jsonSchema(schema)).toThrow(/Unsupported JSON Schema version.*2019-09.*only supports Draft-07/);
+        expect(() => chai.expect(body).to.have.jsonSchema(schema)).toThrow(
+          /Unsupported JSON Schema version.*2019-09.*only supports Draft-07/
+        );
       });
 
       it('should allow explicit Draft-07 $schema', () => {

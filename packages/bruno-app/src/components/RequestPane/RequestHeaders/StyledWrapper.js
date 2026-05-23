@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-
   .btn-action {
     font-size: ${(props) => props.theme.font.size.base};
     &:hover span {

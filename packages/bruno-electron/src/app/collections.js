@@ -24,16 +24,18 @@ const configSchema = Yup.object({
   // For YAML format collections (opencollection)
   opencollection: Yup.string().notRequired(),
   // OpenAPI sync configuration (array, one entry per synced spec)
-  openapi: Yup.array().of(
-    Yup.object({
-      sourceUrl: Yup.string().notRequired(),
-      lastSyncDate: Yup.string().notRequired(),
-      specHash: Yup.string().notRequired(),
-      groupBy: Yup.string().oneOf(['tags', 'path']).notRequired(),
-      autoCheck: Yup.boolean().notRequired(),
-      autoCheckInterval: Yup.number().notRequired()
-    })
-  ).notRequired()
+  openapi: Yup.array()
+    .of(
+      Yup.object({
+        sourceUrl: Yup.string().notRequired(),
+        lastSyncDate: Yup.string().notRequired(),
+        specHash: Yup.string().notRequired(),
+        groupBy: Yup.string().oneOf(['tags', 'path']).notRequired(),
+        autoCheck: Yup.boolean().notRequired(),
+        autoCheckInterval: Yup.number().notRequired()
+      })
+    )
+    .notRequired()
 });
 
 const readConfigFile = async (pathname) => {
@@ -59,9 +61,7 @@ const getCollectionConfigFile = async (pathname) => {
   if (fs.existsSync(ocYmlPath)) {
     try {
       const content = fs.readFileSync(ocYmlPath, 'utf8');
-      const {
-        brunoConfig
-      } = parseCollection(content, { format: 'yml' });
+      const { brunoConfig } = parseCollection(content, { format: 'yml' });
       await validateSchema(brunoConfig);
       return brunoConfig;
     } catch (err) {
@@ -88,30 +88,37 @@ const openCollectionDialog = async (win, watcher) => {
 
   if (!canceled && filePaths?.length > 0) {
     // Using Set to remove duplicates
-    const { openCollectionPromises, invalidPaths } = [...new Set(filePaths)].reduce((acc, filePath) => {
-      const resolvedPath = path.resolve(filePath);
+    const { openCollectionPromises, invalidPaths } = [...new Set(filePaths)].reduce(
+      (acc, filePath) => {
+        const resolvedPath = path.resolve(filePath);
 
-      if (isDirectory(resolvedPath)) {
-        // Open each valid collection in parallel
-        acc.openCollectionPromises.push(openCollection(win, watcher, resolvedPath).catch((err) => {
-          console.error(`[ERROR] Failed to open collection at "${resolvedPath}":`, err.message);
-          return { error: err, path: resolvedPath };
-        }));
-      } else {
-        acc.invalidPaths.push(resolvedPath);
-        console.error(`[ERROR] Cannot open unknown folder: "${resolvedPath}"`);
-      }
+        if (isDirectory(resolvedPath)) {
+          // Open each valid collection in parallel
+          acc.openCollectionPromises.push(
+            openCollection(win, watcher, resolvedPath).catch((err) => {
+              console.error(`[ERROR] Failed to open collection at "${resolvedPath}":`, err.message);
+              return { error: err, path: resolvedPath };
+            })
+          );
+        } else {
+          acc.invalidPaths.push(resolvedPath);
+          console.error(`[ERROR] Cannot open unknown folder: "${resolvedPath}"`);
+        }
 
-      return acc;
-    },
-    { openCollectionPromises: [], invalidPaths: [] });
+        return acc;
+      },
+      { openCollectionPromises: [], invalidPaths: [] }
+    );
 
     // Wait for all valid collections to be opened
     await Promise.all(openCollectionPromises);
 
     // Notify about any invalid paths
     if (invalidPaths.length > 0) {
-      win.webContents.send('main:display-error', `Some selected folders could not be opened: ${invalidPaths.join(', ')}`);
+      win.webContents.send(
+        'main:display-error',
+        `Some selected folders could not be opened: ${invalidPaths.join(', ')}`
+      );
     }
   }
 };
@@ -194,9 +201,7 @@ const openCollectionsByPathname = async (win, watcher, collectionPaths, options 
   };
 
   for (const collectionPath of collectionPaths) {
-    const resolvedPath = path.isAbsolute(collectionPath)
-      ? collectionPath
-      : normalizeAndResolvePath(collectionPath);
+    const resolvedPath = path.isAbsolute(collectionPath) ? collectionPath : normalizeAndResolvePath(collectionPath);
 
     const normalizedPath = path.normalize(resolvedPath);
     if (seenPaths.has(normalizedPath)) {

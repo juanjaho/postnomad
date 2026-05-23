@@ -50,11 +50,7 @@ const ResponseExampleBodyRenderer = ({
   const renderBodyContent = () => {
     switch (bodyMode) {
       case 'none':
-        return (
-          <div className="no-body-text">
-            No Body
-          </div>
-        );
+        return <div className="no-body-text">No Body</div>;
 
       case 'json':
       case 'xml':
@@ -81,20 +77,32 @@ const ResponseExampleBodyRenderer = ({
         );
 
       case 'formUrlEncoded':
-        return <ResponseExampleFormUrlEncodedParams item={item} collection={collection} exampleUid={exampleUid} editMode={editMode} />;
+        return (
+          <ResponseExampleFormUrlEncodedParams
+            item={item}
+            collection={collection}
+            exampleUid={exampleUid}
+            editMode={editMode}
+          />
+        );
 
       case 'multipartForm':
-        return <ResponseExampleMultipartFormParams item={item} collection={collection} exampleUid={exampleUid} editMode={editMode} />;
+        return (
+          <ResponseExampleMultipartFormParams
+            item={item}
+            collection={collection}
+            exampleUid={exampleUid}
+            editMode={editMode}
+          />
+        );
 
       case 'file':
-        return <ResponseExampleFileBody item={item} collection={collection} exampleUid={exampleUid} editMode={editMode} />;
+        return (
+          <ResponseExampleFileBody item={item} collection={collection} exampleUid={exampleUid} editMode={editMode} />
+        );
 
       default:
-        return (
-          <div className="no-body-text">
-            No Body
-          </div>
-        );
+        return <div className="no-body-text">No Body</div>;
     }
   };
 

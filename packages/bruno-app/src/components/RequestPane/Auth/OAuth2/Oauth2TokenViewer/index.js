@@ -39,9 +39,11 @@ const TokenSection = ({ title, token }) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center space-x-2 w-full">
-          {isExpanded
-            ? <IconChevronDown size={18} className="text-gray-500" />
-            : <IconChevronRight size={18} className="text-gray-500" />}
+          {isExpanded ? (
+            <IconChevronDown size={18} className="text-gray-500" />
+          ) : (
+            <IconChevronRight size={18} className="text-gray-500" />
+          )}
           <div className="flex flex-row justify-between w-full">
             <h3 className="font-medium">{title}</h3>
             {decodedToken?.exp && <ExpiryTimer expiresIn={decodedToken?.exp} />}
@@ -52,19 +54,15 @@ const TokenSection = ({ title, token }) => {
         <div className="p-3">
           <div className="relative group">
             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
-                onClick={() => handleCopy(token)}
-                className="p-1 oauth2-copy-button rounded"
-                title="Copy token"
-              >
-                {copied
-                  ? <IconCheck size={16} className="text-green-700" />
-                  : <IconCopy size={16} className="text-gray-500" />}
+              <button onClick={() => handleCopy(token)} className="p-1 oauth2-copy-button rounded" title="Copy token">
+                {copied ? (
+                  <IconCheck size={16} className="text-green-700" />
+                ) : (
+                  <IconCopy size={16} className="text-gray-500" />
+                )}
               </button>
             </div>
-            <div className="font-mono text-xs bg-gray-50 dark:bg-gray-800 p-2 rounded break-all">
-              {token}
-            </div>
+            <div className="font-mono text-xs bg-gray-50 dark:bg-gray-800 p-2 rounded break-all">{token}</div>
           </div>
           {decodedToken && (
             <div className="mt-3">
@@ -112,9 +110,10 @@ const ExpiryTimer = ({ expiresIn }) => {
 
   return (
     <div
-      className={`text-xs px-2 py-1 rounded-full min-w-[120px] text-center ${timeLeft <= 30
-        ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-        : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+      className={`text-xs px-2 py-1 rounded-full min-w-[120px] text-center ${
+        timeLeft <= 30
+          ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+          : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
       }`}
     >
       {timeLeft > 0 ? `Expires in ${formatExpiryTime(timeLeft)}` : `Expired`}
@@ -130,20 +129,26 @@ const Oauth2TokenViewer = ({ collection, item, url, credentialsId, handleRun }) 
     return interpolate(url, variables);
   }, [collection, item, url]);
 
-  const credentialsData = find(collection?.oauth2Credentials, (creds) => creds?.url == interpolatedUrl && creds?.collectionUid == collectionUid && creds?.credentialsId == credentialsId);
+  const credentialsData = find(
+    collection?.oauth2Credentials,
+    (creds) =>
+      creds?.url == interpolatedUrl && creds?.collectionUid == collectionUid && creds?.credentialsId == credentialsId
+  );
   const creds = credentialsData?.credentials || {};
 
   return (
     <StyledWrapper className="relative w-auto h-fit mt-2">
       {Object.keys(creds)?.length ? (
         creds?.error ? (
-          <pre className="text-red-600 dark:text-red-400">Error fetching token. Check network logs for more details.</pre>
+          <pre className="text-red-600 dark:text-red-400">
+            Error fetching token. Check network logs for more details.
+          </pre>
         ) : (
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm">
             <TokenSection title="Access Token" token={creds.access_token} />
             <TokenSection title="Refresh Token" token={creds.refresh_token} />
             <TokenSection title="ID Token" token={creds.id_token} />
-            {(creds.token_type || creds.scope) ? (
+            {creds.token_type || creds.scope ? (
               <div className="mt-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   {creds.token_type ? (

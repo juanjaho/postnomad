@@ -192,37 +192,39 @@ const parseInsomniaV5Collection = (data) => {
         throw new Error('Invalid items format: expected array');
       }
 
-      return items.map((item, index) => {
-        if (!item) {
-          return null;
-        }
+      return items
+        .map((item, index) => {
+          if (!item) {
+            return null;
+          }
 
-        // In v5, requests might be defined with method property or meta.type
-        if (item.method && item.url) {
-          const request = {
-            _id: item.meta?.id || uuid(),
-            name: item.name || 'Untitled Request',
-            url: item.url || '',
-            method: item.method || '',
-            headers: item.headers || [],
-            parameters: item.parameters || [],
-            pathParameters: item.pathParameters || [],
-            authentication: item.authentication || {},
-            body: item.body || {},
-            settings: item.settings || {}
-          };
-          return transformInsomniaRequestItem(request, index, allItems);
-        } else if (item.children && Array.isArray(item.children)) {
-          // Process folder
-          return {
-            uid: uuid(),
-            name: item.name || 'Untitled Folder',
-            type: 'folder',
-            items: parseCollectionItems(item.children, item.children)
-          };
-        }
-        return null;
-      }).filter(Boolean);
+          // In v5, requests might be defined with method property or meta.type
+          if (item.method && item.url) {
+            const request = {
+              _id: item.meta?.id || uuid(),
+              name: item.name || 'Untitled Request',
+              url: item.url || '',
+              method: item.method || '',
+              headers: item.headers || [],
+              parameters: item.parameters || [],
+              pathParameters: item.pathParameters || [],
+              authentication: item.authentication || {},
+              body: item.body || {},
+              settings: item.settings || {}
+            };
+            return transformInsomniaRequestItem(request, index, allItems);
+          } else if (item.children && Array.isArray(item.children)) {
+            // Process folder
+            return {
+              uid: uuid(),
+              name: item.name || 'Untitled Folder',
+              type: 'folder',
+              items: parseCollectionItems(item.children, item.children)
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
     };
 
     if (data.collection && Array.isArray(data.collection)) {
@@ -260,13 +262,12 @@ const parseInsomniaCollection = (data) => {
 
     brunoCollection.name = insomniaCollection.name;
 
-    const requestsAndFolders
-      = insomniaResources.filter((resource) => resource._type === 'request' || resource._type === 'request_group')
-        || [];
+    const requestsAndFolders =
+      insomniaResources.filter((resource) => resource._type === 'request' || resource._type === 'request_group') || [];
 
     function createFolderStructure(resources, parentId = null) {
-      const requestGroups
-        = resources.filter((resource) => resource._type === 'request_group' && resource.parentId === parentId) || [];
+      const requestGroups =
+        resources.filter((resource) => resource._type === 'request_group' && resource.parentId === parentId) || [];
       const requests = resources.filter((resource) => resource._type === 'request' && resource.parentId === parentId);
 
       const folders = requestGroups.map((folder, index, allFolder) => {

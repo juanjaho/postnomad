@@ -381,7 +381,8 @@ const calculateWordReplacementPositions = (cursor, start, end, word) => {
  */
 const determineWordContext = (word) => {
   const isApiHint = Object.keys(STATIC_API_HINTS).some(
-    (apiRoot) => apiRoot.toLowerCase().startsWith(word.toLowerCase()) || word.toLowerCase().startsWith(apiRoot.toLowerCase())
+    (apiRoot) =>
+      apiRoot.toLowerCase().startsWith(word.toLowerCase()) || word.toLowerCase().startsWith(apiRoot.toLowerCase())
   );
 
   if (isApiHint) {
@@ -499,8 +500,8 @@ const extractNextSegmentSuggestions = (filteredHints, currentInput) => {
         const lastDotInInput = currentInput.lastIndexOf('.');
         const currentSegmentStart = lastDotInInput + 1;
         const nextDotAfterInput = hint.indexOf('.', currentSegmentStart);
-        const segment
-          = nextDotAfterInput === -1
+        const segment =
+          nextDotAfterInput === -1
             ? hint.substring(currentSegmentStart)
             : hint.substring(currentSegmentStart, nextDotAfterInput);
         prefixMatches.add(segment);

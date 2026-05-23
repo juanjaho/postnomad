@@ -133,9 +133,7 @@ class HeaderList extends ReadOnlyPropertyList {
    * @returns {boolean}
    */
   static #ciEquals(a, b) {
-    return typeof a === 'string' && typeof b === 'string'
-      ? a.toLowerCase() === b.toLowerCase()
-      : a === b;
+    return typeof a === 'string' && typeof b === 'string' ? a.toLowerCase() === b.toLowerCase() : a === b;
   }
 
   /**
@@ -206,9 +204,7 @@ class HeaderList extends ReadOnlyPropertyList {
       return items.findIndex((i) => HeaderList.#ciEquals(i.key, item));
     }
     if (!item || typeof item !== 'object') return -1;
-    return items.findIndex(
-      (i) => HeaderList.#ciEquals(i.key, item.key) && i.value === item.value
-    );
+    return items.findIndex((i) => HeaderList.#ciEquals(i.key, item.key) && i.value === item.value);
   }
 
   // ── Iteration overrides (optional context binding) ─────────────────
@@ -276,9 +272,7 @@ class HeaderList extends ReadOnlyPropertyList {
     }
     if (!item || typeof item !== 'object' || !item.key) return null;
     const headers = this.#req.headers || {};
-    const existingKey = Object.keys(headers).find(
-      (k) => HeaderList.#ciEquals(k, item.key)
-    );
+    const existingKey = Object.keys(headers).find((k) => HeaderList.#ciEquals(k, item.key));
     const existed = existingKey !== undefined;
     // Remove old-cased key if casing differs, tracking it for the axios interceptor
     if (existed && existingKey !== item.key) {
@@ -344,9 +338,7 @@ class HeaderList extends ReadOnlyPropertyList {
    */
   #deleteHeaderCI(key) {
     const headers = this.#req.headers || {};
-    const matchingKey = Object.keys(headers).find(
-      (k) => HeaderList.#ciEquals(k, key)
-    );
+    const matchingKey = Object.keys(headers).find((k) => HeaderList.#ciEquals(k, key));
     if (matchingKey) {
       this.#deleteHeader(matchingKey);
     }
@@ -359,9 +351,7 @@ class HeaderList extends ReadOnlyPropertyList {
   #removeDisabledHeader(key) {
     const arr = this.#req.disabledHeaders;
     if (!arr) return;
-    this.#req.disabledHeaders = arr.filter(
-      (h) => !HeaderList.#ciEquals(h.name, key)
-    );
+    this.#req.disabledHeaders = arr.filter((h) => !HeaderList.#ciEquals(h.name, key));
   }
 
   /**
@@ -480,9 +470,7 @@ class HeaderList extends ReadOnlyPropertyList {
     // Prune: remove items from this list that are not in source
     if (prune && items.length > 0) {
       const sourceKeys = new Set(items.map((i) => (i.key || '').toLowerCase()));
-      const toRemove = this.all().filter(
-        (h) => !sourceKeys.has(h.key.toLowerCase())
-      );
+      const toRemove = this.all().filter((h) => !sourceKeys.has(h.key.toLowerCase()));
       for (const header of toRemove) {
         if (header.disabled) {
           this.#removeDisabledHeader(header.key);

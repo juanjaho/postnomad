@@ -1,23 +1,29 @@
-import { OpenCollection } from "@opencollection/types";
-import { BrunoCollection, BrunoCollectionRoot, BrunoConfig, PemCertificate, Pkcs12Certificate } from "./types";
-import { fromOpenCollectionAuth, fromOpenCollectionHeaders, fromOpenCollectionScripts, fromOpenCollectionVariables } from "./common";
-import { uuid } from "../common";
-import { fromOpenCollectionItems } from "./items";
-import { fromOpenCollectionFolder } from "./folder";
-import { fromOpenCollectionEnvironments } from "./environment";
+import { OpenCollection } from '@opencollection/types';
+import { BrunoCollection, BrunoCollectionRoot, BrunoConfig, PemCertificate, Pkcs12Certificate } from './types';
+import {
+  fromOpenCollectionAuth,
+  fromOpenCollectionHeaders,
+  fromOpenCollectionScripts,
+  fromOpenCollectionVariables
+} from './common';
+import { uuid } from '../common';
+import { fromOpenCollectionItems } from './items';
+import { fromOpenCollectionFolder } from './folder';
+import { fromOpenCollectionEnvironments } from './environment';
 
 const fromOpenCollectionConfig = (oc: OpenCollection): BrunoConfig => {
-  const brunoExtension = oc.extensions?.bruno as {
-    ignore?: string[];
-    presets?: {
-      requestType?: string;
-      requestUrl?: string;
-    };
-  } | undefined;
+  const brunoExtension = oc.extensions?.bruno as
+    | {
+        ignore?: string[];
+        presets?: {
+          requestType?: string;
+          requestUrl?: string;
+        };
+      }
+    | undefined;
 
-  const ignoreList = brunoExtension && Array.isArray(brunoExtension.ignore)
-    ? brunoExtension.ignore
-    : ['node_modules', '.git'];
+  const ignoreList =
+    brunoExtension && Array.isArray(brunoExtension.ignore) ? brunoExtension.ignore : ['node_modules', '.git'];
 
   const brunoConfig: BrunoConfig = {
     version: '1',
@@ -63,27 +69,29 @@ const fromOpenCollectionConfig = (oc: OpenCollection): BrunoConfig => {
 
   if (config.clientCertificates?.length) {
     brunoConfig.clientCertificates = {
-      certs: config.clientCertificates.map((cert) => {
-        if (cert.type === 'pem') {
-          const pemCert = cert as PemCertificate;
-          return {
-            domain: pemCert.domain || '',
-            type: 'pem' as const,
-            certFilePath: pemCert.certificateFilePath || '',
-            keyFilePath: pemCert.privateKeyFilePath || '',
-            passphrase: pemCert.passphrase || ''
-          };
-        } else if (cert.type === 'pkcs12') {
-          const pkcs12Cert = cert as Pkcs12Certificate;
-          return {
-            domain: pkcs12Cert.domain || '',
-            type: 'pkcs12' as const,
-            pfxFilePath: pkcs12Cert.pkcs12FilePath || '',
-            passphrase: pkcs12Cert.passphrase || ''
-          };
-        }
-        return null;
-      }).filter((cert): cert is NonNullable<typeof cert> => cert !== null)
+      certs: config.clientCertificates
+        .map((cert) => {
+          if (cert.type === 'pem') {
+            const pemCert = cert as PemCertificate;
+            return {
+              domain: pemCert.domain || '',
+              type: 'pem' as const,
+              certFilePath: pemCert.certificateFilePath || '',
+              keyFilePath: pemCert.privateKeyFilePath || '',
+              passphrase: pemCert.passphrase || ''
+            };
+          } else if (cert.type === 'pkcs12') {
+            const pkcs12Cert = cert as Pkcs12Certificate;
+            return {
+              domain: pkcs12Cert.domain || '',
+              type: 'pkcs12' as const,
+              pfxFilePath: pkcs12Cert.pkcs12FilePath || '',
+              passphrase: pkcs12Cert.passphrase || ''
+            };
+          }
+          return null;
+        })
+        .filter((cert): cert is NonNullable<typeof cert> => cert !== null)
     };
   }
 
@@ -105,9 +113,7 @@ const fromOpenCollectionRoot = (oc: OpenCollection): BrunoCollectionRoot => {
   }
 
   if (oc.docs) {
-    root.docs = typeof oc.docs === 'string'
-      ? oc.docs
-      : oc.docs.content || '';
+    root.docs = typeof oc.docs === 'string' ? oc.docs : oc.docs.content || '';
   }
 
   root.meta = {
@@ -122,7 +128,9 @@ export const openCollectionToBruno = (openCollection: OpenCollection): BrunoColl
     uid: uuid(),
     name: openCollection.info?.name || 'Untitled Collection',
     version: '1',
-    items: fromOpenCollectionItems(openCollection.items, (folder: unknown) => fromOpenCollectionFolder(folder as Parameters<typeof fromOpenCollectionFolder>[0])),
+    items: fromOpenCollectionItems(openCollection.items, (folder: unknown) =>
+      fromOpenCollectionFolder(folder as Parameters<typeof fromOpenCollectionFolder>[0])
+    ),
     environments: fromOpenCollectionEnvironments(openCollection.config?.environments),
     brunoConfig: fromOpenCollectionConfig(openCollection) as Record<string, unknown>,
     root: fromOpenCollectionRoot(openCollection)

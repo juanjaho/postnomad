@@ -5,7 +5,7 @@ import { getInputObjectFields } from 'utils/graphql/queryBuilder';
 
 const ListArgValueInput = ({ values, onChange, field, indent }) => {
   const [items, setItems] = useState(() => {
-    const vals = Array.isArray(values) ? values : (values ? [values] : []);
+    const vals = Array.isArray(values) ? values : values ? [values] : [];
     const mapped = vals.map((v) => ({ id: nanoid(), value: v }));
     return [...mapped, { id: nanoid(), value: '' }];
   });
@@ -14,7 +14,7 @@ const ListArgValueInput = ({ values, onChange, field, indent }) => {
   // Sync internal items when values prop changes externally (e.g. editor edits)
   if (values !== lastExternalRef.current) {
     lastExternalRef.current = values;
-    const vals = Array.isArray(values) ? values : (values ? [values] : []);
+    const vals = Array.isArray(values) ? values : values ? [values] : [];
     const filledValues = items.filter((i) => i.value !== '').map((i) => i.value);
     if (JSON.stringify(vals) !== JSON.stringify(filledValues)) {
       const mapped = vals.map((v) => ({ id: nanoid(), value: v }));
@@ -73,7 +73,9 @@ const ArgValueInput = ({ value, onChange, field }) => {
       <select value={value} onChange={(e) => onChange(e.target.value)} onClick={(e) => e.stopPropagation()}>
         <option value="">Select option</option>
         {field.enumValues.map((v) => (
-          <option key={v} value={v}>{v}</option>
+          <option key={v} value={v}>
+            {v}
+          </option>
         ))}
       </select>
     );
@@ -99,7 +101,16 @@ const ArgValueInput = ({ value, onChange, field }) => {
   );
 };
 
-const InputObjectFields = ({ namedType, parentKey, fieldPath, indent, argValues, enabledArgs, onToggleInputField, onSetInputFieldValue }) => {
+const InputObjectFields = ({
+  namedType,
+  parentKey,
+  fieldPath,
+  indent,
+  argValues,
+  enabledArgs,
+  onToggleInputField,
+  onSetInputFieldValue
+}) => {
   const [expandedFields, setExpandedFields] = useState(new Set());
   const fields = useMemo(() => getInputObjectFields(namedType), [namedType]);
 
@@ -126,9 +137,18 @@ const InputObjectFields = ({ namedType, parentKey, fieldPath, indent, argValues,
 
     return (
       <React.Fragment key={field.name}>
-        <div className="arg-row" style={{ paddingLeft: indent }} onClick={isExpandable ? toggleExpand : (e) => e.stopPropagation()}>
+        <div
+          className="arg-row"
+          style={{ paddingLeft: indent }}
+          onClick={isExpandable ? toggleExpand : (e) => e.stopPropagation()}
+        >
           {isExpandable ? (
-            <button type="button" className="field-chevron input-object-chevron" onClick={toggleExpand} aria-label={isExpanded ? 'Collapse' : 'Expand'}>
+            <button
+              type="button"
+              className="field-chevron input-object-chevron"
+              onClick={toggleExpand}
+              aria-label={isExpanded ? 'Collapse' : 'Expand'}
+            >
               {isExpanded ? (
                 <IconChevronDown size={12} strokeWidth={2} />
               ) : (
@@ -160,7 +180,10 @@ const InputObjectFields = ({ namedType, parentKey, fieldPath, indent, argValues,
           {field.isRequired && <span className="arg-required">!</span>}
           {(!isEnabled || field.isInputObject) && <span className="field-type">{field.typeLabel}</span>}
           {isListOfInputObject && (
-            <span className="list-complex-unsupported" title="List arguments for complex types are not currently supported.">
+            <span
+              className="list-complex-unsupported"
+              title="List arguments for complex types are not currently supported."
+            >
               <IconInfoCircle size={13} strokeWidth={1.5} />
             </span>
           )}
@@ -226,20 +249,10 @@ const FieldNode = ({
   // Union member type row (e.g. "... on Human")
   if (field.isUnionMember) {
     return (
-      <div
-        className="field-node"
-        role="treeitem"
-        aria-expanded={isExpanded}
-        onClick={handleExpand}
-        tabIndex={0}
-      >
+      <div className="field-node" role="treeitem" aria-expanded={isExpanded} onClick={handleExpand} tabIndex={0}>
         <span className="field-indent" style={{ width: indent }} />
         <span className="field-chevron">
-          {isExpanded ? (
-            <IconChevronDown size={14} strokeWidth={2} />
-          ) : (
-            <IconChevronRight size={14} strokeWidth={2} />
-          )}
+          {isExpanded ? <IconChevronDown size={14} strokeWidth={2} /> : <IconChevronRight size={14} strokeWidth={2} />}
         </span>
         <input
           type="checkbox"
@@ -300,7 +313,12 @@ const FieldNode = ({
             // List of input objects: show unsupported message
             if (arg.isList && arg.isInputObject) {
               return (
-                <div key={arg.name} className="arg-row" style={{ paddingLeft: sectionIndent + 8 }} onClick={(e) => e.stopPropagation()}>
+                <div
+                  key={arg.name}
+                  className="arg-row"
+                  style={{ paddingLeft: sectionIndent + 8 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <span className="input-object-chevron-spacer" />
                   <input
                     type="checkbox"
@@ -312,7 +330,10 @@ const FieldNode = ({
                   <span className="arg-name">{arg.name}</span>
                   {arg.isRequired && <span className="arg-required">!</span>}
                   <span className="field-type">{arg.typeLabel}</span>
-                  <span className="list-complex-unsupported" title="List arguments for complex types are not currently supported.">
+                  <span
+                    className="list-complex-unsupported"
+                    title="List arguments for complex types are not currently supported."
+                  >
                     <IconInfoCircle size={13} strokeWidth={1.5} />
                   </span>
                 </div>
@@ -354,7 +375,12 @@ const FieldNode = ({
             }
 
             return (
-              <div key={arg.name} className="arg-row" style={{ paddingLeft: sectionIndent + 8 }} onClick={(e) => e.stopPropagation()}>
+              <div
+                key={arg.name}
+                className="arg-row"
+                style={{ paddingLeft: sectionIndent + 8 }}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <span className="input-object-chevron-spacer" />
                 <input
                   type="checkbox"
@@ -384,7 +410,18 @@ const FieldNode = ({
   );
 };
 
-const InputObjectArgRow = ({ arg, argKey, fieldPath, isArgEnabled, sectionIndent, argValues, enabledArgs, onToggleArg, onToggleInputField, onSetInputFieldValue }) => {
+const InputObjectArgRow = ({
+  arg,
+  argKey,
+  fieldPath,
+  isArgEnabled,
+  sectionIndent,
+  argValues,
+  enabledArgs,
+  onToggleArg,
+  onToggleInputField,
+  onSetInputFieldValue
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = (e) => {
@@ -413,11 +450,7 @@ const InputObjectArgRow = ({ arg, argKey, fieldPath, isArgEnabled, sectionIndent
         aria-expanded={isExpanded}
       >
         <span className="field-chevron input-object-chevron">
-          {isExpanded ? (
-            <IconChevronDown size={12} strokeWidth={2} />
-          ) : (
-            <IconChevronRight size={12} strokeWidth={2} />
-          )}
+          {isExpanded ? <IconChevronDown size={12} strokeWidth={2} /> : <IconChevronRight size={12} strokeWidth={2} />}
         </span>
         <input
           type="checkbox"
@@ -474,11 +507,7 @@ const ListArgRow = ({ arg, fieldPath, isArgEnabled, argValue, sectionIndent, onT
         aria-expanded={isExpanded}
       >
         <span className="field-chevron input-object-chevron">
-          {isExpanded ? (
-            <IconChevronDown size={12} strokeWidth={2} />
-          ) : (
-            <IconChevronRight size={12} strokeWidth={2} />
-          )}
+          {isExpanded ? <IconChevronDown size={12} strokeWidth={2} /> : <IconChevronRight size={12} strokeWidth={2} />}
         </span>
         <input
           type="checkbox"

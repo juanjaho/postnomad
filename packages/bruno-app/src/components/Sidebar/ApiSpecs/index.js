@@ -25,10 +25,12 @@ const ApiSpecs = () => {
     const workspaceApiSpecs = activeWorkspace.apiSpecs || [];
 
     // Map workspace API specs to loaded API specs from Redux store
-    return workspaceApiSpecs.map((ws) => {
-      const loadedApiSpec = allApiSpecs.find((apiSpec) => apiSpec.pathname === ws.path);
-      return loadedApiSpec;
-    }).filter(Boolean);
+    return workspaceApiSpecs
+      .map((ws) => {
+        const loadedApiSpec = allApiSpecs.find((apiSpec) => apiSpec.pathname === ws.path);
+        return loadedApiSpec;
+      })
+      .filter(Boolean);
   }, [allApiSpecs, activeWorkspace, activeWorkspace?.apiSpecs]);
 
   const handleOpenApiSpec = () => {

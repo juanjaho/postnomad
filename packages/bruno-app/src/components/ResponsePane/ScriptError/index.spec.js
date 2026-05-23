@@ -24,9 +24,7 @@ const mockStore = configureStore({
 const renderWithProviders = (component) => {
   return render(
     <Provider store={mockStore}>
-      <ThemeProvider theme={theme}>
-        {component}
-      </ThemeProvider>
+      <ThemeProvider theme={theme}>{component}</ThemeProvider>
     </Provider>
   );
 };
@@ -50,7 +48,9 @@ const mockErrorContext = {
 
 describe('ScriptError', () => {
   it('should render nothing when no errors', () => {
-    const { container } = renderWithProviders(<ScriptError item={{}} collection={mockCollection} onClose={jest.fn()} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={{}} collection={mockCollection} onClose={jest.fn()} />
+    );
     expect(container.firstChild).toBeNull();
   });
 
@@ -68,7 +68,9 @@ describe('ScriptError', () => {
       preRequestScriptErrorMessage: 'undefinedVar is not defined',
       preRequestScriptErrorContext: mockErrorContext
     };
-    const { container } = renderWithProviders(<ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />
+    );
     expect(screen.getByText('Pre-Request Script Error')).toBeInTheDocument();
     expect(container.querySelector('.code-snippet')).toBeInTheDocument();
   });
@@ -78,7 +80,9 @@ describe('ScriptError', () => {
       preRequestScriptErrorMessage: 'undefinedVar is not defined',
       preRequestScriptErrorContext: mockErrorContext
     };
-    const { container } = renderWithProviders(<ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />
+    );
     expect(container.querySelector('.highlighted-error')).toBeInTheDocument();
   });
 
@@ -96,7 +100,9 @@ describe('ScriptError', () => {
       preRequestScriptErrorMessage: 'undefinedVar is not defined',
       preRequestScriptErrorContext: mockErrorContext
     };
-    const { container } = renderWithProviders(<ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />
+    );
     expect(container.querySelector('.script-error-file-path')).toBeInTheDocument();
     expect(screen.getByText('echo json.bru')).toBeInTheDocument();
     expect(screen.getByText('Request')).toBeInTheDocument();
@@ -168,7 +174,9 @@ describe('ScriptError', () => {
       preRequestScriptErrorMessage: 'error',
       preRequestScriptErrorContext: mockErrorContext
     };
-    const { container } = renderWithProviders(<ScriptError item={item} collection={mockCollection} onClose={onClose} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={item} collection={mockCollection} onClose={onClose} />
+    );
     const closeButton = container.querySelector('.close-button');
     fireEvent.click(closeButton);
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -192,7 +200,9 @@ describe('ScriptError', () => {
       preRequestScriptErrorContext: mockErrorContext
     };
     // No item.uid means request-level navigation is disabled
-    const { container } = renderWithProviders(<ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />);
+    const { container } = renderWithProviders(
+      <ScriptError item={item} collection={mockCollection} onClose={jest.fn()} />
+    );
     const filePath = container.querySelector('.script-error-file-path');
     expect(filePath).not.toHaveClass('navigable');
   });

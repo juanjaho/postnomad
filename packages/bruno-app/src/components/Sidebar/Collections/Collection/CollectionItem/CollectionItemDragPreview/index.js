@@ -1,8 +1,5 @@
 import { useDragLayer } from 'react-dnd';
-import {
-  IconFile,
-  IconFolder
-} from '@tabler/icons';
+import { IconFile, IconFolder } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
 function getItemStyles({ x, y }) {
@@ -20,11 +17,7 @@ function getItemStyles({ x, y }) {
 }
 
 export const CollectionItemDragPreview = () => {
-  const {
-    item,
-    isDragging,
-    clientOffset
-  } = useDragLayer((monitor) => ({
+  const { item, isDragging, clientOffset } = useDragLayer((monitor) => ({
     item: monitor.getItem(),
     isDragging: monitor.isDragging(),
     clientOffset: monitor.getClientOffset()
@@ -37,11 +30,7 @@ export const CollectionItemDragPreview = () => {
     <StyledWrapper>
       <div style={getItemStyles({ x, y })} className="p-2">
         <div className="flex items-center gap-2 border border-gray-500/10 rounded-md px-2 py-1 drag-preview">
-          {shouldShowFolderIcon ? (
-            <IconFolder size={16} />
-          ) : (
-            <IconFile size={16} />
-          )}
+          {shouldShowFolderIcon ? <IconFolder size={16} /> : <IconFile size={16} />}
           {item.name}
         </div>
       </div>

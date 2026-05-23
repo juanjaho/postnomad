@@ -44,14 +44,16 @@ const ResponseExampleBodyMode = ({ item, collection, exampleUid, body, bodyMode,
           break;
       }
 
-      dispatch(updateResponseExampleRequest({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        request: {
-          body: newBody
-        }
-      }));
+      dispatch(
+        updateResponseExampleRequest({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          request: {
+            body: newBody
+          }
+        })
+      );
     }
   };
 
@@ -77,18 +79,11 @@ const ResponseExampleBodyMode = ({ item, collection, exampleUid, body, bodyMode,
   return (
     <div className="flex items-center">
       {['json', 'xml'].includes(bodyMode) && (
-        <button
-          className="btn-action text-link mr-2 py-1 px-2 text-xs"
-          onClick={onPrettify}
-        >
+        <button className="btn-action text-link mr-2 py-1 px-2 text-xs" onClick={onPrettify}>
           Prettify
         </button>
       )}
-      <BodyModeSelector
-        currentMode={bodyMode}
-        onModeChange={onModeChange}
-        disabled={!editMode}
-      />
+      <BodyModeSelector currentMode={bodyMode} onModeChange={onModeChange} disabled={!editMode} />
     </div>
   );
 };

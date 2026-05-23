@@ -65,7 +65,8 @@ const ImportWorkspace = ({ onClose }) => {
   const validateAndGetFilePath = (file) => {
     if (!file) return null;
 
-    const isZip = file.name.endsWith('.zip') || file.type === 'application/zip' || file.type === 'application/x-zip-compressed';
+    const isZip =
+      file.name.endsWith('.zip') || file.type === 'application/zip' || file.type === 'application/x-zip-compressed';
     if (!isZip) {
       toast.error('Please select a valid zip file');
       return null;
@@ -152,11 +153,7 @@ const ImportWorkspace = ({ onClose }) => {
                 <IconFileZip size={20} className="text-gray-500" />
                 <span className="text-gray-700 dark:text-gray-300">{selectedFile.name}</span>
               </div>
-              <button
-                type="button"
-                className="text-gray-500 hover:text-red-500 text-sm"
-                onClick={handleClearFile}
-              >
+              <button type="button" className="text-gray-500 hover:text-red-500 text-sm" onClick={handleClearFile}>
                 Remove
               </button>
             </div>
@@ -172,10 +169,7 @@ const ImportWorkspace = ({ onClose }) => {
               `}
             >
               <div className="flex flex-col items-center justify-center">
-                <IconFileZip
-                  size={28}
-                  className="text-gray-400 dark:text-gray-500 mb-3"
-                />
+                <IconFileZip size={28} className="text-gray-400 dark:text-gray-500 mb-3" />
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -185,17 +179,11 @@ const ImportWorkspace = ({ onClose }) => {
                 />
                 <p className="text-gray-600 dark:text-gray-300 mb-2">
                   Drop workspace zip file here or{' '}
-                  <button
-                    type="button"
-                    className="text-blue-500 underline cursor-pointer"
-                    onClick={handleBrowseFiles}
-                  >
+                  <button type="button" className="text-blue-500 underline cursor-pointer" onClick={handleBrowseFiles}>
                     choose a file
                   </button>
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Supports exported Bruno workspace zip files
-                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Supports exported Bruno workspace zip files</p>
               </div>
             </div>
           )}
@@ -205,12 +193,8 @@ const ImportWorkspace = ({ onClose }) => {
           <label htmlFor="workspace-location" className="font-semibold mb-2 flex items-center">
             Extract Location
             <Help>
-              <p>
-                Choose the location where you want to extract this workspace.
-              </p>
-              <p className="mt-2">
-                The workspace folder will be created at this location.
-              </p>
+              <p>Choose the location where you want to extract this workspace.</p>
+              <p className="mt-2">The workspace folder will be created at this location.</p>
             </Help>
           </label>
           <input
@@ -231,10 +215,7 @@ const ImportWorkspace = ({ onClose }) => {
             <div className="text-red-500 text-sm mt-1">{formik.errors.workspaceLocation}</div>
           ) : null}
           <div className="mt-1">
-            <span
-              className="text-link cursor-pointer hover:underline"
-              onClick={browse}
-            >
+            <span className="text-link cursor-pointer hover:underline" onClick={browse}>
               Browse
             </span>
           </div>

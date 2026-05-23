@@ -31,9 +31,7 @@ function getSystemCerts(): string[] {
 }
 
 function certToString(cert: string | Buffer) {
-  return typeof cert === 'string'
-    ? cert
-    : Buffer.from(cert.buffer, cert.byteOffset, cert.byteLength).toString('utf8');
+  return typeof cert === 'string' ? cert : Buffer.from(cert.buffer, cert.byteOffset, cert.byteLength).toString('utf8');
 }
 
 function mergeCA(...args: (string | string[])[]): string {
@@ -89,7 +87,10 @@ function getNodeExtraCACerts(): string[] {
  * @returns {T_CACertificatesResult} - CA certificates and their count
  */
 
-const getCACertificates = ({ caCertFilePath, shouldKeepDefaultCerts = true }: T_CACertificatesOptions): T_CACertificatesResult => {
+const getCACertificates = ({
+  caCertFilePath,
+  shouldKeepDefaultCerts = true
+}: T_CACertificatesOptions): T_CACertificatesResult => {
   try {
     let caCertificates = '';
     let caCertificatesCount = {
@@ -159,6 +160,4 @@ const getCACertificates = ({ caCertFilePath, shouldKeepDefaultCerts = true }: T_
   }
 };
 
-export {
-  getCACertificates
-};
+export { getCACertificates };

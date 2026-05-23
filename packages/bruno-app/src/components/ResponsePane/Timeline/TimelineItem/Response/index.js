@@ -35,7 +35,15 @@ const Response = ({ collection, response, item }) => {
       <Headers headers={headers} type="response" />
 
       {/* Body */}
-      <BodyBlock collection={collection} data={data} dataBuffer={dataBuffer} error={error} headers={headers} item={item} type="response" />
+      <BodyBlock
+        collection={collection}
+        data={data}
+        dataBuffer={dataBuffer}
+        error={error}
+        headers={headers}
+        item={item}
+        type="response"
+      />
     </div>
   );
 };

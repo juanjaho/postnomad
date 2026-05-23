@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/request/encoding/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/request/encoding/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

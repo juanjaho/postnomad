@@ -46,13 +46,15 @@ test.describe('Open Multiple Collections', () => {
     fs.writeFileSync(path.join(collection2Dir, 'bruno.json'), JSON.stringify(collection2Config, null, 2));
 
     // Mock the electron dialog to return multiple folder selections
-    await electronApp.evaluate(({ dialog }, { collection1Dir, collection2Dir }) => {
-      dialog.showOpenDialog = async () => ({
-        canceled: false,
-        filePaths: [collection1Dir, collection2Dir]
-      });
-    },
-    { collection1Dir, collection2Dir });
+    await electronApp.evaluate(
+      ({ dialog }, { collection1Dir, collection2Dir }) => {
+        dialog.showOpenDialog = async () => ({
+          canceled: false,
+          filePaths: [collection1Dir, collection2Dir]
+        });
+      },
+      { collection1Dir, collection2Dir }
+    );
 
     await expect(page.locator('#sidebar-collection-name').getByText('Test Collection 1')).not.toBeVisible();
 
@@ -71,11 +73,7 @@ test.describe('Open Multiple Collections', () => {
     await closeAllCollections(page);
   });
 
-  test('Should handle invalid collection path and display error', async ({
-    page,
-    electronApp,
-    createTmpDir
-  }) => {
+  test('Should handle invalid collection path and display error', async ({ page, electronApp, createTmpDir }) => {
     // Directory without bruno.json file
     const collection1Dir = await createTmpDir('collection-1');
     const collection2Dir = 'invalid-collection-path';
@@ -84,13 +82,15 @@ test.describe('Open Multiple Collections', () => {
     const collectionCountBefore = await page.locator('#sidebar-collection-name').count();
 
     // Mock the electron dialog to return multiple folder selections
-    await electronApp.evaluate(({ dialog }, { collection1Dir, collection2Dir }) => {
-      dialog.showOpenDialog = async () => ({
-        canceled: false,
-        filePaths: [collection1Dir, collection2Dir]
-      });
-    },
-    { collection1Dir, collection2Dir });
+    await electronApp.evaluate(
+      ({ dialog }, { collection1Dir, collection2Dir }) => {
+        dialog.showOpenDialog = async () => ({
+          canceled: false,
+          filePaths: [collection1Dir, collection2Dir]
+        });
+      },
+      { collection1Dir, collection2Dir }
+    );
 
     await page.getByTestId('collections-header-add-menu').click();
     await page.locator('.tippy-box .dropdown-item').filter({ hasText: 'Open collection' }).click();

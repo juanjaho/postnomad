@@ -14,7 +14,10 @@ import {
 type CollectionFormat = 'bru' | 'yml';
 
 const runDraftIndicatorScenario = (format: CollectionFormat) => {
-  test(`(${format}) switching back to the saved auth mode hides the draft indicator`, async ({ page, createTmpDir }) => {
+  test(`(${format}) switching back to the saved auth mode hides the draft indicator`, async ({
+    page,
+    createTmpDir
+  }) => {
     const collectionName = `auth-draft-indicator-${format}`;
     const requestName = `request-${format}`;
 

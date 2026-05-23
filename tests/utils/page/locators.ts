@@ -2,9 +2,7 @@ import { Page, Locator } from '../../../playwright';
 
 export const buildCommonLocators = (page: Page) => ({
   runner: () => page.getByTestId('run-button'),
-  saveButton: () => page
-    .locator('.infotip')
-    .filter({ hasText: /^Save/ }),
+  saveButton: () => page.locator('.infotip').filter({ hasText: /^Save/ }),
   openPreferences: () => page.getByRole('button', { name: 'Open Preferences' }),
   sidebar: {
     collectionsContainer: () => page.getByTestId('collections'),
@@ -23,13 +21,13 @@ export const buildCommonLocators = (page: Page) => ({
   },
   actions: {
     collectionActions: (collectionName: string) =>
-      page.getByTestId('collections').locator('.collection-name')
+      page
+        .getByTestId('collections')
+        .locator('.collection-name')
         .filter({ hasText: collectionName })
         .locator('.collection-actions .icon'),
     collectionItemActions: (itemName: string) =>
-      page.locator('.collection-item-name')
-        .filter({ hasText: itemName })
-        .locator('.menu-icon')
+      page.locator('.collection-item-name').filter({ hasText: itemName }).locator('.menu-icon')
   },
   dropdown: {
     item: (text: string) => page.locator('.dropdown-item').filter({ hasText: text }),
@@ -38,7 +36,8 @@ export const buildCommonLocators = (page: Page) => ({
   tabs: {
     requestTab: (requestName: string) => page.locator('.request-tab .tab-label').filter({ hasText: requestName }),
     activeRequestTab: () => page.locator('.request-tab.active'),
-    closeTab: (requestName: string) => page.locator('.request-tab').filter({ hasText: requestName }).getByTestId('request-tab-close-icon'),
+    closeTab: (requestName: string) =>
+      page.locator('.request-tab').filter({ hasText: requestName }).getByTestId('request-tab-close-icon'),
     draftIndicator: () => page.locator('.request-tab.active .has-changes-icon')
   },
   paneTabs: {
@@ -48,11 +47,15 @@ export const buildCommonLocators = (page: Page) => ({
     tabTrigger: (key: string) => page.getByTestId(`tab-trigger-${key}`)
   },
   folder: {
-    chevron: (folderName: string) => page.locator('.collection-item-name').filter({ hasText: folderName }).getByTestId('folder-chevron')
+    chevron: (folderName: string) =>
+      page.locator('.collection-item-name').filter({ hasText: folderName }).getByTestId('folder-chevron')
   },
   modal: {
     title: (title: string) => page.locator('.bruno-modal-header-title').filter({ hasText: title }),
-    byTitle: (title: string) => page.locator('.bruno-modal').filter({ has: page.locator('.bruno-modal-header-title').filter({ hasText: title }) }),
+    byTitle: (title: string) =>
+      page
+        .locator('.bruno-modal')
+        .filter({ has: page.locator('.bruno-modal-header-title').filter({ hasText: title }) }),
     button: (name: string) => page.locator('.bruno-modal').getByRole('button', { name: name, exact: true }),
     closeButton: () => page.locator('.bruno-modal').getByTestId('modal-close-button'),
     card: () => page.locator('.bruno-modal-card'),

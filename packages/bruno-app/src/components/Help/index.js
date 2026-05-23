@@ -46,7 +46,14 @@ const iconMap = {
   info: InfoCircle
 };
 
-const Help = ({ children, width = 200, placement = 'right', icon = 'question', iconComponent: IconComponent, size = 14 }) => {
+const Help = ({
+  children,
+  width = 200,
+  placement = 'right',
+  icon = 'question',
+  iconComponent: IconComponent,
+  size = 14
+}) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [position, setPosition] = useState(null);
   const iconRef = useRef(null);
@@ -70,19 +77,21 @@ const Help = ({ children, width = 200, placement = 'right', icon = 'question', i
       >
         <ResolvedIcon size={size} />
       </span>
-      {showTooltip && position && createPortal(
-        <StyledWrapper
-          className="z-50 rounded-md p-3"
-          style={{
-            position: 'fixed',
-            ...position,
-            width: `${width}px`
-          }}
-        >
-          {children}
-        </StyledWrapper>,
-        document.body
-      )}
+      {showTooltip &&
+        position &&
+        createPortal(
+          <StyledWrapper
+            className="z-50 rounded-md p-3"
+            style={{
+              position: 'fixed',
+              ...position,
+              width: `${width}px`
+            }}
+          >
+            {children}
+          </StyledWrapper>,
+          document.body
+        )}
     </div>
   );
 };

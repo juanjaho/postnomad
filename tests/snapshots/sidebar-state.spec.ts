@@ -10,7 +10,10 @@ import {
 import { buildCommonLocators } from '../utils/page/locators';
 
 test.describe('Snapshot: Sidebar-Tab Restoration', () => {
-  test('open tabs are restored after app restart and tied to the sidebar items', async ({ launchElectronApp, createTmpDir }) => {
+  test('open tabs are restored after app restart and tied to the sidebar items', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-sidebar-state');
     const colPath = await createTmpDir('col');
 
@@ -77,7 +80,10 @@ test.describe('Snapshot: Sidebar-Tab Restoration', () => {
     });
   });
 
-  test('when request and example are open, last active request restores as active after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('when request and example are open, last active request restores as active after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-sidebar-request-active-over-example');
     const colPath = await createTmpDir('col');
 
@@ -120,7 +126,10 @@ test.describe('Snapshot: Sidebar-Tab Restoration', () => {
     });
   });
 
-  test('when last active tab is an example, it restores as active after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('when last active tab is an example, it restores as active after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-sidebar-example-active-restore');
     const colPath = await createTmpDir('col');
 
@@ -148,13 +157,18 @@ test.describe('Snapshot: Sidebar-Tab Restoration', () => {
       const page2 = await app2.firstWindow();
       await page2.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
 
-      await expect(page2.getByTestId('response-example-title')).toHaveText('ReqAlpha / Example One', { timeout: 15000 });
+      await expect(page2.getByTestId('response-example-title')).toHaveText('ReqAlpha / Example One', {
+        timeout: 15000
+      });
 
       await closeElectronApp(app2);
     });
   });
 
-  test('when duplicate example names exist, snapshot restores the same active example by index', async ({ launchElectronApp, createTmpDir }) => {
+  test('when duplicate example names exist, snapshot restores the same active example by index', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-sidebar-duplicate-example-restore');
     const colPath = await createTmpDir('col');
 

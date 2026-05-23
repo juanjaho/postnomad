@@ -9,10 +9,7 @@ const BRUNO_DIR_NAME = 'bruno';
  * Checks ~/Documents/bruno if available, otherwise falls back to the app's data directory
  */
 function resolveDefaultLocation() {
-  const defaultPaths = [
-    path.join(app.getPath('documents'), BRUNO_DIR_NAME),
-    app.getPath('userData')
-  ];
+  const defaultPaths = [path.join(app.getPath('documents'), BRUNO_DIR_NAME), app.getPath('userData')];
 
   for (const dirPath of defaultPaths) {
     try {

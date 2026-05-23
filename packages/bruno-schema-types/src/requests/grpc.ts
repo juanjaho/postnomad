@@ -1,11 +1,6 @@
 import type { KeyValue, Script, Variables, Auth } from '../common';
 
-export type GrpcMethodType
-  = | 'unary'
-    | 'client-streaming'
-    | 'server-streaming'
-    | 'bidi-streaming'
-    | '';
+export type GrpcMethodType = 'unary' | 'client-streaming' | 'server-streaming' | 'bidi-streaming' | '';
 
 export interface GrpcMessage {
   name?: string | null;

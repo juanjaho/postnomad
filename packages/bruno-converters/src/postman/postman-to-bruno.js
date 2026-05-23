@@ -137,12 +137,12 @@ const constructUrlFromParts = (url) => {
   const hostStr = Array.isArray(host) ? host.filter(Boolean).join('.') : host || '';
   const pathStr = Array.isArray(path) ? path.join('/') : path || '';
   const portStr = port ? `:${port}` : '';
-  const queryStr
-    = query && Array.isArray(query) && query.length > 0
+  const queryStr =
+    query && Array.isArray(query) && query.length > 0
       ? `?${query
-        .filter((q) => q && q.key)
-        .map((q) => `${q.key}=${q.value || ''}`)
-        .join('&')}`
+          .filter((q) => q && q.key)
+          .map((q) => `${q.key}=${q.value || ''}`)
+          .join('&')}`
       : '';
   const urlStr = `${protocol}://${hostStr}${portStr}${pathStr ? `/${pathStr}` : ''}${queryStr}`;
   return urlStr;
@@ -206,12 +206,14 @@ const importScriptsFromEvents = (events, requestObject) => {
 };
 
 const importCollectionLevelVariables = (variables, requestObject) => {
-  const vars = variables.filter((v) => !(v.key == null && v.value == null)).map((v) => ({
-    uid: uuid(),
-    name: (v.key ?? '').replace(invalidVariableCharacterRegex, '_'),
-    value: v.value == null ? '' : typeof v.value === 'string' ? v.value : JSON.stringify(v.value),
-    enabled: true
-  }));
+  const vars = variables
+    .filter((v) => !(v.key == null && v.value == null))
+    .map((v) => ({
+      uid: uuid(),
+      name: (v.key ?? '').replace(invalidVariableCharacterRegex, '_'),
+      value: v.value == null ? '' : typeof v.value === 'string' ? v.value : JSON.stringify(v.value),
+      enabled: true
+    }));
 
   requestObject.vars.req = vars;
 };
@@ -541,8 +543,14 @@ const importPostmanV2CollectionItem = (brunoParent, item, { useWorkers = false }
             if (param.key == null && param.value == null) return;
             const isFile = param.type === 'file' || (param.type === 'default' && param.src);
             const value = isFile
-              ? (Array.isArray(param.src) ? param.src : param.src ? [param.src] : [])
-              : (Array.isArray(param.value) ? param.value.join('') : ensureString(param.value));
+              ? Array.isArray(param.src)
+                ? param.src
+                : param.src
+                  ? [param.src]
+                  : []
+              : Array.isArray(param.value)
+                ? param.value.join('')
+                : ensureString(param.value);
 
             brunoRequestItem.request.body.multipartForm.push({
               uid: uuid(),
@@ -643,7 +651,9 @@ const importPostmanV2CollectionItem = (brunoParent, item, { useWorkers = false }
         brunoRequestItem.examples = [];
 
         i.response.forEach((response, responseIndex) => {
-          const sanitized = String(response.name ?? '').replace(/\r?\n/g, ' ').trim();
+          const sanitized = String(response.name ?? '')
+            .replace(/\r?\n/g, ' ')
+            .trim();
           const exampleName = sanitized || `Example ${responseIndex + 1}`;
 
           // Convert originalRequest to Bruno request format
@@ -737,8 +747,14 @@ const importPostmanV2CollectionItem = (brunoParent, item, { useWorkers = false }
                   if (param.key == null && param.value == null) return;
                   const isFile = param.type === 'file' || (param.type === 'default' && param.src);
                   const value = isFile
-                    ? (Array.isArray(param.src) ? param.src : param.src ? [param.src] : [])
-                    : (Array.isArray(param.value) ? param.value.join('') : ensureString(param.value));
+                    ? Array.isArray(param.src)
+                      ? param.src
+                      : param.src
+                        ? [param.src]
+                        : []
+                    : Array.isArray(param.value)
+                      ? param.value.join('')
+                      : ensureString(param.value);
 
                   example.request.body.multipartForm.push({
                     uid: uuid(),

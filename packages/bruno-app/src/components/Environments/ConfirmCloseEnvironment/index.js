@@ -27,9 +27,7 @@ const ConfirmCloseEnvironment = ({ onCancel, onCloseWithoutSave, onSaveAndClose,
           <IconAlertTriangle size={32} strokeWidth={1.5} className="text-yellow-600" />
           <h1 className="ml-2 text-lg font-medium">Hold on...</h1>
         </div>
-        <div className="font-normal mt-4">
-          You have unsaved changes in {settingsLabel}.
-        </div>
+        <div className="font-normal mt-4">You have unsaved changes in {settingsLabel}.</div>
 
         <div className="flex justify-between mt-6">
           <div>
@@ -41,9 +39,7 @@ const ConfirmCloseEnvironment = ({ onCancel, onCloseWithoutSave, onSaveAndClose,
             <Button size="sm" color="secondary" variant="ghost" onClick={onCancel}>
               Cancel
             </Button>
-            <Button onClick={onSaveAndClose}>
-              Save
-            </Button>
+            <Button onClick={onSaveAndClose}>Save</Button>
           </div>
         </div>
       </Modal>

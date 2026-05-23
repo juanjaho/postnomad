@@ -42,7 +42,9 @@ export const addResponseExample = (state, action) => {
     },
     response: {
       status: example.status ? Number(example.status) : null,
-      statusText: String(example.statusText ?? (example.status ? (statusCodePhraseMap[Number(example.status)] ?? '') : '')),
+      statusText: String(
+        example.statusText ?? (example.status ? (statusCodePhraseMap[Number(example.status)] ?? '') : '')
+      ),
       headers: (example.headers || []).map((header) => ({
         uid: uuid(),
         name: String(header.name),
@@ -153,8 +155,7 @@ export const updateResponseExample = (state, action) => {
   const example = item.draft.examples.find((e) => e.uid === exampleUid);
   if (!example) return;
 
-  item.draft.examples = item.draft.examples.map((e) =>
-    e.uid === exampleUid ? { ...e, ...details } : e);
+  item.draft.examples = item.draft.examples.map((e) => (e.uid === exampleUid ? { ...e, ...details } : e));
 };
 
 export const deleteResponseExample = (state, action) => {
@@ -667,7 +668,10 @@ export const updateResponseExampleRequestUrl = (state, action) => {
   let newPathParams = [];
 
   each(urlQueryParams, (urlQueryParam) => {
-    const existingQueryParam = find(enabledQueryParams, (p) => p?.name === urlQueryParam?.name || p?.value === urlQueryParam?.value);
+    const existingQueryParam = find(
+      enabledQueryParams,
+      (p) => p?.name === urlQueryParam?.name || p?.value === urlQueryParam?.value
+    );
     urlQueryParam.uid = existingQueryParam?.uid || uuid();
     urlQueryParam.enabled = true;
     urlQueryParam.type = 'query';

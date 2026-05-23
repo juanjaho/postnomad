@@ -105,32 +105,50 @@ const useEndpointActions = (collection, collectionDrift, reloadDrift) => {
         );
       case 'reset-all-modified':
         return executeEndpointAction(
-          ['renderer:reset-endpoints-to-spec', { collectionPath: collection.pathname, endpoints: collectionDrift.modified }],
+          [
+            'renderer:reset-endpoints-to-spec',
+            { collectionPath: collection.pathname, endpoints: collectionDrift.modified }
+          ],
           `Reset ${collectionDrift.modified.length} endpoints to spec`,
           'Failed to reset endpoints'
         );
       case 'delete-endpoint':
         return executeEndpointAction(
-          ['renderer:delete-endpoints', { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: [endpoint] }],
+          [
+            'renderer:delete-endpoints',
+            { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: [endpoint] }
+          ],
           `Deleted ${endpoint.method} ${endpoint.path}`,
           'Failed to delete endpoint'
         );
       case 'delete-all-local':
         return executeEndpointAction(
-          ['renderer:delete-endpoints', { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: collectionDrift.localOnly }],
+          [
+            'renderer:delete-endpoints',
+            { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: collectionDrift.localOnly }
+          ],
           `Deleted ${collectionDrift.localOnly.length} local-only endpoints`,
           'Failed to delete endpoints'
         );
       case 'revert-all': {
         const calls = [];
         if (collectionDrift?.modified?.length > 0) {
-          calls.push(['renderer:reset-endpoints-to-spec', { collectionPath: collection.pathname, endpoints: collectionDrift.modified }]);
+          calls.push([
+            'renderer:reset-endpoints-to-spec',
+            { collectionPath: collection.pathname, endpoints: collectionDrift.modified }
+          ]);
         }
         if (collectionDrift?.missing?.length > 0) {
-          calls.push(['renderer:add-missing-endpoints', { collectionPath: collection.pathname, endpoints: collectionDrift.missing }]);
+          calls.push([
+            'renderer:add-missing-endpoints',
+            { collectionPath: collection.pathname, endpoints: collectionDrift.missing }
+          ]);
         }
         if (collectionDrift?.localOnly?.length > 0) {
-          calls.push(['renderer:delete-endpoints', { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: collectionDrift.localOnly }]);
+          calls.push([
+            'renderer:delete-endpoints',
+            { collectionPath: collection.pathname, collectionUid: collection.uid, endpoints: collectionDrift.localOnly }
+          ]);
         }
         return executeEndpointAction(calls, 'All changes discarded successfully', 'Failed to discard changes');
       }
@@ -142,7 +160,10 @@ const useEndpointActions = (collection, collectionDrift, reloadDrift) => {
         );
       case 'restore-all-missing':
         return executeEndpointAction(
-          ['renderer:add-missing-endpoints', { collectionPath: collection.pathname, endpoints: collectionDrift.missing }],
+          [
+            'renderer:add-missing-endpoints',
+            { collectionPath: collection.pathname, endpoints: collectionDrift.missing }
+          ],
           `Added ${collectionDrift.missing.length} endpoints to collection`,
           'Failed to add endpoints'
         );
@@ -150,7 +171,8 @@ const useEndpointActions = (collection, collectionDrift, reloadDrift) => {
   };
 
   return {
-    pendingAction, setPendingAction,
+    pendingAction,
+    setPendingAction,
     confirmPendingAction,
     handleResetEndpoint,
     handleResetAllModified,

@@ -100,7 +100,8 @@ const FileBody = ({ item, collection }) => {
                             },
                             param,
                             'filePath'
-                          )}
+                          )
+                        }
                         collection={collection}
                         displayMode="labelAndIcon"
                       />
@@ -121,7 +122,8 @@ const FileBody = ({ item, collection }) => {
                             },
                             param,
                             'contentType'
-                          )}
+                          )
+                        }
                         onRun={handleRun}
                         collection={collection}
                       />

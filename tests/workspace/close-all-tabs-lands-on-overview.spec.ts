@@ -1,10 +1,5 @@
 import { test, expect, closeElectronApp } from '../../playwright';
-import {
-  createCollection,
-  createRequest,
-  openRequest,
-  waitForReadyPage
-} from '../utils/page';
+import { createCollection, createRequest, openRequest, waitForReadyPage } from '../utils/page';
 import { buildCommonLocators } from '../utils/page/locators';
 
 test.describe('Close all tabs lands on workspace overview', () => {

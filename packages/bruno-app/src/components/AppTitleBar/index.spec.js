@@ -7,7 +7,9 @@ import { configureStore } from '@reduxjs/toolkit';
 
 jest.mock('ui/MenuDropdown', () => ({ children }) => <div>{children}</div>);
 jest.mock('ui/ActionIcon', () => ({ children, onClick, label }) => (
-  <button onClick={onClick} aria-label={label}>{children}</button>
+  <button onClick={onClick} aria-label={label}>
+    {children}
+  </button>
 ));
 jest.mock('components/ResponsePane/ResponseLayoutToggle', () => () => null);
 
@@ -32,20 +34,22 @@ const mockStore = configureStore({
   }
 });
 
-const renderWithProviders = () => render(
-  <Provider store={mockStore}>
-    <ThemeProvider theme={theme}>
-      <AppTitleBar />
-    </ThemeProvider>
-  </Provider>
-);
+const renderWithProviders = () =>
+  render(
+    <Provider store={mockStore}>
+      <ThemeProvider theme={theme}>
+        <AppTitleBar />
+      </ThemeProvider>
+    </Provider>
+  );
 
 const getTitleBar = (container) => container.querySelector('.app-titlebar');
 
-const mockInvokeWithFullscreen = (isFullScreen) => jest.fn((channel) => {
-  if (channel === 'renderer:window-is-fullscreen') return Promise.resolve(isFullScreen);
-  return Promise.resolve(false);
-});
+const mockInvokeWithFullscreen = (isFullScreen) =>
+  jest.fn((channel) => {
+    if (channel === 'renderer:window-is-fullscreen') return Promise.resolve(isFullScreen);
+    return Promise.resolve(false);
+  });
 
 describe('AppTitleBar — fullscreen state sync', () => {
   let ipcListeners;

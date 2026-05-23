@@ -2,13 +2,7 @@ import React from 'react';
 import { IconChevronRight, IconDots } from '@tabler/icons';
 import Dropdown from 'components/Dropdown';
 
-const FolderBreadcrumbs = ({
-  collectionName,
-  breadcrumbs,
-  isAtRoot,
-  onNavigateToRoot,
-  onNavigateToBreadcrumb
-}) => {
+const FolderBreadcrumbs = ({ collectionName, breadcrumbs, isAtRoot, onNavigateToRoot, onNavigateToBreadcrumb }) => {
   const collapsed = breadcrumbs.length > 1 ? breadcrumbs.slice(0, -1) : [];
   const last = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : null;
 
@@ -27,11 +21,11 @@ const FolderBreadcrumbs = ({
           <IconChevronRight size={16} strokeWidth={1.5} className="collection-name-chevron" />
           <Dropdown
             placement="bottom-start"
-            icon={(
+            icon={
               <span className="breadcrumb-ellipsis-btn">
                 <IconDots size={16} strokeWidth={2} />
               </span>
-            )}
+            }
           >
             <div className="breadcrumb-collapsed-dropdown">
               {collapsed.map((breadcrumb, i) => (

@@ -3,4 +3,4 @@
   "name": "custom-ca-certs",
   "type": "collection",
   "ignore": ["node_modules", ".git"]
-} 
+}

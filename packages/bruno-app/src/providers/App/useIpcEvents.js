@@ -1,12 +1,6 @@
 import { useEffect } from 'react';
-import {
-  updateCookies,
-  updatePreferences,
-  setGitVersion
-} from 'providers/ReduxStore/slices/app';
-import {
-  addTab
-} from 'providers/ReduxStore/slices/tabs';
+import { updateCookies, updatePreferences, setGitVersion } from 'providers/ReduxStore/slices/app';
+import { addTab } from 'providers/ReduxStore/slices/tabs';
 import {
   brunoConfigUpdateEvent,
   collectionAddDirectoryEvent,
@@ -25,7 +19,12 @@ import {
   streamDataReceived,
   setDotEnvVariables
 } from 'providers/ReduxStore/slices/collections';
-import { collectionAddEnvFileEvent, openCollectionEvent, hydrateCollectionWithUiStateSnapshot, mergeAndPersistEnvironment } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  collectionAddEnvFileEvent,
+  openCollectionEvent,
+  hydrateCollectionWithUiStateSnapshot,
+  mergeAndPersistEnvironment
+} from 'providers/ReduxStore/slices/collections/actions';
 import {
   workspaceOpenedEvent,
   workspaceConfigUpdatedEvent,
@@ -35,8 +34,15 @@ import { workspaceDotEnvUpdateEvent, setWorkspaceDotEnvVariables } from 'provide
 import toast from 'react-hot-toast';
 import { useDispatch, useStore } from 'react-redux';
 import { isElectron } from 'utils/common/platform';
-import { globalEnvironmentsUpdateEvent, updateGlobalEnvironments } from 'providers/ReduxStore/slices/global-environments';
-import { collectionAddOauth2CredentialsByUrl, collectionClearOauth2CredentialsByCredentialsId, updateCollectionLoadingState } from 'providers/ReduxStore/slices/collections/index';
+import {
+  globalEnvironmentsUpdateEvent,
+  updateGlobalEnvironments
+} from 'providers/ReduxStore/slices/global-environments';
+import {
+  collectionAddOauth2CredentialsByUrl,
+  collectionClearOauth2CredentialsByCredentialsId,
+  updateCollectionLoadingState
+} from 'providers/ReduxStore/slices/collections/index';
 import { addLog } from 'providers/ReduxStore/slices/logs';
 import { updateSystemResources } from 'providers/ReduxStore/slices/performance';
 import { apiSpecAddFileEvent, apiSpecChangeFileEvent } from 'providers/ReduxStore/slices/apiSpec';
@@ -121,75 +127,102 @@ const useIpcEvents = () => {
 
     const removeApiSpecTreeUpdateListener = ipcRenderer.on('main:apispec-tree-updated', _apiSpecTreeUpdated);
 
-    const removeOpenCollectionListener = ipcRenderer.on('main:collection-opened', async (pathname, uid, brunoConfig) => {
-      try {
-        await dispatch(openCollectionEvent(uid, pathname, brunoConfig));
-      } finally {
-        dispatch(hydrateSnapshotForOpenedCollection(pathname));
-      }
-    });
-
-    const removeOpenWorkspaceListener = ipcRenderer.on('main:workspace-opened', (workspacePath, workspaceUid, workspaceConfig) => {
-      dispatch(workspaceOpenedEvent(workspacePath, workspaceUid, workspaceConfig));
-    });
-
-    const removeWorkspaceConfigUpdatedListener = ipcRenderer.on('main:workspace-config-updated', (workspacePath, workspaceUid, workspaceConfig) => {
-      dispatch(workspaceConfigUpdatedEvent(workspacePath, workspaceUid, workspaceConfig));
-    });
-
-    const removeWorkspaceEnvironmentAddedListener = ipcRenderer.on('main:workspace-environment-added', (workspaceUid, file) => {
-      const state = store.getState();
-      const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
-      if (activeWorkspaceUid === workspaceUid) {
-        const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
-        if (workspace) {
-          ipcRenderer.invoke('renderer:get-global-environments', {
-            workspaceUid,
-            workspacePath: workspace.pathname
-          }).then((result) => {
-            dispatch(updateGlobalEnvironments(result));
-          }).catch((error) => {
-            console.error('Error refreshing global environments:', error);
-          });
+    const removeOpenCollectionListener = ipcRenderer.on(
+      'main:collection-opened',
+      async (pathname, uid, brunoConfig) => {
+        try {
+          await dispatch(openCollectionEvent(uid, pathname, brunoConfig));
+        } finally {
+          dispatch(hydrateSnapshotForOpenedCollection(pathname));
         }
       }
-    });
+    );
 
-    const removeWorkspaceEnvironmentChangedListener = ipcRenderer.on('main:workspace-environment-changed', (workspaceUid, file) => {
-      const state = store.getState();
-      const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
-      if (activeWorkspaceUid === workspaceUid) {
-        const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
-        if (workspace) {
-          ipcRenderer.invoke('renderer:get-global-environments', {
-            workspaceUid,
-            workspacePath: workspace.pathname
-          }).then((result) => {
-            dispatch(updateGlobalEnvironments(result));
-          }).catch((error) => {
-            console.error('Error refreshing global environments:', error);
-          });
+    const removeOpenWorkspaceListener = ipcRenderer.on(
+      'main:workspace-opened',
+      (workspacePath, workspaceUid, workspaceConfig) => {
+        dispatch(workspaceOpenedEvent(workspacePath, workspaceUid, workspaceConfig));
+      }
+    );
+
+    const removeWorkspaceConfigUpdatedListener = ipcRenderer.on(
+      'main:workspace-config-updated',
+      (workspacePath, workspaceUid, workspaceConfig) => {
+        dispatch(workspaceConfigUpdatedEvent(workspacePath, workspaceUid, workspaceConfig));
+      }
+    );
+
+    const removeWorkspaceEnvironmentAddedListener = ipcRenderer.on(
+      'main:workspace-environment-added',
+      (workspaceUid, file) => {
+        const state = store.getState();
+        const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
+        if (activeWorkspaceUid === workspaceUid) {
+          const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
+          if (workspace) {
+            ipcRenderer
+              .invoke('renderer:get-global-environments', {
+                workspaceUid,
+                workspacePath: workspace.pathname
+              })
+              .then((result) => {
+                dispatch(updateGlobalEnvironments(result));
+              })
+              .catch((error) => {
+                console.error('Error refreshing global environments:', error);
+              });
+          }
         }
       }
-    });
+    );
 
-    const removeWorkspaceEnvironmentDeletedListener = ipcRenderer.on('main:workspace-environment-deleted', (workspaceUid, environmentUid) => {
-      const state = store.getState();
-      const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
-      if (activeWorkspaceUid === workspaceUid) {
-        const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
-        if (workspace) {
-          ipcRenderer.invoke('renderer:get-global-environments', {
-            workspaceUid,
-            workspacePath: workspace.pathname
-          }).then((result) => {
-            dispatch(updateGlobalEnvironments(result));
-          }).catch((error) => {
-            console.error('Error refreshing global environments:', error);
-          });
+    const removeWorkspaceEnvironmentChangedListener = ipcRenderer.on(
+      'main:workspace-environment-changed',
+      (workspaceUid, file) => {
+        const state = store.getState();
+        const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
+        if (activeWorkspaceUid === workspaceUid) {
+          const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
+          if (workspace) {
+            ipcRenderer
+              .invoke('renderer:get-global-environments', {
+                workspaceUid,
+                workspacePath: workspace.pathname
+              })
+              .then((result) => {
+                dispatch(updateGlobalEnvironments(result));
+              })
+              .catch((error) => {
+                console.error('Error refreshing global environments:', error);
+              });
+          }
         }
       }
-    });
+    );
+
+    const removeWorkspaceEnvironmentDeletedListener = ipcRenderer.on(
+      'main:workspace-environment-deleted',
+      (workspaceUid, environmentUid) => {
+        const state = store.getState();
+        const activeWorkspaceUid = state.workspaces?.activeWorkspaceUid;
+        if (activeWorkspaceUid === workspaceUid) {
+          const workspace = state.workspaces?.workspaces?.find((w) => w.uid === workspaceUid);
+          if (workspace) {
+            ipcRenderer
+              .invoke('renderer:get-global-environments', {
+                workspaceUid,
+                workspacePath: workspace.pathname
+              })
+              .then((result) => {
+                dispatch(updateGlobalEnvironments(result));
+              })
+              .catch((error) => {
+                console.error('Error refreshing global environments:', error);
+              });
+          }
+        }
+      }
+    );
 
     const removeDisplayErrorListener = ipcRenderer.on('main:display-error', (error) => {
       if (typeof error === 'string') {
@@ -208,9 +241,12 @@ const useIpcEvents = () => {
       dispatch(mergeAndPersistEnvironment(val));
     });
 
-    const removeGlobalEnvironmentVariablesUpdateListener = ipcRenderer.on('main:global-environment-variables-update', (val) => {
-      dispatch(globalEnvironmentsUpdateEvent(val));
-    });
+    const removeGlobalEnvironmentVariablesUpdateListener = ipcRenderer.on(
+      'main:global-environment-variables-update',
+      (val) => {
+        dispatch(globalEnvironmentsUpdateEvent(val));
+      }
+    );
 
     const removeCollectionRenamedListener = ipcRenderer.on('main:collection-renamed', (val) => {
       dispatch(collectionRenamedEvent(val));
@@ -237,22 +273,26 @@ const useIpcEvents = () => {
       const { type, collectionUid, workspaceUid, filename, variables, exists, processEnvVariables } = val;
 
       if (type === 'collection' && collectionUid) {
-        dispatch(setDotEnvVariables({
-          collectionUid,
-          variables,
-          exists,
-          filename
-        }));
+        dispatch(
+          setDotEnvVariables({
+            collectionUid,
+            variables,
+            exists,
+            filename
+          })
+        );
         if (filename === '.env') {
           dispatch(processEnvUpdateEvent({ collectionUid, processEnvVariables }));
         }
       } else if (type === 'workspace' && workspaceUid) {
-        dispatch(setWorkspaceDotEnvVariables({
-          workspaceUid,
-          variables,
-          exists,
-          filename
-        }));
+        dispatch(
+          setWorkspaceDotEnvVariables({
+            workspaceUid,
+            variables,
+            exists,
+            filename
+          })
+        );
         if (filename === '.env') {
           dispatch(workspaceDotEnvUpdateEvent(val));
           dispatch(workspaceEnvUpdateEvent({ processEnvVariables }));
@@ -262,11 +302,13 @@ const useIpcEvents = () => {
 
     const removeConsoleLogListener = ipcRenderer.on('main:console-log', (val) => {
       console[val.type](...val.args);
-      dispatch(addLog({
-        type: val.type,
-        args: val.args,
-        timestamp: new Date().toISOString()
-      }));
+      dispatch(
+        addLog({
+          type: val.type,
+          args: val.args,
+          timestamp: new Date().toISOString()
+        })
+      );
     });
 
     const removeSystemResourcesListener = ipcRenderer.on('main:filesync-system-resources', (resourceData) => {

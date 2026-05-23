@@ -20,7 +20,10 @@ test.describe('Default JavaScript Sandbox Mode', () => {
     await developerRadio.check();
 
     // For developer mode, check if safe mode is currently selected
-    const safeModeChecked = await sandboxLocators.safeModeRadio().isChecked().catch(() => false);
+    const safeModeChecked = await sandboxLocators
+      .safeModeRadio()
+      .isChecked()
+      .catch(() => false);
     await expect(safeModeChecked).toBe(false);
 
     await page.keyboard.press('Escape');

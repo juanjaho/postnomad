@@ -1,12 +1,6 @@
 const { describe, it, expect } = require('@jest/globals');
 
-import {
-  getBodyContent,
-  getBodyMode,
-  getMethod,
-  getUrl,
-  computeItemDiffStatus
-} from './bruUtils';
+import { getBodyContent, getBodyMode, getMethod, getUrl, computeItemDiffStatus } from './bruUtils';
 
 describe('bruUtils', () => {
   describe('getBodyContent', () => {

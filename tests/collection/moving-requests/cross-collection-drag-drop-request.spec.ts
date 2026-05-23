@@ -27,7 +27,10 @@ test.describe('Cross-Collection Drag and Drop', () => {
       .locator('.collection-name')
       .filter({ hasText: 'source-collection' })
       .locator('..');
-    const sourceRequest = sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first();
+    const sourceRequest = sourceCollectionContainer
+      .locator('.collection-item-name')
+      .filter({ hasText: requestName })
+      .first();
     await expect(sourceRequest).toBeVisible();
 
     // Locate the target collection area (the collection name element)
@@ -43,11 +46,15 @@ test.describe('Cross-Collection Drag and Drop', () => {
       .locator('.collection-name')
       .filter({ hasText: 'target-collection' })
       .locator('..');
-    await expect(targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })).toBeVisible();
+    await expect(
+      targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })
+    ).toBeVisible();
 
     // Verify the request is no longer in the source collection
     await page.locator('#sidebar-collection-name').filter({ hasText: 'source-collection' }).click();
-    await expect(sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })).toHaveCount(0);
+    await expect(
+      sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })
+    ).toHaveCount(0);
   });
 
   test('Expected to show error toast message, when duplicate request found in drop location', async ({
@@ -80,7 +87,10 @@ test.describe('Cross-Collection Drag and Drop', () => {
       .filter({ hasText: 'target-collection' })
       .locator('..');
 
-    const sourceRequest = sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first();
+    const sourceRequest = sourceCollectionContainer
+      .locator('.collection-item-name')
+      .filter({ hasText: requestName })
+      .first();
     await expect(sourceRequest).toBeVisible();
 
     // Locate the target collection area
@@ -94,9 +104,13 @@ test.describe('Cross-Collection Drag and Drop', () => {
     await expect(page.getByText(/Error: Cannot copy.*already exists/i)).toBeVisible();
 
     // source and target collection request should remain unchanged
-    await expect(sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first()).toBeVisible();
+    await expect(
+      sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first()
+    ).toBeVisible();
     await page.locator('#sidebar-collection-name').filter({ hasText: 'target-collection' }).click();
-    await expect(targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first()).toBeVisible();
+    await expect(
+      targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first()
+    ).toBeVisible();
   });
 
   test('Tab should be closed after cross-collection drag and drop', async ({ page, createTmpDir }) => {
@@ -113,7 +127,10 @@ test.describe('Cross-Collection Drag and Drop', () => {
       .locator('.collection-name')
       .filter({ hasText: 'source-collection' })
       .locator('..');
-    const sourceRequest = sourceCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first();
+    const sourceRequest = sourceCollectionContainer
+      .locator('.collection-item-name')
+      .filter({ hasText: requestName })
+      .first();
     await sourceRequest.click();
 
     // Verify the tab is open
@@ -132,6 +149,8 @@ test.describe('Cross-Collection Drag and Drop', () => {
       .locator('.collection-name')
       .filter({ hasText: 'target-collection' })
       .locator('..');
-    await expect(targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })).toBeVisible();
+    await expect(
+      targetCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })
+    ).toBeVisible();
   });
 });

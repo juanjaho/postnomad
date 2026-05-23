@@ -260,8 +260,10 @@ class PreferencesStore {
     }
 
     // Migrate from defaultCollectionLocation to defaultLocation
-    if (preferences.general?.defaultCollectionLocation !== undefined
-      && preferences.general?.defaultLocation === undefined) {
+    if (
+      preferences.general?.defaultCollectionLocation !== undefined &&
+      preferences.general?.defaultLocation === undefined
+    ) {
       preferences.general.defaultLocation = preferences.general.defaultCollectionLocation;
       delete preferences.general.defaultCollectionLocation;
       this.store.set('preferences', preferences);

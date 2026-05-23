@@ -197,7 +197,9 @@ test.describe('Variable Tooltip', () => {
       await expect(newTooltip).toBeVisible();
 
       // Should show updated resolved value
-      await expect(newTooltip.locator('.var-value-editable-display')).toContainText('https://api.example.com/users/posts');
+      await expect(newTooltip.locator('.var-value-editable-display')).toContainText(
+        'https://api.example.com/users/posts'
+      );
     });
 
     await test.step('Test copy button', async () => {
@@ -218,7 +220,9 @@ test.describe('Variable Tooltip', () => {
       // Click copy button
       await copyButton.click();
 
-      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText()), { timeout: 1000 }).toBe('https://api.example.com/users/posts');
+      await expect
+        .poll(() => page.evaluate(() => navigator.clipboard.readText()), { timeout: 1000 })
+        .toBe('https://api.example.com/users/posts');
     });
   });
 
@@ -256,7 +260,10 @@ test.describe('Variable Tooltip', () => {
       await page.keyboard.press(saveShortcut);
 
       // Hover over process.env variable
-      const processEnvVar = urlEditor.locator('.cm-variable-valid, .cm-variable-invalid').filter({ hasText: 'process.env.HOME' }).first();
+      const processEnvVar = urlEditor
+        .locator('.cm-variable-valid, .cm-variable-invalid')
+        .filter({ hasText: 'process.env.HOME' })
+        .first();
       await processEnvVar.hover();
 
       const tooltip = page.locator('.CodeMirror-brunoVarInfo').first();
@@ -298,7 +305,9 @@ test.describe('Variable Tooltip', () => {
       await page.keyboard.type('/users/{{myApiKey}}');
 
       // Verify draft indicator appears (unsaved changes) in the request tab
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Autosave Test' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Autosave Test' }) });
       await expect(requestTab.locator('.has-changes-icon')).toBeVisible();
     });
 
@@ -351,7 +360,9 @@ test.describe('Variable Tooltip', () => {
       expect(urlContent).toContain('myApiKey');
 
       // Verify draft indicator is GONE (everything was auto-saved)
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Autosave Test' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Autosave Test' }) });
       await expect(requestTab.locator('.has-changes-icon')).not.toBeVisible();
       await expect(requestTab.locator('.close-icon')).toBeVisible();
     });
@@ -416,7 +427,10 @@ test.describe('Variable Tooltip', () => {
 
       // Hover over the invalid variable
       await page.mouse.move(0, 0);
-      const invalidVar = bodyEditor.locator('.cm-variable-invalid, .cm-variable-valid').filter({ hasText: 'user id' }).first();
+      const invalidVar = bodyEditor
+        .locator('.cm-variable-invalid, .cm-variable-valid')
+        .filter({ hasText: 'user id' })
+        .first();
       await invalidVar.hover();
 
       // Verify tooltip shows warning and hides input
@@ -474,9 +488,7 @@ test.describe('Variable Tooltip', () => {
       await page.keyboard.press('End');
       await page.keyboard.type('-still-editable-after-mouse-left', { delay: 25 });
 
-      await expect(editor.locator('.CodeMirror-line')).toContainText(
-        'pin-value-still-editable-after-mouse-left'
-      );
+      await expect(editor.locator('.CodeMirror-line')).toContainText('pin-value-still-editable-after-mouse-left');
       await expect(tooltip).toBeVisible();
     });
   });

@@ -51,15 +51,18 @@ const RequestBodyMode = ({ item, collection }) => {
   const body = item.draft ? get(item, 'draft.request.body') : get(item, 'request.body');
   const bodyMode = body?.mode;
 
-  const onModeChange = useCallback((value) => {
-    dispatch(
-      updateRequestBodyMode({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        mode: value
-      })
-    );
-  }, [dispatch, item.uid, collection.uid]);
+  const onModeChange = useCallback(
+    (value) => {
+      dispatch(
+        updateRequestBodyMode({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          mode: value
+        })
+      );
+    },
+    [dispatch, item.uid, collection.uid]
+  );
 
   const onPrettify = () => {
     if (body?.json && bodyMode === 'json') {
@@ -103,7 +106,10 @@ const RequestBodyMode = ({ item, collection }) => {
 
   return (
     <StyledWrapper>
-      <div className="inline-flex items-center cursor-pointer body-mode-selector" data-testid="request-body-mode-selector">
+      <div
+        className="inline-flex items-center cursor-pointer body-mode-selector"
+        data-testid="request-body-mode-selector"
+      >
         <MenuDropdown
           items={menuItems}
           placement="bottom-end"

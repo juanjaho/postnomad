@@ -17,18 +17,41 @@ const GrantTypeComponentMap = ({ collection }) => {
     dispatch(saveCollectionSettings(collection.uid));
   };
 
-  let request = collection.draft?.root ? get(collection, 'draft.root.request', {}) : get(collection, 'root.request', {});
+  let request = collection.draft?.root
+    ? get(collection, 'draft.root.request', {})
+    : get(collection, 'root.request', {});
   const grantType = get(request, 'auth.oauth2.grantType', {});
 
   switch (grantType) {
     case 'password':
-      return <OAuth2PasswordCredentials save={save} request={request} updateAuth={updateCollectionAuth} collection={collection} />;
+      return (
+        <OAuth2PasswordCredentials
+          save={save}
+          request={request}
+          updateAuth={updateCollectionAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'authorization_code':
-      return <OAuth2AuthorizationCode save={save} request={request} updateAuth={updateCollectionAuth} collection={collection} />;
+      return (
+        <OAuth2AuthorizationCode
+          save={save}
+          request={request}
+          updateAuth={updateCollectionAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'client_credentials':
-      return <OAuth2ClientCredentials save={save} request={request} updateAuth={updateCollectionAuth} collection={collection} />;
+      return (
+        <OAuth2ClientCredentials
+          save={save}
+          request={request}
+          updateAuth={updateCollectionAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'implicit':
       return <OAuth2Implicit save={save} request={request} updateAuth={updateCollectionAuth} collection={collection} />;
@@ -40,7 +63,9 @@ const GrantTypeComponentMap = ({ collection }) => {
 };
 
 const OAuth2 = ({ collection }) => {
-  let request = collection.draft?.root ? get(collection, 'draft.root.request', {}) : get(collection, 'root.request', {});
+  let request = collection.draft?.root
+    ? get(collection, 'draft.root.request', {})
+    : get(collection, 'root.request', {});
 
   return (
     <StyledWrapper className="mt-2 w-full">

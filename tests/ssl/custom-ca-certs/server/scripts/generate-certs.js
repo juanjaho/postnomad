@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('node:path');
-const {
-  createCertsDir,
-  generateCertificates,
-  addCAToTruststore,
-  verifyCertificates
-} = require('../helpers/certs');
+const { createCertsDir, generateCertificates, addCAToTruststore, verifyCertificates } = require('../helpers/certs');
 
 /**
  * Setup CA certificates for testing server

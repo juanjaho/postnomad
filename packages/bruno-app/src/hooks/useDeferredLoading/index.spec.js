@@ -34,10 +34,9 @@ describe('useDeferredLoading', () => {
   });
 
   it('should not show loading if isLoading becomes false before delay', () => {
-    const { result, rerender } = renderHook(
-      ({ isLoading }) => useDeferredLoading(isLoading, 200),
-      { initialProps: { isLoading: true } }
-    );
+    const { result, rerender } = renderHook(({ isLoading }) => useDeferredLoading(isLoading, 200), {
+      initialProps: { isLoading: true }
+    });
 
     expect(result.current).toBe(false);
 
@@ -57,10 +56,9 @@ describe('useDeferredLoading', () => {
   });
 
   it('should reset to false immediately when isLoading becomes false', () => {
-    const { result, rerender } = renderHook(
-      ({ isLoading }) => useDeferredLoading(isLoading, 200),
-      { initialProps: { isLoading: true } }
-    );
+    const { result, rerender } = renderHook(({ isLoading }) => useDeferredLoading(isLoading, 200), {
+      initialProps: { isLoading: true }
+    });
 
     act(() => {
       jest.advanceTimersByTime(200);

@@ -15,19 +15,13 @@ const CreateOrOpenCollection = ({ onCreateClick }) => {
   const dispatch = useDispatch();
 
   const handleOpenCollection = () => {
-    dispatch(openCollection()).catch(
-      (err) => {
-        console.log(err);
-        toast.error('An error occurred while opening the collection');
-      }
-    );
+    dispatch(openCollection()).catch((err) => {
+      console.log(err);
+      toast.error('An error occurred while opening the collection');
+    });
   };
   const CreateLink = () => (
-    <LinkStyle
-      className="underline text-link cursor-pointer"
-      theme={theme}
-      onClick={onCreateClick}
-    >
+    <LinkStyle className="underline text-link cursor-pointer" theme={theme} onClick={onCreateClick}>
       Create
     </LinkStyle>
   );

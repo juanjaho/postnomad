@@ -13,7 +13,10 @@ describe('prompt variable utils', () => {
     it('should deduplicate prompt variables', () => {
       // Strings
       expect(extractPromptVariables('{{?world}} prompt here Hello {{?world}}')).toEqual(['world']);
-      expect(extractPromptVariables('Multiple {{?prompts}} in {{?one}} string plus another {{?one}}')).toEqual(['prompts', 'one']);
+      expect(extractPromptVariables('Multiple {{?prompts}} in {{?one}} string plus another {{?one}}')).toEqual([
+        'prompts',
+        'one'
+      ]);
     });
   });
 
@@ -27,22 +30,40 @@ describe('prompt variable utils', () => {
     it('should extract prompt variables from objects', () => {
       expect(extractPromptVariables({ text: 'Hello {{?world}}' })).toEqual(['world']);
       expect(extractPromptVariables({ noPrompt: 'No prompt here' })).toEqual([]);
-      expect(extractPromptVariables({ prompt1: 'Hello {{?world}}', prompt2: 'Another {{?test}}' })).toEqual(['world', 'test']);
+      expect(extractPromptVariables({ prompt1: 'Hello {{?world}}', prompt2: 'Another {{?test}}' })).toEqual([
+        'world',
+        'test'
+      ]);
     });
 
     it('should extract prompt variables from arrays', () => {
       // Strings
       expect(extractPromptVariables(['No prompts here', 'Hello {{?world}}'])).toEqual(['world']);
-      expect(extractPromptVariables(['Multiple {{?prompts}} in {{?one}} string', 'Another {{?test}} string'])).toEqual(['prompts', 'one', 'test']);
+      expect(extractPromptVariables(['Multiple {{?prompts}} in {{?one}} string', 'Another {{?test}} string'])).toEqual([
+        'prompts',
+        'one',
+        'test'
+      ]);
 
       // Objects
-      expect(extractPromptVariables([{ prompt: 'Hello {{?world}}', noprompt: 'No prompt here' }, { noprompt: '' }])).toEqual(['world']);
+      expect(
+        extractPromptVariables([{ prompt: 'Hello {{?world}}', noprompt: 'No prompt here' }, { noprompt: '' }])
+      ).toEqual(['world']);
 
       // Nested arrays
-      expect(extractPromptVariables(['Prompt {{?here}}', ['Hello {{?world}}', 'Another {{?test}} string']])).toEqual(['here', 'world', 'test']);
+      expect(extractPromptVariables(['Prompt {{?here}}', ['Hello {{?world}}', 'Another {{?test}} string']])).toEqual([
+        'here',
+        'world',
+        'test'
+      ]);
 
       // Mixed data types
-      expect(extractPromptVariables([{ text: 'Multiple {{?prompts}} in {{?one}} string', noPrompt: 'No prompt here' }, ['Another {{?test}} string', { prompt: '{{?nested}}', no: 'prompt' }]])).toEqual(['prompts', 'one', 'test', 'nested']);
+      expect(
+        extractPromptVariables([
+          { text: 'Multiple {{?prompts}} in {{?one}} string', noPrompt: 'No prompt here' },
+          ['Another {{?test}} string', { prompt: '{{?nested}}', no: 'prompt' }]
+        ])
+      ).toEqual(['prompts', 'one', 'test', 'nested']);
     });
 
     it('should not extract prompt variables from invalid template patterns', () => {

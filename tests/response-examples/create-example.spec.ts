@@ -26,9 +26,13 @@ test.describe.serial('Create and Delete Response Examples', () => {
 
       await page.getByTestId('create-example-name-input').clear();
       await page.getByTestId('create-example-name-input').fill('Test Example from Bookmark');
-      await page.getByTestId('create-example-description-input').fill('This is a test example created from response bookmark');
+      await page
+        .getByTestId('create-example-description-input')
+        .fill('This is a test example created from response bookmark');
       await page.getByRole('button', { name: 'Create Example' }).click();
-      await expect(page.getByTestId('response-example-title')).toHaveText('create-example / Test Example from Bookmark');
+      await expect(page.getByTestId('response-example-title')).toHaveText(
+        'create-example / Test Example from Bookmark'
+      );
     });
   });
 
@@ -112,7 +116,10 @@ test.describe.serial('Create and Delete Response Examples', () => {
     });
 
     await test.step('Verify example appears in sidebar', async () => {
-      await page.locator('.collection-item-name', { hasText: 'create-example' }).getByTestId('request-item-chevron').click();
+      await page
+        .locator('.collection-item-name', { hasText: 'create-example' })
+        .getByTestId('request-item-chevron')
+        .click();
       const exampleItem = page.locator('.collection-item-name').getByText('Sidebar Test Example', { exact: true });
       await expect(exampleItem).toBeVisible();
     });

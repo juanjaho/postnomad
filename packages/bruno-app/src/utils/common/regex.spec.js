@@ -140,11 +140,7 @@ describe('sanitizeName and validateName', () => {
   });
 
   it('should sanitize invalid names to empty strings', () => {
-    const invalidNames = [
-      '  <>:"/\\|?*  ',
-      '   ...   ',
-      '    '
-    ];
+    const invalidNames = ['  <>:"/\\|?*  ', '   ...   ', '    '];
 
     invalidNames.forEach((name) => {
       const sanitized = sanitizeName(name);
@@ -153,10 +149,7 @@ describe('sanitizeName and validateName', () => {
   });
 
   it('should return false for reserved device names with leading/trailing spaces', () => {
-    const mixedNames = [
-      'AUX   ',
-      '   COM1   '
-    ];
+    const mixedNames = ['AUX   ', '   COM1   '];
 
     mixedNames.forEach((name) => {
       const sanitized = sanitizeName(name);
@@ -225,10 +218,7 @@ describe('hasInvalidVariableNames', () => {
     });
 
     it('should skip variables without name property', () => {
-      const variables = [
-        { value: 'test' },
-        { name: null, value: 'test' }
-      ];
+      const variables = [{ value: 'test' }, { name: null, value: 'test' }];
       expect(hasInvalidVariableNames(variables)).toBe(false);
     });
   });

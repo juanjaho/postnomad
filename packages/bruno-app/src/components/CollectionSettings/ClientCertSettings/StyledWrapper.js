@@ -75,10 +75,12 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes slideUpDown {
-    0%, 30% {
+    0%,
+    30% {
       transform: translateY(0);
     }
-    33.33%, 97% {
+    33.33%,
+    97% {
       transform: translateY(100%);
     }
     100% {

@@ -16,31 +16,40 @@ const CollapsedPanelIndicator = ({
 
   const pointerDownRef = useRef(null);
 
-  const handlePointerDown = useCallback((e) => {
-    if (e.button !== 0) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    e.currentTarget.style.cursor = isVertical ? 'row-resize' : 'col-resize';
-    pointerDownRef.current = { x: e.clientX, y: e.clientY };
-  }, [isVertical]);
+  const handlePointerDown = useCallback(
+    (e) => {
+      if (e.button !== 0) return;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.currentTarget.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+      pointerDownRef.current = { x: e.clientX, y: e.clientY };
+    },
+    [isVertical]
+  );
 
-  const handlePointerMove = useCallback((e) => {
-    if (!pointerDownRef.current) return;
-    const dx = e.clientX - pointerDownRef.current.x;
-    const dy = e.clientY - pointerDownRef.current.y;
-    if (dx * dx + dy * dy > dragThresholdSq) {
+  const handlePointerMove = useCallback(
+    (e) => {
+      if (!pointerDownRef.current) return;
+      const dx = e.clientX - pointerDownRef.current.x;
+      const dy = e.clientY - pointerDownRef.current.y;
+      if (dx * dx + dy * dy > dragThresholdSq) {
+        pointerDownRef.current = null;
+        e.currentTarget.releasePointerCapture(e.pointerId);
+        onDragStart?.(e);
+      }
+    },
+    [onDragStart, dragThresholdSq]
+  );
+
+  const handlePointerUp = useCallback(
+    (e) => {
+      if (!pointerDownRef.current) return;
       pointerDownRef.current = null;
+      e.currentTarget.style.cursor = '';
       e.currentTarget.releasePointerCapture(e.pointerId);
-      onDragStart?.(e);
-    }
-  }, [onDragStart, dragThresholdSq]);
-
-  const handlePointerUp = useCallback((e) => {
-    if (!pointerDownRef.current) return;
-    pointerDownRef.current = null;
-    e.currentTarget.style.cursor = '';
-    e.currentTarget.releasePointerCapture(e.pointerId);
-    onExpand();
-  }, [onExpand]);
+      onExpand();
+    },
+    [onExpand]
+  );
 
   const handlePointerCancel = useCallback((e) => {
     if (!pointerDownRef.current) return;
@@ -49,12 +58,15 @@ const CollapsedPanelIndicator = ({
     e.currentTarget.releasePointerCapture(e.pointerId);
   }, []);
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onExpand();
-    }
-  }, [onExpand]);
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onExpand();
+      }
+    },
+    [onExpand]
+  );
 
   return (
     <StyledWrapper

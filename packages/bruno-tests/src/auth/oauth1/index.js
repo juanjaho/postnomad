@@ -91,10 +91,7 @@ function getBaseUrl(req) {
   const port = req.socket.localPort;
   const path = req.baseUrl + req.path;
 
-  const includePort = port && !(
-    (protocol === 'http' && port === 80)
-    || (protocol === 'https' && port === 443)
-  );
+  const includePort = port && !((protocol === 'http' && port === 80) || (protocol === 'https' && port === 443));
 
   return `${protocol}://${host}${includePort ? ':' + port : ''}${path}`;
 }
@@ -282,14 +279,8 @@ function verifyOAuth1Signature(getTokenSecret) {
       return res.status(401).json({ error: 'Missing OAuth parameters' });
     }
 
-    const {
-      oauth_consumer_key,
-      oauth_signature,
-      oauth_signature_method,
-      oauth_nonce,
-      oauth_timestamp,
-      oauth_version
-    } = oauthParams;
+    const { oauth_consumer_key, oauth_signature, oauth_signature_method, oauth_nonce, oauth_timestamp, oauth_version } =
+      oauthParams;
 
     // Validate required params
     if (!oauth_consumer_key || !oauth_signature || !oauth_signature_method) {
@@ -325,13 +316,7 @@ function verifyOAuth1Signature(getTokenSecret) {
     const parameterString = collectRequestParams(req, oauthParams, oauthSource);
     const baseString = buildBaseString(req.method, baseUrl, parameterString);
 
-    const isValid = verifySignature(
-      baseString,
-      oauth_signature,
-      oauth_signature_method,
-      consumer.secret,
-      tokenSecret
-    );
+    const isValid = verifySignature(baseString, oauth_signature, oauth_signature_method, consumer.secret, tokenSecret);
 
     if (!isValid) {
       return res.status(401).json({
@@ -354,7 +339,8 @@ function verifyOAuth1Signature(getTokenSecret) {
 // ─── Routes ─────────────────────────────────────────────────────────────────────
 
 // 1. Request Token (Temporary Credentials) - RFC 5849 §2.1
-router.post('/request_token',
+router.post(
+  '/request_token',
   verifyOAuth1Signature((oauthParams) => {
     // No token secret for request token requests
     return '';
@@ -393,9 +379,9 @@ router.post('/request_token',
     // Return as form-encoded per spec
     res.type('application/x-www-form-urlencoded');
     res.send(
-      `oauth_token=${percentEncode(requestToken.token)}`
-      + `&oauth_token_secret=${percentEncode(requestToken.secret)}`
-      + `&oauth_callback_confirmed=true`
+      `oauth_token=${percentEncode(requestToken.token)}` +
+        `&oauth_token_secret=${percentEncode(requestToken.secret)}` +
+        `&oauth_callback_confirmed=true`
     );
   }
 );
@@ -438,7 +424,8 @@ router.get('/authorize', (req, res) => {
 });
 
 // 3. Access Token (Token Credentials) - RFC 5849 §2.3
-router.post('/access_token',
+router.post(
+  '/access_token',
   verifyOAuth1Signature((oauthParams) => {
     // Token secret is the request token's secret
     const rt = requestTokens.find((t) => t.token === oauthParams.oauth_token);
@@ -483,18 +470,16 @@ router.post('/access_token',
     // Return as form-encoded per spec
     res.type('application/x-www-form-urlencoded');
     res.send(
-      `oauth_token=${percentEncode(accessToken.token)}`
-      + `&oauth_token_secret=${percentEncode(accessToken.secret)}`
+      `oauth_token=${percentEncode(accessToken.token)}` + `&oauth_token_secret=${percentEncode(accessToken.secret)}`
     );
   }
 );
 
 // 4. Protected Resource - verifies signed requests with access token
-router.get('/resource',
+router.get(
+  '/resource',
   verifyOAuth1Signature((oauthParams) => {
-    const at = accessTokens.find(
-      (t) => t.token === oauthParams.oauth_token
-    );
+    const at = accessTokens.find((t) => t.token === oauthParams.oauth_token);
     return at ? at.secret : '';
   }),
   (req, res) => {
@@ -507,11 +492,10 @@ router.get('/resource',
   }
 );
 
-router.post('/resource',
+router.post(
+  '/resource',
   verifyOAuth1Signature((oauthParams) => {
-    const at = accessTokens.find(
-      (t) => t.token === oauthParams.oauth_token
-    );
+    const at = accessTokens.find((t) => t.token === oauthParams.oauth_token);
     return at ? at.secret : '';
   }),
   (req, res) => {

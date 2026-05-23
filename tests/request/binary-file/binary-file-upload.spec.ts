@@ -106,10 +106,7 @@ test.describe.serial('File / Binary body upload', () => {
   // so when we want a different value (e.g. plain "application/json") we
   // must select-all and replace — typing into the prefilled cell would
   // splice into it at the caret and produce a corrupted header.
-  const configureFileBody = async (
-    page: import('@playwright/test').Page,
-    overrideContentType?: string
-  ) => {
+  const configureFileBody = async (page: import('@playwright/test').Page, overrideContentType?: string) => {
     await selectRequestPaneTab(page, 'Body');
 
     const locators = buildCommonLocators(page);
@@ -165,10 +162,7 @@ test.describe.serial('File / Binary body upload', () => {
     expect(responseText).not.toContain('"_readableState"');
   });
 
-  test('octet-stream content-type: file bytes are sent verbatim (control case)', async ({
-    page,
-    electronApp
-  }) => {
+  test('octet-stream content-type: file bytes are sent verbatim (control case)', async ({ page, electronApp }) => {
     await electronApp.evaluate(({ dialog }, filePath: string) => {
       (dialog as any).__currentSelection = filePath;
     }, octetFilePath);

@@ -6,10 +6,7 @@ describe('getMemberExpressionString', () => {
   it('should correctly convert simple member expressions to strings', () => {
     // Create a simple member expression: pm.environment.get
     const memberExpr = j.memberExpression(
-      j.memberExpression(
-        j.identifier('pm'),
-        j.identifier('environment')
-      ),
+      j.memberExpression(j.identifier('pm'), j.identifier('environment')),
       j.identifier('get')
     );
 

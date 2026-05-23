@@ -54,10 +54,18 @@ function log(level, msg) {
   let color = COLORS.nc;
   switch (level) {
     case LOG_LEVELS.INFO:
-    case LOG_LEVELS.SUCCESS:  color = COLORS.green; break;
-    case LOG_LEVELS.WARN:     color = COLORS.yellow; break;
-    case LOG_LEVELS.ERROR:    color = COLORS.red; break;
-    case LOG_LEVELS.DEBUG:    color = COLORS.blue; break;
+    case LOG_LEVELS.SUCCESS:
+      color = COLORS.green;
+      break;
+    case LOG_LEVELS.WARN:
+      color = COLORS.yellow;
+      break;
+    case LOG_LEVELS.ERROR:
+      color = COLORS.red;
+      break;
+    case LOG_LEVELS.DEBUG:
+      color = COLORS.blue;
+      break;
   }
 
   const output = `${color}[${level}]${COLORS.nc} ${msg}`;
@@ -118,7 +126,10 @@ function ensureNodeVersion(requiredVersion) {
   if (!currentVersion.includes(requiredVersion)) {
     log(LOG_LEVELS.ERROR, `Node ${requiredVersion} is required but currently installed version is ${currentVersion}`);
     log(LOG_LEVELS.ERROR, `Please install node ${requiredVersion} and try again.`);
-    log(LOG_LEVELS.ERROR, `You can run 'nvm install ${requiredVersion}' to install it, or 'nvm use ${requiredVersion}' if it's already installed.`);
+    log(
+      LOG_LEVELS.ERROR,
+      `You can run 'nvm install ${requiredVersion}' to install it, or 'nvm use ${requiredVersion}' if it's already installed.`
+    );
 
     process.exit(1);
   }
@@ -141,7 +152,7 @@ function startDevelopment() {
   log(LOG_LEVELS.INFO, 'Starting development servers...');
 
   const concurrently = require('concurrently');
-  const watchPaths = CONFIG.ELECTRON_WATCH_PATHS.map(path => `--watch "${path}"`).join(' ');
+  const watchPaths = CONFIG.ELECTRON_WATCH_PATHS.map((path) => `--watch "${path}"`).join(' ');
 
   // concurrently command objects: { command, name, prefixColor, env, cwd, ipc }
   const commandObjects = [
@@ -197,7 +208,7 @@ function startDevelopment() {
 
   result
     .then(() => log(LOG_LEVELS.SUCCESS, 'All processes completed successfully'))
-    .catch(err => {
+    .catch((err) => {
       log(LOG_LEVELS.ERROR, 'Development environment failed to start');
       console.error(err);
       process.exit(1);
@@ -238,7 +249,7 @@ function startDevelopment() {
 
   // Start development environment
   startDevelopment();
-})().catch(err => {
+})().catch((err) => {
   log(LOG_LEVELS.ERROR, 'An error occurred:');
   console.error(err);
   process.exit(1);

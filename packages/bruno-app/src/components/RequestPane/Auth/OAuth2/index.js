@@ -26,16 +26,52 @@ const GrantTypeComponentMap = ({ item, collection }) => {
 
   switch (grantType) {
     case 'password':
-      return <OAuth2PasswordCredentials item={item} save={save} request={request} handleRun={handleRun} updateAuth={updateAuth} collection={collection} />;
+      return (
+        <OAuth2PasswordCredentials
+          item={item}
+          save={save}
+          request={request}
+          handleRun={handleRun}
+          updateAuth={updateAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'authorization_code':
-      return <OAuth2AuthorizationCode item={item} save={save} request={request} handleRun={handleRun} updateAuth={updateAuth} collection={collection} />;
+      return (
+        <OAuth2AuthorizationCode
+          item={item}
+          save={save}
+          request={request}
+          handleRun={handleRun}
+          updateAuth={updateAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'implicit':
-      return <OAuth2Implicit item={item} save={save} request={request} handleRun={handleRun} updateAuth={updateAuth} collection={collection} />;
+      return (
+        <OAuth2Implicit
+          item={item}
+          save={save}
+          request={request}
+          handleRun={handleRun}
+          updateAuth={updateAuth}
+          collection={collection}
+        />
+      );
       break;
     case 'client_credentials':
-      return <OAuth2ClientCredentials item={item} save={save} request={request} handleRun={handleRun} updateAuth={updateAuth} collection={collection} />;
+      return (
+        <OAuth2ClientCredentials
+          item={item}
+          save={save}
+          request={request}
+          handleRun={handleRun}
+          updateAuth={updateAuth}
+          collection={collection}
+        />
+      );
       break;
     default:
       return <div>TBD</div>;

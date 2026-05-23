@@ -53,7 +53,6 @@ const Wrapper = styled.div`
   .shortcut {
     font-size: 0.625rem;
   }
-
 `;
 
 export default Wrapper;

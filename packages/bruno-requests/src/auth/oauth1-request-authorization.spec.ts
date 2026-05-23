@@ -33,10 +33,7 @@ describe('createOAuth1Authorizer', () => {
         version: '1.0'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://api.example.com/resource', method: 'GET' },
-        token
-      );
+      const oauthData = oauth.authorize({ url: 'https://api.example.com/resource', method: 'GET' }, token);
 
       expect(oauthData.oauth_consumer_key).toBe(consumer.key);
       expect(oauthData.oauth_signature_method).toBe('HMAC-SHA1');
@@ -53,9 +50,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/request_token', method: 'POST' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/request_token', method: 'POST' });
 
       expect(oauthData.oauth_consumer_key).toBe(consumer.key);
       expect(oauthData.oauth_token).toBeUndefined();
@@ -68,9 +63,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
 
       const ts = parseInt(oauthData.oauth_timestamp, 10);
       expect(ts).toBeGreaterThan(1000000000);
@@ -100,10 +93,7 @@ describe('createOAuth1Authorizer', () => {
         { url: 'https://example.com/resource', method: 'POST', data: [['oauth_body_hash', bodyHash]] },
         token
       );
-      const withoutHash = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'POST' },
-        token
-      );
+      const withoutHash = oauth.authorize({ url: 'https://example.com/resource', method: 'POST' }, token);
 
       // Different base strings should produce different signatures
       expect(withHash.oauth_signature).not.toBe(withoutHash.oauth_signature);
@@ -134,11 +124,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/request_token', method: 'POST' },
-        undefined,
-        'oob'
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/request_token', method: 'POST' }, undefined, 'oob');
 
       expect(oauthData.oauth_callback).toBe('oob');
     });
@@ -149,9 +135,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/request_token', method: 'POST' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/request_token', method: 'POST' });
 
       expect(oauthData.oauth_callback).toBeUndefined();
     });
@@ -183,14 +167,8 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const data1 = oauth.authorize(
-        { url: 'https://example.com/resource?a=1', method: 'GET' },
-        token
-      );
-      const data2 = oauth.authorize(
-        { url: 'https://example.com/resource?a=2', method: 'GET' },
-        token
-      );
+      const data1 = oauth.authorize({ url: 'https://example.com/resource?a=1', method: 'GET' }, token);
+      const data2 = oauth.authorize({ url: 'https://example.com/resource?a=2', method: 'GET' }, token);
 
       expect(data1.oauth_signature).not.toBe(data2.oauth_signature);
     });
@@ -203,10 +181,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' },
-        token
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
       const header = oauth.toHeader(oauthData);
 
       expect(header.Authorization).toMatch(/^OAuth /);
@@ -218,10 +193,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' },
-        token
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
       const header = oauth.toHeader(oauthData);
 
       expect(header.Authorization).toContain('oauth_consumer_key=');
@@ -240,9 +212,7 @@ describe('createOAuth1Authorizer', () => {
         realm: 'Example'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
       const header = oauth.toHeader(oauthData);
 
       expect(header.Authorization).toMatch(/^OAuth realm="Example", /);
@@ -254,9 +224,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
       const header = oauth.toHeader(oauthData);
 
       expect(header.Authorization).not.toContain('realm=');
@@ -271,10 +239,7 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'HMAC-SHA1'
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' },
-          token
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
 
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
       });
@@ -287,10 +252,7 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'HMAC-SHA256'
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' },
-          token
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
 
         expect(oauthData.oauth_signature_method).toBe('HMAC-SHA256');
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
@@ -303,10 +265,7 @@ describe('createOAuth1Authorizer', () => {
         // Use custom hash_function to inject fixed nonce/timestamp isn't possible,
         // but we can compare via toHeader since nonce differs. Instead, test
         // that the signature method label is correctly set.
-        const data = oauth256.authorize(
-          { url: 'https://example.com/resource', method: 'GET' },
-          token
-        );
+        const data = oauth256.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
         expect(data.oauth_signature_method).toBe('HMAC-SHA256');
       });
     });
@@ -318,10 +277,7 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'HMAC-SHA512'
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' },
-          token
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
 
         expect(oauthData.oauth_signature_method).toBe('HMAC-SHA512');
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
@@ -330,10 +286,7 @@ describe('createOAuth1Authorizer', () => {
       it('should produce a different signature than HMAC-SHA256 for the same input', () => {
         const oauth512 = createOAuth1Authorizer({ consumer, signature_method: 'HMAC-SHA512' });
 
-        const data = oauth512.authorize(
-          { url: 'https://example.com/resource', method: 'GET' },
-          token
-        );
+        const data = oauth512.authorize({ url: 'https://example.com/resource', method: 'GET' }, token);
         expect(data.oauth_signature_method).toBe('HMAC-SHA512');
       });
     });
@@ -369,9 +322,7 @@ describe('createOAuth1Authorizer', () => {
           private_key: privateKey
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' }
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
 
         expect(oauthData.oauth_signature_method).toBe('RSA-SHA1');
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
@@ -383,9 +334,9 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'RSA-SHA1'
         });
 
-        expect(() =>
-          oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })
-        ).toThrow('Private key is required');
+        expect(() => oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })).toThrow(
+          'Private key is required'
+        );
       });
     });
 
@@ -403,9 +354,7 @@ describe('createOAuth1Authorizer', () => {
           private_key: privateKey
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' }
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
 
         expect(oauthData.oauth_signature_method).toBe('RSA-SHA256');
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
@@ -417,9 +366,9 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'RSA-SHA256'
         });
 
-        expect(() =>
-          oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })
-        ).toThrow('Private key is required');
+        expect(() => oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })).toThrow(
+          'Private key is required'
+        );
       });
     });
 
@@ -437,9 +386,7 @@ describe('createOAuth1Authorizer', () => {
           private_key: privateKey
         });
 
-        const oauthData = oauth.authorize(
-          { url: 'https://example.com/resource', method: 'GET' }
-        );
+        const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
 
         expect(oauthData.oauth_signature_method).toBe('RSA-SHA512');
         expect(oauthData.oauth_signature).toMatch(/^[A-Za-z0-9+/=]+$/);
@@ -451,9 +398,9 @@ describe('createOAuth1Authorizer', () => {
           signature_method: 'RSA-SHA512'
         });
 
-        expect(() =>
-          oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })
-        ).toThrow('Private key is required');
+        expect(() => oauth.authorize({ url: 'https://example.com/resource', method: 'GET' })).toThrow(
+          'Private key is required'
+        );
       });
     });
   });
@@ -605,16 +552,16 @@ describe('createOAuth1Authorizer', () => {
       );
 
       // Verify base string structure per RFC 5849 §3.4.1
-      const expectedBaseString
-        = 'POST&https%3A%2F%2Fapi.twitter.com%2F1.1%2Fstatuses%2Fupdate.json&'
-          + 'include_entities%3Dtrue'
-          + '%26oauth_consumer_key%3Dxvz1evFS4wEEPTGEFPHBog'
-          + '%26oauth_nonce%3DkYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg'
-          + '%26oauth_signature_method%3DHMAC-SHA1'
-          + '%26oauth_timestamp%3D1318622958'
-          + '%26oauth_token%3D370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb'
-          + '%26oauth_version%3D1.0'
-          + '%26status%3DHello%2520Ladies%2520%252B%2520Gentlemen%252C%2520a%2520signed%2520OAuth%2520request%2521';
+      const expectedBaseString =
+        'POST&https%3A%2F%2Fapi.twitter.com%2F1.1%2Fstatuses%2Fupdate.json&' +
+        'include_entities%3Dtrue' +
+        '%26oauth_consumer_key%3Dxvz1evFS4wEEPTGEFPHBog' +
+        '%26oauth_nonce%3DkYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg' +
+        '%26oauth_signature_method%3DHMAC-SHA1' +
+        '%26oauth_timestamp%3D1318622958' +
+        '%26oauth_token%3D370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb' +
+        '%26oauth_version%3D1.0' +
+        '%26status%3DHello%2520Ladies%2520%252B%2520Gentlemen%252C%2520a%2520signed%2520OAuth%2520request%2521';
       expect(capturedBaseString).toBe(expectedBaseString);
     });
   });
@@ -626,9 +573,7 @@ describe('createOAuth1Authorizer', () => {
         signature_method: 'HMAC-SHA1'
       });
 
-      const oauthData = oauth.authorize(
-        { url: 'https://example.com/resource', method: 'GET' }
-      );
+      const oauthData = oauth.authorize({ url: 'https://example.com/resource', method: 'GET' });
 
       expect(oauthData.oauth_version).toBe('1.0');
     });
@@ -637,7 +582,10 @@ describe('createOAuth1Authorizer', () => {
   describe('parseQueryParams', () => {
     it('should parse simple query params', () => {
       const result = parseQueryParams('https://example.com/path?a=1&b=2');
-      expect(result).toEqual([['a', '1'], ['b', '2']]);
+      expect(result).toEqual([
+        ['a', '1'],
+        ['b', '2']
+      ]);
     });
 
     it('should return empty array when URL has no query string', () => {
@@ -651,7 +599,10 @@ describe('createOAuth1Authorizer', () => {
 
     it('should strip fragment that follows multiple query params', () => {
       const result = parseQueryParams('https://example.com/path?a=1&b=2#frag');
-      expect(result).toEqual([['a', '1'], ['b', '2']]);
+      expect(result).toEqual([
+        ['a', '1'],
+        ['b', '2']
+      ]);
     });
 
     it('should decode percent-encoded values', () => {
@@ -671,7 +622,10 @@ describe('createOAuth1Authorizer', () => {
 
     it('should decode %20 as space while preserving +', () => {
       const result = parseQueryParams('https://example.com/path?a=x+y&b=x%20y');
-      expect(result).toEqual([['a', 'x+y'], ['b', 'x y']]);
+      expect(result).toEqual([
+        ['a', 'x+y'],
+        ['b', 'x y']
+      ]);
     });
 
     it('should handle malformed percent-encoding gracefully', () => {
@@ -691,17 +645,27 @@ describe('createOAuth1Authorizer', () => {
 
     it('should preserve duplicate keys as separate pairs', () => {
       const result = parseQueryParams('https://example.com/path?a=1&a=2');
-      expect(result).toEqual([['a', '1'], ['a', '2']]);
+      expect(result).toEqual([
+        ['a', '1'],
+        ['a', '2']
+      ]);
     });
 
     it('should preserve three duplicate keys as separate pairs', () => {
       const result = parseQueryParams('https://example.com/path?a=1&a=2&a=3');
-      expect(result).toEqual([['a', '1'], ['a', '2'], ['a', '3']]);
+      expect(result).toEqual([
+        ['a', '1'],
+        ['a', '2'],
+        ['a', '3']
+      ]);
     });
 
     it('should skip empty segments from consecutive ampersands', () => {
       const result = parseQueryParams('https://example.com/path?a=1&&b=2');
-      expect(result).toEqual([['a', '1'], ['b', '2']]);
+      expect(result).toEqual([
+        ['a', '1'],
+        ['b', '2']
+      ]);
     });
 
     it('should handle value containing encoded equals sign', () => {
@@ -741,8 +705,8 @@ describe('createOAuth1Authorizer', () => {
       expect(percentEncode('star*')).toBe('star%2A');
     });
 
-    it('should encode \' as %27 per RFC 5849', () => {
-      expect(percentEncode('it\'s')).toBe('it%27s');
+    it("should encode ' as %27 per RFC 5849", () => {
+      expect(percentEncode("it's")).toBe('it%27s');
     });
 
     it('should encode ( and ) as %28 and %29 per RFC 5849', () => {
@@ -834,39 +798,35 @@ describe('createOAuth1Authorizer', () => {
 
   describe('buildParameterString', () => {
     it('should sort parameters lexicographically by key', () => {
-      const result = buildParameterString(
-        { z_param: 'val', a_param: 'val' }, []
-      );
+      const result = buildParameterString({ z_param: 'val', a_param: 'val' }, []);
       expect(result.indexOf('a_param')).toBeLessThan(result.indexOf('z_param'));
     });
 
     it('should sort by value when keys are identical', () => {
-      const result = buildParameterString(
-        {}, [['a', '3'], ['a', '1'], ['a', '2']]
-      );
+      const result = buildParameterString({}, [
+        ['a', '3'],
+        ['a', '1'],
+        ['a', '2']
+      ]);
       expect(result).toBe('a=1&a=2&a=3');
     });
 
     it('should combine oauth params and query params', () => {
-      const result = buildParameterString(
-        { oauth_key: 'ok' },
-        [['query', 'qv']]
-      );
+      const result = buildParameterString({ oauth_key: 'ok' }, [['query', 'qv']]);
       expect(result).toContain('oauth_key=ok');
       expect(result).toContain('query=qv');
     });
 
     it('should percent-encode keys and values', () => {
-      const result = buildParameterString(
-        { 'a key': 'a value' }, []
-      );
+      const result = buildParameterString({ 'a key': 'a value' }, []);
       expect(result).toBe('a%20key=a%20value');
     });
 
     it('should handle duplicate query param keys', () => {
-      const result = buildParameterString(
-        {}, [['color', 'blue'], ['color', 'red']]
-      );
+      const result = buildParameterString({}, [
+        ['color', 'blue'],
+        ['color', 'red']
+      ]);
       expect(result).toBe('color=blue&color=red');
     });
 

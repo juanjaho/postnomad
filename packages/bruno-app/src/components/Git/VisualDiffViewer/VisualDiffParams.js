@@ -61,12 +61,7 @@ const VisualDiffParams = ({ oldData, newData, showSide }) => {
                   )}
                 </td>
                 <td className="checkbox-cell">
-                  <input
-                    type="checkbox"
-                    checked={param.enabled !== false}
-                    readOnly
-                    disabled
-                  />
+                  <input type="checkbox" checked={param.enabled !== false} readOnly disabled />
                 </td>
                 <td className="key-cell">{param.name}</td>
                 <td className="value-cell">{param.value}</td>

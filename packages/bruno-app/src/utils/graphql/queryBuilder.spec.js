@@ -383,10 +383,7 @@ describe('queryBuilder', () => {
     });
 
     it('should handle multiple selected fields', () => {
-      const selections = new Set([
-        'Query.user', 'Query.user.id', 'Query.user.name',
-        'Query.post', 'Query.post.title'
-      ]);
+      const selections = new Set(['Query.user', 'Query.user.id', 'Query.user.name', 'Query.post', 'Query.post.title']);
       const result = generateQueryString(selections, new Map(), BASIC_SCHEMA, 'Query', new Set());
 
       expect(result.query).toContain('user');
@@ -422,10 +419,7 @@ describe('queryBuilder', () => {
     });
 
     it('should disambiguate duplicate variable names', () => {
-      const selections = new Set([
-        'Query.user', 'Query.user.id',
-        'Query.post', 'Query.post.id'
-      ]);
+      const selections = new Set(['Query.user', 'Query.user.id', 'Query.post', 'Query.post.id']);
       const enabledArgs = new Set(['Query.user.id', 'Query.post.id']);
       const argValues = new Map([
         ['Query.user.id', '1'],
@@ -485,7 +479,8 @@ describe('queryBuilder', () => {
     });
 
     it('should parse nested selections', () => {
-      const state = parseQueryToState(`
+      const state = parseQueryToState(
+        `
         query GetUser {
           user {
             id
@@ -494,7 +489,9 @@ describe('queryBuilder', () => {
             }
           }
         }
-      `, BASIC_SCHEMA);
+      `,
+        BASIC_SCHEMA
+      );
 
       expect(state.selections.has('Query.user')).toBe(true);
       expect(state.selections.has('Query.user.posts')).toBe(true);
@@ -513,13 +510,16 @@ describe('queryBuilder', () => {
     });
 
     it('should parse inline argument values', () => {
-      const state = parseQueryToState(`
+      const state = parseQueryToState(
+        `
         query GetUsers {
           users(limit: 10) {
             id
           }
         }
-      `, BASIC_SCHEMA);
+      `,
+        BASIC_SCHEMA
+      );
 
       expect(state.enabledArgs.has('Query.users.limit')).toBe(true);
       expect(state.argValues.get('Query.users.limit')).toBe('10');

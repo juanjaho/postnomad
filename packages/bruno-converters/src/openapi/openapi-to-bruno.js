@@ -1,7 +1,14 @@
 import each from 'lodash/each';
 import get from 'lodash/get';
 import jsyaml from 'js-yaml';
-import { validateSchema, transformItemsInCollection, hydrateSeqInCollection, uuid, sanitizeTag, sanitizeTags } from '../common';
+import {
+  validateSchema,
+  transformItemsInCollection,
+  hydrateSeqInCollection,
+  uuid,
+  sanitizeTag,
+  sanitizeTags
+} from '../common';
 import { swagger2ToBruno } from './swagger2-to-bruno';
 import {
   ensureUrl,
@@ -59,7 +66,13 @@ const getParameterEntries = (param) => {
   }
 
   // Handle array type with items schema that has enum
-  if (schema.type === 'array' && schema.items && schema.items.enum && Array.isArray(schema.items.enum) && schema.items.enum.length > 0) {
+  if (
+    schema.type === 'array' &&
+    schema.items &&
+    schema.items.enum &&
+    Array.isArray(schema.items.enum) &&
+    schema.items.enum.length > 0
+  ) {
     const defaultValue = schema.items.default !== undefined ? String(schema.items.default) : null;
     const arrayDefault = schema.default !== undefined && Array.isArray(schema.default) ? schema.default : null;
 
@@ -76,7 +89,8 @@ const getParameterEntries = (param) => {
     schema.items.enum.forEach((enumValue) => {
       const valueStr = String(enumValue);
       const isDefault = defaultValue !== null && valueStr === defaultValue;
-      const enabled = isDefault || (defaultValue === null && schema.items.enum.indexOf(enumValue) === 0 && !!param.required);
+      const enabled =
+        isDefault || (defaultValue === null && schema.items.enum.indexOf(enumValue) === 0 && !!param.required);
 
       entries.push({
         value: valueStr,
@@ -255,10 +269,18 @@ const transformOpenapiRequestItem = (request, usedNames = new Set(), options = {
         // Enrich property with parent example context if property lacks its own example
         // Use child-level example only; drop parent-level example/examples to avoid
         // object-level values leaking into scalar child parameters
-        const propSchema = (prop.example === undefined && schemaExample[propName] !== undefined)
-          ? { ...prop, example: schemaExample[propName] }
-          : prop;
-        const tempParam = { ...param, example: undefined, examples: undefined, name: propName, schema: propSchema, required: isRequired };
+        const propSchema =
+          prop.example === undefined && schemaExample[propName] !== undefined
+            ? { ...prop, example: schemaExample[propName] }
+            : prop;
+        const tempParam = {
+          ...param,
+          example: undefined,
+          examples: undefined,
+          name: propName,
+          schema: propSchema,
+          required: isRequired
+        };
         const entries = getParameterEntries(tempParam);
 
         entries.forEach((entry) => {
@@ -422,7 +444,9 @@ const transformOpenapiRequestItem = (request, usedNames = new Set(), options = {
         callbackUrl: '{{oauth_callback_url}}',
         clientId: '{{oauth_client_id}}',
         clientSecret: '{{oauth_client_secret}}',
-        scope: Array.isArray(flowConfig.scopes) ? flowConfig.scopes.join(' ') : Object.keys(flowConfig.scopes || {}).join(' '),
+        scope: Array.isArray(flowConfig.scopes)
+          ? flowConfig.scopes.join(' ')
+          : Object.keys(flowConfig.scopes || {}).join(' '),
         state: '{{oauth_state}}',
         credentialsPlacement: 'header',
         tokenPlacement: 'header',
@@ -496,7 +520,14 @@ const transformOpenapiRequestItem = (request, usedNames = new Set(), options = {
      * @param {string} params.responseContentType - Response content type
      * @param {string} [params.responseExampleKey] - Optional response example key for matching
      */
-    const createExamplesWithRequestBody = ({ responseExampleValue, exampleName, exampleDescription, statusCode, responseContentType, responseExampleKey = null }) => {
+    const createExamplesWithRequestBody = ({
+      responseExampleValue,
+      exampleName,
+      exampleDescription,
+      statusCode,
+      responseContentType,
+      responseExampleKey = null
+    }) => {
       const requestBodyExamplesWithKeys = requestBodyExamples.filter((rb) => rb.key !== null);
       const requestBodyExamplesWithoutKeys = requestBodyExamples.filter((rb) => rb.key === null);
 
@@ -507,55 +538,63 @@ const transformOpenapiRequestItem = (request, usedNames = new Set(), options = {
 
       if (matchingRequestBodyExample) {
         // Use the matching request body example
-        examples.push(createBrunoExample({
-          brunoRequestItem,
-          exampleValue: responseExampleValue,
-          exampleName,
-          exampleDescription,
-          statusCode,
-          contentType: responseContentType,
-          requestBodySchema: matchingRequestBodyExample.schema,
-          requestBodyContentType: matchingRequestBodyExample.contentType
-        }));
+        examples.push(
+          createBrunoExample({
+            brunoRequestItem,
+            exampleValue: responseExampleValue,
+            exampleName,
+            exampleDescription,
+            statusCode,
+            contentType: responseContentType,
+            requestBodySchema: matchingRequestBodyExample.schema,
+            requestBodyContentType: matchingRequestBodyExample.contentType
+          })
+        );
       } else if (requestBodyExamplesWithKeys.length > 0) {
         // No match found, create all combinations with request body examples that have keys
         requestBodyExamplesWithKeys.forEach((rbExample) => {
           const combinedExampleName = `${exampleName} (${rbExample.summary || rbExample.key})`;
           const combinedExampleDescription = exampleDescription || rbExample.description || '';
-          examples.push(createBrunoExample({
-            brunoRequestItem,
-            exampleValue: responseExampleValue,
-            exampleName: combinedExampleName,
-            exampleDescription: combinedExampleDescription,
-            statusCode,
-            contentType: responseContentType,
-            requestBodySchema: rbExample.schema,
-            requestBodyContentType: rbExample.contentType
-          }));
+          examples.push(
+            createBrunoExample({
+              brunoRequestItem,
+              exampleValue: responseExampleValue,
+              exampleName: combinedExampleName,
+              exampleDescription: combinedExampleDescription,
+              statusCode,
+              contentType: responseContentType,
+              requestBodySchema: rbExample.schema,
+              requestBodyContentType: rbExample.contentType
+            })
+          );
         });
       } else if (requestBodyExamplesWithoutKeys.length > 0) {
         // Single example or schema - use the first one for all response examples
         const rbExample = requestBodyExamplesWithoutKeys[0];
-        examples.push(createBrunoExample({
-          brunoRequestItem,
-          exampleValue: responseExampleValue,
-          exampleName,
-          exampleDescription,
-          statusCode,
-          contentType: responseContentType,
-          requestBodySchema: rbExample.schema,
-          requestBodyContentType: rbExample.contentType
-        }));
+        examples.push(
+          createBrunoExample({
+            brunoRequestItem,
+            exampleValue: responseExampleValue,
+            exampleName,
+            exampleDescription,
+            statusCode,
+            contentType: responseContentType,
+            requestBodySchema: rbExample.schema,
+            requestBodyContentType: rbExample.contentType
+          })
+        );
       } else {
         // No request body, create example without request body
-        examples.push(createBrunoExample({
-          brunoRequestItem,
-          exampleValue: responseExampleValue,
-          exampleName,
-          exampleDescription,
-          statusCode,
-          contentType: responseContentType
-        }));
+        examples.push(
+          createBrunoExample({
+            brunoRequestItem,
+            exampleValue: responseExampleValue,
+            exampleName,
+            exampleDescription,
+            statusCode,
+            contentType: responseContentType
+          })
+        );
       }
     };
 
@@ -734,7 +773,8 @@ const getDefaultUrl = (serverObject) => {
   let url = serverObject.url;
   if (serverObject.variables) {
     each(serverObject.variables, (variable, variableName) => {
-      let sub = variable.default !== undefined ? variable.default : (variable.enum ? variable.enum[0] : `{{${variableName}}}`);
+      let sub =
+        variable.default !== undefined ? variable.default : variable.enum ? variable.enum[0] : `{{${variableName}}}`;
       url = url.replaceAll(`{${variableName}}`, sub);
     });
   }
@@ -753,7 +793,7 @@ const extractServerVars = (server) => {
     baseUrlTemplate = baseUrlTemplate.endsWith('/') ? baseUrlTemplate.slice(0, -1) : baseUrlTemplate;
     vars.push({ name: 'baseUrl', value: baseUrlTemplate });
     each(server.variables, (variable, variableName) => {
-      let value = variable.default !== undefined ? variable.default : (variable.enum ? variable.enum[0] : '');
+      let value = variable.default !== undefined ? variable.default : variable.enum ? variable.enum[0] : '';
       vars.push({ name: variableName, value: String(value) });
     });
   } else {
@@ -770,9 +810,7 @@ const getSecurity = (apiSpec) => {
 
   return {
     supported: hasSchemes
-      ? defaultSchemes
-          .map((scheme) => securitySchemes[Object.keys(scheme)[0]])
-          .filter(Boolean)
+      ? defaultSchemes.map((scheme) => securitySchemes[Object.keys(scheme)[0]]).filter(Boolean)
       : [],
     schemes: securitySchemes,
     getScheme: (schemeName) => securitySchemes[schemeName]
@@ -851,9 +889,7 @@ export const parseOpenApiCollection = (data, options = {}) => {
 
         return Object.entries(pathItemObject)
           .filter(([method, op]) => {
-            return ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'].includes(
-              method.toLowerCase()
-            );
+            return ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'].includes(method.toLowerCase());
           })
           .map(([method, operationObject]) => {
             const mergedParams = mergeParams(pathItemParams, operationObject.parameters || []);
@@ -969,7 +1005,14 @@ export const parseOpenApiCollection = (data, options = {}) => {
         } else if (flows.password) {
           grantType = 'password';
         }
-        const flowConfig = grantType === 'authorization_code' ? flows.authorizationCode || {} : grantType === 'implicit' ? flows.implicit || {} : grantType === 'password' ? flows.password || {} : flows.clientCredentials || {};
+        const flowConfig =
+          grantType === 'authorization_code'
+            ? flows.authorizationCode || {}
+            : grantType === 'implicit'
+              ? flows.implicit || {}
+              : grantType === 'password'
+                ? flows.password || {}
+                : flows.clientCredentials || {};
 
         return {
           ...authTemplate,
@@ -982,7 +1025,9 @@ export const parseOpenApiCollection = (data, options = {}) => {
             callbackUrl: '{{oauth_callback_url}}',
             clientId: '{{oauth_client_id}}',
             clientSecret: '{{oauth_client_secret}}',
-            scope: Array.isArray(flowConfig.scopes) ? flowConfig.scopes.join(' ') : Object.keys(flowConfig.scopes || {}).join(' '),
+            scope: Array.isArray(flowConfig.scopes)
+              ? flowConfig.scopes.join(' ')
+              : Object.keys(flowConfig.scopes || {}).join(' '),
             state: '{{oauth_state}}',
             credentialsPlacement: 'header',
             tokenPlacement: 'header',

@@ -12,7 +12,7 @@ collection:
       modified: 1743683080329
       sortKey: -1743683080329
     children:
-      - url: "{{ _.base_url }}/api/users"
+      - url: '{{ _.base_url }}/api/users'
         name: Get Users
         meta:
           id: req_0393b8ff4ee1454daddacdda33fd33ea

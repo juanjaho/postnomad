@@ -21,13 +21,7 @@ const { wrapScriptInClosure, SANDBOX } = require('../../utils/sandbox');
  * @returns {Promise<Object>} Execution results including variables and test results
  * @throws {ScriptError} When script execution fails
  */
-async function runScriptInNodeVm({
-  script,
-  context,
-  collectionPath,
-  scriptingConfig,
-  scriptPath
-}) {
+async function runScriptInNodeVm({ script, context, collectionPath, scriptingConfig, scriptPath }) {
   if (script.trim().length === 0) {
     return;
   }
@@ -81,12 +75,14 @@ async function runScriptInNodeVm({
       const firstLine = error.stack?.split('\n')[0];
       const match = firstLine?.match(/^(.+):(\d+)$/);
       if (match && match[1] === vmFilename) {
-        error.__callSites = [{
-          filePath: vmFilename,
-          line: parseInt(match[2], 10),
-          column: null,
-          functionName: null
-        }];
+        error.__callSites = [
+          {
+            filePath: vmFilename,
+            line: parseInt(match[2], 10),
+            column: null,
+            functionName: null
+          }
+        ];
       }
       throw error;
     }
@@ -103,9 +99,7 @@ async function runScriptInNodeVm({
           functionName: site.getFunctionName() || null
         }));
 
-      return error.toString() + '\n' + callSites
-        .map((site) => `    at ${site}`)
-        .join('\n');
+      return error.toString() + '\n' + callSites.map((site) => `    at ${site}`).join('\n');
     };
 
     try {
@@ -143,11 +137,7 @@ function buildScriptContext(context, scriptingConfig) {
     scriptingConfig: scriptingConfig,
 
     // Safe globals from allowlist (Node.js/Web APIs only, not ECMAScript built-ins)
-    ...Object.fromEntries(
-      safeGlobals
-        .filter((key) => global[key] !== undefined)
-        .map((key) => [key, global[key]])
-    )
+    ...Object.fromEntries(safeGlobals.filter((key) => global[key] !== undefined).map((key) => [key, global[key]]))
   };
 
   // Add TypedArrays from host for compatibility with host APIs (TextEncoder, crypto, etc.)

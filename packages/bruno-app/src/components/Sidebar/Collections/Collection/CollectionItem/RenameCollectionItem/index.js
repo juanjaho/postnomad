@@ -49,12 +49,16 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
-        .test('not-reserved', `The file names "collection" and "folder" are reserved in bruno`, (value) => !['collection', 'folder'].includes(value))
+        .test(
+          'not-reserved',
+          `The file names "collection" and "folder" are reserved in bruno`,
+          (value) => !['collection', 'folder'].includes(value)
+        )
     }),
     onSubmit: async (values) => {
       // if there is unsaved changes in the request,
       // save them before renaming the request
-      if ((item.name === values.name) && (itemFilename === values.filename)) {
+      if (item.name === values.name && itemFilename === values.filename) {
         return;
       }
       if (!isFolder && item.draft) {
@@ -90,10 +94,7 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
   const AdvancedOptions = forwardRef((props, ref) => {
     return (
       <div ref={ref} className="flex mr-2 text-link cursor-pointer items-center">
-        <button
-          className="btn-advanced"
-          type="button"
-        >
+        <button className="btn-advanced" type="button">
           Options
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
@@ -104,12 +105,7 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
   return (
     <Portal>
       <StyledWrapper>
-        <Modal
-          size="md"
-          title={`Rename ${isFolder ? 'Folder' : 'Request'}`}
-          handleCancel={onClose}
-          hideFooter
-        >
+        <Modal size="md" title={`Rename ${isFolder ? 'Folder' : 'Request'}`} handleCancel={onClose} hideFooter>
           <form className="bruno-form" onSubmit={formik.handleSubmit}>
             <div className="flex flex-col mt-2">
               <label htmlFor="name" className="block font-medium">
@@ -131,27 +127,30 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
                 }}
                 value={formik.values.name || ''}
               />
-              {formik.touched.name && formik.errors.name ? <div className="text-red-500">{formik.errors.name}</div> : null}
+              {formik.touched.name && formik.errors.name ? (
+                <div className="text-red-500">{formik.errors.name}</div>
+              ) : null}
             </div>
 
             {showFilesystemName && (
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label htmlFor="filename" className="flex items-center font-medium">
-                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
-                    { isFolder ? (
+                    {isFolder ? 'Folder' : 'File'} Name{' '}
+                    <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                    {isFolder ? (
                       <Help width="300">
                         <p>
-                          You can choose to save the folder as a different name on your file system versus what is displayed in the app.
+                          You can choose to save the folder as a different name on your file system versus what is
+                          displayed in the app.
                         </p>
                       </Help>
                     ) : (
                       <Help width="300">
-                        <p>
-                          Bruno saves each request as a file in your collection's folder.
-                        </p>
+                        <p>Bruno saves each request as a file in your collection's folder.</p>
                         <p className="mt-2">
-                          You can choose a file name different from your request's name or one compatible with filesystem rules.
+                          You can choose a file name different from your request's name or one compatible with
+                          filesystem rules.
                         </p>
                       </Help>
                     )}
@@ -188,13 +187,15 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
                       onChange={formik.handleChange}
                       value={formik.values.filename || ''}
                     />
-                    {itemType !== 'folder' && <span className="absolute right-2 top-4 flex justify-center items-center file-extension">.{collection?.format || 'bru'}</span>}
+                    {itemType !== 'folder' && (
+                      <span className="absolute right-2 top-4 flex justify-center items-center file-extension">
+                        .{collection?.format || 'bru'}
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <div className="relative flex flex-row gap-1 items-center justify-between">
-                    <PathDisplay
-                      baseName={formik.values.filename}
-                    />
+                    <PathDisplay baseName={formik.values.filename} />
                   </div>
                 )}
                 {formik.touched.filename && formik.errors.filename ? (

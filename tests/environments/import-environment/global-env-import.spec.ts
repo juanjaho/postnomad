@@ -24,7 +24,8 @@ test.describe('Global Environment Import Tests', () => {
     await locationModal.getByRole('button', { name: 'Import' }).click();
 
     await expect(
-      page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' })).toBeVisible({ timeout: 10000 });
+      page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' })
+    ).toBeVisible({ timeout: 10000 });
 
     // Configure collection
     await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' }).click();
@@ -58,7 +59,7 @@ test.describe('Global Environment Import Tests', () => {
     await expect(envNameInputs.nth(2)).toHaveValue('apiKey');
 
     // Scroll the virtualized table to reveal remaining rows
-    await variablesTable.evaluate((el) => el.scrollTop = el.scrollHeight);
+    await variablesTable.evaluate((el) => (el.scrollTop = el.scrollHeight));
     await page.waitForTimeout(500);
 
     await expect(variablesTable.locator('input[name$=".name"][value="postTitle"]')).toBeVisible();

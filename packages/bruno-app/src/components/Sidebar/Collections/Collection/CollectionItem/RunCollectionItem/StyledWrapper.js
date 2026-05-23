@@ -88,7 +88,11 @@ const Wrapper = styled.div`
 
     &:checked {
       border: 1px solid ${(props) => props.theme.primary.solid};
-      background-image: radial-gradient(circle, ${(props) => props.theme.primary.solid} 40%, ${(props) => props.theme.bg} 42%);
+      background-image: radial-gradient(
+        circle,
+        ${(props) => props.theme.primary.solid} 40%,
+        ${(props) => props.theme.bg} 42%
+      );
     }
   }
 `;

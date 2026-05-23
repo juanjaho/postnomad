@@ -19,8 +19,8 @@ const Wrapper = styled.div`
     }
     td {
       padding: 6px 10px;
-      }
     }
+  }
 
   .btn-add-var {
     font-size: ${(props) => props.theme.font.size.base};

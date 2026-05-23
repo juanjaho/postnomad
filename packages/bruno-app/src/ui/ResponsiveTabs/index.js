@@ -101,7 +101,8 @@ const ResponsiveTabs = ({
 
       if (childrenCount > 0) {
         // Resolve the expandable element index (-1 means last child)
-        const targetIndex = expandableElementIndex < 0 ? childrenCount + expandableElementIndex : expandableElementIndex;
+        const targetIndex =
+          expandableElementIndex < 0 ? childrenCount + expandableElementIndex : expandableElementIndex;
         const validTargetIndex = Math.max(0, Math.min(targetIndex, childrenCount - 1));
 
         let totalExpandedWidth = 0;
@@ -269,11 +270,7 @@ const ResponsiveTabs = ({
         )}
       </div>
 
-      {rightContent && (
-        <div className={rightContentClassName}>
-          {rightContent}
-        </div>
-      )}
+      {rightContent && <div className={rightContentClassName}>{rightContent}</div>}
     </StyledWrapper>
   );
 };

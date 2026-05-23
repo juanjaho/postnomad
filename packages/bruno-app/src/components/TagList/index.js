@@ -4,7 +4,15 @@ import StyledWrapper from './StyledWrapper';
 import SingleLineEditor from 'components/SingleLineEditor/index';
 import { useTheme } from 'providers/Theme/index';
 
-const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSave, handleValidation, collectionFormat }) => {
+const TagList = ({
+  tagsHintList = [],
+  handleAddTag,
+  tags,
+  handleRemoveTag,
+  onSave,
+  handleValidation,
+  collectionFormat
+}) => {
   const { displayedTheme } = useTheme();
   const isBruFormat = collectionFormat === 'bru';
   const tagNameRegex = isBruFormat ? /^[\p{L}\p{N}_-]+$/u : /^[\p{L}\p{N}_-](?:[\p{L}\p{N}_\s-]*[\p{L}\p{N}_-])?$/u;
@@ -21,9 +29,10 @@ const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSav
       return;
     }
     if (!tagNameRegex.test(text)) {
-      setError(isBruFormat
-        ? 'Tags in BRU format must only contain letters, numbers, "-", "_".'
-        : 'Tags must only contain letters, numbers, spaces, "-", "_"'
+      setError(
+        isBruFormat
+          ? 'Tags in BRU format must only contain letters, numbers, "-", "_".'
+          : 'Tags must only contain letters, numbers, spaces, "-", "_"'
       );
       return;
     }
@@ -62,10 +71,7 @@ const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSav
         {tags && tags.length
           ? tags.map((_tag) => (
               <li key={_tag}>
-                <button
-                  className="tag-item"
-                  type="button"
-                >
+                <button className="tag-item" type="button">
                   <IconTag size={12} className="tag-icon" aria-hidden="true" />
                   <span className="tag-text" title={_tag}>
                     {_tag}

@@ -4,10 +4,7 @@ import toast from 'react-hot-toast';
 import { clearCollectionUpdate } from 'providers/ReduxStore/slices/openapi-sync';
 import { formatIpcError } from 'utils/common/error';
 
-const useSyncFlow = ({
-  collection, specDrift, remoteDrift, collectionDrift,
-  setError, checkForUpdates
-}) => {
+const useSyncFlow = ({ collection, specDrift, remoteDrift, collectionDrift, setError, checkForUpdates }) => {
   const dispatch = useDispatch();
 
   const [pendingSyncMode, setPendingSyncMode] = useState(null);
@@ -20,8 +17,12 @@ const useSyncFlow = ({
     setError(null);
 
     const {
-      localOnlyIds = [], endpointDecisions: decisions = {},
-      newToCollection, specUpdates, resolvedConflicts, localChangesToReset
+      localOnlyIds = [],
+      endpointDecisions: decisions = {},
+      newToCollection,
+      specUpdates,
+      resolvedConflicts,
+      localChangesToReset
     } = selections;
 
     try {
@@ -40,9 +41,8 @@ const useSyncFlow = ({
           removed: [] // Removals handled via localOnlyToRemove
         };
 
-        localOnlyToRemove = localOnlyIds.length > 0
-          ? (remoteDrift?.localOnly || []).filter((ep) => localOnlyIds.includes(ep.id))
-          : [];
+        localOnlyToRemove =
+          localOnlyIds.length > 0 ? (remoteDrift?.localOnly || []).filter((ep) => localOnlyIds.includes(ep.id)) : [];
 
         driftedToReset = localChangesToReset || [];
       } else {
@@ -52,14 +52,16 @@ const useSyncFlow = ({
           removed: [] // Removals handled via localOnlyToRemove
         };
 
-        localOnlyToRemove = localOnlyIds.length > 0
-          ? (remoteDrift?.localOnly || collectionDrift?.localOnly || []).filter((ep) => localOnlyIds.includes(ep.id))
-          : [];
+        localOnlyToRemove =
+          localOnlyIds.length > 0
+            ? (remoteDrift?.localOnly || collectionDrift?.localOnly || []).filter((ep) => localOnlyIds.includes(ep.id))
+            : [];
 
-        driftedToReset = collectionDrift?.modified?.filter((ep) => {
-          const decision = decisions[ep.id];
-          return decision === 'accept-incoming';
-        }) || [];
+        driftedToReset =
+          collectionDrift?.modified?.filter((ep) => {
+            const decision = decisions[ep.id];
+            return decision === 'accept-incoming';
+          }) || [];
       }
 
       await ipcRenderer.invoke('renderer:apply-openapi-sync', {
@@ -78,8 +80,10 @@ const useSyncFlow = ({
 
       dispatch(clearCollectionUpdate({ collectionUid: collection.uid }));
       toast.success(
-        mode === 'spec-only' ? 'Spec updated successfully'
-          : mode === 'reset' ? 'Collection reset to spec successfully'
+        mode === 'spec-only'
+          ? 'Spec updated successfully'
+          : mode === 'reset'
+            ? 'Collection reset to spec successfully'
             : 'Collection synced successfully'
       );
 
@@ -121,20 +125,19 @@ const useSyncFlow = ({
   }, [specDrift]);
 
   const handleRestoreSpec = () => {
-    const localOnlyIds = (remoteDrift?.localOnly || [])
-      .filter((ep) => specRemovedIds.has(ep.id))
-      .map((ep) => ep.id);
+    const localOnlyIds = (remoteDrift?.localOnly || []).filter((ep) => specRemovedIds.has(ep.id)).map((ep) => ep.id);
     performSync({ localOnlyIds, endpointDecisions: {} }, 'sync');
   };
 
   const handleConfirmModalSync = () => {
-    const localOnlyIds = (remoteDrift?.localOnly || [])
-      .filter((ep) => specRemovedIds.has(ep.id))
-      .map((ep) => ep.id);
-    performSync({
-      localOnlyIds,
-      endpointDecisions: {}
-    }, pendingSyncMode || 'sync');
+    const localOnlyIds = (remoteDrift?.localOnly || []).filter((ep) => specRemovedIds.has(ep.id)).map((ep) => ep.id);
+    performSync(
+      {
+        localOnlyIds,
+        endpointDecisions: {}
+      },
+      pendingSyncMode || 'sync'
+    );
   };
 
   const confirmGroups = useMemo(() => {
@@ -155,9 +158,14 @@ const useSyncFlow = ({
   }, [remoteDrift, specAddedIds, specRemovedIds]);
 
   return {
-    isSyncing, showConfirmModal, confirmGroups,
-    handleSyncNow, handleRestoreSpec,
-    handleApplySync, cancelConfirmModal, handleConfirmModalSync
+    isSyncing,
+    showConfirmModal,
+    confirmGroups,
+    handleSyncNow,
+    handleRestoreSpec,
+    handleApplySync,
+    cancelConfirmModal,
+    handleConfirmModalSync
   };
 };
 

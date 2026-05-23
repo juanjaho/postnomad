@@ -47,7 +47,10 @@ test.describe('Global Environment Per-Workspace Persistence', () => {
     await closeElectronApp(app2);
   });
 
-  test('should maintain independent global env selections per workspace', async ({ launchElectronApp, createTmpDir }) => {
+  test('should maintain independent global env selections per workspace', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('global-env-per-ws');
     const wsLocation = await createTmpDir('ws-location-multi');
     const collectionDir1 = await createTmpDir('collection-ws1');

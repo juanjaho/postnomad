@@ -54,13 +54,13 @@ describe('jsonToDotenv', () => {
         { name: 'SECRET', value: 'key#123' }
       ];
       const output = jsonToDotenv(variables);
-      expect(output).toBe('PASSWORD=\'ABC#DEF\'\nSECRET=\'key#123\'');
+      expect(output).toBe("PASSWORD='ABC#DEF'\nSECRET='key#123'");
     });
 
     test('it should backtick-quote values containing hash and single quote', () => {
-      const variables = [{ name: 'MIXED', value: 'it\'s#complex' }];
+      const variables = [{ name: 'MIXED', value: "it's#complex" }];
       const output = jsonToDotenv(variables);
-      expect(output).toBe('MIXED=`it\'s#complex`');
+      expect(output).toBe("MIXED=`it's#complex`");
     });
 
     test('it should backtick-quote values containing hash, single quote, and double quote', () => {
@@ -82,9 +82,9 @@ describe('jsonToDotenv', () => {
     });
 
     test('it should leave values with single quotes unquoted', () => {
-      const variables = [{ name: 'APOSTROPHE', value: 'it\'s fine' }];
+      const variables = [{ name: 'APOSTROPHE', value: "it's fine" }];
       const output = jsonToDotenv(variables);
-      expect(output).toBe('APOSTROPHE=it\'s fine');
+      expect(output).toBe("APOSTROPHE=it's fine");
     });
 
     test('it should leave values with backslashes unquoted', () => {
@@ -112,7 +112,7 @@ describe('jsonToDotenv', () => {
         { name: 'BOTH', value: '  hello  ' }
       ];
       const output = jsonToDotenv(variables);
-      expect(output).toBe('LEADING=\'  hello\'\nTRAILING=\'hello  \'\nBOTH=\'  hello  \'');
+      expect(output).toBe("LEADING='  hello'\nTRAILING='hello  '\nBOTH='  hello  '");
     });
   });
 
@@ -158,10 +158,10 @@ describe('jsonToDotenv', () => {
     });
 
     test('it should preserve values with single quotes through round-trip', () => {
-      const variables = [{ name: 'APOSTROPHE', value: 'it\'s working' }];
+      const variables = [{ name: 'APOSTROPHE', value: "it's working" }];
       const serialized = jsonToDotenv(variables);
       const parsed = dotenvToJson(serialized);
-      expect(parsed.APOSTROPHE).toBe('it\'s working');
+      expect(parsed.APOSTROPHE).toBe("it's working");
     });
 
     test('it should preserve values with hash, single quote, and double quote through round-trip', () => {

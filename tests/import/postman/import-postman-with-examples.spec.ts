@@ -27,12 +27,15 @@ test.describe('Import Postman Collection with Examples', () => {
     const importDir = await createTmpDir('imported-collection');
 
     // Mock the electron dialog to return the import directory selection
-    await electronApp.evaluate(({ dialog }, { importDir }) => {
-      dialog.showOpenDialog = async () => ({
-        canceled: false,
-        filePaths: [importDir]
-      });
-    }, { importDir });
+    await electronApp.evaluate(
+      ({ dialog }, { importDir }) => {
+        dialog.showOpenDialog = async () => ({
+          canceled: false,
+          filePaths: [importDir]
+        });
+      },
+      { importDir }
+    );
 
     await test.step('Open import collection modal', async () => {
       await page.getByTestId('collections-header-add-menu').click();
@@ -55,7 +58,10 @@ test.describe('Import Postman Collection with Examples', () => {
     });
 
     await test.step('Verify no parsing errors occurred', async () => {
-      const hasError = await page.getByText('Failed to parse the file').isVisible().catch(() => false);
+      const hasError = await page
+        .getByText('Failed to parse the file')
+        .isVisible()
+        .catch(() => false);
       if (hasError) {
         throw new Error('Collection import failed with parsing error');
       }

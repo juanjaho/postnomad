@@ -3,7 +3,15 @@ import qs from 'qs';
 import debug from 'debug';
 
 export interface TokenStore {
-  saveCredential({ url, credentialsId, credentials }: { url: string; credentialsId: string; credentials: any }): Promise<boolean>;
+  saveCredential({
+    url,
+    credentialsId,
+    credentials
+  }: {
+    url: string;
+    credentialsId: string;
+    credentials: any;
+  }): Promise<boolean>;
   getCredential({ url, credentialsId }: { url: string; credentialsId: string }): Promise<any>;
   deleteCredential({ url, credentialsId }: { url: string; credentialsId: string }): Promise<boolean>;
 }
@@ -38,7 +46,7 @@ interface RequestConfig extends AxiosRequestConfig {
   url: string;
   headers: {
     'Content-Type': string;
-    'Authorization'?: string;
+    Authorization?: string;
     [key: string]: any;
   };
   data: string;
@@ -131,7 +139,7 @@ const fetchTokenClientCredentials = async (oauth2Config: OAuth2Config, axiosInst
     url: accessTokenUrl,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json'
+      Accept: 'application/json'
     },
     data: '',
     responseType: 'arraybuffer'
@@ -182,12 +190,18 @@ const fetchTokenClientCredentials = async (oauth2Config: OAuth2Config, axiosInst
   } catch (err: any) {
     if (err?.response) {
       debug('oauth2')('< error');
-      debug('oauth2')(JSON.stringify({
-        status: err.response.status,
-        statusText: err.response.statusText,
-        data: err.response.data ? safeParseJSONBuffer(err.response.data) : null,
-        headers: err.response.headers
-      }, null, 2));
+      debug('oauth2')(
+        JSON.stringify(
+          {
+            status: err.response.status,
+            statusText: err.response.statusText,
+            data: err.response.data ? safeParseJSONBuffer(err.response.data) : null,
+            headers: err.response.headers
+          },
+          null,
+          2
+        )
+      );
     } else {
       debug('oauth2')('< error');
       debug('oauth2')(err.message || err);
@@ -232,7 +246,7 @@ const fetchTokenPassword = async (oauth2Config: OAuth2Config, axiosInstance?: Ax
     url: accessTokenUrl,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json'
+      Accept: 'application/json'
     },
     data: '',
     responseType: 'arraybuffer'
@@ -285,12 +299,18 @@ const fetchTokenPassword = async (oauth2Config: OAuth2Config, axiosInstance?: Ax
   } catch (err: any) {
     if (err?.response) {
       debug('oauth2')('< error');
-      debug('oauth2')(JSON.stringify({
-        status: err.response.status,
-        statusText: err.response.statusText,
-        data: err.response.data ? safeParseJSONBuffer(err.response.data) : null,
-        headers: err.response.headers
-      }, null, 2));
+      debug('oauth2')(
+        JSON.stringify(
+          {
+            status: err.response.status,
+            statusText: err.response.statusText,
+            data: err.response.data ? safeParseJSONBuffer(err.response.data) : null,
+            headers: err.response.headers
+          },
+          null,
+          2
+        )
+      );
     } else {
       debug('oauth2')('< error');
       debug('oauth2')(err.message || err);
@@ -316,7 +336,12 @@ const isTokenExpired = (credentials: any): boolean => {
 /**
  * Manages OAuth2 token retrieval and storage
  */
-export const getOAuth2Token = async (oauth2Config: OAuth2Config, tokenStore: TokenStore, verbose: string, axiosInstance?: AxiosInstance): Promise<string | null> => {
+export const getOAuth2Token = async (
+  oauth2Config: OAuth2Config,
+  tokenStore: TokenStore,
+  verbose: string,
+  axiosInstance?: AxiosInstance
+): Promise<string | null> => {
   const {
     grantType,
     accessTokenUrl,

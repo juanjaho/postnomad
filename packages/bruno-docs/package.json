@@ -6,6 +6,5 @@
     "src",
     "package.json"
   ],
-  "dependencies": {
-  }
+  "dependencies": {}
 }

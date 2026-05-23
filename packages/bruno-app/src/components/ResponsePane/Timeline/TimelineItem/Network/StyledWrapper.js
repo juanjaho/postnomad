@@ -25,7 +25,7 @@ const StyledWrapper = styled.div`
     &--response {
       color: ${(props) => props.theme.colors.text.green};
     }
-    
+
     &--error {
       color: ${(props) => props.theme.colors.text.danger};
     }
@@ -33,10 +33,10 @@ const StyledWrapper = styled.div`
     &--tls {
       color: ${(props) => props.theme.colors.text.purple};
     }
-    
+
     &--info {
       color: ${(props) => props.theme.colors.text.yellow};
-    }   
+    }
   }
 
   .network-logs-separator {

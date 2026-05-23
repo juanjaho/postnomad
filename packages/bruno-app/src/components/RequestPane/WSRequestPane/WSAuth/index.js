@@ -17,9 +17,7 @@ const WSAuth = ({ item, collection }) => {
   const authMode = item.draft ? get(item, 'draft.request.auth.mode') : get(item, 'request.auth.mode');
   const requestTreePath = getTreePathFromCollectionToItem(collection, item);
 
-  const request = item.draft
-    ? get(item, 'draft.request', {})
-    : get(item, 'request', {});
+  const request = item.draft ? get(item, 'draft.request', {}) : get(item, 'request', {});
 
   const save = () => {
     return saveRequest(item.uid, collection.uid);
@@ -28,11 +26,13 @@ const WSAuth = ({ item, collection }) => {
   // Reset to 'none' if current auth mode is not supported
   useEffect(() => {
     if (authMode && !supportedAuthModes.includes(authMode)) {
-      dispatch(updateRequestAuthMode({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        mode: 'none'
-      }));
+      dispatch(
+        updateRequestAuthMode({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          mode: 'none'
+        })
+      );
     }
   }, [authMode, collection.uid, dispatch, item.uid]);
 
@@ -98,7 +98,8 @@ const WSAuth = ({ item, collection }) => {
           return (
             <>
               <div className="flex flex-row w-full mt-2 gap-2">
-                {source.auth.mode === 'oauth1' ? 'OAuth 1.0' : 'OAuth 2'} not <strong>yet</strong> supported by WebSockets. Using no auth instead.
+                {source.auth.mode === 'oauth1' ? 'OAuth 1.0' : 'OAuth 2'} not <strong>yet</strong> supported by
+                WebSockets. Using no auth instead.
               </div>
             </>
           );
@@ -130,11 +131,7 @@ const WSAuth = ({ item, collection }) => {
     }
   };
 
-  return (
-    <StyledWrapper className="w-full overflow-y-scroll">
-      {getAuthView()}
-    </StyledWrapper>
-  );
+  return <StyledWrapper className="w-full overflow-y-scroll">{getAuthView()}</StyledWrapper>;
 };
 
 export default WSAuth;

@@ -46,7 +46,7 @@ const StyledWrapper = styled.div`
     }
   }
 
-    .system-resources {
+  .system-resources {
     margin-bottom: 16px;
 
     h2 {

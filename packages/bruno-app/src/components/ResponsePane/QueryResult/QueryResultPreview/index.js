@@ -33,7 +33,10 @@ const QueryResultPreview = ({
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const [responseScroll, setResponseScroll] = usePersistedState({ key: `response-body-scroll-${item.uid}`, default: 0 });
+  const [responseScroll, setResponseScroll] = usePersistedState({
+    key: `response-body-scroll-${item.uid}`,
+    default: 0
+  });
 
   const [numPages, setNumPages] = useState(null);
   function onDocumentLoadSuccess({ numPages }) {
@@ -112,9 +115,7 @@ const QueryResultPreview = ({
     default:
       return (
         <div className="p-4 flex flex-col items-center justify-center h-full text-center">
-          <div className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
-            No Preview Available
-          </div>
+          <div className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">No Preview Available</div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
             Sorry, no preview is available for this content type.
           </div>

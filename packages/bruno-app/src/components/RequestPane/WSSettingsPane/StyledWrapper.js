@@ -7,7 +7,7 @@ const StyledWrapper = styled.div`
     border: solid 1px ${(props) => props.theme.input.border};
     background-color: ${(props) => props.theme.input.bg};
 
-    &.error{
+    &.error {
       border-color: ${(props) => props.theme.colors.text.danger};
     }
   }

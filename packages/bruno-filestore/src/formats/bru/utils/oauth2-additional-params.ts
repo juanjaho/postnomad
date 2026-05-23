@@ -58,7 +58,10 @@ const PARAMETER_MAPPINGS: T_Oauth2ParameterMapping[] = [
 /**
  * Maps source parameters to T_OAuth2AdditionalParam format
  */
-const mapParametersFromSource = (sourceParams: any[], sendIn: T_Oauth2ParameterSendInType): T_OAuth2AdditionalParam[] => {
+const mapParametersFromSource = (
+  sourceParams: any[],
+  sendIn: T_Oauth2ParameterSendInType
+): T_OAuth2AdditionalParam[] => {
   if (!sourceParams?.length) {
     return [];
   }

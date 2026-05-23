@@ -14,7 +14,9 @@ const ResponseExampleResponseContent = ({ editMode, item, collection, exampleUid
   const preferences = useSelector((state) => state.app.preferences);
 
   const response = useMemo(() => {
-    return item.draft ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)?.response || {} : get(item, 'examples', []).find((e) => e.uid === exampleUid)?.response || {};
+    return item.draft
+      ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)?.response || {}
+      : get(item, 'examples', []).find((e) => e.uid === exampleUid)?.response || {};
   }, [item, exampleUid]);
 
   const getResponseContent = () => {
@@ -47,7 +49,8 @@ const ResponseExampleResponseContent = ({ editMode, item, collection, exampleUid
       }
     }
 
-    const contentType = response.headers?.find((h) => h.name?.toLowerCase() === 'content-type')?.value?.toLowerCase() || '';
+    const contentType =
+      response.headers?.find((h) => h.name?.toLowerCase() === 'content-type')?.value?.toLowerCase() || '';
 
     return getCodeMirrorModeBasedOnContentType(contentType);
   };
@@ -55,17 +58,19 @@ const ResponseExampleResponseContent = ({ editMode, item, collection, exampleUid
   const onResponseEdit = (value) => {
     if (editMode && item && collection && exampleUid) {
       const currentBody = response.body || {};
-      dispatch(updateResponseExampleResponse({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        response: {
-          body: {
-            type: currentBody.type || 'text',
-            content: value
+      dispatch(
+        updateResponseExampleResponse({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          response: {
+            body: {
+              type: currentBody.type || 'text',
+              content: value
+            }
           }
-        }
-      }));
+        })
+      );
     }
   };
 

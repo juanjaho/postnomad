@@ -122,7 +122,10 @@ const findYmlScriptBlockStartLine = (filePath, scriptType, cache = null) => {
     const doc = YAML.parseDocument(content, { lineCounter });
 
     // Request yml files use runtime.scripts, collection/folder yml files use request.scripts
-    const scriptPaths = [['runtime', 'scripts'], ['request', 'scripts']];
+    const scriptPaths = [
+      ['runtime', 'scripts'],
+      ['request', 'scripts']
+    ];
     for (const scriptPath of scriptPaths) {
       const scripts = doc.getIn(scriptPath, true);
       if (YAML.isSeq(scripts)) {
@@ -165,7 +168,10 @@ const findYmlScriptBlockEndLine = (filePath, scriptType, cache = null) => {
     const lineCounter = new YAML.LineCounter();
     const doc = YAML.parseDocument(content, { lineCounter });
 
-    const scriptPaths = [['runtime', 'scripts'], ['request', 'scripts']];
+    const scriptPaths = [
+      ['runtime', 'scripts'],
+      ['request', 'scripts']
+    ];
     for (const scriptPath of scriptPaths) {
       const scripts = doc.getIn(scriptPath, true);
       if (YAML.isSeq(scripts)) {
@@ -193,7 +199,14 @@ const findYmlScriptBlockEndLine = (filePath, scriptType, cache = null) => {
 };
 
 /** Adjust a runtime-reported line number to the actual line in the .bru/.yml file */
-const adjustLineNumber = (filePath, reportedLine, isQuickJS, scriptType = null, cache = null, scriptMetadata = null) => {
+const adjustLineNumber = (
+  filePath,
+  reportedLine,
+  isQuickJS,
+  scriptType = null,
+  cache = null,
+  scriptMetadata = null
+) => {
   const isBruFile = filePath.endsWith('.bru');
   const isYmlFile = filePath.endsWith('.yml');
 
@@ -388,58 +401,69 @@ const getSourceContextFromContent = (content, errorLine, contextLines = DEFAULT_
 
 /** Build adjusted stack trace string from structured CallSite data */
 const buildStackFromCallSites = (callSites, scriptType = null, cache = null, scriptMetadata = null) => {
-  return callSites.map((site) => {
-    const adjusted = adjustLineNumber(site.filePath, site.line, false, scriptType, cache, scriptMetadata);
-    let fileToUse = site.filePath;
-    let lineToUse = adjusted !== null ? adjusted : site.line;
+  return callSites
+    .map((site) => {
+      const adjusted = adjustLineNumber(site.filePath, site.line, false, scriptType, cache, scriptMetadata);
+      let fileToUse = site.filePath;
+      let lineToUse = adjusted !== null ? adjusted : site.line;
 
-    // Try segment resolution for collection/folder frames
-    if (adjusted === null && scriptMetadata?.segments) {
-      const parsed = { line: site.line, isQuickJS: false };
-      const resolved = resolveSegmentError(parsed, scriptMetadata, scriptType, cache);
-      if (resolved && resolved.line !== null) {
-        fileToUse = resolved.filePath;
-        lineToUse = resolved.line;
+      // Try segment resolution for collection/folder frames
+      if (adjusted === null && scriptMetadata?.segments) {
+        const parsed = { line: site.line, isQuickJS: false };
+        const resolved = resolveSegmentError(parsed, scriptMetadata, scriptType, cache);
+        if (resolved && resolved.line !== null) {
+          fileToUse = resolved.filePath;
+          lineToUse = resolved.line;
+        }
       }
-    }
 
-    const loc = site.column ? `${fileToUse}:${lineToUse}:${site.column}` : `${fileToUse}:${lineToUse}`;
-    const name = site.functionName ? `${site.functionName} (${loc})` : loc;
-    return `    at ${name}`;
-  }).join('\n');
+      const loc = site.column ? `${fileToUse}:${lineToUse}:${site.column}` : `${fileToUse}:${lineToUse}`;
+      const name = site.functionName ? `${site.functionName} (${loc})` : loc;
+      return `    at ${name}`;
+    })
+    .join('\n');
 };
 
 /** Adjust all line numbers in a stack trace string */
 const adjustStackTrace = (stack, scriptType = null, cache = null, scriptMetadata = null, forceQuickJS = false) => {
   if (!stack) return stack;
 
-  return stack.split('\n').map((line) => {
-    const match = matchStackFrame(line);
-    if (!match) return line;
+  return stack
+    .split('\n')
+    .map((line) => {
+      const match = matchStackFrame(line);
+      if (!match) return line;
 
-    const isQuickJS = forceQuickJS || match.isQuickJS;
-    const adjusted = adjustLineNumber(match.filePath, match.line, isQuickJS, scriptType, cache, scriptMetadata);
+      const isQuickJS = forceQuickJS || match.isQuickJS;
+      const adjusted = adjustLineNumber(match.filePath, match.line, isQuickJS, scriptType, cache, scriptMetadata);
 
-    // Try segment resolution for collection/folder frames
-    if (adjusted === null && scriptMetadata?.segments) {
-      const parsed = { line: match.line, isQuickJS };
-      const resolved = resolveSegmentError(parsed, scriptMetadata, scriptType, cache);
-      if (resolved && resolved.line !== null) {
-        const suffix = match.isQuickJS ? ')' : '';
-        return match.column !== null
-          ? line.replace(`${match.filePath}:${match.line}:${match.column}${suffix}`, `${resolved.filePath}:${resolved.line}:${match.column}${suffix}`)
-          : line.replace(`${match.filePath}:${match.line}${suffix}`, `${resolved.filePath}:${resolved.line}${suffix}`);
+      // Try segment resolution for collection/folder frames
+      if (adjusted === null && scriptMetadata?.segments) {
+        const parsed = { line: match.line, isQuickJS };
+        const resolved = resolveSegmentError(parsed, scriptMetadata, scriptType, cache);
+        if (resolved && resolved.line !== null) {
+          const suffix = match.isQuickJS ? ')' : '';
+          return match.column !== null
+            ? line.replace(
+                `${match.filePath}:${match.line}:${match.column}${suffix}`,
+                `${resolved.filePath}:${resolved.line}:${match.column}${suffix}`
+              )
+            : line.replace(
+                `${match.filePath}:${match.line}${suffix}`,
+                `${resolved.filePath}:${resolved.line}${suffix}`
+              );
+        }
+        return line;
       }
-      return line;
-    }
 
-    if (adjusted === null || adjusted === match.line) return line;
+      if (adjusted === null || adjusted === match.line) return line;
 
-    const suffix = match.isQuickJS ? ')' : '';
-    return match.column !== null
-      ? line.replace(`:${match.line}:${match.column}${suffix}`, `:${adjusted}:${match.column}${suffix}`)
-      : line.replace(`:${match.line}${suffix}`, `:${adjusted}${suffix}`);
-  }).join('\n');
+      const suffix = match.isQuickJS ? ')' : '';
+      return match.column !== null
+        ? line.replace(`:${match.line}:${match.column}${suffix}`, `:${adjusted}:${match.column}${suffix}`)
+        : line.replace(`:${match.line}${suffix}`, `:${adjusted}${suffix}`);
+    })
+    .join('\n');
 };
 
 /** Resolve original error name from wrapped errors (QuickJS cause / Node VM ScriptError) */
@@ -448,7 +472,13 @@ const getErrorTypeName = (error) => {
 };
 
 /** Format an error with source context and adjusted line numbers */
-const formatErrorWithContext = (error, relativeFilePath = null, scriptType = null, contextLines = DEFAULT_CONTEXT_LINES, scriptMetadata = null) => {
+const formatErrorWithContext = (
+  error,
+  relativeFilePath = null,
+  scriptType = null,
+  contextLines = DEFAULT_CONTEXT_LINES,
+  scriptMetadata = null
+) => {
   if (!error) return '';
 
   const cache = new Map();
@@ -486,13 +516,15 @@ const formatErrorWithContext = (error, relativeFilePath = null, scriptType = nul
 
   const sourceFile = segmentResult ? segmentResult.filePath : filePath;
   const sourceLine = segmentResult ? segmentResult.line : adjustedLine;
-  const context = isAllowedSourceFile(sourceFile) ? getSourceContext(sourceFile, sourceLine, contextLines, cache) : null;
+  const context = isAllowedSourceFile(sourceFile)
+    ? getSourceContext(sourceFile, sourceLine, contextLines, cache)
+    : null;
 
   if (!context) {
     return `${error.message}\n${error.stack || ''}`;
   }
 
-  const displayPath = segmentResult ? segmentResult.displayPath : (relativeFilePath || filePath);
+  const displayPath = segmentResult ? segmentResult.displayPath : relativeFilePath || filePath;
   const lines = [];
 
   lines.push(`File: ${displayPath}`);
@@ -590,7 +622,17 @@ const formatErrorWithContext = (error, relativeFilePath = null, scriptType = nul
  *
  * @returns {{ context, fromMemory, draftOnlyBlock }|null}
  */
-const resolveErrorContext = ({ adjustedLine, scriptRelativeLine, metadata, segmentResult, filePath, sourceFile, sourceLine, scriptType, cache }) => {
+const resolveErrorContext = ({
+  adjustedLine,
+  scriptRelativeLine,
+  metadata,
+  segmentResult,
+  filePath,
+  sourceFile,
+  sourceLine,
+  scriptType,
+  cache
+}) => {
   // Request-level error with in-memory draft content
   if (adjustedLine !== null && metadata?.requestScriptContent) {
     // Check whether the script block exists on disk. When the user added a brand-new
@@ -627,9 +669,8 @@ const formatErrorWithContextV2 = (error, scriptType, scriptMetadata, collectionP
 
   try {
     const cache = new Map();
-    const metadata = (error.scriptMetadata && Object.keys(error.scriptMetadata).length > 0)
-      ? error.scriptMetadata
-      : scriptMetadata;
+    const metadata =
+      error.scriptMetadata && Object.keys(error.scriptMetadata).length > 0 ? error.scriptMetadata : scriptMetadata;
     const parsed = parseErrorLocation(error);
     if (!parsed) return null;
 
@@ -652,16 +693,21 @@ const formatErrorWithContextV2 = (error, scriptType, scriptMetadata, collectionP
 
     // Resolve context: prefer in-memory draft content, fall back to disk
     const resolved = resolveErrorContext({
-      adjustedLine, scriptRelativeLine, metadata, segmentResult,
-      filePath, sourceFile, sourceLine, scriptType, cache
+      adjustedLine,
+      scriptRelativeLine,
+      metadata,
+      segmentResult,
+      filePath,
+      sourceFile,
+      sourceLine,
+      scriptType,
+      cache
     });
     if (!resolved || resolved.context.lines.length === 0) return null;
 
     const { context, fromMemory, draftOnlyBlock } = resolved;
 
-    const resolvedDisplayPath = posixifyPath(
-      collectionPath ? path.relative(collectionPath, sourceFile) : sourceFile
-    );
+    const resolvedDisplayPath = posixifyPath(collectionPath ? path.relative(collectionPath, sourceFile) : sourceFile);
 
     const errorType = getErrorTypeName(error);
     let stack = null;
@@ -671,7 +717,10 @@ const formatErrorWithContextV2 = (error, scriptType, scriptMetadata, collectionP
       const rawStack = draftOnlyBlock
         ? error.stack
         : adjustStackTrace(error.stack, scriptType, cache, metadata, parsed.isQuickJS);
-      const stackLines = rawStack.split('\n').slice(1).filter((l) => l.trim().startsWith('at'));
+      const stackLines = rawStack
+        .split('\n')
+        .slice(1)
+        .filter((l) => l.trim().startsWith('at'));
       stack = stackLines.length ? stackLines.map((l) => `    ${l.trim()}`).join('\n') : null;
     }
 

@@ -1,4 +1,11 @@
-import { makeGenericClientConstructor, ChannelCredentials, Metadata, status, credentials, CallCredentials } from '@grpc/grpc-js';
+import {
+  makeGenericClientConstructor,
+  ChannelCredentials,
+  Metadata,
+  status,
+  credentials,
+  CallCredentials
+} from '@grpc/grpc-js';
 import { GrpcReflection } from 'grpc-js-reflection-client';
 import * as protoLoader from '@grpc/proto-loader';
 import { generateGrpcSampleMessage } from './grpcMessageGenerator';
@@ -99,10 +106,12 @@ const isUnixSocket = (str) => {
 // Windows named pipe: \\.\pipe\name or //./pipe/name
 const isWindowsNamedPipe = (str) => {
   if (!str) return false;
-  return str.startsWith('\\\\.\\pipe\\')
-    || str.startsWith('//./pipe/')
-    || str.toLowerCase().startsWith('\\\\.\\pipe\\')
-    || str.toLowerCase().startsWith('//./pipe/');
+  return (
+    str.startsWith('\\\\.\\pipe\\') ||
+    str.startsWith('//./pipe/') ||
+    str.toLowerCase().startsWith('\\\\.\\pipe\\') ||
+    str.toLowerCase().startsWith('//./pipe/')
+  );
 };
 
 const normalizeWindowsNamedPipe = (pipePath) => {
@@ -399,8 +408,8 @@ class GrpcClient {
     };
 
     if (proxyUrl.username) {
-      proxyChannelOptions['grpc.http_connect_creds']
-        = `${decodeURIComponent(proxyUrl.username)}:${decodeURIComponent(proxyUrl.password)}`;
+      proxyChannelOptions['grpc.http_connect_creds'] =
+        `${decodeURIComponent(proxyUrl.username)}:${decodeURIComponent(proxyUrl.password)}`;
     }
 
     const targetHost = `${proxyUrl.hostname}:${proxyUrl.port || 80}`;
@@ -431,7 +440,17 @@ class GrpcClient {
    * @returns {Promise<boolean>} Whether methods were successfully refreshed
    * @private
    */
-  async #refreshMethods({ url, headers, protoPath, collectionPath, collectionUid, certificates = {}, verifyOptions, includeDirs = [], proxyConfig }) {
+  async #refreshMethods({
+    url,
+    headers,
+    protoPath,
+    collectionPath,
+    collectionUid,
+    certificates = {},
+    verifyOptions,
+    includeDirs = [],
+    proxyConfig
+  }) {
     try {
       // Try reflection first if no proto path is specified
       if (!protoPath) {
@@ -611,10 +630,10 @@ class GrpcClient {
       method = this.#getMethodFromPath(methodPath);
     } catch (error) {
       /* Attempt to refresh methods as fallback
-      * In an ideal case, the stored metadata from local storage should be received from the client side,
-      * however, this approach causes serialization failure as the method definition loses its requestSerialize function while saving to local storage
-      * so we are using reflection as a fallback
-      */
+       * In an ideal case, the stored metadata from local storage should be received from the client side,
+       * however, this approach causes serialization failure as the method definition loses its requestSerialize function while saving to local storage
+       * so we are using reflection as a fallback
+       */
       const refreshSuccess = await this.#refreshMethods({
         url: request.url,
         headers: request.headers,
@@ -647,9 +666,7 @@ class GrpcClient {
 
     // Extract user-agent from headers if provided (case-insensitive)
     // Set it as grpc.primary_user_agent channel option to prepend to the default user-agent
-    const userAgentKey = Object.keys(request.headers).find(
-      (key) => key.toLowerCase() === 'user-agent'
-    );
+    const userAgentKey = Object.keys(request.headers).find((key) => key.toLowerCase() === 'user-agent');
     const userAgentValue = userAgentKey ? request.headers[userAgentKey] : null;
 
     // Resolve proxy target and channel options
@@ -754,9 +771,7 @@ class GrpcClient {
 
     // Extract user-agent from headers if provided (case-insensitive)
     // Set it as grpc.primary_user_agent channel option to prepend to the default user-agent
-    const userAgentKey = Object.keys(request.headers).find(
-      (key) => key.toLowerCase() === 'user-agent'
-    );
+    const userAgentKey = Object.keys(request.headers).find((key) => key.toLowerCase() === 'user-agent');
     const userAgentValue = userAgentKey ? request.headers[userAgentKey] : null;
 
     // Resolve proxy target and channel options
@@ -783,7 +798,12 @@ class GrpcClient {
 
     let reflectionClient = null;
     try {
-      const { client, services, callOptions } = await this.#getReflectionClient(targetHost, credentials, metadata, mergedChannelOptions);
+      const { client, services, callOptions } = await this.#getReflectionClient(
+        targetHost,
+        credentials,
+        metadata,
+        mergedChannelOptions
+      );
       reflectionClient = client;
 
       const methods = [];

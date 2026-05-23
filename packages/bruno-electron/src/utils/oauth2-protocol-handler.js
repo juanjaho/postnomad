@@ -67,8 +67,12 @@ const handleOauth2ProtocolUrl = (url) => {
     }
 
     // Check for errors in query params (authorization code flow) or hash (implicit flow)
-    const error = urlObj.searchParams.get('error') || (urlObj.hash ? new URLSearchParams(urlObj.hash.substring(1)).get('error') : null);
-    const errorDescription = urlObj.searchParams.get('error_description') || (urlObj.hash ? new URLSearchParams(urlObj.hash.substring(1)).get('error_description') : null);
+    const error =
+      urlObj.searchParams.get('error') ||
+      (urlObj.hash ? new URLSearchParams(urlObj.hash.substring(1)).get('error') : null);
+    const errorDescription =
+      urlObj.searchParams.get('error_description') ||
+      (urlObj.hash ? new URLSearchParams(urlObj.hash.substring(1)).get('error_description') : null);
 
     if (error) {
       const errorData = {

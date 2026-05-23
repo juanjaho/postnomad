@@ -5,7 +5,13 @@ const find = require('lodash/find');
 const decomment = require('decomment');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
-const { mergeHeaders, mergeScripts, mergeVars, mergeAuth, getTreePathFromCollectionToItem } = require('../utils/collection');
+const {
+  mergeHeaders,
+  mergeScripts,
+  mergeVars,
+  mergeAuth,
+  getTreePathFromCollectionToItem
+} = require('../utils/collection');
 const path = require('node:path');
 const { isLargeFile } = require('../utils/filesystem');
 const { getFormattedOauth2Credentials } = require('../utils/oauth2');
@@ -14,7 +20,9 @@ const STREAMING_FILE_SIZE_THRESHOLD = 20 * 1024 * 1024; // 20MB
 
 const prepareRequest = async (item = {}, collection = {}) => {
   const request = item?.request;
-  const brunoConfig = collection.draft?.brunoConfig ? get(collection, 'draft.brunoConfig', {}) : get(collection, 'brunoConfig', {});
+  const brunoConfig = collection.draft?.brunoConfig
+    ? get(collection, 'draft.brunoConfig', {})
+    : get(collection, 'brunoConfig', {});
   const collectionPath = collection?.pathname;
   const headers = {};
   let contentTypeDefined = false;
@@ -112,7 +120,11 @@ const prepareRequest = async (item = {}, collection = {}) => {
           tokenQueryKey: get(collectionAuth, 'oauth2.tokenQueryKey'),
           autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
           autoRefreshToken: get(collectionAuth, 'oauth2.autoRefreshToken'),
-          additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+          additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+            authorization: [],
+            token: [],
+            refresh: []
+          })
         };
       } else if (grantType === 'password') {
         axiosRequest.oauth2 = {
@@ -131,7 +143,11 @@ const prepareRequest = async (item = {}, collection = {}) => {
           tokenQueryKey: get(collectionAuth, 'oauth2.tokenQueryKey'),
           autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
           autoRefreshToken: get(collectionAuth, 'oauth2.autoRefreshToken'),
-          additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+          additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+            authorization: [],
+            token: [],
+            refresh: []
+          })
         };
       }
     }
@@ -187,9 +203,8 @@ const prepareRequest = async (item = {}, collection = {}) => {
       const digest = Buffer.from(hash.digest('hex').toString('utf8')).toString('base64');
 
       // Construct the WSSE header
-      axiosRequest.headers[
-        'X-WSSE'
-      ] = `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
+      axiosRequest.headers['X-WSSE'] =
+        `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
     }
   }
 
@@ -257,9 +272,8 @@ const prepareRequest = async (item = {}, collection = {}) => {
       const digest = Buffer.from(hash.digest('hex').toString('utf8')).toString('base64');
 
       // Construct the WSSE header
-      axiosRequest.headers[
-        'X-WSSE'
-      ] = `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
+      axiosRequest.headers['X-WSSE'] =
+        `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
     }
 
     if (request.auth.mode === 'digest') {
@@ -287,7 +301,11 @@ const prepareRequest = async (item = {}, collection = {}) => {
           tokenQueryKey: get(request, 'auth.oauth2.tokenQueryKey'),
           autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
           autoRefreshToken: get(request, 'auth.oauth2.autoRefreshToken'),
-          additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+          additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+            authorization: [],
+            token: [],
+            refresh: []
+          })
         };
       } else if (grantType === 'password') {
         axiosRequest.oauth2 = {
@@ -306,7 +324,11 @@ const prepareRequest = async (item = {}, collection = {}) => {
           tokenQueryKey: get(request, 'auth.oauth2.tokenQueryKey'),
           autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
           autoRefreshToken: get(request, 'auth.oauth2.autoRefreshToken'),
-          additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+          additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+            authorization: [],
+            token: [],
+            refresh: []
+          })
         };
       }
     }

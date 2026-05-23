@@ -12,7 +12,10 @@ test('should persist request with newlines across app restarts', async ({ create
 
   await createCollection(page, 'newlines-persistence', collectionPath);
 
-  const collection = page.getByTestId('collections').locator('.collection-name').filter({ hasText: 'newlines-persistence' });
+  const collection = page
+    .getByTestId('collections')
+    .locator('.collection-name')
+    .filter({ hasText: 'newlines-persistence' });
   await collection.hover();
   await collection.locator('.collection-actions .icon').click();
   await page.locator('.dropdown-item').filter({ hasText: 'New Request' }).click();
@@ -60,7 +63,11 @@ test('should persist request with newlines across app restarts', async ({ create
   const app2 = await launchElectronApp({ userDataPath });
   const page2 = await waitForReadyPage(app2);
 
-  await page2.getByTestId('collections').locator('.collection-name').filter({ hasText: 'newlines-persistence' }).click();
+  await page2
+    .getByTestId('collections')
+    .locator('.collection-name')
+    .filter({ hasText: 'newlines-persistence' })
+    .click();
   await page2.locator('.collection-item-name').filter({ hasText: 'persistence-test' }).dblclick();
 
   // Verify params persisted

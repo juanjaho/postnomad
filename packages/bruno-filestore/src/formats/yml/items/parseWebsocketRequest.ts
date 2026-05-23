@@ -38,11 +38,13 @@ const parseWebsocketRequest = (ocRequest: WebSocketRequest): BrunoItem => {
     const message = websocket.message as WebSocketMessage;
     const messageData = ensureString(message.data);
     if (messageData.trim().length) {
-      brunoRequest.body.ws = [{
-        name: '',
-        type: message.type || 'text',
-        content: messageData
-      }];
+      brunoRequest.body.ws = [
+        {
+          name: '',
+          type: message.type || 'text',
+          content: messageData
+        }
+      ];
     }
   }
 

@@ -18,7 +18,9 @@ const mergeHeaders = (collection, request, requestTreePath, options = {}) => {
   let headers = new Map();
   let disabledHeaders = new Map();
 
-  let collectionHeaders = collection?.draft?.root ? get(collection, 'draft.root.request.headers', []) : get(collection, 'root.request.headers', []);
+  let collectionHeaders = collection?.draft?.root
+    ? get(collection, 'draft.root.request.headers', [])
+    : get(collection, 'root.request.headers', []);
   collectionHeaders.forEach((header) => {
     if (header.enabled) {
       if (header?.name?.toLowerCase?.() === 'content-type') {
@@ -264,8 +266,7 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
     displayPath: config.collectionFile
   };
 
-  const withContent = (source, script) =>
-    script?.trim() ? { ...source, scriptContent: script } : source;
+  const withContent = (source, script) => (script?.trim() ? { ...source, scriptContent: script } : source);
 
   let combinedPreReqScript = [];
   let combinedPreReqSources = [];
@@ -322,11 +323,7 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
   // preventing variable re-declaration errors and allowing early returns
   // to only affect that specific script segment
   const collectionPreReqSource = withContent(collectionSource, collectionPreReqScript);
-  const preReqScripts = [
-    collectionPreReqScript,
-    ...combinedPreReqScript,
-    originalPreReqScript
-  ];
+  const preReqScripts = [collectionPreReqScript, ...combinedPreReqScript, originalPreReqScript];
   const preReqSources = [collectionPreReqSource, ...combinedPreReqSources, null];
   const preReq = buildCombinedScript(preReqScripts, preReqScripts.length - 1, preReqSources, originalPreReqScript);
   request.script.req = preReq.code;
@@ -335,22 +332,19 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
   // Handle post-response scripts based on scriptFlow
   const collectionPostResSource = withContent(collectionSource, collectionPostResScript);
   if (scriptFlow === 'sequential') {
-    const postResScripts = [
-      collectionPostResScript,
-      ...combinedPostResScript,
-      originalPostResScript
-    ];
+    const postResScripts = [collectionPostResScript, ...combinedPostResScript, originalPostResScript];
     const postResSources = [collectionPostResSource, ...combinedPostResSources, null];
-    const postRes = buildCombinedScript(postResScripts, postResScripts.length - 1, postResSources, originalPostResScript);
+    const postRes = buildCombinedScript(
+      postResScripts,
+      postResScripts.length - 1,
+      postResSources,
+      originalPostResScript
+    );
     request.script.res = postRes.code;
     request.script.resMetadata = postRes.metadata;
   } else {
     // Reverse order for non-sequential flow
-    const postResScripts = [
-      originalPostResScript,
-      ...[...combinedPostResScript].reverse(),
-      collectionPostResScript
-    ];
+    const postResScripts = [originalPostResScript, ...[...combinedPostResScript].reverse(), collectionPostResScript];
     const postResSources = [null, ...[...combinedPostResSources].reverse(), collectionPostResSource];
     const postRes = buildCombinedScript(postResScripts, 0, postResSources, originalPostResScript);
     request.script.res = postRes.code;
@@ -360,22 +354,14 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
   // Handle tests based on scriptFlow
   const collectionTestsSource = withContent(collectionSource, collectionTests);
   if (scriptFlow === 'sequential') {
-    const testScripts = [
-      collectionTests,
-      ...combinedTests,
-      originalTests
-    ];
+    const testScripts = [collectionTests, ...combinedTests, originalTests];
     const testSources = [collectionTestsSource, ...combinedTestsSources, null];
     const tests = buildCombinedScript(testScripts, testScripts.length - 1, testSources, originalTests);
     request.tests = tests.code;
     request.testsMetadata = tests.metadata;
   } else {
     // Reverse order for non-sequential flow
-    const testScripts = [
-      originalTests,
-      ...[...combinedTests].reverse(),
-      collectionTests
-    ];
+    const testScripts = [originalTests, ...[...combinedTests].reverse(), collectionTests];
     const testSources = [null, ...[...combinedTestsSources].reverse(), collectionTestsSource];
     const tests = buildCombinedScript(testScripts, 0, testSources, originalTests);
     request.tests = tests.code;
@@ -878,9 +864,7 @@ const sortByNameThenSequence = (items) => {
 
     if (hasItemWithSameSeq) {
       // If there's a conflict, group items with same sequence together
-      const newGroup = Array.isArray(existingItem)
-        ? [...existingItem, item]
-        : [existingItem, item];
+      const newGroup = Array.isArray(existingItem) ? [...existingItem, item] : [existingItem, item];
 
       withoutSeq.splice(position, 1, newGroup);
     } else {

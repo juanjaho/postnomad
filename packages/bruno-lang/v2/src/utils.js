@@ -49,7 +49,7 @@ const getValueString = (value) => {
 
 const getKeyString = (key) => {
   const quotableChars = [':', '"', '{', '}', ' '];
-  return quotableChars.some((char) => key.includes(char)) ? ('"' + key.replaceAll('"', '\\"') + '"') : key;
+  return quotableChars.some((char) => key.includes(char)) ? '"' + key.replaceAll('"', '\\"') + '"' : key;
 };
 
 const getValueUrl = (url) => {
@@ -77,12 +77,12 @@ function serializeAnnotations(annotations) {
         if (a.value.includes('\n')) {
           return `@${a.name}('''\n${indentString(a.value)}\n''')`;
         }
-        const quote = a.value.includes('\'') ? '"' : '\'';
+        const quote = a.value.includes("'") ? '"' : "'";
         return `@${a.name}(${quote}${a.value}${quote})`;
       })
       .join('\n') + '\n'
   );
-};
+}
 
 module.exports = {
   safeParseJson,

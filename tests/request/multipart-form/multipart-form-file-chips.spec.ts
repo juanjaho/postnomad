@@ -140,7 +140,14 @@ test.describe('Multipart Form - Multiple File Upload', () => {
 
     // Close the popover if it's still open (it may have auto-closed when its
     // last row disappeared).
-    if ((await trigger.count()) > 0 && (await page.getByTestId('multipart-file-overflow-row').first().isVisible().catch(() => false))) {
+    if (
+      (await trigger.count()) > 0 &&
+      (await page
+        .getByTestId('multipart-file-overflow-row')
+        .first()
+        .isVisible()
+        .catch(() => false))
+    ) {
       await trigger.click();
     }
   };

@@ -34,13 +34,49 @@ const GrantTypeComponentMap = ({ collection, folder, updateFolderAuth }) => {
 
   switch (grantType) {
     case 'password':
-      return <OAuth2PasswordCredentials save={save} item={folder} request={request} updateAuth={updateFolderAuth} collection={collection} folder={folder} />;
+      return (
+        <OAuth2PasswordCredentials
+          save={save}
+          item={folder}
+          request={request}
+          updateAuth={updateFolderAuth}
+          collection={collection}
+          folder={folder}
+        />
+      );
     case 'authorization_code':
-      return <OAuth2AuthorizationCode save={save} item={folder} request={request} updateAuth={updateFolderAuth} collection={collection} folder={folder} />;
+      return (
+        <OAuth2AuthorizationCode
+          save={save}
+          item={folder}
+          request={request}
+          updateAuth={updateFolderAuth}
+          collection={collection}
+          folder={folder}
+        />
+      );
     case 'client_credentials':
-      return <OAuth2ClientCredentials save={save} item={folder} request={request} updateAuth={updateFolderAuth} collection={collection} folder={folder} />;
+      return (
+        <OAuth2ClientCredentials
+          save={save}
+          item={folder}
+          request={request}
+          updateAuth={updateFolderAuth}
+          collection={collection}
+          folder={folder}
+        />
+      );
     case 'implicit':
-      return <OAuth2Implicit save={save} item={folder} request={request} updateAuth={updateFolderAuth} collection={collection} folder={folder} />;
+      return (
+        <OAuth2Implicit
+          save={save}
+          item={folder}
+          request={request}
+          updateAuth={updateFolderAuth}
+          collection={collection}
+          folder={folder}
+        />
+      );
     default:
       return <div>TBD</div>;
   }
@@ -191,12 +227,7 @@ const Auth = ({ collection, folder }) => {
       case 'oauth2': {
         return (
           <>
-            <GrantTypeSelector
-              request={request}
-              updateAuth={updateFolderAuth}
-              collection={collection}
-              item={folder}
-            />
+            <GrantTypeSelector request={request} updateAuth={updateFolderAuth} collection={collection} item={folder} />
             <GrantTypeComponentMap collection={collection} folder={folder} updateFolderAuth={updateFolderAuth} />
           </>
         );

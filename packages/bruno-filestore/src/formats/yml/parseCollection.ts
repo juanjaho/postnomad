@@ -44,8 +44,9 @@ const parseCollection = (ymlString: string): ParsedCollection => {
     // bruno-specific extensions
     const brunoExtensions = oc.extensions?.bruno as any;
     if (Array.isArray(brunoExtensions?.scripts?.additionalContextRoots)) {
-      const sanitizedRoots = brunoExtensions.scripts.additionalContextRoots
-        .filter((item: any) => typeof item === 'string');
+      const sanitizedRoots = brunoExtensions.scripts.additionalContextRoots.filter(
+        (item: any) => typeof item === 'string'
+      );
 
       if (sanitizedRoots.length > 0) {
         brunoConfig.scripts = {
@@ -68,13 +69,15 @@ const parseCollection = (ymlString: string): ParsedCollection => {
     // protobuf
     if (oc.config?.protobuf) {
       brunoConfig.protobuf = {
-        protoFiles: oc.config.protobuf.protoFiles?.map((protoFile: any) => ({
-          path: protoFile.path
-        })) || [],
-        importPaths: oc.config.protobuf.importPaths?.map((importPath: any) => ({
-          path: importPath.path,
-          enabled: importPath.disabled !== true
-        })) || []
+        protoFiles:
+          oc.config.protobuf.protoFiles?.map((protoFile: any) => ({
+            path: protoFile.path
+          })) || [],
+        importPaths:
+          oc.config.protobuf.importPaths?.map((importPath: any) => ({
+            path: importPath.path,
+            enabled: importPath.disabled !== true
+          })) || []
       };
     }
 
@@ -98,7 +101,12 @@ const parseCollection = (ymlString: string): ParsedCollection => {
       // Validate newer format: must have 'inherit' and 'config' properties
       const proxyConfig = oc.config.proxy as any;
 
-      if ('inherit' in proxyConfig && typeof proxyConfig.inherit === 'boolean' && proxyConfig.config && typeof proxyConfig.config === 'object') {
+      if (
+        'inherit' in proxyConfig &&
+        typeof proxyConfig.inherit === 'boolean' &&
+        proxyConfig.config &&
+        typeof proxyConfig.config === 'object'
+      ) {
         // Valid newer format
         brunoConfig.proxy = {
           inherit: proxyConfig.inherit,
@@ -130,25 +138,27 @@ const parseCollection = (ymlString: string): ParsedCollection => {
     // client certificates
     if (oc.config?.clientCertificates?.length) {
       brunoConfig.clientCertificates = {
-        certs: oc.config.clientCertificates.map((cert: any) => {
-          if (cert.type === 'pem') {
-            return {
-              domain: cert.domain,
-              type: 'cert',
-              certFilePath: cert.certificateFilePath,
-              keyFilePath: cert.privateKeyFilePath,
-              passphrase: cert.passphrase || ''
-            };
-          } else if (cert.type === 'pkcs12') {
-            return {
-              domain: cert.domain,
-              type: 'pfx',
-              pfxFilePath: cert.pkcs12FilePath,
-              passphrase: cert.passphrase || ''
-            };
-          }
-          return null;
-        }).filter((cert: any) => cert !== null)
+        certs: oc.config.clientCertificates
+          .map((cert: any) => {
+            if (cert.type === 'pem') {
+              return {
+                domain: cert.domain,
+                type: 'cert',
+                certFilePath: cert.certificateFilePath,
+                keyFilePath: cert.privateKeyFilePath,
+                passphrase: cert.passphrase || ''
+              };
+            } else if (cert.type === 'pkcs12') {
+              return {
+                domain: cert.domain,
+                type: 'pfx',
+                pfxFilePath: cert.pkcs12FilePath,
+                passphrase: cert.passphrase || ''
+              };
+            }
+            return null;
+          })
+          .filter((cert: any) => cert !== null)
       };
     }
 

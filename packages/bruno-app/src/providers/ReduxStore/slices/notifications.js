@@ -82,9 +82,7 @@ export const notificationSlice = createSlice({
 
       if (state.readNotificationIds.includes(notificationId)) return;
 
-      const notification = state.notifications.find(
-        (notification) => notification.id === notificationId
-      );
+      const notification = state.notifications.find((notification) => notification.id === notificationId);
       if (!notification) return;
 
       state.readNotificationIds.push(notificationId);
@@ -103,27 +101,29 @@ export const notificationSlice = createSlice({
   }
 });
 
-export const { setNotifications, setFetchingStatus, markNotificationAsRead, markAllNotificationsAsRead }
-  = notificationSlice.actions;
+export const { setNotifications, setFetchingStatus, markNotificationAsRead, markAllNotificationsAsRead } =
+  notificationSlice.actions;
 
-export const fetchNotifications = ({ currentVersion }) => (dispatch, getState) => {
-  return new Promise((resolve) => {
-    const { ipcRenderer } = window;
-    dispatch(setFetchingStatus(true));
-    ipcRenderer
-      .invoke('renderer:fetch-notifications')
-      .then((notifications) => {
-        notifications = filterNotificationsByVersion(notifications, currentVersion);
-        dispatch(setNotifications({ notifications }));
-        dispatch(setFetchingStatus(false));
-        resolve(notifications);
-      })
-      .catch((err) => {
-        dispatch(setFetchingStatus(false));
-        console.error(err);
-        resolve([]);
-      });
-  });
-};
+export const fetchNotifications =
+  ({ currentVersion }) =>
+  (dispatch, getState) => {
+    return new Promise((resolve) => {
+      const { ipcRenderer } = window;
+      dispatch(setFetchingStatus(true));
+      ipcRenderer
+        .invoke('renderer:fetch-notifications')
+        .then((notifications) => {
+          notifications = filterNotificationsByVersion(notifications, currentVersion);
+          dispatch(setNotifications({ notifications }));
+          dispatch(setFetchingStatus(false));
+          resolve(notifications);
+        })
+        .catch((err) => {
+          dispatch(setFetchingStatus(false));
+          console.error(err);
+          resolve([]);
+        });
+    });
+  };
 
 export default notificationSlice.reducer;

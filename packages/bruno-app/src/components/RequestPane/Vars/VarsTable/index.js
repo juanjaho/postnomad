@@ -28,23 +28,33 @@ const VarsTable = ({ item, collection, vars, varType, initialScroll = 0 }) => {
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
   const handleRun = () => dispatch(sendRequest(item, collection.uid));
 
-  const handleVarsChange = useCallback((updatedVars) => {
-    dispatch(setRequestVars({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      vars: updatedVars,
-      type: varType
-    }));
-  }, [dispatch, collection.uid, item.uid, varType]);
+  const handleVarsChange = useCallback(
+    (updatedVars) => {
+      dispatch(
+        setRequestVars({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          vars: updatedVars,
+          type: varType
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid, varType]
+  );
 
-  const handleVarDrag = useCallback(({ updateReorderedItem }) => {
-    dispatch(moveVar({
-      type: varType,
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      updateReorderedItem
-    }));
-  }, [dispatch, varType, collection.uid, item.uid]);
+  const handleVarDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      dispatch(
+        moveVar({
+          type: varType,
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          updateReorderedItem
+        })
+      );
+    },
+    [dispatch, varType, collection.uid, item.uid]
+  );
 
   const getRowError = useCallback((row, index, key) => {
     if (key !== 'name') return null;
@@ -65,12 +75,19 @@ const VarsTable = ({ item, collection, vars, varType, initialScroll = 0 }) => {
     },
     {
       key: 'value',
-      name: varType === 'request' ? 'Value' : (
-        <div className="flex items-center">
-          <span>Expr</span>
-          <InfoTip className="tooltip-mod" content="You can write any valid JS expression here" infotipId={`request-${varType}-var`} />
-        </div>
-      ),
+      name:
+        varType === 'request' ? (
+          'Value'
+        ) : (
+          <div className="flex items-center">
+            <span>Expr</span>
+            <InfoTip
+              className="tooltip-mod"
+              content="You can write any valid JS expression here"
+              infotipId={`request-${varType}-var`}
+            />
+          </div>
+        ),
       placeholder: varType === 'request' ? 'Value' : 'Expr',
       render: ({ value, onChange }) => (
         <MultiLineEditor

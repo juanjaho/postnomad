@@ -95,7 +95,7 @@ export const hydrateSeqInCollection = (collection) => {
 
 // Use a simple XML parser for Node.js environment
 const parseXML = (xmlString) => {
-  const parser = new (require('xml2js')).Parser({
+  const parser = new (require('xml2js').Parser)({
     explicitArray: false,
     ignoreAttrs: false,
     mergeAttrs: true,
@@ -815,10 +815,42 @@ class XMLSampleGenerator {
 
     // Check if it's a built-in simple type
     const simpleTypes = [
-      'string', 'int', 'integer', 'long', 'short', 'byte', 'boolean', 'float', 'double', 'decimal',
-      'date', 'dateTime', 'time', 'duration', 'gYear', 'gYearMonth', 'gMonth', 'gMonthDay', 'gDay',
-      'hexBinary', 'base64Binary', 'anyURI', 'QName', 'NOTATION', 'normalizedString', 'token',
-      'language', 'Name', 'NCName', 'ID', 'IDREF', 'IDREFS', 'ENTITY', 'ENTITIES', 'NMTOKEN', 'NMTOKENS'
+      'string',
+      'int',
+      'integer',
+      'long',
+      'short',
+      'byte',
+      'boolean',
+      'float',
+      'double',
+      'decimal',
+      'date',
+      'dateTime',
+      'time',
+      'duration',
+      'gYear',
+      'gYearMonth',
+      'gMonth',
+      'gMonthDay',
+      'gDay',
+      'hexBinary',
+      'base64Binary',
+      'anyURI',
+      'QName',
+      'NOTATION',
+      'normalizedString',
+      'token',
+      'language',
+      'Name',
+      'NCName',
+      'ID',
+      'IDREF',
+      'IDREFS',
+      'ENTITY',
+      'ENTITIES',
+      'NMTOKEN',
+      'NMTOKENS'
     ];
 
     const typeName = type.replace(/^.*:/, '');
@@ -839,20 +871,28 @@ class XMLSampleGenerator {
     const typeName = type.replace(/^.*:/, '');
 
     switch (typeName) {
-      case 'string': return 'string';
+      case 'string':
+        return 'string';
       case 'int':
       case 'integer':
       case 'long':
       case 'short':
-      case 'byte': return '0';
-      case 'boolean': return 'true';
+      case 'byte':
+        return '0';
+      case 'boolean':
+        return 'true';
       case 'float':
       case 'double':
-      case 'decimal': return '0.0';
-      case 'date': return '2024-01-01';
-      case 'dateTime': return '2024-01-01T00:00:00Z';
-      case 'time': return '00:00:00';
-      default: return '?';
+      case 'decimal':
+        return '0.0';
+      case 'date':
+        return '2024-01-01';
+      case 'dateTime':
+        return '2024-01-01T00:00:00Z';
+      case 'time':
+        return '00:00:00';
+      default:
+        return '?';
     }
   }
 
@@ -951,7 +991,8 @@ class XMLSampleGenerator {
  */
 const generateSOAPEnvelope = (operation, wsdlData) => {
   const inputMessage = operation.input?.message || '';
-  const inputMessageName = typeof inputMessage === 'string' && inputMessage.includes(':') ? inputMessage.split(':')[1] : inputMessage;
+  const inputMessageName =
+    typeof inputMessage === 'string' && inputMessage.includes(':') ? inputMessage.split(':')[1] : inputMessage;
 
   // Find the message definition
   const message = wsdlData.messages.get(inputMessageName);
@@ -985,7 +1026,14 @@ const generateSOAPEnvelope = (operation, wsdlData) => {
 /**
  * Transform WSDL operation to Bruno request item
  */
-const transformWSDLOperation = (operation, wsdlData, serviceLocation, index, allOperations, bindingOperation = null) => {
+const transformWSDLOperation = (
+  operation,
+  wsdlData,
+  serviceLocation,
+  index,
+  allOperations,
+  bindingOperation = null
+) => {
   // Create a temporary object with the name property for duplicate checking
   const tempItem = { name: operation.name };
   const name = addSuffixToDuplicateName(tempItem, index, allOperations);
@@ -1073,11 +1121,17 @@ const parseWSDLCollection = (wsdlData) => {
 
     for (const port of service.ports) {
       // Find operations for this port
-      const bindingName = port.binding && typeof port.binding === 'string' && port.binding.includes(':') ? port.binding.split(':')[1] : port.binding;
+      const bindingName =
+        port.binding && typeof port.binding === 'string' && port.binding.includes(':')
+          ? port.binding.split(':')[1]
+          : port.binding;
       const binding = wsdlData.bindings.get(bindingName);
 
       if (binding) {
-        const bindingType = binding.type && typeof binding.type === 'string' && binding.type.includes(':') ? binding.type.split(':')[1] : binding.type;
+        const bindingType =
+          binding.type && typeof binding.type === 'string' && binding.type.includes(':')
+            ? binding.type.split(':')[1]
+            : binding.type;
         const portType = wsdlData.portTypes.get(bindingType);
 
         if (portType) {
@@ -1085,7 +1139,14 @@ const parseWSDLCollection = (wsdlData) => {
             // Find the corresponding binding operation by name
             const bindingOp = binding.operations.find((bop) => bop.name === portTypeOp.name);
             if (bindingOp) {
-              const request = transformWSDLOperation(portTypeOp, wsdlData, port.address, allOperations.length, binding.operations, bindingOp);
+              const request = transformWSDLOperation(
+                portTypeOp,
+                wsdlData,
+                port.address,
+                allOperations.length,
+                binding.operations,
+                bindingOp
+              );
               allOperations.push(request);
             }
           }

@@ -989,7 +989,9 @@ paths:
     expect(pluralBody.name).toBe('from plural');
 
     // schema.example priority over both content-level example and examples
-    const schemaBody = JSON.parse(result.items.find((i) => i.name === 'Schema example wins over all').request.body.json);
+    const schemaBody = JSON.parse(
+      result.items.find((i) => i.name === 'Schema example wins over all').request.body.json
+    );
     expect(schemaBody.name).toBe('from schema');
   });
 });
@@ -1113,13 +1115,17 @@ paths:
 
   it('should import content-level example for form-urlencoded body', () => {
     const result = openApiToBruno(spec);
-    const field = result.items.find((i) => i.name === 'Form body').request.body.formUrlEncoded.find((f) => f.name === 'username');
+    const field = result.items
+      .find((i) => i.name === 'Form body')
+      .request.body.formUrlEncoded.find((f) => f.name === 'username');
     expect(field.value).toBe('form_user');
   });
 
   it('should import content-level example for multipart body', () => {
     const result = openApiToBruno(spec);
-    const field = result.items.find((i) => i.name === 'Multipart body').request.body.multipartForm.find((f) => f.name === 'desc');
+    const field = result.items
+      .find((i) => i.name === 'Multipart body')
+      .request.body.multipartForm.find((f) => f.name === 'desc');
     expect(field.value).toBe('multipart desc');
   });
 

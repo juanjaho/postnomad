@@ -1,12 +1,4 @@
-import type {
-  KeyValue,
-  Script,
-  Variables,
-  Auth,
-  MultipartForm,
-  FileList,
-  GraphqlBody
-} from '../common';
+import type { KeyValue, Script, Variables, Auth, MultipartForm, FileList, GraphqlBody } from '../common';
 
 export type HttpRequestParamType = 'query' | 'path';
 
@@ -14,16 +6,16 @@ export interface HttpRequestParam extends KeyValue {
   type: HttpRequestParamType;
 }
 
-export type HttpRequestBodyMode
-  = | 'none'
-    | 'json'
-    | 'text'
-    | 'xml'
-    | 'formUrlEncoded'
-    | 'multipartForm'
-    | 'graphql'
-    | 'sparql'
-    | 'file';
+export type HttpRequestBodyMode =
+  | 'none'
+  | 'json'
+  | 'text'
+  | 'xml'
+  | 'formUrlEncoded'
+  | 'multipartForm'
+  | 'graphql'
+  | 'sparql'
+  | 'file';
 
 export interface HttpRequestBody {
   mode: HttpRequestBodyMode;

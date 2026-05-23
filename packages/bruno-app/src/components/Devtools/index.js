@@ -21,23 +21,26 @@ const Devtools = ({ mainSectionRef }) => {
     setIsResizingDevtools(true);
   }, []);
 
-  const handleDevtoolsResize = useCallback((e) => {
-    if (!isResizingDevtools || !mainSectionRef.current) return;
+  const handleDevtoolsResize = useCallback(
+    (e) => {
+      if (!isResizingDevtools || !mainSectionRef.current) return;
 
-    const windowHeight = window.innerHeight;
-    const statusBarHeight = 22;
-    const mouseY = e.clientY;
+      const windowHeight = window.innerHeight;
+      const statusBarHeight = 22;
+      const mouseY = e.clientY;
 
-    // Calculate new devtools height - expanding upward from bottom
-    const newHeight = windowHeight - mouseY - statusBarHeight;
-    const clampedHeight = Math.min(MAX_DEVTOOLS_HEIGHT, Math.max(MIN_DEVTOOLS_HEIGHT, newHeight));
-    setDevtoolsHeight(clampedHeight);
+      // Calculate new devtools height - expanding upward from bottom
+      const newHeight = windowHeight - mouseY - statusBarHeight;
+      const clampedHeight = Math.min(MAX_DEVTOOLS_HEIGHT, Math.max(MIN_DEVTOOLS_HEIGHT, newHeight));
+      setDevtoolsHeight(clampedHeight);
 
-    // Update main section height
-    if (mainSectionRef.current) {
-      mainSectionRef.current.style.height = `calc(100vh - 22px - ${clampedHeight}px)`;
-    }
-  }, [isResizingDevtools, mainSectionRef]);
+      // Update main section height
+      if (mainSectionRef.current) {
+        mainSectionRef.current.style.height = `calc(100vh - 22px - ${clampedHeight}px)`;
+      }
+    },
+    [isResizingDevtools, mainSectionRef]
+  );
 
   const handleDevtoolsResizeEnd = useCallback(() => {
     setIsResizingDevtools(false);
@@ -80,8 +83,8 @@ const Devtools = ({ mainSectionRef }) => {
           zIndex: 20,
           position: 'relative'
         }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = dragHandleColor}
-        onMouseLeave={(e) => e.target.style.backgroundColor = isResizingDevtools ? dragHandleColor : 'transparent'}
+        onMouseEnter={(e) => (e.target.style.backgroundColor = dragHandleColor)}
+        onMouseLeave={(e) => (e.target.style.backgroundColor = isResizingDevtools ? dragHandleColor : 'transparent')}
       />
       <div style={{ height: `${devtoolsHeight}px`, overflow: 'hidden', position: 'relative' }}>
         <Console />

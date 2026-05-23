@@ -4,7 +4,17 @@ import MenuDropdown from 'ui/MenuDropdown';
 import StyledWrapper from './StyledWrapper';
 import { useTheme } from 'providers/Theme';
 
-const STANDARD_METHODS = Object.freeze(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT']);
+const STANDARD_METHODS = Object.freeze([
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
+  'PATCH',
+  'OPTIONS',
+  'HEAD',
+  'TRACE',
+  'CONNECT'
+]);
 
 const KEY = Object.freeze({ ENTER: 'Enter', ESCAPE: 'Escape' });
 
@@ -17,12 +27,7 @@ const TriggerButton = ({ method, methodSpanRef, showCaret, ...props }) => {
       className="cursor-pointer flex items-center gap-2 text-left w-full select-none px-2"
       {...props}
     >
-      <span
-        ref={methodSpanRef}
-        className="truncate method-span"
-        id="create-new-request-method"
-        title={method}
-      >
+      <span ref={methodSpanRef} className="truncate method-span" id="create-new-request-method" title={method}>
         {method}
       </span>
       {showCaret && <IconCaretDown className="caret" size={14} strokeWidth={2} />}
@@ -53,12 +58,15 @@ const HttpMethodSelector = ({ method = DEFAULT_METHOD, onMethodSelect, showCaret
     onMethodSelect(val);
   };
 
-  const handleMethodSelect = useCallback((verb) => {
-    onMethodSelect(verb);
-    selectedMethodRef.current = verb;
-    setIsCustomMode(false);
-    blurInput();
-  }, [onMethodSelect]);
+  const handleMethodSelect = useCallback(
+    (verb) => {
+      onMethodSelect(verb);
+      selectedMethodRef.current = verb;
+      setIsCustomMode(false);
+      blurInput();
+    },
+    [onMethodSelect]
+  );
 
   const handleBlur = (e) => {
     // Keep the current value when blurring

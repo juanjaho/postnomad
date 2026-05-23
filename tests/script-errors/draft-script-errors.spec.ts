@@ -93,11 +93,7 @@ for (const mode of ['safe', 'developer'] as const) {
       await test.step('Navigate to Tests tab and edit script', async () => {
         await selectRequestPaneTab(page, 'Tests');
 
-        await editCodeMirrorEditor(
-          page,
-          'test-script-editor',
-          'const draftTest = "test";\ndraftTestUndefined();'
-        );
+        await editCodeMirrorEditor(page, 'test-script-editor', 'const draftTest = "test";\ndraftTestUndefined();');
       });
 
       await test.step('Verify draft indicator is visible', async () => {

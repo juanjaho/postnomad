@@ -39,12 +39,12 @@ describe('LinuxProxyResolver', () => {
 
   describe('gsettings proxy detection', () => {
     it('should detect manual proxy configuration', async () => {
-      const modeOutput = '\'manual\'';
-      const httpHostOutput = '\'proxy.usebruno.com\'';
+      const modeOutput = "'manual'";
+      const httpHostOutput = "'proxy.usebruno.com'";
       const httpPortOutput = '8080';
-      const httpsHostOutput = '\'secure-proxy.usebruno.com\'';
+      const httpsHostOutput = "'secure-proxy.usebruno.com'";
       const httpsPortOutput = '8443';
-      const ignoreHostsOutput = '[\'localhost\', \'127.0.0.1\']';
+      const ignoreHostsOutput = "['localhost', '127.0.0.1']";
 
       mockExecFile
         .mockResolvedValueOnce({ stdout: modeOutput, stderr: '' })
@@ -65,10 +65,10 @@ describe('LinuxProxyResolver', () => {
     });
 
     it('should detect identical HTTP and HTTPS proxies', async () => {
-      const modeOutput = '\'manual\'';
-      const httpHostOutput = '\'proxy.usebruno.com\'';
+      const modeOutput = "'manual'";
+      const httpHostOutput = "'proxy.usebruno.com'";
       const httpPortOutput = '8080';
-      const httpsHostOutput = '\'proxy.usebruno.com\'';
+      const httpsHostOutput = "'proxy.usebruno.com'";
       const httpsPortOutput = '8080';
       const ignoreHostsOutput = '[]';
 
@@ -91,7 +91,7 @@ describe('LinuxProxyResolver', () => {
     });
 
     it('should handle non-manual proxy mode', async () => {
-      const modeOutput = '\'auto\'';
+      const modeOutput = "'auto'";
 
       mockExecFile.mockResolvedValueOnce({ stdout: modeOutput, stderr: '' });
 
@@ -99,10 +99,10 @@ describe('LinuxProxyResolver', () => {
     });
 
     it('should handle empty ignore hosts list', async () => {
-      const modeOutput = '\'manual\'';
-      const httpHostOutput = '\'proxy.usebruno.com\'';
+      const modeOutput = "'manual'";
+      const httpHostOutput = "'proxy.usebruno.com'";
       const httpPortOutput = '8080';
-      const httpsHostOutput = '\'\'';
+      const httpsHostOutput = "''";
       const httpsPortOutput = '';
       const ignoreHostsOutput = '[]';
 

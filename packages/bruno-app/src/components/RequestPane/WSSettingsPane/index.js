@@ -38,13 +38,15 @@ const WSSettingsPane = ({ item, collection }) => {
   const connectionTimeout = _connectionTimeout ?? requestPreferences.timeout;
 
   const updateSetting = (key, value) => {
-    dispatch(updateItemSettings({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      settings: {
-        [key]: value
-      }
-    }));
+    dispatch(
+      updateItemSettings({
+        collectionUid: collection.uid,
+        itemUid: item.uid,
+        settings: {
+          [key]: value
+        }
+      })
+    );
   };
 
   const formErrors = {
@@ -60,19 +62,20 @@ const WSSettingsPane = ({ item, collection }) => {
           <InfoTip
             infotipId="setting-connection-timeout"
             className="tooltip-mod max-w-lg"
-            content={(
+            content={
               <div>
                 <p>
                   <span>Timeout in milliseconds</span>
                 </p>
               </div>
-            )}
+            }
           />
         </div>
         <div>
-          <div className={cn('single-line-editor-wrapper', {
-            error: formErrors.timeout
-          })}
+          <div
+            className={cn('single-line-editor-wrapper', {
+              error: formErrors.timeout
+            })}
           >
             <ToolHint
               key="timeout"
@@ -95,7 +98,7 @@ const WSSettingsPane = ({ item, collection }) => {
           <InfoTip
             infotipId="setting-keep-alive"
             className="tooltip-mod max-w-lg"
-            content={(
+            content={
               <div>
                 <p>
                   <span>
@@ -104,13 +107,14 @@ const WSSettingsPane = ({ item, collection }) => {
                 </p>
                 <p className="mt-2">0 (zero) = off</p>
               </div>
-            )}
+            }
           />
         </div>
         <div>
-          <div className={cn('single-line-editor-wrapper', {
-            error: formErrors.keepAliveInterval
-          })}
+          <div
+            className={cn('single-line-editor-wrapper', {
+              error: formErrors.keepAliveInterval
+            })}
           >
             <ToolHint
               key="timeout"

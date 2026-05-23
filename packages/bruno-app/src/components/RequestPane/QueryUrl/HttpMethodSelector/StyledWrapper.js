@@ -21,10 +21,9 @@ const Wrapper = styled.div`
     border-radius: ${(props) => props.theme.border.radius.sm};
 
     &:not(.custom-input-mode):hover,
-    &:has(button[aria-expanded="true"]) {
+    &:has(button[aria-expanded='true']) {
       background-color: color-mix(in srgb, currentColor 15%, transparent);
     }
-
 
     .tippy-box {
       max-width: 150px !important;

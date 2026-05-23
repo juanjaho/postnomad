@@ -26,10 +26,14 @@ const sanitizeQueryForParsing = (queryString) => {
 
 const resolveRootType = (schema, rootTypeName) => {
   switch (rootTypeName) {
-    case 'Query': return schema.getQueryType();
-    case 'Mutation': return schema.getMutationType();
-    case 'Subscription': return schema.getSubscriptionType();
-    default: return null;
+    case 'Query':
+      return schema.getQueryType();
+    case 'Mutation':
+      return schema.getMutationType();
+    case 'Subscription':
+      return schema.getSubscriptionType();
+    default:
+      return null;
   }
 };
 
@@ -175,7 +179,16 @@ const collectVariablesForInputObject = (parentKey, inputType, enabledArgs, varMa
   }
 };
 
-const collectVariablesFromSelections = (selections, enabledArgs, type, parentPath, visited, depth, varMap, usedNames) => {
+const collectVariablesFromSelections = (
+  selections,
+  enabledArgs,
+  type,
+  parentPath,
+  visited,
+  depth,
+  varMap,
+  usedNames
+) => {
   if (!type || depth > MAX_DEPTH || visited.has(type.name)) return;
 
   const nextVisited = new Set(visited);
@@ -194,7 +207,16 @@ const collectVariablesFromSelections = (selections, enabledArgs, type, parentPat
         }
       }
       if (!isMemberSelected) continue;
-      collectVariablesFromSelections(selections, enabledArgs, memberType, memberPath, nextVisited, depth + 1, varMap, usedNames);
+      collectVariablesFromSelections(
+        selections,
+        enabledArgs,
+        memberType,
+        memberPath,
+        nextVisited,
+        depth + 1,
+        varMap,
+        usedNames
+      );
     }
     return;
   }
@@ -232,7 +254,16 @@ const collectVariablesFromSelections = (selections, enabledArgs, type, parentPat
 
     const named = getNamedType(field.type);
     if (!isLeafType(field.type) && named) {
-      collectVariablesFromSelections(selections, enabledArgs, named, fieldPath, nextVisited, depth + 1, varMap, usedNames);
+      collectVariablesFromSelections(
+        selections,
+        enabledArgs,
+        named,
+        fieldPath,
+        nextVisited,
+        depth + 1,
+        varMap,
+        usedNames
+      );
     }
   }
 };
@@ -413,7 +444,15 @@ const buildUnionSelectionSet = (selections, unionType, parentPath, visited, dept
 
     if (!isMemberSelected) continue;
 
-    let selectionSet = buildSelectionSetAST(selections, memberType, memberPath, visited, depth + 1, enabledArgs, varMap);
+    let selectionSet = buildSelectionSetAST(
+      selections,
+      memberType,
+      memberPath,
+      visited,
+      depth + 1,
+      enabledArgs,
+      varMap
+    );
     if (!selectionSet) {
       selectionSet = placeholderSelectionSet();
     }
@@ -435,7 +474,14 @@ const buildUnionSelectionSet = (selections, unionType, parentPath, visited, dept
   };
 };
 
-export const generateQueryString = (selections, argValues, schema, rootTypeName, enabledArgs, existingOperationName) => {
+export const generateQueryString = (
+  selections,
+  argValues,
+  schema,
+  rootTypeName,
+  enabledArgs,
+  existingOperationName
+) => {
   if (!schema || !selections || selections.size === 0) return { query: '', variables: {} };
   const rootType = resolveRootType(schema, rootTypeName);
   if (!rootType) return { query: '', variables: {} };
@@ -531,7 +577,9 @@ export const parseQueryToState = (queryString, schema, variablesString) => {
   if (variablesString) {
     try {
       variablesJson = JSON.parse(variablesString);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   const selections = new Set();
@@ -544,16 +592,24 @@ export const parseQueryToState = (queryString, schema, variablesString) => {
     const rootTypeName = def.operation.charAt(0).toUpperCase() + def.operation.slice(1);
     const rootType = resolveRootType(schema, rootTypeName);
     if (!rootType || !def.selectionSet) continue;
-    walkSelectionSet(def.selectionSet, rootType, rootTypeName, selections, expandedPaths, argValues, enabledArgs, variablesJson, schema);
+    walkSelectionSet(
+      def.selectionSet,
+      rootType,
+      rootTypeName,
+      selections,
+      expandedPaths,
+      argValues,
+      enabledArgs,
+      variablesJson,
+      schema
+    );
   }
 
   return { selections, expandedPaths, argValues, enabledArgs };
 };
 
 const walkInputObjectValue = (valueNode, inputType, parentKey, argValues, enabledArgs, variablesJson) => {
-  const objNode = valueNode.kind === Kind.LIST && valueNode.values.length > 0
-    ? valueNode.values[0]
-    : valueNode;
+  const objNode = valueNode.kind === Kind.LIST && valueNode.values.length > 0 ? valueNode.values[0] : valueNode;
 
   if (objNode.kind !== Kind.OBJECT || !isInputObjectType(inputType)) return;
 
@@ -608,12 +664,21 @@ const walkVariableInputObject = (value, inputType, parentKey, argValues, enabled
   }
 };
 
-const walkSelectionSet = (selectionSet, parentType, parentPath, selections, expandedPaths, argValues, enabledArgs, variablesJson, schema, depth = 0) => {
+const walkSelectionSet = (
+  selectionSet,
+  parentType,
+  parentPath,
+  selections,
+  expandedPaths,
+  argValues,
+  enabledArgs,
+  variablesJson,
+  schema,
+  depth = 0
+) => {
   if (!selectionSet || !selectionSet.selections || depth > MAX_DEPTH) return;
 
-  const fieldMap = (isObjectType(parentType) || isInterfaceType(parentType))
-    ? parentType.getFields()
-    : null;
+  const fieldMap = isObjectType(parentType) || isInterfaceType(parentType) ? parentType.getFields() : null;
 
   for (const sel of selectionSet.selections) {
     if (sel.kind === Kind.FIELD) {
@@ -641,13 +706,15 @@ const walkSelectionSet = (selectionSet, parentType, parentPath, selections, expa
             } else if (varValue !== undefined && varValue !== null) {
               argValues.set(argKey, String(varValue));
             }
-          } else if (argNamed && isInputObjectType(argNamed) && (argNode.value.kind === Kind.OBJECT || argNode.value.kind === Kind.LIST)) {
+          } else if (
+            argNamed &&
+            isInputObjectType(argNamed) &&
+            (argNode.value.kind === Kind.OBJECT || argNode.value.kind === Kind.LIST)
+          ) {
             walkInputObjectValue(argNode.value, argNamed, argKey, argValues, enabledArgs, variablesJson);
           } else if (argDef && containsListType(argDef.type) && argNode.value.kind === Kind.LIST) {
             // List-type scalar/enum args: store as array
-            const items = argNode.value.values
-              .map(astValueToString)
-              .filter((v) => v !== null && v !== '');
+            const items = argNode.value.values.map(astValueToString).filter((v) => v !== null && v !== '');
             if (items.length > 0) {
               argValues.set(argKey, items);
             }
@@ -664,7 +731,18 @@ const walkSelectionSet = (selectionSet, parentType, parentPath, selections, expa
         expandedPaths.add(fieldPath);
         const named = getNamedType(fieldMap[fieldName].type);
         if (named) {
-          walkSelectionSet(sel.selectionSet, named, fieldPath, selections, expandedPaths, argValues, enabledArgs, variablesJson, schema, depth + 1);
+          walkSelectionSet(
+            sel.selectionSet,
+            named,
+            fieldPath,
+            selections,
+            expandedPaths,
+            argValues,
+            enabledArgs,
+            variablesJson,
+            schema,
+            depth + 1
+          );
         }
       }
     } else if (sel.kind === Kind.INLINE_FRAGMENT) {
@@ -676,10 +754,20 @@ const walkSelectionSet = (selectionSet, parentType, parentPath, selections, expa
 
         // For unions, find the member type. For object/interface types with inline fragments, look up from schema.
         const named = getNamedType(parentType);
-        const memberType = named?.getTypes?.()?.find((t) => t.name === typeName)
-          || schema.getType(typeName);
+        const memberType = named?.getTypes?.()?.find((t) => t.name === typeName) || schema.getType(typeName);
         if (memberType && sel.selectionSet) {
-          walkSelectionSet(sel.selectionSet, memberType, memberPath, selections, expandedPaths, argValues, enabledArgs, variablesJson, schema, depth + 1);
+          walkSelectionSet(
+            sel.selectionSet,
+            memberType,
+            memberPath,
+            selections,
+            expandedPaths,
+            argValues,
+            enabledArgs,
+            variablesJson,
+            schema,
+            depth + 1
+          );
         }
       }
     }

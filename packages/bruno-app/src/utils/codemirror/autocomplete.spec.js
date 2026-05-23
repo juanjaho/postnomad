@@ -16,11 +16,7 @@ jest.mock('codemirror', () => {
 });
 
 // Import the functions to test
-import {
-  getAutoCompleteHints,
-  setupAutoComplete,
-  extractNextSegmentSuggestions
-} from './autocomplete';
+import { getAutoCompleteHints, setupAutoComplete, extractNextSegmentSuggestions } from './autocomplete';
 
 describe('Bruno Autocomplete', () => {
   let mockedCodemirror;
@@ -65,11 +61,7 @@ describe('Bruno Autocomplete', () => {
           showHintsFor: ['variables']
         });
 
-        expect(result.list).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({ displayText: '$randomInt' })
-          ])
-        );
+        expect(result.list).toEqual(expect.arrayContaining([expect.objectContaining({ displayText: '$randomInt' })]));
       });
 
       it('should handle process environment variables', () => {
@@ -90,11 +82,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({ displayText: 'NODE_ENV' })
-          ])
-        );
+        expect(result.list).toEqual(expect.arrayContaining([expect.objectContaining({ displayText: 'NODE_ENV' })]));
       });
 
       it('should skip special internal keys', () => {
@@ -112,15 +100,9 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({ displayText: 'path' })
-          ])
-        );
+        expect(result.list).toEqual(expect.arrayContaining([expect.objectContaining({ displayText: 'path' })]));
         expect(result.list).not.toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({ displayText: 'pathParams' })
-          ])
+          expect.arrayContaining([expect.objectContaining({ displayText: 'pathParams' })])
         );
       });
 
@@ -220,11 +202,7 @@ describe('Bruno Autocomplete', () => {
 
         expect(result).toBeTruthy();
         expect(result.list).toEqual(
-          expect.arrayContaining([
-            'setNextRequest(requestName)',
-            'skipRequest()',
-            'stopExecution()'
-          ])
+          expect.arrayContaining(['setNextRequest(requestName)', 'skipRequest()', 'stopExecution()'])
         );
       });
     });
@@ -242,9 +220,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining(['Content-Type', 'Content-Encoding', 'Content-Length'])
-        );
+        expect(result.list).toEqual(expect.arrayContaining(['Content-Type', 'Content-Encoding', 'Content-Length']));
       });
 
       it('should handle progressive hints for custom hints', () => {
@@ -259,9 +235,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining(['string', 'array'])
-        );
+        expect(result.list).toEqual(expect.arrayContaining(['string', 'array']));
       });
     });
 
@@ -284,9 +258,7 @@ describe('Bruno Autocomplete', () => {
         const result = getAutoCompleteHints(mockedCodemirror, {}, [], options);
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining(['url', 'method'])
-        );
+        expect(result.list).toEqual(expect.arrayContaining(['url', 'method']));
       });
 
       it('should filter variables based on showHintsFor', () => {
@@ -335,9 +307,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        const displayTexts = result.list.map((item) =>
-          typeof item === 'object' ? item.displayText : item
-        );
+        const displayTexts = result.list.map((item) => (typeof item === 'object' ? item.displayText : item));
 
         const userVars = displayTexts.filter((text) => !text.startsWith('$'));
         expect(userVars).toEqual(['apple', 'banana', 'zebra']);
@@ -378,9 +348,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining(['getHeader(name)', 'getHeaders()'])
-        );
+        expect(result.list).toEqual(expect.arrayContaining(['getHeader(name)', 'getHeaders()']));
       });
 
       it('should provide deleteHeader and deleteHeaders hints for req.delete prefix', () => {
@@ -394,9 +362,7 @@ describe('Bruno Autocomplete', () => {
         });
 
         expect(result).toBeTruthy();
-        expect(result.list).toEqual(
-          expect.arrayContaining(['deleteHeader(name)', 'deleteHeaders(data)'])
-        );
+        expect(result.list).toEqual(expect.arrayContaining(['deleteHeader(name)', 'deleteHeaders(data)']));
       });
 
       it('should handle case-insensitive matching', () => {
@@ -444,7 +410,10 @@ describe('Bruno Autocomplete', () => {
       });
 
       it('should deduplicate segments from multiple hints', () => {
-        const hints = ['bru.cookies.jar().getCookie(url, name, callback)', 'bru.cookies.jar().getCookies(url, callback)'];
+        const hints = [
+          'bru.cookies.jar().getCookie(url, name, callback)',
+          'bru.cookies.jar().getCookies(url, callback)'
+        ];
         const result = extractNextSegmentSuggestions(hints, 'bru.');
 
         expect(result).toEqual(['cookies']);
@@ -552,7 +521,7 @@ describe('Bruno Autocomplete', () => {
     let cleanupFn;
 
     beforeEach(() => {
-      mockGetAllVariables = jest.fn(() => ({ }));
+      mockGetAllVariables = jest.fn(() => ({}));
       mockedCodemirror.state = {};
     });
 

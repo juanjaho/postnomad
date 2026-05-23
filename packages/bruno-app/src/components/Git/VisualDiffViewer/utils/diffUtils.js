@@ -104,7 +104,9 @@ const mergeSegments = (segments) => {
 const computeLCS = (arr1, arr2) => {
   const m = arr1.length;
   const n = arr2.length;
-  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  const dp = Array(m + 1)
+    .fill(null)
+    .map(() => Array(n + 1).fill(0));
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
@@ -117,7 +119,8 @@ const computeLCS = (arr1, arr2) => {
   }
 
   const lcs = [];
-  let i = m, j = n;
+  let i = m,
+    j = n;
   while (i > 0 && j > 0) {
     if (arr1[i - 1] === arr2[j - 1]) {
       lcs.unshift({ value: arr1[i - 1], oldIndex: i - 1, newIndex: j - 1 });

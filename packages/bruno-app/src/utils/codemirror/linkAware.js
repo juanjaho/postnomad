@@ -92,9 +92,7 @@ function markUrls(editor, linkify, linkClass, linkHint) {
         variablePatterns.push({ start: varMatch.index, end: varMatch.index + varMatch[0].length });
       }
       matches.forEach(({ index, lastIndex, url }) => {
-        const isInVariable = variablePatterns.some(
-          ({ start, end }) => index < end && lastIndex > start
-        );
+        const isInVariable = variablePatterns.some(({ start, end }) => index < end && lastIndex > start);
         if (isInVariable) return;
 
         const extended = extendUrlWithBalancedParentheses(url, lineContent, lastIndex);
@@ -106,7 +104,7 @@ function markUrls(editor, linkify, linkClass, linkHint) {
               className: linkClass,
               attributes: {
                 'data-url': extended.url,
-                'title': linkHint
+                title: linkHint
               }
             }
           );

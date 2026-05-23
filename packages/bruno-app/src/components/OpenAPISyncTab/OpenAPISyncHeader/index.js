@@ -17,9 +17,15 @@ import Help from 'components/Help';
 import { isHttpUrl } from 'utils/url/index';
 
 const OpenAPISyncHeader = ({
-  collection, spec, sourceUrl, syncStatus, onViewSpec,
-  onOpenSettings, onOpenDisconnect,
-  onCheck, isLoading
+  collection,
+  spec,
+  sourceUrl,
+  syncStatus,
+  onViewSpec,
+  onOpenSettings,
+  onOpenDisconnect,
+  onCheck,
+  isLoading
 }) => {
   const sourceIsLocal = !isHttpUrl(sourceUrl);
   const canCheck = !!sourceUrl?.trim();
@@ -28,7 +34,8 @@ const OpenAPISyncHeader = ({
   const [displayPath, setDisplayPath] = useState(sourceUrl);
   useEffect(() => {
     if (sourceIsLocal && sourceUrl) {
-      window.ipcRenderer.invoke('renderer:resolve-path', sourceUrl, collection.pathname)
+      window.ipcRenderer
+        .invoke('renderer:resolve-path', sourceUrl, collection.pathname)
         .then((resolved) => setDisplayPath(resolved))
         .catch(() => setDisplayPath(sourceUrl));
     } else {
@@ -101,11 +108,7 @@ const OpenAPISyncHeader = ({
           >
             Check for updates
           </Button>
-          <Button
-            color="secondary"
-            size="sm"
-            onClick={onViewSpec}
-          >
+          <Button color="secondary" size="sm" onClick={onViewSpec}>
             View spec
           </Button>
           <MenuDropdown items={menuItems} placement="bottom-end">
@@ -127,13 +130,7 @@ const OpenAPISyncHeader = ({
             {displayPath}
           </button>
         ) : (
-          <a
-            className="spec-url-value"
-            href={sourceUrl}
-            title={sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a className="spec-url-value" href={sourceUrl} title={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceUrl}
           </a>
         )}

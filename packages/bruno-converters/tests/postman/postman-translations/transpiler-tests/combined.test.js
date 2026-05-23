@@ -116,7 +116,8 @@ describe('Combined API Features Translation', () => {
 
   // TODO: Restore once UI update fixes are live for setCollectionVar
   it.skip('should handle more complex nested expressions', () => {
-    const code = 'pm.collectionVariables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));';
+    const code =
+      'pm.collectionVariables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));';
     const translatedCode = translateCode(code);
     expect(translatedCode).toBe('bru.setCollectionVar("fullPath", bru.getEnvVar("baseUrl") + bru.getVar("endpoint"));');
   });
@@ -353,7 +354,9 @@ describe('Combined API Features Translation', () => {
 
     const translatedCode = translateCode(code);
 
-    expect(translatedCode).toContain('test("Status code is 200", function() { expect(res.getStatus()).to.equal(200); });');
+    expect(translatedCode).toContain(
+      'test("Status code is 200", function() { expect(res.getStatus()).to.equal(200); });'
+    );
     expect(translatedCode).toContain('bru.setEnvVar("userId", res.getBody().userId);');
     expect(translatedCode).toContain('bru.setVar("token", res.getBody().token);');
   });

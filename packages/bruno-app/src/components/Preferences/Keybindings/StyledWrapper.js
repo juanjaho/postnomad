@@ -280,8 +280,13 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes blink-caret {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .editing-caret {

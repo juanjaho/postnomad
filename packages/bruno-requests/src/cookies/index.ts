@@ -55,7 +55,9 @@ const getDomainsWithCookies = (): Promise<Array<{ domain: string; cookies: Cooki
 
       each(domains, (domain) => {
         const cookiesForDomain = domainCookieMap[domain];
-        const validCookies = cookiesForDomain.filter((cookie: any) => !cookie.expires || (cookie.expires as any) > Date.now());
+        const validCookies = cookiesForDomain.filter(
+          (cookie: any) => !cookie.expires || (cookie.expires as any) > Date.now()
+        );
 
         if (validCookies.length) {
           domainsWithCookies.push({
@@ -172,9 +174,7 @@ const createCookieString = (cookieObj: any): string => {
 
 const saveCookies = (url: string, headers: any) => {
   if (headers['set-cookie']) {
-    let setCookieHeaders = Array.isArray(headers['set-cookie'])
-      ? headers['set-cookie']
-      : [headers['set-cookie']];
+    let setCookieHeaders = Array.isArray(headers['set-cookie']) ? headers['set-cookie'] : [headers['set-cookie']];
     for (let setCookieHeader of setCookieHeaders) {
       if (typeof setCookieHeader === 'string' && setCookieHeader.length) {
         addCookieToJar(setCookieHeader, url);
@@ -185,7 +185,6 @@ const saveCookies = (url: string, headers: any) => {
 
 const cookieJarWrapper = () => {
   return {
-
     // Get the full cookie object for the given URL & name.
     getCookie: function (
       url: string,
@@ -195,7 +194,8 @@ const cookieJarWrapper = () => {
       if (!url || !cookieName) {
         const error = new Error('URL and cookie name are required');
         if (callback) {
-          callback(error); return;
+          callback(error);
+          return;
         }
         return Promise.reject(error);
       }
@@ -233,7 +233,8 @@ const cookieJarWrapper = () => {
       if (!url || !cookieName) {
         const error = new Error('URL and cookie name are required');
         if (callback) {
-          callback(error); return;
+          callback(error);
+          return;
         }
         return Promise.reject(error);
       }
@@ -242,7 +243,10 @@ const cookieJarWrapper = () => {
         cookieJar.getCookies(url, (err: Error | null, cookies?: Cookie[]) => {
           if (err) return callback(err);
           const cookieList = cookies || [];
-          callback(null, cookieList.some((c) => c.key === cookieName));
+          callback(
+            null,
+            cookieList.some((c) => c.key === cookieName)
+          );
         });
         return;
       }
@@ -261,7 +265,8 @@ const cookieJarWrapper = () => {
       if (!url) {
         const error = new Error('URL is required');
         if (callback) {
-          callback(error); return;
+          callback(error);
+          return;
         }
         return Promise.reject(error);
       }
@@ -357,11 +362,7 @@ const cookieJarWrapper = () => {
       });
     },
 
-    setCookies: function (
-      url: string,
-      cookiesArray: any[],
-      callback?: (err?: Error | undefined) => void
-    ) {
+    setCookies: function (url: string, cookiesArray: any[], callback?: (err?: Error | undefined) => void) {
       const executeSetCookies = () => {
         if (!url) throw new Error('URL is required');
         if (!Array.isArray(cookiesArray)) {
@@ -425,7 +426,8 @@ const cookieJarWrapper = () => {
       if (!url) {
         const error = new Error('URL is required');
         if (callback) {
-          callback(error); return;
+          callback(error);
+          return;
         }
         return Promise.reject(error);
       }
@@ -478,7 +480,8 @@ const cookieJarWrapper = () => {
       if (!url || !cookieName) {
         const error = new Error('URL and cookie name are required');
         if (callback) {
-          callback(error); return;
+          callback(error);
+          return;
         }
         return Promise.reject(error);
       }

@@ -1,11 +1,5 @@
 import { uuid } from '../../common/index.js';
-import type {
-  Action,
-  ActionSetVariable,
-  ActionVariableScope,
-  BrunoVariable,
-  BrunoVariables
-} from '../types';
+import type { Action, ActionSetVariable, ActionVariableScope, BrunoVariable, BrunoVariables } from '../types';
 
 /**
  * Convert Bruno post-response variables to OpenCollection actions.
@@ -27,7 +21,7 @@ export const toOpenCollectionActions = (resVariables: BrunoVariables | null | un
       },
       variable: {
         name: v.name || '',
-        scope: v.local ? 'request' : 'runtime' as ActionVariableScope
+        scope: v.local ? 'request' : ('runtime' as ActionVariableScope)
       }
     };
 
@@ -70,9 +64,10 @@ export const fromOpenCollectionActions = (actions: Action[] | null | undefined):
       };
 
       if (setVarAction.description) {
-        variable.description = typeof setVarAction.description === 'string'
-          ? setVarAction.description
-          : (setVarAction.description as { content?: string })?.content || '';
+        variable.description =
+          typeof setVarAction.description === 'string'
+            ? setVarAction.description
+            : (setVarAction.description as { content?: string })?.content || '';
       }
 
       resVars.push(variable);

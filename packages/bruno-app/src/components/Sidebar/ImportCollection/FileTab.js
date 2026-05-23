@@ -33,11 +33,7 @@ const convertFileToObject = async (file) => {
   }
 };
 
-const FileTab = ({
-  setIsLoading,
-  handleSubmit,
-  setErrorMessage
-}) => {
+const FileTab = ({ setIsLoading, handleSubmit, setErrorMessage }) => {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
   const { theme } = useTheme();
@@ -187,8 +183,10 @@ const FileTab = ({
     const zipFiles = fileArray.filter((file) => file.name.endsWith('.zip'));
 
     // If both ZIP and non-ZIP files are selected, show error
-    if (zipFiles.length && (fileArray.length - zipFiles.length > 0)) {
-      setErrorMessage('Cannot mix ZIP files with other file types. Please select either a single ZIP file OR collection files (JSON/YAML)');
+    if (zipFiles.length && fileArray.length - zipFiles.length > 0) {
+      setErrorMessage(
+        'Cannot mix ZIP files with other file types. Please select either a single ZIP file OR collection files (JSON/YAML)'
+      );
       return;
     }
 
@@ -241,17 +239,15 @@ const FileTab = ({
         onDrop={handleDrop}
         className={`
           border-2 border-dashed rounded-lg p-6 transition-colors duration-200
-          ${dragActive
-      ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-      : 'border-gray-200 dark:border-gray-700'
-    }
+          ${
+            dragActive
+              ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+              : 'border-gray-200 dark:border-gray-700'
+          }
         `}
       >
         <div className="flex flex-col items-center justify-center">
-          <IconFileImport
-            size={28}
-            className="text-gray-400 dark:text-gray-500 mb-3"
-          />
+          <IconFileImport size={28} className="text-gray-400 dark:text-gray-500 mb-3" />
           <input
             ref={fileInputRef}
             type="file"
@@ -262,11 +258,7 @@ const FileTab = ({
           />
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
             Drop file(s) to import or{' '}
-            <button
-              className="underline cursor-pointer"
-              onClick={handleBrowseFiles}
-              style={{ color: theme.textLink }}
-            >
+            <button className="underline cursor-pointer" onClick={handleBrowseFiles} style={{ color: theme.textLink }}>
               choose file(s)
             </button>
           </p>

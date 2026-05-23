@@ -106,11 +106,13 @@ const WsQueryUrl = ({ item, collection, handleRun }) => {
   const handleUrlChange = (value) => {
     const finalUrl = value?.trim() ?? value;
     console.log('finalUrl: ', finalUrl);
-    dispatch(requestUrlChanged({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      url: finalUrl
-    }));
+    dispatch(
+      requestUrlChanged({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        url: finalUrl
+      })
+    );
   };
 
   // Detect interpolated URL changes and reconnect if connection is active
@@ -191,10 +193,7 @@ const WsQueryUrl = ({ item, collection, handleRun }) => {
           </div>
           {connectionStatus === CONNECTION_STATUS.CONNECTED && <div className="connection-status-strip"></div>}
         </div>
-        <SendButton
-          onSend={handleRunClick}
-          testId="run-button"
-        />
+        <SendButton onSend={handleRunClick} testId="run-button" />
       </div>
     </StyledWrapper>
   );

@@ -6,9 +6,7 @@ import { getFieldChildren } from 'utils/graphql/queryBuilder';
 const QueryBuilderTree = ({ fields, unionTypes, ...treeProps }) => {
   return (
     <>
-      {unionTypes && unionTypes.map((ut) => (
-        <TreeNode key={ut.path} field={ut} isUnion {...treeProps} />
-      ))}
+      {unionTypes && unionTypes.map((ut) => <TreeNode key={ut.path} field={ut} isUnion {...treeProps} />)}
 
       {(fields || []).map((field) => (
         <TreeNode key={field.path} field={field} {...treeProps} />
@@ -23,7 +21,7 @@ const TreeNode = memo(({ field, isUnion = false, depth, selections, expandedPath
   const namedType = isUnion ? field.namedType : getNamedType(field.type);
 
   const children = useMemo(() => {
-    if (isUnion ? !isExpanded : (field.isLeaf || !isExpanded)) return null;
+    if (isUnion ? !isExpanded : field.isLeaf || !isExpanded) return null;
     return getFieldChildren(namedType, field.path);
   }, [isUnion, field.isLeaf, isExpanded, namedType, field.path]);
 

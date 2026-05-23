@@ -22,10 +22,7 @@ function containsDigestHeader(response) {
 }
 
 function containsAuthorizationHeader(originalRequest) {
-  return Boolean(
-    originalRequest.headers['Authorization']
-    || originalRequest.headers['authorization']
-  );
+  return Boolean(originalRequest.headers['Authorization'] || originalRequest.headers['authorization']);
 }
 
 function md5(input) {
@@ -53,16 +50,20 @@ export function addDigestInterceptor(axiosInstance, request) {
       originalRequest._retry = true;
 
       if (
-        error.response?.status === 401
-        && containsDigestHeader(error.response)
-        && !containsAuthorizationHeader(originalRequest)
+        error.response?.status === 401 &&
+        containsDigestHeader(error.response) &&
+        !containsAuthorizationHeader(originalRequest)
       ) {
         console.debug('Processing Digest Authentication Challenge');
         console.debug(error.response.headers['www-authenticate']);
 
         const authDetails = error.response.headers['www-authenticate']
           .split(',')
-          .map((pair) => splitAuthHeaderKeyValue(pair).map((item) => item.trim()).map(stripQuotes))
+          .map((pair) =>
+            splitAuthHeaderKeyValue(pair)
+              .map((item) => item.trim())
+              .map(stripQuotes)
+          )
           .reduce((acc, [key, value]) => {
             const normalizedKey = key.toLowerCase().replace('digest ', '');
             if (normalizedKey && value !== undefined) {
@@ -100,8 +101,14 @@ export function addDigestInterceptor(axiosInstance, request) {
         const HA1 = md5(`${username}:${authDetails.realm}:${password}`);
         const HA2 = md5(`${method}:${uri}`);
         let response;
-        if (authDetails.qop && authDetails.qop.split(',').map((q) => q.trim().toLowerCase()).includes('auth')) {
-          console.debug('Using QOP \'auth\' for Digest Authentication');
+        if (
+          authDetails.qop &&
+          authDetails.qop
+            .split(',')
+            .map((q) => q.trim().toLowerCase())
+            .includes('auth')
+        ) {
+          console.debug("Using QOP 'auth' for Digest Authentication");
           response = md5(`${HA1}:${authDetails.nonce}:${nonceCount}:${cnonce}:auth:${HA2}`);
         } else {
           console.debug('No QOP specified, using simple digest');
@@ -116,8 +123,19 @@ export function addDigestInterceptor(axiosInstance, request) {
           `response="${response}"`
         ];
 
-        if (authDetails.qop && authDetails.qop.split(',').map((q) => q.trim().toLowerCase()).includes('auth')) {
-          headerFields.push(`qop="auth"`, `algorithm="${authDetails.algorithm}"`, `nc="${nonceCount}"`, `cnonce="${cnonce}"`);
+        if (
+          authDetails.qop &&
+          authDetails.qop
+            .split(',')
+            .map((q) => q.trim().toLowerCase())
+            .includes('auth')
+        ) {
+          headerFields.push(
+            `qop="auth"`,
+            `algorithm="${authDetails.algorithm}"`,
+            `nc="${nonceCount}"`,
+            `cnonce="${cnonce}"`
+          );
         }
 
         if (authDetails.opaque) {

@@ -19,18 +19,25 @@ test.describe('Import Postman Collection with API Key in Header', () => {
     });
   });
 
-  test('should import Postman collection with API Key in Header successfully', async ({ page, electronApp, createTmpDir }) => {
+  test('should import Postman collection with API Key in Header successfully', async ({
+    page,
+    electronApp,
+    createTmpDir
+  }) => {
     const postmanFile = path.resolve(__dirname, 'fixtures', 'postman-import-apikey-header-collection.json');
     const locators = buildCommonLocators(page);
 
     const importDir = await createTmpDir('imported-collection');
 
-    await electronApp.evaluate(({ dialog }, { importDir }) => {
-      dialog.showOpenDialog = async () => ({
-        canceled: false,
-        filePaths: [importDir]
-      });
-    }, { importDir });
+    await electronApp.evaluate(
+      ({ dialog }, { importDir }) => {
+        dialog.showOpenDialog = async () => ({
+          canceled: false,
+          filePaths: [importDir]
+        });
+      },
+      { importDir }
+    );
 
     await test.step('Open import collection modal', async () => {
       await locators.plusMenu.button().click();
@@ -49,7 +56,10 @@ test.describe('Import Postman Collection with API Key in Header', () => {
     });
 
     await test.step('Verify no parsing errors occurred', async () => {
-      const hasError = await locators.import.parsingError().isVisible().catch(() => false);
+      const hasError = await locators.import
+        .parsingError()
+        .isVisible()
+        .catch(() => false);
       if (hasError) {
         throw new Error('Collection import failed with parsing error');
       }

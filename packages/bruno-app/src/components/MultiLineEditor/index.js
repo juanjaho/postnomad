@@ -47,11 +47,14 @@ class MultiLineEditor extends Component {
       theme: this.props.theme === 'dark' ? 'monokai' : 'default',
       placeholder: this.props.placeholder,
       mode: 'brunovariables',
-      brunoVarInfo: this.props.enableBrunoVarInfo !== false ? {
-        variables,
-        collection: this.props.collection,
-        item: this.props.item
-      } : false,
+      brunoVarInfo:
+        this.props.enableBrunoVarInfo !== false
+          ? {
+              variables,
+              collection: this.props.collection,
+              item: this.props.item
+            }
+          : false,
       readOnly: this.props.readOnly,
       tabindex: 0,
       extraKeys: {
@@ -60,7 +63,7 @@ class MultiLineEditor extends Component {
         'Cmd-Enter': runShortcut,
         'Ctrl-Enter': runShortcut,
         // Tabbing disabled to make tabindex work
-        'Tab': false,
+        Tab: false,
         'Shift-Tab': false
       }
     });
@@ -75,10 +78,7 @@ class MultiLineEditor extends Component {
       getAnywordAutocompleteHints
     };
 
-    this.brunoAutoCompleteCleanup = setupAutoComplete(
-      this.editor,
-      autoCompleteOptions
-    );
+    this.brunoAutoCompleteCleanup = setupAutoComplete(this.editor, autoCompleteOptions);
 
     setupLinkAware(this.editor);
 

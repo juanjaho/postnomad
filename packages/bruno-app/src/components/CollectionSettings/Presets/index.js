@@ -18,10 +18,12 @@ const PresetsSettings = ({ collection }) => {
   // Helper to update presets config
   const updatePresets = (updates) => {
     const updatedPresets = { ...currentPresets, ...updates };
-    dispatch(updateCollectionPresets({
-      collectionUid: collection.uid,
-      presets: updatedPresets
-    }));
+    dispatch(
+      updateCollectionPresets({
+        collectionUid: collection.uid,
+        presets: updatedPresets
+      })
+    );
   };
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));

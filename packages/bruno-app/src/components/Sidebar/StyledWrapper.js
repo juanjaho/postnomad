@@ -99,7 +99,6 @@ const Wrapper = styled.div`
       margin-top: 0 !important;
       height: auto !important;
     }
-
   }
 
   div.sidebar-drag-handle {

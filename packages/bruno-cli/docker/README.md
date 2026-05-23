@@ -13,10 +13,10 @@ docker pull ghcr.io/usebruno/cli:latest
 
 ## Variants
 
-| Variant | Base image | Details |
-|---------|-----------|---------|
+| Variant              | Base image       | Details                                                                                                          |
+| -------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
 | **Alpine** (default) | `node:22-alpine` | [→ Alpine README](https://github.com/usebruno/bruno/blob/main/packages/bruno-cli/docker/images/alpine/README.md) |
-| **Debian** | `node:22-slim` | [→ Debian README](https://github.com/usebruno/bruno/blob/main/packages/bruno-cli/docker/images/debian/README.md) |
+| **Debian**           | `node:22-slim`   | [→ Debian README](https://github.com/usebruno/bruno/blob/main/packages/bruno-cli/docker/images/debian/README.md) |
 
 ### Quick choice
 
@@ -31,27 +31,27 @@ Every release publishes the following tags to **both** Docker Hub (`usebruno/cli
 
 ### Alpine variant (default)
 
-| Tag pattern | Example | Notes |
-|-------------|---------|-------|
-| `latest` | `usebruno/cli:latest` | Newest release marked as latest. Only moves when the publish workflow is run with "Tag this version as latest" checked. |
-| `latest-alpine` | `usebruno/cli:latest-alpine` | Alias of `latest` — also alpine. |
-| `alpine` | `usebruno/cli:alpine` | Newest alpine, moves on every alpine publish. |
-| `<version>` | `usebruno/cli:3.3.0` | Exact version, immutable. |
-| `<version>-alpine` | `usebruno/cli:3.3.0-alpine` | Exact version, explicitly alpine. |
-| `<major.minor>` | `usebruno/cli:3.3` | Floats with patch releases (3.3.x). |
-| `<major.minor>-alpine` | `usebruno/cli:3.3-alpine` | Same, explicitly alpine. |
-| `<major>` | `usebruno/cli:3` | Floats with any 3.x.x release. |
-| `<major>-alpine` | `usebruno/cli:3-alpine` | Same, explicitly alpine. |
+| Tag pattern            | Example                      | Notes                                                                                                                   |
+| ---------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `latest`               | `usebruno/cli:latest`        | Newest release marked as latest. Only moves when the publish workflow is run with "Tag this version as latest" checked. |
+| `latest-alpine`        | `usebruno/cli:latest-alpine` | Alias of `latest` — also alpine.                                                                                        |
+| `alpine`               | `usebruno/cli:alpine`        | Newest alpine, moves on every alpine publish.                                                                           |
+| `<version>`            | `usebruno/cli:3.3.0`         | Exact version, immutable.                                                                                               |
+| `<version>-alpine`     | `usebruno/cli:3.3.0-alpine`  | Exact version, explicitly alpine.                                                                                       |
+| `<major.minor>`        | `usebruno/cli:3.3`           | Floats with patch releases (3.3.x).                                                                                     |
+| `<major.minor>-alpine` | `usebruno/cli:3.3-alpine`    | Same, explicitly alpine.                                                                                                |
+| `<major>`              | `usebruno/cli:3`             | Floats with any 3.x.x release.                                                                                          |
+| `<major>-alpine`       | `usebruno/cli:3-alpine`      | Same, explicitly alpine.                                                                                                |
 
 ### Debian variant
 
-| Tag pattern | Example | Notes |
-|-------------|---------|-------|
-| `latest-debian` | `usebruno/cli:latest-debian` | Newest debian release marked as latest (gated by the same checkbox). |
-| `debian` | `usebruno/cli:debian` | Newest debian, moves on every debian publish. |
-| `<version>-debian` | `usebruno/cli:3.3.0-debian` | Exact version, debian. |
-| `<major.minor>-debian` | `usebruno/cli:3.3-debian` | Floats with debian patch releases. |
-| `<major>-debian` | `usebruno/cli:3-debian` | Floats with any 3.x.x debian release. |
+| Tag pattern            | Example                      | Notes                                                                |
+| ---------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| `latest-debian`        | `usebruno/cli:latest-debian` | Newest debian release marked as latest (gated by the same checkbox). |
+| `debian`               | `usebruno/cli:debian`        | Newest debian, moves on every debian publish.                        |
+| `<version>-debian`     | `usebruno/cli:3.3.0-debian`  | Exact version, debian.                                               |
+| `<major.minor>-debian` | `usebruno/cli:3.3-debian`    | Floats with debian patch releases.                                   |
+| `<major>-debian`       | `usebruno/cli:3-debian`      | Floats with any 3.x.x debian release.                                |
 
 The unsuffixed tags (`:latest`, `:3.3.0`, `:3.3`, `:3`, `:alpine`) always resolve to the alpine variant by convention.
 
@@ -96,7 +96,7 @@ docker run --rm usebruno/cli --version
 
 ```bash
 # run every request in the Bruno collection (current dir)
-docker run -v $(pwd):/bruno usebruno/cli run 
+docker run -v $(pwd):/bruno usebruno/cli run
 
 # run a specific subfolder (group of requests) within that collection
 docker run -v $(pwd):/bruno usebruno/cli run ./api-tests
@@ -111,7 +111,7 @@ docker run -v $(pwd):/bruno usebruno/cli run --reporter-junit results.xml
 For Windows CMD users, swap `$(pwd)` with `%cd%`:
 
 ```cmd
-docker run -v %cd%:/bruno usebruno/cli run 
+docker run -v %cd%:/bruno usebruno/cli run
 ```
 
 #### Running a collection that lives at a different path
@@ -133,7 +133,6 @@ docker run --rm -v $(pwd):/bruno usebruno/cli run
 ```
 
 > It's purely a cleanup convenience; it doesn't affect the image, mounts, stdout output, or exit code.
-
 
 ## CI/CD integration
 
@@ -189,8 +188,7 @@ services:
     volumes:
       - /path/to/collection:/bruno
       - /path/to/reports:/reports
-    command:
-      run .
+    command: run .
       -r
       --env ci
       --reporter-json /reports/results.json
@@ -231,4 +229,3 @@ All variants include:
 - **Working directory:** `/bruno`
 - **User:** `node` (UID 1000, non-root)
 - **Architectures:** `linux/amd64`, `linux/arm64`
-

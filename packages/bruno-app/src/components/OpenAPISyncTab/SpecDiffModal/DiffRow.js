@@ -23,9 +23,11 @@ const DiffRow = ({ row, active, cache }) => {
   const wd = isChange ? cache.getWordDiff(row.leftText, row.rightText) : null;
 
   const renderContent = (text, html) =>
-    html !== null
-      ? <span className="diff-content" dangerouslySetInnerHTML={{ __html: html }} />
-      : <span className="diff-content">{text}</span>;
+    html !== null ? (
+      <span className="diff-content" dangerouslySetInnerHTML={{ __html: html }} />
+    ) : (
+      <span className="diff-content">{text}</span>
+    );
 
   return (
     <div className={`diff-row ${active ? 'diff-row-focused' : ''}`}>

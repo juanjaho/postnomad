@@ -97,11 +97,7 @@ export const sanitizeTags = (tags, options = {}) => {
     return [];
   }
 
-  return [...new Set(
-    tags
-      .map((tag) => sanitizeTag(tag, options))
-      .filter((tag) => tag !== null)
-  )];
+  return [...new Set(tags.map((tag) => sanitizeTag(tag, options)).filter((tag) => tag !== null))];
 };
 
 export const validateSchema = (collection = {}) => {

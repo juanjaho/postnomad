@@ -19,8 +19,8 @@ const Wrapper = styled.div`
     }
     td {
       padding: 6px 10px;
-      }
     }
+  }
 
   .btn-add-param {
     font-size: ${(props) => props.theme.font.size.base};
@@ -52,11 +52,11 @@ const Wrapper = styled.div`
     font-size: ${(props) => props.theme.font.size.sm};
     font-weight: 500;
     color: ${(props) => props.theme.colors.text.muted};
-    
+
     &:hover {
       opacity: 0.8;
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -81,7 +81,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     button {
       display: flex;
       align-items: center;
@@ -93,7 +93,7 @@ const Wrapper = styled.div`
 
   tr {
     position: relative;
-    
+
     &:hover .delete-button.edit-mode {
       opacity: 1;
       visibility: visible;
@@ -110,7 +110,7 @@ const Wrapper = styled.div`
     border-radius: 4px;
     color: ${(props) => props.theme.colors.text.muted};
     margin-left: 8px;
-    
+
     &:hover {
       color: ${(props) => props.theme.colors.text.red};
     }

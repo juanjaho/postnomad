@@ -33,7 +33,6 @@ const QueryResponse = ({
     <StyledWrapper>
       {!hideResultTypeSelector && (
         <div className="flex items-center justify-end p-2 result-type-selector">
-
           <QueryResultTypeSelector
             formatOptions={previewFormatOptions}
             formatValue={selectedFormat}
@@ -41,7 +40,7 @@ const QueryResponse = ({
               setSelectedFormat(newFormat);
             }}
             onPreviewTabSelect={() => {
-              setSelectedTab((prev) => prev === 'editor' ? 'preview' : 'editor');
+              setSelectedTab((prev) => (prev === 'editor' ? 'preview' : 'editor'));
             }}
             selectedTab={selectedTab}
             isActiveTab={true}

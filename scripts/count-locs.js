@@ -22,20 +22,20 @@ function shouldExcludeDir(dirName) {
 }
 
 function isCodeFile(fileName) {
-  return CODE_EXTENSIONS.some(ext => fileName.endsWith(ext));
+  return CODE_EXTENSIONS.some((ext) => fileName.endsWith(ext));
 }
 
 function countLinesInDirectory(dirPath) {
   let totalLines = 0;
   let fileCount = 0;
-  
+
   function walkDir(currentPath) {
     const items = fs.readdirSync(currentPath);
-    
+
     for (const item of items) {
       const itemPath = path.join(currentPath, item);
       const stat = fs.statSync(itemPath);
-      
+
       if (stat.isDirectory()) {
         if (!shouldExcludeDir(item)) {
           walkDir(itemPath);
@@ -47,7 +47,7 @@ function countLinesInDirectory(dirPath) {
       }
     }
   }
-  
+
   walkDir(dirPath);
   return { totalLines, fileCount };
 }
@@ -55,11 +55,11 @@ function countLinesInDirectory(dirPath) {
 function getPackages() {
   const packages = [];
   const items = fs.readdirSync(PACKAGES_DIR);
-  
+
   for (const item of items) {
     const itemPath = path.join(PACKAGES_DIR, item);
     const stat = fs.statSync(itemPath);
-    
+
     if (stat.isDirectory() && !shouldExcludeDir(item) && !EXCLUDE_PACKAGES.includes(item)) {
       packages.push({
         name: item,
@@ -67,7 +67,7 @@ function getPackages() {
       });
     }
   }
-  
+
   return packages;
 }
 
@@ -77,37 +77,49 @@ function formatNumber(num) {
 
 function printTable(data) {
   // Calculate column widths
-  const nameWidth = Math.max(20, ...data.map(d => d.name.length));
+  const nameWidth = Math.max(20, ...data.map((d) => d.name.length));
   const locWidth = 12;
   const filesWidth = 12;
-  
+
   // Header
-  console.log('\n┌' + '─'.repeat(nameWidth + 2) + '┬' + '─'.repeat(locWidth + 2) + '┬' + '─'.repeat(filesWidth + 2) + '┐');
+  console.log(
+    '\n┌' + '─'.repeat(nameWidth + 2) + '┬' + '─'.repeat(locWidth + 2) + '┬' + '─'.repeat(filesWidth + 2) + '┐'
+  );
   console.log(`│ ${'Package'.padEnd(nameWidth)} │ ${'LOC'.padStart(locWidth)} │ ${'Files'.padStart(filesWidth)} │`);
-  console.log('├' + '─'.repeat(nameWidth + 2) + '┼' + '─'.repeat(locWidth + 2) + '┼' + '─'.repeat(filesWidth + 2) + '┤');
-  
+  console.log(
+    '├' + '─'.repeat(nameWidth + 2) + '┼' + '─'.repeat(locWidth + 2) + '┼' + '─'.repeat(filesWidth + 2) + '┤'
+  );
+
   // Data rows
   let totalLOC = 0;
   let totalFiles = 0;
-  
+
   for (const row of data) {
-    console.log(`│ ${row.name.padEnd(nameWidth)} │ ${formatNumber(row.loc).padStart(locWidth)} │ ${formatNumber(row.files).padStart(filesWidth)} │`);
+    console.log(
+      `│ ${row.name.padEnd(nameWidth)} │ ${formatNumber(row.loc).padStart(locWidth)} │ ${formatNumber(row.files).padStart(filesWidth)} │`
+    );
     totalLOC += row.loc;
     totalFiles += row.files;
   }
-  
+
   // Footer
-  console.log('├' + '─'.repeat(nameWidth + 2) + '┼' + '─'.repeat(locWidth + 2) + '┼' + '─'.repeat(filesWidth + 2) + '┤');
-  console.log(`│ ${'TOTAL'.padEnd(nameWidth)} │ ${formatNumber(totalLOC).padStart(locWidth)} │ ${formatNumber(totalFiles).padStart(filesWidth)} │`);
-  console.log('└' + '─'.repeat(nameWidth + 2) + '┴' + '─'.repeat(locWidth + 2) + '┴' + '─'.repeat(filesWidth + 2) + '┘\n');
+  console.log(
+    '├' + '─'.repeat(nameWidth + 2) + '┼' + '─'.repeat(locWidth + 2) + '┼' + '─'.repeat(filesWidth + 2) + '┤'
+  );
+  console.log(
+    `│ ${'TOTAL'.padEnd(nameWidth)} │ ${formatNumber(totalLOC).padStart(locWidth)} │ ${formatNumber(totalFiles).padStart(filesWidth)} │`
+  );
+  console.log(
+    '└' + '─'.repeat(nameWidth + 2) + '┴' + '─'.repeat(locWidth + 2) + '┴' + '─'.repeat(filesWidth + 2) + '┘\n'
+  );
 }
 
 function main() {
   console.log('Counting lines of code in Bruno packages...\n');
-  
+
   const packages = getPackages();
   const results = [];
-  
+
   for (const pkg of packages) {
     process.stdout.write(`Analyzing ${pkg.name}...`);
     const { totalLines, fileCount } = countLinesInDirectory(pkg.path);
@@ -118,10 +130,10 @@ function main() {
     });
     process.stdout.write(' Done\n');
   }
-  
+
   // Sort by LOC descending
   results.sort((a, b) => b.loc - a.loc);
-  
+
   printTable(results);
 }
 

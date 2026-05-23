@@ -13,7 +13,9 @@ const DigestAuth = ({ collection }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
 
-  const digestAuth = collection.draft?.root ? get(collection, 'draft.root.request.auth.digest', {}) : get(collection, 'root.request.auth.digest', {});
+  const digestAuth = collection.draft?.root
+    ? get(collection, 'draft.root.request.auth.digest', {})
+    : get(collection, 'root.request.auth.digest', {});
   const { isSensitive } = useDetectSensitiveField(collection);
   const { showWarning, warningMessage } = isSensitive(digestAuth?.password);
 

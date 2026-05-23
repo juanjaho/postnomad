@@ -19,7 +19,12 @@ describe('File System Operations', () => {
     // clean up after each test
     await fs.rm(tempDir, { recursive: true, force: true });
     // confirm the temp directory is deleted
-    expect(await fs.access(tempDir).then(() => true).catch(() => false)).toBe(false);
+    expect(
+      await fs
+        .access(tempDir)
+        .then(() => true)
+        .catch(() => false)
+    ).toBe(false);
   });
 
   describe('copyPath and removePath', () => {

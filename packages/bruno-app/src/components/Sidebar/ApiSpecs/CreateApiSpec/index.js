@@ -91,7 +91,12 @@ const CreateApiSpec = ({ onClose }) => {
           variables: vars
         }));
         // Create API spec yaml
-        let exportedYamlContentData = exportApiSpec({ name: values?.apiSpecName, variables, items: files, environments: environmentsList });
+        let exportedYamlContentData = exportApiSpec({
+          name: values?.apiSpecName,
+          variables,
+          items: files,
+          environments: environmentsList
+        });
         if (exportedYamlContentData?.content) {
           yamlContent = exportedYamlContentData?.content;
         }
@@ -316,9 +321,7 @@ const CreateApiSpec = ({ onClose }) => {
                 Browse
               </span>
               {!isDefaultWorkspace && (
-                <span className="text-xs opacity-60 ml-2">
-                  (defaults to workspace's apispec folder)
-                </span>
+                <span className="text-xs opacity-60 ml-2">(defaults to workspace's apispec folder)</span>
               )}
             </div>
           </div>

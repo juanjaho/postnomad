@@ -2,7 +2,14 @@ const { get, each, filter, find } = require('lodash');
 const decomment = require('decomment');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
-const { getTreePathFromCollectionToItem, mergeHeaders, mergeScripts, mergeVars, getFormattedCollectionOauth2Credentials, mergeAuth } = require('../../utils/collection');
+const {
+  getTreePathFromCollectionToItem,
+  mergeHeaders,
+  mergeScripts,
+  mergeVars,
+  getFormattedCollectionOauth2Credentials,
+  mergeAuth
+} = require('../../utils/collection');
 const path = require('node:path');
 const { isLargeFile } = require('../../utils/filesystem');
 
@@ -76,9 +83,8 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
         const digest = Buffer.from(hash.digest('hex').toString('utf8')).toString('base64');
 
         // Construct the WSSE header
-        axiosRequest.headers[
-          'X-WSSE'
-        ] = `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
+        axiosRequest.headers['X-WSSE'] =
+          `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
         break;
       case 'apikey':
         const apiKeyAuth = get(collectionAuth, 'apikey');
@@ -112,7 +118,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(collectionAuth, 'oauth2.tokenSource'),
               autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
               autoRefreshToken: get(collectionAuth, 'oauth2.autoRefreshToken'),
-              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'authorization_code':
@@ -135,7 +145,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(collectionAuth, 'oauth2.tokenSource'),
               autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
               autoRefreshToken: get(collectionAuth, 'oauth2.autoRefreshToken'),
-              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'implicit':
@@ -152,7 +166,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenQueryKey: get(collectionAuth, 'oauth2.tokenQueryKey'),
               tokenSource: get(collectionAuth, 'oauth2.tokenSource'),
               autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
-              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'client_credentials':
@@ -171,7 +189,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(collectionAuth, 'oauth2.tokenSource'),
               autoFetchToken: get(collectionAuth, 'oauth2.autoFetchToken'),
               autoRefreshToken: get(collectionAuth, 'oauth2.autoRefreshToken'),
-              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(collectionAuth, 'oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
         }
@@ -253,7 +275,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(request, 'auth.oauth2.tokenSource'),
               autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
               autoRefreshToken: get(request, 'auth.oauth2.autoRefreshToken'),
-              additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'authorization_code':
@@ -276,7 +302,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(request, 'auth.oauth2.tokenSource'),
               autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
               autoRefreshToken: get(request, 'auth.oauth2.autoRefreshToken'),
-              additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'implicit':
@@ -293,7 +323,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenQueryKey: get(request, 'auth.oauth2.tokenQueryKey'),
               tokenSource: get(request, 'auth.oauth2.tokenSource'),
               autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
-              additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
           case 'client_credentials':
@@ -312,7 +346,11 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
               tokenSource: get(request, 'auth.oauth2.tokenSource'),
               autoFetchToken: get(request, 'auth.oauth2.autoFetchToken'),
               autoRefreshToken: get(request, 'auth.oauth2.autoRefreshToken'),
-              additionalParameters: get(request, 'auth.oauth2.additionalParameters', { authorization: [], token: [], refresh: [] })
+              additionalParameters: get(request, 'auth.oauth2.additionalParameters', {
+                authorization: [],
+                token: [],
+                refresh: []
+              })
             };
             break;
         }
@@ -330,9 +368,8 @@ const setAuthHeaders = (axiosRequest, request, collectionRoot) => {
         const digest = Buffer.from(hash.digest('hex').toString('utf8')).toString('base64');
 
         // Construct the WSSE header
-        axiosRequest.headers[
-          'X-WSSE'
-        ] = `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
+        axiosRequest.headers['X-WSSE'] =
+          `UsernameToken Username="${username}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${ts}"`;
         break;
       case 'apikey':
         const apiKeyAuth = get(request, 'auth.apikey');
@@ -375,7 +412,9 @@ const prepareRequest = async (item, collection = {}, abortController) => {
     mergeVars(collection, request, requestTreePath);
     mergeAuth(collection, request, requestTreePath);
     request.globalEnvironmentVariables = collection?.globalEnvironmentVariables;
-    request.oauth2CredentialVariables = getFormattedCollectionOauth2Credentials({ oauth2Credentials: collection?.oauth2Credentials });
+    request.oauth2CredentialVariables = getFormattedCollectionOauth2Credentials({
+      oauth2Credentials: collection?.oauth2Credentials
+    });
     request.promptVariables = collection?.promptVariables || {};
   }
 

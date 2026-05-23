@@ -60,7 +60,10 @@ const EnvironmentVariables = ({ environment, setIsModified, collection, searchQu
     return result;
   }, [collection, environment]);
 
-  const hasSensitiveUsage = useCallback((name) => !!nonSecretSensitiveVarUsageMap[name], [nonSecretSensitiveVarUsageMap]);
+  const hasSensitiveUsage = useCallback(
+    (name) => !!nonSecretSensitiveVarUsageMap[name],
+    [nonSecretSensitiveVarUsageMap]
+  );
 
   const handleSave = useCallback(
     (variables) => {

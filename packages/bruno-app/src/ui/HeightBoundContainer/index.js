@@ -5,9 +5,7 @@ const HeightBoundContainer = ({ children, className }) => {
   return (
     <StyledWrapper className={className}>
       <div className="height-constraint">
-        <div className="flex-boundary">
-          {children}
-        </div>
+        <div className="flex-boundary">{children}</div>
       </div>
     </StyledWrapper>
   );

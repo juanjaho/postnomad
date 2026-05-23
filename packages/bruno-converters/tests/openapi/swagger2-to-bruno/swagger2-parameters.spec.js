@@ -10,9 +10,7 @@ describe('swagger2-to-bruno parameters', () => {
         host: 'api.example.com',
         paths: {
           '/items/{itemId}': {
-            parameters: [
-              { name: 'itemId', in: 'path', required: true, type: 'string', description: 'The item ID' }
-            ],
+            parameters: [{ name: 'itemId', in: 'path', required: true, type: 'string', description: 'The item ID' }],
             get: {
               summary: 'Get item',
               operationId: 'getItem',
@@ -48,9 +46,7 @@ describe('swagger2-to-bruno parameters', () => {
             get: {
               summary: 'Search',
               operationId: 'search',
-              parameters: [
-                { name: 'q', in: 'query', required: true, type: 'string', description: 'Search query' }
-              ],
+              parameters: [{ name: 'q', in: 'query', required: true, type: 'string', description: 'Search query' }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -70,14 +66,10 @@ describe('swagger2-to-bruno parameters', () => {
         host: 'api.example.com',
         paths: {
           '/users/{userId}': {
-            parameters: [
-              { name: 'userId', in: 'path', required: true, type: 'string' }
-            ],
+            parameters: [{ name: 'userId', in: 'path', required: true, type: 'string' }],
             get: {
               summary: 'Get user',
-              parameters: [
-                { name: 'fields', in: 'query', type: 'string' }
-              ],
+              parameters: [{ name: 'fields', in: 'query', type: 'string' }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -99,9 +91,7 @@ describe('swagger2-to-bruno parameters', () => {
         host: 'api.example.com',
         paths: {
           '/items/{id}': {
-            parameters: [
-              { name: 'id', in: 'path', required: true, type: 'string', description: 'Path-level ID' }
-            ],
+            parameters: [{ name: 'id', in: 'path', required: true, type: 'string', description: 'Path-level ID' }],
             get: {
               summary: 'Get item',
               parameters: [
@@ -159,9 +149,7 @@ describe('swagger2-to-bruno parameters', () => {
           '/test': {
             get: {
               summary: 'Test',
-              parameters: [
-                { name: 'q', in: 'query', type: 'string', example: 'hello world' }
-              ],
+              parameters: [{ name: 'q', in: 'query', type: 'string', example: 'hello world' }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -183,9 +171,7 @@ describe('swagger2-to-bruno parameters', () => {
           '/test': {
             get: {
               summary: 'Test',
-              parameters: [
-                { name: 'limit', in: 'query', type: 'integer', default: 20 }
-              ],
+              parameters: [{ name: 'limit', in: 'query', type: 'integer', default: 20 }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -207,9 +193,7 @@ describe('swagger2-to-bruno parameters', () => {
           '/test': {
             get: {
               summary: 'Test',
-              parameters: [
-                { name: 'sort', in: 'query', type: 'string', enum: ['asc', 'desc'], required: true }
-              ],
+              parameters: [{ name: 'sort', in: 'query', type: 'string', enum: ['asc', 'desc'], required: true }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -235,9 +219,7 @@ describe('swagger2-to-bruno parameters', () => {
           '/test': {
             get: {
               summary: 'Test',
-              parameters: [
-                { name: 'q', in: 'query', type: 'string' }
-              ],
+              parameters: [{ name: 'q', in: 'query', type: 'string' }],
               responses: { 200: { description: 'OK' } }
             }
           }
@@ -283,7 +265,13 @@ describe('swagger2-to-bruno parameters', () => {
             get: {
               summary: 'Test',
               parameters: [
-                { name: 'status', in: 'query', type: 'string', enum: ['active', 'inactive', 'pending'], default: 'pending' }
+                {
+                  name: 'status',
+                  in: 'query',
+                  type: 'string',
+                  enum: ['active', 'inactive', 'pending'],
+                  default: 'pending'
+                }
               ],
               responses: { 200: { description: 'OK' } }
             }
@@ -316,7 +304,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'Find pets',
               parameters: [
                 {
-                  in: 'query', name: 'status', type: 'array',
+                  in: 'query',
+                  name: 'status',
+                  type: 'array',
                   items: { type: 'string', enum: ['available', 'pending', 'sold'] },
                   collectionFormat: 'multi',
                   required: true
@@ -346,7 +336,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'List items',
               parameters: [
                 {
-                  in: 'query', name: 'tags', type: 'array',
+                  in: 'query',
+                  name: 'tags',
+                  type: 'array',
                   items: { type: 'string', enum: ['a', 'b', 'c'] },
                   collectionFormat: 'csv'
                 }
@@ -375,7 +367,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'List items',
               parameters: [
                 {
-                  in: 'query', name: 'ids', type: 'array',
+                  in: 'query',
+                  name: 'ids',
+                  type: 'array',
                   items: { type: 'string', enum: ['x', 'y', 'z'] },
                   collectionFormat: 'pipes'
                 }
@@ -404,7 +398,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'List items',
               parameters: [
                 {
-                  in: 'query', name: 'tags', type: 'array',
+                  in: 'query',
+                  name: 'tags',
+                  type: 'array',
                   items: { type: 'string', enum: ['a', 'b'] },
                   collectionFormat: 'ssv'
                 }
@@ -433,7 +429,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'List items',
               parameters: [
                 {
-                  in: 'query', name: 'tags', type: 'array',
+                  in: 'query',
+                  name: 'tags',
+                  type: 'array',
                   items: { type: 'string', enum: ['a', 'b'] },
                   collectionFormat: 'tsv'
                 }
@@ -462,7 +460,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'List items',
               parameters: [
                 {
-                  in: 'query', name: 'colors', type: 'array',
+                  in: 'query',
+                  name: 'colors',
+                  type: 'array',
                   items: { type: 'string', enum: ['red', 'blue'] }
                 }
               ],
@@ -492,7 +492,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'Search',
               parameters: [
                 {
-                  in: 'query', name: 'filter', type: 'object',
+                  in: 'query',
+                  name: 'filter',
+                  type: 'object',
                   required: ['status'],
                   properties: {
                     status: { type: 'string', description: 'Filter by status', enum: ['active', 'inactive'] },
@@ -531,7 +533,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'Get item',
               parameters: [
                 {
-                  in: 'path', name: 'composite', type: 'object',
+                  in: 'path',
+                  name: 'composite',
+                  type: 'object',
                   properties: {
                     type: { type: 'string', example: 'widget' },
                     id: { type: 'integer', example: 42 }
@@ -565,7 +569,9 @@ describe('swagger2-to-bruno parameters', () => {
               summary: 'Get data',
               parameters: [
                 {
-                  in: 'header', name: 'X-Custom', type: 'object',
+                  in: 'header',
+                  name: 'X-Custom',
+                  type: 'object',
                   properties: {
                     'X-Trace-ID': { type: 'string', example: 'abc123' },
                     'X-Version': { type: 'string', default: 'v2' }

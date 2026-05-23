@@ -212,7 +212,7 @@ const StyledWrapper = styled.div`
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     overflow: hidden;
-    
+
     &.right {
       left: auto;
       right: 0;
@@ -262,7 +262,7 @@ const StyledWrapper = styled.div`
       background: ${(props) => props.theme.console.optionHoverBg};
     }
 
-    input[type="checkbox"] {
+    input[type='checkbox'] {
       margin: 0 8px 0 0;
       width: 14px;
       height: 14px;
@@ -334,12 +334,12 @@ const StyledWrapper = styled.div`
 
     &.error {
       border-left-color: #f14c4c;
-      
+
       .log-level {
         background: #f14c4c;
         color: white;
       }
-      
+
       .log-icon {
         color: #f14c4c;
       }
@@ -347,12 +347,12 @@ const StyledWrapper = styled.div`
 
     &.warn {
       border-left-color: #ffcc02;
-      
+
       .log-level {
         background: #ffcc02;
         color: #000;
       }
-      
+
       .log-icon {
         color: #ffcc02;
       }
@@ -360,12 +360,12 @@ const StyledWrapper = styled.div`
 
     &.info {
       border-left-color: #0078d4;
-      
+
       .log-level {
         background: #0078d4;
         color: white;
       }
-      
+
       .log-icon {
         color: #0078d4;
       }
@@ -373,12 +373,12 @@ const StyledWrapper = styled.div`
 
     &.debug {
       border-left-color: #9b59b6;
-      
+
       .log-level {
         background: #9b59b6;
         color: white;
       }
-      
+
       .log-icon {
         color: #9b59b6;
       }
@@ -386,12 +386,12 @@ const StyledWrapper = styled.div`
 
     &.log {
       border-left-color: #6a6a6a;
-      
+
       .log-level {
         background: #6a6a6a;
         color: white;
       }
-      
+
       .log-icon {
         color: #6a6a6a;
       }
@@ -430,63 +430,66 @@ const StyledWrapper = styled.div`
     white-space: pre-wrap;
     word-break: break-word;
     flex: 1;
-    
+
     .log-object {
       margin: 4px 0;
       padding: 8px;
       background: ${(props) => props.theme.console.headerBg};
       border-radius: 4px;
       border: 1px solid ${(props) => props.theme.console.border};
-      
+
       .react-json-view {
         background: transparent !important;
-        
+
         .object-key-val {
           font-size: ${(props) => props.theme.font.size.sm} !important;
         }
-        
+
         .object-key {
           color: ${(props) => props.theme.console.messageColor} !important;
           font-weight: 500 !important;
         }
-        
+
         .object-value {
           color: ${(props) => props.theme.console.messageColor} !important;
         }
-        
+
         .string-value {
-          color: ${(props) => props.theme.colors?.text?.green || (props.theme.console.messageColor)} !important;
+          color: ${(props) => props.theme.colors?.text?.green || props.theme.console.messageColor} !important;
         }
-        
+
         .number-value {
-          color: ${(props) => props.theme.colors?.text?.purple || (props.theme.console.messageColor)} !important;
+          color: ${(props) => props.theme.colors?.text?.purple || props.theme.console.messageColor} !important;
         }
-        
+
         .boolean-value {
-          color: ${(props) => props.theme.colors?.text?.yellow || (props.theme.console.messageColor)} !important;
+          color: ${(props) => props.theme.colors?.text?.yellow || props.theme.console.messageColor} !important;
         }
-        
+
         .null-value {
-          color: ${(props) => props.theme.colors?.text?.danger || (props.theme.console.messageColor)} !important;
+          color: ${(props) => props.theme.colors?.text?.danger || props.theme.console.messageColor} !important;
         }
-        
+
         .object-size {
           color: ${(props) => props.theme.console.timestampColor} !important;
         }
-        
-        .brace, .bracket {
+
+        .brace,
+        .bracket {
           color: ${(props) => props.theme.console.messageColor} !important;
         }
-        
-        .collapsed-icon, .expanded-icon {
+
+        .collapsed-icon,
+        .expanded-icon {
           color: ${(props) => props.theme.console.checkboxColor} !important;
         }
-        
+
         .icon-container {
           color: ${(props) => props.theme.console.checkboxColor} !important;
         }
-        
-        .click-to-expand, .click-to-collapse {
+
+        .click-to-expand,
+        .click-to-collapse {
           color: ${(props) => props.theme.console.checkboxColor} !important;
         }
       }

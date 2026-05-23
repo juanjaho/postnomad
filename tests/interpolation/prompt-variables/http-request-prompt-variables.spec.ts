@@ -8,7 +8,9 @@ test.describe('Prompt Variables Interpolation', () => {
   });
 
   // without client certificate - no HTTPS
-  test('Verifying if the prompt variables are prompted correctly for the http request - without client certificate', async ({ pageWithUserData: page }) => {
+  test('Verifying if the prompt variables are prompted correctly for the http request - without client certificate', async ({
+    pageWithUserData: page
+  }) => {
     let promptVariablesModal;
     let promptInputs;
 
@@ -25,7 +27,9 @@ test.describe('Prompt Variables Interpolation', () => {
       // Send the request
       await page.getByTestId('send-arrow-icon').click();
 
-      promptVariablesModal = page.getByRole('dialog').filter({ has: page.locator('.bruno-modal-header-title').getByText('Input Required') });
+      promptVariablesModal = page
+        .getByRole('dialog')
+        .filter({ has: page.locator('.bruno-modal-header-title').getByText('Input Required') });
       await promptVariablesModal.waitFor({ state: 'visible' });
     });
 
@@ -53,11 +57,26 @@ test.describe('Prompt Variables Interpolation', () => {
       await promptInputs.filter({ hasText: 'Enter Boolean Variable' }).locator('input').fill('true');
       await promptInputs.filter({ hasText: 'Enter Request Variable' }).locator('input').fill('requestVarPromptValue');
       await promptInputs.filter({ hasText: 'Enter Folder Variable' }).locator('input').fill('folderVarPromptValue');
-      await promptInputs.filter({ hasText: 'Enter Collection Variable' }).locator('input').fill('collectionVarPromptValue');
-      await promptInputs.filter({ hasText: 'Enter Collection Env Variable' }).locator('input').fill('collectionEnvVarPromptValue');
-      await promptInputs.filter({ hasText: 'Enter Global Env Variable' }).locator('input').fill('globalEnvVarPromptValue');
-      await promptInputs.filter({ hasText: 'Enter Folder Auth Password' }).locator('input').fill('folderAuthPasswordValue');
-      await promptInputs.filter({ hasText: 'Enter Folder Header Variable' }).locator('input').fill('folderHeaderVarPromptValue');
+      await promptInputs
+        .filter({ hasText: 'Enter Collection Variable' })
+        .locator('input')
+        .fill('collectionVarPromptValue');
+      await promptInputs
+        .filter({ hasText: 'Enter Collection Env Variable' })
+        .locator('input')
+        .fill('collectionEnvVarPromptValue');
+      await promptInputs
+        .filter({ hasText: 'Enter Global Env Variable' })
+        .locator('input')
+        .fill('globalEnvVarPromptValue');
+      await promptInputs
+        .filter({ hasText: 'Enter Folder Auth Password' })
+        .locator('input')
+        .fill('folderAuthPasswordValue');
+      await promptInputs
+        .filter({ hasText: 'Enter Folder Header Variable' })
+        .locator('input')
+        .fill('folderHeaderVarPromptValue');
 
       // Submit the prompt variables
       await promptVariablesModal.getByRole('button', { name: 'Continue' }).click();
@@ -66,20 +85,60 @@ test.describe('Prompt Variables Interpolation', () => {
     await test.step('Verify the request is sent with the correct variables', async () => {
       // Verify the response status code
       await expect(page.getByTestId('response-status-code')).toHaveText(/200/);
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"folderVar": "folderVarPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"collectionVar": "collectionVarPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"collectionEnvVar": "collectionEnvVarPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"globalEnvVar": "globalEnvVarPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"requestVar": "requestVarPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"body": "bodyPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"repeat-1": "bodyPromptValue"').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"bodyNumber": 123').first()).toBeVisible();
-      await expect(page.locator('.response-pane').locator('.CodeMirror-line').getByText('"bodyBoolean": true').first()).toBeVisible();
+      await expect(
+        page
+          .locator('.response-pane')
+          .locator('.CodeMirror-line')
+          .getByText('"folderVar": "folderVarPromptValue"')
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('.response-pane')
+          .locator('.CodeMirror-line')
+          .getByText('"collectionVar": "collectionVarPromptValue"')
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('.response-pane')
+          .locator('.CodeMirror-line')
+          .getByText('"collectionEnvVar": "collectionEnvVarPromptValue"')
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('.response-pane')
+          .locator('.CodeMirror-line')
+          .getByText('"globalEnvVar": "globalEnvVarPromptValue"')
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('.response-pane')
+          .locator('.CodeMirror-line')
+          .getByText('"requestVar": "requestVarPromptValue"')
+          .first()
+      ).toBeVisible();
+      await expect(
+        page.locator('.response-pane').locator('.CodeMirror-line').getByText('"body": "bodyPromptValue"').first()
+      ).toBeVisible();
+      await expect(
+        page.locator('.response-pane').locator('.CodeMirror-line').getByText('"repeat-1": "bodyPromptValue"').first()
+      ).toBeVisible();
+      await expect(
+        page.locator('.response-pane').locator('.CodeMirror-line').getByText('"bodyNumber": 123').first()
+      ).toBeVisible();
+      await expect(
+        page.locator('.response-pane').locator('.CodeMirror-line').getByText('"bodyBoolean": true').first()
+      ).toBeVisible();
     });
   });
 
   // with client certificate - HTTPS
-  test('Verifying if the prompt variables are prompted correctly for the http request - with client certificate', async ({ pageWithUserData: page }) => {
+  test('Verifying if the prompt variables are prompted correctly for the http request - with client certificate', async ({
+    pageWithUserData: page
+  }) => {
     let promptVariablesModal;
     let promptInputs;
 
@@ -96,7 +155,9 @@ test.describe('Prompt Variables Interpolation', () => {
       // Send the request
       await page.getByTestId('send-arrow-icon').click();
 
-      promptVariablesModal = page.getByRole('dialog').filter({ has: page.locator('.bruno-modal-header-title').getByText('Input Required') });
+      promptVariablesModal = page
+        .getByRole('dialog')
+        .filter({ has: page.locator('.bruno-modal-header-title').getByText('Input Required') });
       await promptVariablesModal.waitFor({ state: 'visible' });
     });
 

@@ -1,4 +1,7 @@
-import type { Environment as BrunoEnvironment, EnvironmentVariable as BrunoEnvironmentVariable } from '@usebruno/schema-types/collection/environment';
+import type {
+  Environment as BrunoEnvironment,
+  EnvironmentVariable as BrunoEnvironmentVariable
+} from '@usebruno/schema-types/collection/environment';
 import type { Environment } from '@opencollection/types/config/environments';
 import type { Variable, SecretVariable } from '@opencollection/types/common/variables';
 import { parseYml } from './utils';
@@ -8,7 +11,9 @@ const isSecretVariable = (v: Variable | SecretVariable): v is SecretVariable => 
   return 'secret' in v && v.secret === true;
 };
 
-const toBrunoEnvironmentVariables = (variables: (Variable | SecretVariable)[] | null | undefined): BrunoEnvironmentVariable[] => {
+const toBrunoEnvironmentVariables = (
+  variables: (Variable | SecretVariable)[] | null | undefined
+): BrunoEnvironmentVariable[] => {
   if (!variables?.length) {
     return [];
   }

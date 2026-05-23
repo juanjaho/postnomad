@@ -50,22 +50,23 @@ export const toOpenCollectionBody = (body: BrunoHttpRequestBody | null | undefin
       return sparqlBody;
 
     case 'formUrlEncoded':
-      const formEntries: FormUrlEncodedEntry[] = body.formUrlEncoded?.map((entry: BrunoKeyValue): FormUrlEncodedEntry => {
-        const formEntry: FormUrlEncodedEntry = {
-          name: entry.name || '',
-          value: entry.value || ''
-        };
+      const formEntries: FormUrlEncodedEntry[] =
+        body.formUrlEncoded?.map((entry: BrunoKeyValue): FormUrlEncodedEntry => {
+          const formEntry: FormUrlEncodedEntry = {
+            name: entry.name || '',
+            value: entry.value || ''
+          };
 
-        if (entry?.description?.trim().length) {
-          formEntry.description = entry.description;
-        }
+          if (entry?.description?.trim().length) {
+            formEntry.description = entry.description;
+          }
 
-        if (entry.enabled === false) {
-          formEntry.disabled = true;
-        }
+          if (entry.enabled === false) {
+            formEntry.disabled = true;
+          }
 
-        return formEntry;
-      }) || [];
+          return formEntry;
+        }) || [];
 
       const formBody: FormUrlEncodedBody = {
         type: 'form-urlencoded',
@@ -74,27 +75,28 @@ export const toOpenCollectionBody = (body: BrunoHttpRequestBody | null | undefin
       return formBody;
 
     case 'multipartForm':
-      const multipartEntries: MultipartFormEntry[] = body.multipartForm?.map((entry): MultipartFormEntry => {
-        const multipartEntry: MultipartFormEntry = {
-          name: entry.name || '',
-          type: entry.type,
-          value: entry.value || (entry.type === 'file' ? [] : '')
-        };
+      const multipartEntries: MultipartFormEntry[] =
+        body.multipartForm?.map((entry): MultipartFormEntry => {
+          const multipartEntry: MultipartFormEntry = {
+            name: entry.name || '',
+            type: entry.type,
+            value: entry.value || (entry.type === 'file' ? [] : '')
+          };
 
-        if (entry?.contentType?.trim().length) {
-          multipartEntry.contentType = entry.contentType;
-        }
+          if (entry?.contentType?.trim().length) {
+            multipartEntry.contentType = entry.contentType;
+          }
 
-        if (entry?.description?.trim().length) {
-          multipartEntry.description = entry.description;
-        }
+          if (entry?.description?.trim().length) {
+            multipartEntry.description = entry.description;
+          }
 
-        if (entry.enabled === false) {
-          multipartEntry.disabled = true;
-        }
+          if (entry.enabled === false) {
+            multipartEntry.disabled = true;
+          }
 
-        return multipartEntry;
-      }) || [];
+          return multipartEntry;
+        }) || [];
 
       const multipartBody: MultipartFormBody = {
         type: 'multipart-form',
@@ -103,13 +105,14 @@ export const toOpenCollectionBody = (body: BrunoHttpRequestBody | null | undefin
       return multipartBody;
 
     case 'file':
-      const fileEntries: FileBodyEntry[] = body.file?.map((file): FileBodyEntry => {
-        return {
-          filePath: file.filePath || '',
-          contentType: file.contentType || '',
-          selected: file.selected ?? false
-        };
-      }) || [];
+      const fileEntries: FileBodyEntry[] =
+        body.file?.map((file): FileBodyEntry => {
+          return {
+            filePath: file.filePath || '',
+            contentType: file.contentType || '',
+            selected: file.selected ?? false
+          };
+        }) || [];
 
       const fileBody: FileBody = {
         type: 'file',
@@ -176,58 +179,61 @@ export const toBrunoBody = (body: HttpRequestBody | null | undefined): BrunoHttp
 
     case 'form-urlencoded':
       brunoBody.mode = 'formUrlEncoded';
-      brunoBody.formUrlEncoded = body.data?.map((entry): BrunoKeyValue => {
-        const formEntry: BrunoKeyValue = {
-          uid: uuid(),
-          name: ensureString(entry.name),
-          value: ensureString(entry.value),
-          enabled: entry.disabled !== true
-        };
+      brunoBody.formUrlEncoded =
+        body.data?.map((entry): BrunoKeyValue => {
+          const formEntry: BrunoKeyValue = {
+            uid: uuid(),
+            name: ensureString(entry.name),
+            value: ensureString(entry.value),
+            enabled: entry.disabled !== true
+          };
 
-        if (entry.description) {
-          if (typeof entry.description === 'string' && entry.description.trim().length) {
-            formEntry.description = entry.description;
-          } else if (typeof entry.description === 'object' && entry.description.content?.trim().length) {
-            formEntry.description = entry.description.content;
+          if (entry.description) {
+            if (typeof entry.description === 'string' && entry.description.trim().length) {
+              formEntry.description = entry.description;
+            } else if (typeof entry.description === 'object' && entry.description.content?.trim().length) {
+              formEntry.description = entry.description.content;
+            }
           }
-        }
 
-        return formEntry;
-      }) || [];
+          return formEntry;
+        }) || [];
       break;
 
     case 'multipart-form':
       brunoBody.mode = 'multipartForm';
-      brunoBody.multipartForm = body.data?.map((entry): any => {
-        const multipartEntry: any = {
-          uid: uuid(),
-          type: entry.type,
-          name: ensureString(entry.name),
-          value: entry.type === 'file' ? (entry.value || []) : ensureString(entry.value),
-          contentType: entry.contentType || null,
-          enabled: entry.disabled !== true
-        };
+      brunoBody.multipartForm =
+        body.data?.map((entry): any => {
+          const multipartEntry: any = {
+            uid: uuid(),
+            type: entry.type,
+            name: ensureString(entry.name),
+            value: entry.type === 'file' ? entry.value || [] : ensureString(entry.value),
+            contentType: entry.contentType || null,
+            enabled: entry.disabled !== true
+          };
 
-        if (entry.description) {
-          if (typeof entry.description === 'string' && entry.description.trim().length) {
-            multipartEntry.description = entry.description;
-          } else if (typeof entry.description === 'object' && entry.description.content?.trim().length) {
-            multipartEntry.description = entry.description.content;
+          if (entry.description) {
+            if (typeof entry.description === 'string' && entry.description.trim().length) {
+              multipartEntry.description = entry.description;
+            } else if (typeof entry.description === 'object' && entry.description.content?.trim().length) {
+              multipartEntry.description = entry.description.content;
+            }
           }
-        }
 
-        return multipartEntry;
-      }) || [];
+          return multipartEntry;
+        }) || [];
       break;
 
     case 'file':
       brunoBody.mode = 'file';
-      brunoBody.file = body.data?.map((file): any => ({
-        uid: uuid(),
-        filePath: file.filePath || '',
-        contentType: file.contentType || '',
-        selected: file.selected ?? false
-      })) || [];
+      brunoBody.file =
+        body.data?.map((file): any => ({
+          uid: uuid(),
+          filePath: file.filePath || '',
+          contentType: file.contentType || '',
+          selected: file.selected ?? false
+        })) || [];
       break;
 
     default:

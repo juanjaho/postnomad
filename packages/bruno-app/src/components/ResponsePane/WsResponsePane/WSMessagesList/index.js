@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import classnames from 'classnames';
 import StyledWrapper from './StyledWrapper';
-import { IconExclamationCircle, IconChevronRight, IconInfoCircle, IconChevronDown, IconArrowUpRight, IconArrowDownLeft } from '@tabler/icons';
+import {
+  IconExclamationCircle,
+  IconChevronRight,
+  IconInfoCircle,
+  IconChevronDown,
+  IconArrowUpRight,
+  IconArrowDownLeft
+} from '@tabler/icons';
 import CodeEditor from 'components/CodeEditor/index';
 import { useTheme } from 'providers/Theme';
 import { useSelector } from 'react-redux';
@@ -101,8 +108,8 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
         'ws-outgoing': isOutgoing,
         'ws-info': isInfo,
         'ws-error': isError,
-        'open': isOpen,
-        'new': isNew
+        open: isOpen,
+        new: isNew
       })}
     >
       <div
@@ -116,23 +123,23 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
           <span className="message-type-icon">
             <TypeIcon type={message.type} />
           </span>
-          <span className="ml-3 text-ellipsis max-w-full overflow-hidden text-nowrap message-content">{parsedContent.content}</span>
+          <span className="ml-3 text-ellipsis max-w-full overflow-hidden text-nowrap message-content">
+            {parsedContent.content}
+          </span>
         </div>
         <div className="flex shrink-0 gap-2 items-center">
-          {message.timestamp && (
-            <span className="message-timestamp">{new Date(message.timestamp).toISOString()}</span>
+          {message.timestamp && <span className="message-timestamp">{new Date(message.timestamp).toISOString()}</span>}
+          {canOpenMessage ? (
+            <span className="chevron-icon">
+              {isOpen ? (
+                <IconChevronDown size={16} strokeWidth={1.5} />
+              ) : (
+                <IconChevronRight size={16} strokeWidth={1.5} />
+              )}
+            </span>
+          ) : (
+            <span className="w-4"></span>
           )}
-          {canOpenMessage
-            ? (
-                <span className="chevron-icon">
-                  {isOpen ? (
-                    <IconChevronDown size={16} strokeWidth={1.5} />
-                  ) : (
-                    <IconChevronRight size={16} strokeWidth={1.5} />
-                  )}
-                </span>
-              )
-            : <span className="w-4"></span>}
         </div>
       </div>
       {isOpen && (
@@ -140,7 +147,7 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
           <div className="mt-2 flex justify-end gap-2 text-xs ws-message-toolbar" role="tablist">
             <div
               className={classnames('select-none capitalize', {
-                'active': showHex,
+                active: showHex,
                 'cursor-pointer': !showHex
               })}
               role="tab"
@@ -150,7 +157,7 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
             </div>
             <div
               className={classnames('select-none capitalize', {
-                'active': !showHex,
+                active: !showHex,
                 'cursor-pointer': showHex
               })}
               role="tab"
@@ -217,28 +224,38 @@ const WSMessagesList = ({ messages = [] }) => {
     }
   }, []);
 
-  const followOutput = useCallback((isAtBottom) => {
-    // Don't auto-scroll if user has scrolled away or has messages open
-    if (userScrolledAwayRef.current || openMessages.size > 0) {
+  const followOutput = useCallback(
+    (isAtBottom) => {
+      // Don't auto-scroll if user has scrolled away or has messages open
+      if (userScrolledAwayRef.current || openMessages.size > 0) {
+        return false;
+      }
+      if (isAtBottom) {
+        return 'smooth';
+      }
       return false;
-    }
-    if (isAtBottom) {
-      return 'smooth';
-    }
-    return false;
-  }, [openMessages.size]);
+    },
+    [openMessages.size]
+  );
 
-  const renderItem = useCallback((_, msg) => {
-    const isOpen = openMessages.has(msg.timestamp);
-    return <WSMessageItem message={msg} isOpen={isOpen} onToggle={handleMessageToggle} />;
-  }, [openMessages, handleMessageToggle]);
+  const renderItem = useCallback(
+    (_, msg) => {
+      const isOpen = openMessages.has(msg.timestamp);
+      return <WSMessageItem message={msg} isOpen={isOpen} onToggle={handleMessageToggle} />;
+    },
+    [openMessages, handleMessageToggle]
+  );
 
   const computeItemKey = useCallback((_, msg) => {
     return msg.seq ?? msg.timestamp;
   }, []);
 
   if (!messages.length) {
-    return <StyledWrapper><div className="empty-state">No messages yet.</div></StyledWrapper>;
+    return (
+      <StyledWrapper>
+        <div className="empty-state">No messages yet.</div>
+      </StyledWrapper>
+    );
   }
 
   return (

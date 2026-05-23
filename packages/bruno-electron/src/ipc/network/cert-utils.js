@@ -34,7 +34,8 @@ const getCertsAndProxyConfig = async ({
 
   // Only load CA certificates if SSL validation is enabled (otherwise they're unused)
   if (preferencesUtil.shouldVerifyTls()) {
-    let caCertFilePath = preferencesUtil.shouldUseCustomCaCertificate() && preferencesUtil.getCustomCaCertificateFilePath();
+    let caCertFilePath =
+      preferencesUtil.shouldUseCustomCaCertificate() && preferencesUtil.getCustomCaCertificateFilePath();
     let caCertificatesData = getCACertificates({
       caCertFilePath,
       shouldKeepDefaultCerts: preferencesUtil.shouldKeepDefaultCaCertificates()
@@ -72,8 +73,9 @@ const getCertsAndProxyConfig = async ({
     const domain = interpolateString(clientCert?.domain, interpolationOptions);
     const type = clientCert?.type || 'cert';
     if (domain) {
-      const hostRegex = '^(https:\\/\\/|grpc:\\/\\/|grpcs:\\/\\/|ws:\\/\\/|wss:\\/\\/)?'
-        + domain.replaceAll('.', '\\.').replaceAll('*', '.*');
+      const hostRegex =
+        '^(https:\\/\\/|grpc:\\/\\/|grpcs:\\/\\/|ws:\\/\\/|wss:\\/\\/)?' +
+        domain.replaceAll('.', '\\.').replaceAll('*', '.*');
       const requestUrl = interpolateString(request.url, interpolationOptions);
       if (requestUrl && requestUrl.match(hostRegex)) {
         if (type === 'cert') {
@@ -148,7 +150,12 @@ const getCertsAndProxyConfig = async ({
       } else if (globalProxySource === 'inherit') {
         proxyMode = 'system';
         const systemProxyConfig = await getCachedSystemProxy();
-        proxyConfig = systemProxyConfig || { http_proxy: null, https_proxy: null, no_proxy: null, source: 'cache-miss' };
+        proxyConfig = systemProxyConfig || {
+          http_proxy: null,
+          https_proxy: null,
+          no_proxy: null,
+          source: 'cache-miss'
+        };
       } else {
         // source === 'manual'
         proxyConfig = globalProxyConfigData;

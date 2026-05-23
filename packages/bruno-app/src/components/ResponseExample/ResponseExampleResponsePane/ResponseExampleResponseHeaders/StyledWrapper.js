@@ -9,20 +9,20 @@ const StyledWrapper = styled.div`
     font-size: ${(props) => props.theme.font.size.sm};
     font-weight: 500;
     transition: opacity 0.2s ease;
-    
+
     &:hover {
       opacity: 0.8;
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
   }
-  
+
   tr {
     position: relative;
-    
+
     &:hover .delete-button {
       opacity: 1;
       visibility: visible;
@@ -40,7 +40,7 @@ const StyledWrapper = styled.div`
     border-radius: 4px;
     color: ${(props) => props.theme.colors.text.muted};
     margin-left: 8px;
-    
+
     &:hover {
       color: ${(props) => props.theme.colors.text.red};
     }

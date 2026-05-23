@@ -2,9 +2,7 @@ import { test, expect } from '../../../playwright';
 import { selectRequestPaneTab } from '../../utils/page';
 
 test.describe('No Redirects Settings Tests', () => {
-  test('should configure and test no redirects settings', async ({
-    pageWithUserData: page
-  }) => {
+  test('should configure and test no redirects settings', async ({ pageWithUserData: page }) => {
     // Navigate to the test collection and request
     await expect(page.locator('#sidebar-collection-name').getByText('settings-test')).toBeVisible();
 

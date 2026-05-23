@@ -5,11 +5,19 @@ import { ProxyConfiguration, ProxyResolver } from '../types';
 import { normalizeProxyUrl, normalizeNoProxy, safeExec } from './common';
 
 // Pre-compile patterns for proxy variable detection
-const PROXY_VAR_PATTERNS = ['http_proxy', 'https_proxy', 'no_proxy', 'all_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'NO_PROXY', 'ALL_PROXY']
-  .flatMap((varName) => [
-    { varName: varName.toLowerCase(), pattern: new RegExp(`^export\\s+${varName}\\s*=\\s*(.+)$`, 'i') },
-    { varName: varName.toLowerCase(), pattern: new RegExp(`^${varName}\\s*=\\s*(.+)$`, 'i') }
-  ]);
+const PROXY_VAR_PATTERNS = [
+  'http_proxy',
+  'https_proxy',
+  'no_proxy',
+  'all_proxy',
+  'HTTP_PROXY',
+  'HTTPS_PROXY',
+  'NO_PROXY',
+  'ALL_PROXY'
+].flatMap((varName) => [
+  { varName: varName.toLowerCase(), pattern: new RegExp(`^export\\s+${varName}\\s*=\\s*(.+)$`, 'i') },
+  { varName: varName.toLowerCase(), pattern: new RegExp(`^${varName}\\s*=\\s*(.+)$`, 'i') }
+]);
 
 export class LinuxProxyResolver implements ProxyResolver {
   async detect(opts?: { timeoutMs?: number }): Promise<ProxyConfiguration> {
@@ -49,7 +57,7 @@ export class LinuxProxyResolver implements ProxyResolver {
   private async getGSettingsProxy(execOpts: ExecFileOptions): Promise<ProxyConfiguration | null> {
     try {
       const mode = await safeExec('gsettings', ['get', 'org.gnome.system.proxy', 'mode'], execOpts);
-      if (mode !== '\'manual\'') {
+      if (mode !== "'manual'") {
         return null;
       }
 
@@ -66,9 +74,11 @@ export class LinuxProxyResolver implements ProxyResolver {
       const cleanIgnoreHosts = ignoreHosts || '';
 
       const http_proxy = cleanHttpHost && cleanHttpPort ? normalizeProxyUrl(`${cleanHttpHost}:${cleanHttpPort}`) : null;
-      const https_proxy = cleanHttpsHost && cleanHttpsPort ? normalizeProxyUrl(`${cleanHttpsHost}:${cleanHttpsPort}`) : null;
+      const https_proxy =
+        cleanHttpsHost && cleanHttpsPort ? normalizeProxyUrl(`${cleanHttpsHost}:${cleanHttpsPort}`) : null;
 
-      const rawNoProxy = cleanIgnoreHosts !== '[]' ? cleanIgnoreHosts.replace(/[\[\]']/g, '').replace(/,\s*/g, ',') : null;
+      const rawNoProxy =
+        cleanIgnoreHosts !== '[]' ? cleanIgnoreHosts.replace(/[\[\]']/g, '').replace(/,\s*/g, ',') : null;
 
       return {
         http_proxy,
@@ -163,7 +173,16 @@ export class LinuxProxyResolver implements ProxyResolver {
   }
 
   private parseProxyFromContent(content: string): ProxyConfiguration | null {
-    const proxyVars = ['http_proxy', 'https_proxy', 'no_proxy', 'all_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'NO_PROXY', 'ALL_PROXY'];
+    const proxyVars = [
+      'http_proxy',
+      'https_proxy',
+      'no_proxy',
+      'all_proxy',
+      'HTTP_PROXY',
+      'HTTPS_PROXY',
+      'NO_PROXY',
+      'ALL_PROXY'
+    ];
     const proxies: Record<string, string> = {};
 
     const lines = content.split('\n');

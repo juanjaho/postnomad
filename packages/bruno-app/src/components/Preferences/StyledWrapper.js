@@ -44,8 +44,8 @@ const StyledWrapper = styled.div`
     padding: 12px;
   }
 
-  input[type="checkbox"],
-  input[type="radio"] {
+  input[type='checkbox'],
+  input[type='radio'] {
     accent-color: ${(props) => props.theme.workspace.accent};
     cursor: pointer;
   }

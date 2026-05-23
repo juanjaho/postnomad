@@ -9,7 +9,9 @@ test.describe.serial('Edit Response Examples', () => {
     execSync(`git checkout -- ${path.join(__dirname, 'fixtures', 'collection', 'edit-example.bru')}`);
   });
 
-  test('should enter edit mode and show editable fields when edit button is clicked', async ({ pageWithUserData: page }) => {
+  test('should enter edit mode and show editable fields when edit button is clicked', async ({
+    pageWithUserData: page
+  }) => {
     await test.step('Open collection and request', async () => {
       await page.locator('#sidebar-collection-name').getByText('collection').click();
       await page.locator('.collection-item-name').getByText('edit-example').click();
@@ -27,7 +29,10 @@ test.describe.serial('Edit Response Examples', () => {
     });
 
     await test.step('Open existing example', async () => {
-      await page.locator('.collection-item-name', { hasText: 'edit-example' }).getByTestId('request-item-chevron').click();
+      await page
+        .locator('.collection-item-name', { hasText: 'edit-example' })
+        .getByTestId('request-item-chevron')
+        .click();
       const exampleItem = page.locator('.collection-item-name').filter({ hasText: 'Test Example' });
       await expect(exampleItem).toBeVisible();
       await exampleItem.click();
@@ -112,7 +117,9 @@ test.describe.serial('Edit Response Examples', () => {
     });
   });
 
-  test('should discard changes and revert to original values when cancel is clicked', async ({ pageWithUserData: page }) => {
+  test('should discard changes and revert to original values when cancel is clicked', async ({
+    pageWithUserData: page
+  }) => {
     await test.step('Open collection and request', async () => {
       await page.locator('#sidebar-collection-name').getByText('collection').click();
       await page.locator('.collection-item-name').getByText('edit-example').click();
@@ -162,12 +169,16 @@ test.describe.serial('Edit Response Examples', () => {
       await page.getByRole('button', { name: 'Create Example' }).click();
       // Wait for modal to close
       await page.waitForSelector('text=Save Response as Example', { state: 'detached' });
-      const exampleItem = page.locator('.collection-item-name').getByText('Keyboard Shortcut Test Example', { exact: true });
+      const exampleItem = page
+        .locator('.collection-item-name')
+        .getByText('Keyboard Shortcut Test Example', { exact: true });
       await expect(exampleItem).toBeVisible();
     });
 
     await test.step('Open existing example', async () => {
-      const exampleItem = page.locator('.collection-item-name').getByText('Keyboard Shortcut Test Example', { exact: true });
+      const exampleItem = page
+        .locator('.collection-item-name')
+        .getByText('Keyboard Shortcut Test Example', { exact: true });
       await expect(exampleItem).toBeVisible();
       await exampleItem.click();
     });

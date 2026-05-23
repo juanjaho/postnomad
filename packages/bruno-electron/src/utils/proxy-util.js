@@ -116,7 +116,8 @@ async function setupProxyAgents({
   if (timeline) {
     let modeMsg = `Proxy mode: ${proxyMode}`;
     if (proxyMode === 'pac') modeMsg += ` | PAC URL: ${get(proxyConfig, 'pac.source') || '(empty)'}`;
-    else if (proxyMode === 'on') modeMsg += ` | ${get(proxyConfig, 'protocol')}://${get(proxyConfig, 'hostname')}:${get(proxyConfig, 'port')}`;
+    else if (proxyMode === 'on')
+      modeMsg += ` | ${get(proxyConfig, 'protocol')}://${get(proxyConfig, 'hostname')}:${get(proxyConfig, 'port')}`;
     else if (proxyMode === 'off' && proxyModeReason) modeMsg += ` (${proxyModeReason})`;
     timeline.push({ timestamp: new Date(), type: 'info', message: modeMsg });
   }
@@ -135,7 +136,8 @@ async function setupProxyAgents({
     secureProtocol: undefined,
     // Allow Node.js to choose the protocol
     minVersion: 'TLSv1',
-    rejectUnauthorized: httpsAgentRequestFields.rejectUnauthorized !== undefined ? httpsAgentRequestFields.rejectUnauthorized : true,
+    rejectUnauthorized:
+      httpsAgentRequestFields.rejectUnauthorized !== undefined ? httpsAgentRequestFields.rejectUnauthorized : true,
     // Enable keepAlive for connection reuse
     keepAlive: true
   };
@@ -156,8 +158,12 @@ async function setupProxyAgents({
       let uriPort = isUndefined(proxyPort) || isNull(proxyPort) ? '' : `:${proxyPort}`;
       let proxyUri;
       if (proxyAuthEnabled) {
-        const proxyAuthUsername = encodeURIComponent(interpolateString(get(proxyConfig, 'auth.username'), interpolationOptions));
-        const proxyAuthPassword = encodeURIComponent(interpolateString(get(proxyConfig, 'auth.password'), interpolationOptions));
+        const proxyAuthUsername = encodeURIComponent(
+          interpolateString(get(proxyConfig, 'auth.username'), interpolationOptions)
+        );
+        const proxyAuthPassword = encodeURIComponent(
+          interpolateString(get(proxyConfig, 'auth.password'), interpolationOptions)
+        );
         proxyUri = `${proxyProtocol}://${proxyAuthUsername}:${proxyAuthPassword}@${proxyHostname}${uriPort}`;
       } else {
         proxyUri = `${proxyProtocol}://${proxyHostname}${uriPort}`;
@@ -171,15 +177,43 @@ async function setupProxyAgents({
       // Only set the agent needed for the request protocol
       if (socksEnabled) {
         if (isHttpsRequest) {
-          requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: SocksProxyAgent, options: tlsOptions, proxyUri, timeline, disableCache, hostname });
+          requestConfig.httpsAgent = getOrCreateHttpsAgent({
+            AgentClass: SocksProxyAgent,
+            options: tlsOptions,
+            proxyUri,
+            timeline,
+            disableCache,
+            hostname
+          });
         } else {
-          requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: SocksProxyAgent, options: httpProxyAgentOptions, proxyUri, timeline, disableCache, hostname });
+          requestConfig.httpAgent = getOrCreateHttpAgent({
+            AgentClass: SocksProxyAgent,
+            options: httpProxyAgentOptions,
+            proxyUri,
+            timeline,
+            disableCache,
+            hostname
+          });
         }
       } else {
         if (isHttpsRequest) {
-          requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: PatchedHttpsProxyAgent, options: tlsOptions, proxyUri, timeline, disableCache, hostname });
+          requestConfig.httpsAgent = getOrCreateHttpsAgent({
+            AgentClass: PatchedHttpsProxyAgent,
+            options: tlsOptions,
+            proxyUri,
+            timeline,
+            disableCache,
+            hostname
+          });
         } else {
-          requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: HttpProxyAgent, options: httpProxyAgentOptions, proxyUri, timeline, disableCache, hostname });
+          requestConfig.httpAgent = getOrCreateHttpAgent({
+            AgentClass: HttpProxyAgent,
+            options: httpProxyAgentOptions,
+            proxyUri,
+            timeline,
+            disableCache,
+            hostname
+          });
         }
       }
     }
@@ -191,7 +225,9 @@ async function setupProxyAgents({
         if (http_proxy?.length && !isHttpsRequest) {
           const parsedHttpProxy = new URL(http_proxy);
           const isHttpsSystemProxy = parsedHttpProxy.protocol === 'https:';
-          const systemHttpProxyAgentOptions = isHttpsSystemProxy ? { keepAlive: true, ...tlsOptions } : { keepAlive: true };
+          const systemHttpProxyAgentOptions = isHttpsSystemProxy
+            ? { keepAlive: true, ...tlsOptions }
+            : { keepAlive: true };
           if (timeline) {
             timeline.push({
               timestamp: new Date(),
@@ -199,7 +235,14 @@ async function setupProxyAgents({
               message: `Using system proxy: ${http_proxy}`
             });
           }
-          requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: HttpProxyAgent, options: systemHttpProxyAgentOptions, proxyUri: http_proxy, timeline, disableCache, hostname });
+          requestConfig.httpAgent = getOrCreateHttpAgent({
+            AgentClass: HttpProxyAgent,
+            options: systemHttpProxyAgentOptions,
+            proxyUri: http_proxy,
+            timeline,
+            disableCache,
+            hostname
+          });
         }
       } catch (error) {
         throw new Error(`Invalid system http_proxy "${http_proxy}": ${error.message}`);
@@ -214,7 +257,14 @@ async function setupProxyAgents({
               message: `Using system proxy: ${https_proxy}`
             });
           }
-          requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: PatchedHttpsProxyAgent, options: tlsOptions, proxyUri: https_proxy, timeline, disableCache, hostname });
+          requestConfig.httpsAgent = getOrCreateHttpsAgent({
+            AgentClass: PatchedHttpsProxyAgent,
+            options: tlsOptions,
+            proxyUri: https_proxy,
+            timeline,
+            disableCache,
+            hostname
+          });
         }
       } catch (error) {
         throw new Error(`Invalid system https_proxy "${https_proxy}": ${error.message}`);
@@ -229,36 +279,81 @@ async function setupProxyAgents({
         const directives = await resolver.resolve(requestConfig.url);
         if (directives && directives.length) {
           const first = directives[0];
-          if (timeline) timeline.push({ timestamp: new Date(), type: 'info', message: `PAC directives: ${directives.join('; ')}` });
+          if (timeline)
+            timeline.push({ timestamp: new Date(), type: 'info', message: `PAC directives: ${directives.join('; ')}` });
           if (/^(PROXY|HTTPS?)\s+/i.test(first)) {
             const parts = first.split(/\s+/);
             const keyword = parts[0].toUpperCase();
             const hostPort = parts[1];
             const scheme = keyword === 'HTTPS' ? 'https' : 'http';
             const proxyUri = `${scheme}://${hostPort}`;
-            requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: HttpProxyAgent, options: { keepAlive: true }, proxyUri, timeline, disableCache, hostname });
-            requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: PatchedHttpsProxyAgent, options: tlsOptions, proxyUri, timeline, disableCache, hostname });
+            requestConfig.httpAgent = getOrCreateHttpAgent({
+              AgentClass: HttpProxyAgent,
+              options: { keepAlive: true },
+              proxyUri,
+              timeline,
+              disableCache,
+              hostname
+            });
+            requestConfig.httpsAgent = getOrCreateHttpsAgent({
+              AgentClass: PatchedHttpsProxyAgent,
+              options: tlsOptions,
+              proxyUri,
+              timeline,
+              disableCache,
+              hostname
+            });
           } else if (/^SOCKS/i.test(first)) {
             const hostPort = first.split(/\s+/)[1];
             const proto = /^SOCKS4\s/i.test(first) ? 'socks4' : 'socks5';
             const proxyUri = `${proto}://${hostPort}`;
-            requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: SocksProxyAgent, options: { keepAlive: true }, proxyUri, timeline, disableCache, hostname });
-            requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: SocksProxyAgent, options: tlsOptions, proxyUri, timeline, disableCache, hostname });
+            requestConfig.httpAgent = getOrCreateHttpAgent({
+              AgentClass: SocksProxyAgent,
+              options: { keepAlive: true },
+              proxyUri,
+              timeline,
+              disableCache,
+              hostname
+            });
+            requestConfig.httpsAgent = getOrCreateHttpsAgent({
+              AgentClass: SocksProxyAgent,
+              options: tlsOptions,
+              proxyUri,
+              timeline,
+              disableCache,
+              hostname
+            });
           }
         } else {
-          if (timeline) timeline.push({ timestamp: new Date(), type: 'info', message: 'PAC resolved: DIRECT (no proxy)' });
+          if (timeline)
+            timeline.push({ timestamp: new Date(), type: 'info', message: 'PAC resolved: DIRECT (no proxy)' });
         }
       } catch (err) {
-        if (timeline) timeline.push({ timestamp: new Date(), type: 'error', message: `PAC resolution failed: ${err.message}` });
+        if (timeline)
+          timeline.push({ timestamp: new Date(), type: 'error', message: `PAC resolution failed: ${err.message}` });
       }
     }
   }
 
   if (!requestConfig.httpAgent && !requestConfig.httpsAgent) {
     if (isHttpsRequest) {
-      requestConfig.httpsAgent = getOrCreateHttpsAgent({ AgentClass: https.Agent, options: tlsOptions, proxyUri: null, timeline, disableCache, hostname });
+      requestConfig.httpsAgent = getOrCreateHttpsAgent({
+        AgentClass: https.Agent,
+        options: tlsOptions,
+        proxyUri: null,
+        timeline,
+        disableCache,
+        hostname
+      });
     } else {
-      requestConfig.httpAgent = getOrCreateHttpAgent({ AgentClass: http.Agent, options: { keepAlive: true }, proxyUri: null, timeline, disableCache, hostname });
+      requestConfig.httpAgent = getOrCreateHttpAgent({
+        AgentClass: http.Agent,
+        options: { keepAlive: true },
+        proxyUri: null,
+        timeline,
+        disableCache,
+        hostname
+      });
     }
   }
 }

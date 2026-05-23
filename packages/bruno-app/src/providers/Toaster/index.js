@@ -14,9 +14,7 @@ export const ToastProvider = (props) => {
       // Break long word like file-path, URL etc. to prevent overflow
       overflowWrap: 'anywhere',
       borderRadius: theme.border.radius.lg,
-      background: displayedTheme === 'light'
-        ? theme.background.base
-        : theme.background.crust,
+      background: displayedTheme === 'light' ? theme.background.base : theme.background.crust,
       color: theme.text
     }
   };

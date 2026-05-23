@@ -2,28 +2,23 @@ import { containsGitHubToken, getSafeGitRemoteUrls, isGitRepositoryUrl } from '.
 
 describe('containsGitHubToken', () => {
   test('should return true for a URL containing a GitHub token', () => {
-    expect(containsGitHubToken('https://ghp_abcdefgh1234567890abcdefgh12345678@github.com'))
-      .toBe(true);
+    expect(containsGitHubToken('https://ghp_abcdefgh1234567890abcdefgh12345678@github.com')).toBe(true);
   });
 
   test('should return false for a URL without a GitHub token', () => {
-    expect(containsGitHubToken('https://github.com/user/repo.git'))
-      .toBe(false);
+    expect(containsGitHubToken('https://github.com/user/repo.git')).toBe(false);
   });
 
   test('should return false for an empty string', () => {
-    expect(containsGitHubToken(''))
-      .toBe(false);
+    expect(containsGitHubToken('')).toBe(false);
   });
 
   test('should return false for a null value', () => {
-    expect(containsGitHubToken(null))
-      .toBe(false);
+    expect(containsGitHubToken(null)).toBe(false);
   });
 
   test('should return false for a URL with a similar but invalid token', () => {
-    expect(containsGitHubToken('https://ghz_abcdefgh1234567890@github.com'))
-      .toBe(false);
+    expect(containsGitHubToken('https://ghz_abcdefgh1234567890@github.com')).toBe(false);
   });
 });
 
@@ -34,10 +29,7 @@ describe('getSafeGitRemoteUrls', () => {
       { refs: { fetch: 'https://github.com/user/repo.git' } },
       { refs: { fetch: 'git@github.com:user/repo.git' } }
     ];
-    expect(getSafeGitRemoteUrls(remotes)).toEqual([
-      'https://github.com/user/repo.git',
-      'git@github.com:user/repo.git'
-    ]);
+    expect(getSafeGitRemoteUrls(remotes)).toEqual(['https://github.com/user/repo.git', 'git@github.com:user/repo.git']);
   });
 
   test('should return an empty array if all URLs contain GitHub tokens', () => {
@@ -49,11 +41,7 @@ describe('getSafeGitRemoteUrls', () => {
   });
 
   test('should return an empty array if no valid URLs are present', () => {
-    const remotes = [
-      { refs: { fetch: '' } },
-      { refs: { fetch: null } },
-      { refs: { fetch: undefined } }
-    ];
+    const remotes = [{ refs: { fetch: '' } }, { refs: { fetch: null } }, { refs: { fetch: undefined } }];
     expect(getSafeGitRemoteUrls(remotes)).toEqual([]);
   });
 
@@ -63,10 +51,7 @@ describe('getSafeGitRemoteUrls', () => {
   });
 
   test('should ignore remotes with no fetch property', () => {
-    const remotes = [
-      { refs: {} },
-      {}
-    ];
+    const remotes = [{ refs: {} }, {}];
     expect(getSafeGitRemoteUrls(remotes)).toEqual([]);
   });
 });

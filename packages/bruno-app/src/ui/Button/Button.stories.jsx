@@ -125,11 +125,21 @@ export const Default = {
 export const Filled = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Button variant="filled" color="primary">Primary</Button>
-      <Button variant="filled" color="secondary">Secondary</Button>
-      <Button variant="filled" color="success">Success</Button>
-      <Button variant="filled" color="warning">Warning</Button>
-      <Button variant="filled" color="danger">Danger</Button>
+      <Button variant="filled" color="primary">
+        Primary
+      </Button>
+      <Button variant="filled" color="secondary">
+        Secondary
+      </Button>
+      <Button variant="filled" color="success">
+        Success
+      </Button>
+      <Button variant="filled" color="warning">
+        Warning
+      </Button>
+      <Button variant="filled" color="danger">
+        Danger
+      </Button>
     </div>
   )
 };
@@ -137,11 +147,21 @@ export const Filled = {
 export const Outline = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Button variant="outline" color="primary">Primary</Button>
-      <Button variant="outline" color="secondary">Secondary</Button>
-      <Button variant="outline" color="success">Success</Button>
-      <Button variant="outline" color="warning">Warning</Button>
-      <Button variant="outline" color="danger">Danger</Button>
+      <Button variant="outline" color="primary">
+        Primary
+      </Button>
+      <Button variant="outline" color="secondary">
+        Secondary
+      </Button>
+      <Button variant="outline" color="success">
+        Success
+      </Button>
+      <Button variant="outline" color="warning">
+        Warning
+      </Button>
+      <Button variant="outline" color="danger">
+        Danger
+      </Button>
     </div>
   )
 };
@@ -149,11 +169,21 @@ export const Outline = {
 export const Ghost = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      <Button variant="ghost" color="primary">Primary</Button>
-      <Button variant="ghost" color="secondary">Secondary</Button>
-      <Button variant="ghost" color="success">Success</Button>
-      <Button variant="ghost" color="warning">Warning</Button>
-      <Button variant="ghost" color="danger">Danger</Button>
+      <Button variant="ghost" color="primary">
+        Primary
+      </Button>
+      <Button variant="ghost" color="secondary">
+        Secondary
+      </Button>
+      <Button variant="ghost" color="success">
+        Success
+      </Button>
+      <Button variant="ghost" color="warning">
+        Warning
+      </Button>
+      <Button variant="ghost" color="danger">
+        Danger
+      </Button>
     </div>
   )
 };
@@ -165,31 +195,61 @@ export const WithIconLeft = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Filled</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="filled" size="xs" icon={<PlusIcon />} iconPosition="left">Add</Button>
-          <Button variant="filled" size="sm" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="filled" size="base" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="filled" size="md" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="filled" size="lg" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
+          <Button variant="filled" size="xs" icon={<PlusIcon />} iconPosition="left">
+            Add
+          </Button>
+          <Button variant="filled" size="sm" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="filled" size="base" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="filled" size="md" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="filled" size="lg" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outline</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="outline" size="xs" icon={<PlusIcon />} iconPosition="left">Add</Button>
-          <Button variant="outline" size="sm" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="outline" size="base" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="outline" size="md" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="outline" size="lg" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
+          <Button variant="outline" size="xs" icon={<PlusIcon />} iconPosition="left">
+            Add
+          </Button>
+          <Button variant="outline" size="sm" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="outline" size="base" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="outline" size="md" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="outline" size="lg" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Ghost</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="ghost" size="xs" icon={<PlusIcon />} iconPosition="left">Add</Button>
-          <Button variant="ghost" size="sm" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="ghost" size="base" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="ghost" size="md" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
-          <Button variant="ghost" size="lg" icon={<PlusIcon />} iconPosition="left">Add Item</Button>
+          <Button variant="ghost" size="xs" icon={<PlusIcon />} iconPosition="left">
+            Add
+          </Button>
+          <Button variant="ghost" size="sm" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="ghost" size="base" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="ghost" size="md" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
+          <Button variant="ghost" size="lg" icon={<PlusIcon />} iconPosition="left">
+            Add Item
+          </Button>
         </div>
       </div>
     </div>
@@ -202,31 +262,61 @@ export const WithIconRight = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Filled</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="filled" size="xs" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="filled" size="sm" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="filled" size="base" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="filled" size="md" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="filled" size="lg" icon={<SendIcon />} iconPosition="right">Send</Button>
+          <Button variant="filled" size="xs" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="filled" size="sm" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="filled" size="base" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="filled" size="md" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="filled" size="lg" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outline</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="outline" size="xs" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="outline" size="sm" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="outline" size="base" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="outline" size="md" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="outline" size="lg" icon={<SendIcon />} iconPosition="right">Send</Button>
+          <Button variant="outline" size="xs" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="outline" size="sm" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="outline" size="base" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="outline" size="md" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="outline" size="lg" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Ghost</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="ghost" size="xs" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="ghost" size="sm" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="ghost" size="base" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="ghost" size="md" icon={<SendIcon />} iconPosition="right">Send</Button>
-          <Button variant="ghost" size="lg" icon={<SendIcon />} iconPosition="right">Send</Button>
+          <Button variant="ghost" size="xs" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="ghost" size="sm" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="ghost" size="base" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="ghost" size="md" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
+          <Button variant="ghost" size="lg" icon={<SendIcon />} iconPosition="right">
+            Send
+          </Button>
         </div>
       </div>
     </div>
@@ -247,23 +337,51 @@ export const Disabled = {
     <div style={{ display: 'flex', gap: '48px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <h3 style={{ marginBottom: '4px', fontSize: '14px', fontWeight: 600 }}>Enabled</h3>
-        <Button variant="filled" color="primary">Primary</Button>
-        <Button variant="filled" color="secondary">Secondary</Button>
-        <Button variant="filled" color="success">Success</Button>
-        <Button variant="filled" color="warning">Warning</Button>
-        <Button variant="filled" color="danger">Danger</Button>
-        <Button variant="outline" color="primary">Outline</Button>
-        <Button variant="ghost" color="primary">Ghost</Button>
+        <Button variant="filled" color="primary">
+          Primary
+        </Button>
+        <Button variant="filled" color="secondary">
+          Secondary
+        </Button>
+        <Button variant="filled" color="success">
+          Success
+        </Button>
+        <Button variant="filled" color="warning">
+          Warning
+        </Button>
+        <Button variant="filled" color="danger">
+          Danger
+        </Button>
+        <Button variant="outline" color="primary">
+          Outline
+        </Button>
+        <Button variant="ghost" color="primary">
+          Ghost
+        </Button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <h3 style={{ marginBottom: '4px', fontSize: '14px', fontWeight: 600 }}>Disabled</h3>
-        <Button variant="filled" color="primary" disabled>Primary</Button>
-        <Button variant="filled" color="secondary" disabled>Secondary</Button>
-        <Button variant="filled" color="success" disabled>Success</Button>
-        <Button variant="filled" color="warning" disabled>Warning</Button>
-        <Button variant="filled" color="danger" disabled>Danger</Button>
-        <Button variant="outline" color="primary" disabled>Outline</Button>
-        <Button variant="ghost" color="primary" disabled>Ghost</Button>
+        <Button variant="filled" color="primary" disabled>
+          Primary
+        </Button>
+        <Button variant="filled" color="secondary" disabled>
+          Secondary
+        </Button>
+        <Button variant="filled" color="success" disabled>
+          Success
+        </Button>
+        <Button variant="filled" color="warning" disabled>
+          Warning
+        </Button>
+        <Button variant="filled" color="danger" disabled>
+          Danger
+        </Button>
+        <Button variant="outline" color="primary" disabled>
+          Outline
+        </Button>
+        <Button variant="ghost" color="primary" disabled>
+          Ghost
+        </Button>
       </div>
     </div>
   )
@@ -275,31 +393,61 @@ export const Loading = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Filled</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="filled" size="xs" loading>Loading</Button>
-          <Button variant="filled" size="sm" loading>Loading</Button>
-          <Button variant="filled" size="base" loading>Loading</Button>
-          <Button variant="filled" size="md" loading>Loading</Button>
-          <Button variant="filled" size="lg" loading>Loading</Button>
+          <Button variant="filled" size="xs" loading>
+            Loading
+          </Button>
+          <Button variant="filled" size="sm" loading>
+            Loading
+          </Button>
+          <Button variant="filled" size="base" loading>
+            Loading
+          </Button>
+          <Button variant="filled" size="md" loading>
+            Loading
+          </Button>
+          <Button variant="filled" size="lg" loading>
+            Loading
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outline</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="outline" size="xs" loading>Loading</Button>
-          <Button variant="outline" size="sm" loading>Loading</Button>
-          <Button variant="outline" size="base" loading>Loading</Button>
-          <Button variant="outline" size="md" loading>Loading</Button>
-          <Button variant="outline" size="lg" loading>Loading</Button>
+          <Button variant="outline" size="xs" loading>
+            Loading
+          </Button>
+          <Button variant="outline" size="sm" loading>
+            Loading
+          </Button>
+          <Button variant="outline" size="base" loading>
+            Loading
+          </Button>
+          <Button variant="outline" size="md" loading>
+            Loading
+          </Button>
+          <Button variant="outline" size="lg" loading>
+            Loading
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Ghost</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="ghost" size="xs" loading>Loading</Button>
-          <Button variant="ghost" size="sm" loading>Loading</Button>
-          <Button variant="ghost" size="base" loading>Loading</Button>
-          <Button variant="ghost" size="md" loading>Loading</Button>
-          <Button variant="ghost" size="lg" loading>Loading</Button>
+          <Button variant="ghost" size="xs" loading>
+            Loading
+          </Button>
+          <Button variant="ghost" size="sm" loading>
+            Loading
+          </Button>
+          <Button variant="ghost" size="base" loading>
+            Loading
+          </Button>
+          <Button variant="ghost" size="md" loading>
+            Loading
+          </Button>
+          <Button variant="ghost" size="lg" loading>
+            Loading
+          </Button>
         </div>
       </div>
     </div>
@@ -351,31 +499,61 @@ export const AllColors = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Filled Variant</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Button variant="filled" color="primary">Primary</Button>
-          <Button variant="filled" color="secondary">Secondary</Button>
-          <Button variant="filled" color="success">Success</Button>
-          <Button variant="filled" color="warning">Warning</Button>
-          <Button variant="filled" color="danger">Danger</Button>
+          <Button variant="filled" color="primary">
+            Primary
+          </Button>
+          <Button variant="filled" color="secondary">
+            Secondary
+          </Button>
+          <Button variant="filled" color="success">
+            Success
+          </Button>
+          <Button variant="filled" color="warning">
+            Warning
+          </Button>
+          <Button variant="filled" color="danger">
+            Danger
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outline Variant</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Button variant="outline" color="primary">Primary</Button>
-          <Button variant="outline" color="secondary">Secondary</Button>
-          <Button variant="outline" color="success">Success</Button>
-          <Button variant="outline" color="warning">Warning</Button>
-          <Button variant="outline" color="danger">Danger</Button>
+          <Button variant="outline" color="primary">
+            Primary
+          </Button>
+          <Button variant="outline" color="secondary">
+            Secondary
+          </Button>
+          <Button variant="outline" color="success">
+            Success
+          </Button>
+          <Button variant="outline" color="warning">
+            Warning
+          </Button>
+          <Button variant="outline" color="danger">
+            Danger
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Ghost Variant</h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Button variant="ghost" color="primary">Primary</Button>
-          <Button variant="ghost" color="secondary">Secondary</Button>
-          <Button variant="ghost" color="success">Success</Button>
-          <Button variant="ghost" color="warning">Warning</Button>
-          <Button variant="ghost" color="danger">Danger</Button>
+          <Button variant="ghost" color="primary">
+            Primary
+          </Button>
+          <Button variant="ghost" color="secondary">
+            Secondary
+          </Button>
+          <Button variant="ghost" color="success">
+            Success
+          </Button>
+          <Button variant="ghost" color="warning">
+            Warning
+          </Button>
+          <Button variant="ghost" color="danger">
+            Danger
+          </Button>
         </div>
       </div>
     </div>
@@ -389,31 +567,61 @@ export const AllSizes = {
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Filled</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="filled" size="xs">Extra Small</Button>
-          <Button variant="filled" size="sm">Small</Button>
-          <Button variant="filled" size="base">Base</Button>
-          <Button variant="filled" size="md">Medium</Button>
-          <Button variant="filled" size="lg">Large</Button>
+          <Button variant="filled" size="xs">
+            Extra Small
+          </Button>
+          <Button variant="filled" size="sm">
+            Small
+          </Button>
+          <Button variant="filled" size="base">
+            Base
+          </Button>
+          <Button variant="filled" size="md">
+            Medium
+          </Button>
+          <Button variant="filled" size="lg">
+            Large
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Outline</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="outline" size="xs">Extra Small</Button>
-          <Button variant="outline" size="sm">Small</Button>
-          <Button variant="outline" size="base">Base</Button>
-          <Button variant="outline" size="md">Medium</Button>
-          <Button variant="outline" size="lg">Large</Button>
+          <Button variant="outline" size="xs">
+            Extra Small
+          </Button>
+          <Button variant="outline" size="sm">
+            Small
+          </Button>
+          <Button variant="outline" size="base">
+            Base
+          </Button>
+          <Button variant="outline" size="md">
+            Medium
+          </Button>
+          <Button variant="outline" size="lg">
+            Large
+          </Button>
         </div>
       </div>
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>Ghost</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Button variant="ghost" size="xs">Extra Small</Button>
-          <Button variant="ghost" size="sm">Small</Button>
-          <Button variant="ghost" size="base">Base</Button>
-          <Button variant="ghost" size="md">Medium</Button>
-          <Button variant="ghost" size="lg">Large</Button>
+          <Button variant="ghost" size="xs">
+            Extra Small
+          </Button>
+          <Button variant="ghost" size="sm">
+            Small
+          </Button>
+          <Button variant="ghost" size="base">
+            Base
+          </Button>
+          <Button variant="ghost" size="md">
+            Medium
+          </Button>
+          <Button variant="ghost" size="lg">
+            Large
+          </Button>
         </div>
       </div>
     </div>

@@ -39,7 +39,11 @@ export class WindowsProxyResolver implements ProxyResolver {
   }
 
   private async getInternetOptions(execOpts: ExecFileOptions): Promise<ProxyConfiguration | null> {
-    const stdout = await safeExec('reg', ['query', 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings'], execOpts);
+    const stdout = await safeExec(
+      'reg',
+      ['query', 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings'],
+      execOpts
+    );
     if (!stdout) return null;
 
     const lines = stdout.split('\n');
@@ -100,7 +104,11 @@ export class WindowsProxyResolver implements ProxyResolver {
 
   private async getSystemProxyEnvironment(execOpts: ExecFileOptions): Promise<ProxyConfiguration | null> {
     // Check for system-wide proxy environment variables
-    const stdout = await safeExec('reg', ['query', 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment'], execOpts);
+    const stdout = await safeExec(
+      'reg',
+      ['query', 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment'],
+      execOpts
+    );
     if (!stdout) return null;
 
     const lines = stdout.split('\n');

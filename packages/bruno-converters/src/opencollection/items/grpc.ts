@@ -30,13 +30,18 @@ const fromGrpcMetadata = (metadata: GrpcMetadata[] | undefined): BrunoKeyValue[]
     return [];
   }
 
-  return metadata.map((m): BrunoKeyValue => ({
-    uid: uuid(),
-    name: m.name || '',
-    value: m.value || '',
-    description: typeof m.description === 'string' ? m.description : (m.description as { content?: string } | undefined)?.content || null,
-    enabled: m.disabled !== true
-  }));
+  return metadata.map(
+    (m): BrunoKeyValue => ({
+      uid: uuid(),
+      name: m.name || '',
+      value: m.value || '',
+      description:
+        typeof m.description === 'string'
+          ? m.description
+          : (m.description as { content?: string } | undefined)?.content || null,
+      enabled: m.disabled !== true
+    })
+  );
 };
 
 export const fromOpenCollectionGrpcItem = (item: GrpcRequest): BrunoItem => {
@@ -63,7 +68,9 @@ export const fromOpenCollectionGrpcItem = (item: GrpcRequest): BrunoItem => {
 
   // variables (pre-request from variables, post-response from actions)
   const variables = fromOpenCollectionVariables(runtime.variables);
-  const postResponseVars = fromOpenCollectionActions((runtime as { actions?: Parameters<typeof fromOpenCollectionActions>[0] }).actions);
+  const postResponseVars = fromOpenCollectionActions(
+    (runtime as { actions?: Parameters<typeof fromOpenCollectionActions>[0] }).actions
+  );
 
   const brunoItem: BrunoItem = {
     uid: uuid(),
@@ -122,8 +129,8 @@ export const toOpenCollectionGrpcItem = (item: BrunoItem): GrpcRequest => {
   }
 
   const grpc: GrpcRequestDetails = {
-    url: request.url as string || '',
-    method: request.method as string || ''
+    url: (request.url as string) || '',
+    method: (request.method as string) || ''
   };
 
   if (request.methodType) {
@@ -159,10 +166,12 @@ export const toOpenCollectionGrpcItem = (item: BrunoItem): GrpcRequest => {
     if (messages.length === 1) {
       grpc.message = messages[0].content || '';
     } else {
-      grpc.message = messages.map((msg): GrpcMessageVariant => ({
-        title: msg.name || 'Untitled',
-        message: msg.content || ''
-      }));
+      grpc.message = messages.map(
+        (msg): GrpcMessageVariant => ({
+          title: msg.name || 'Untitled',
+          message: msg.content || ''
+        })
+      );
     }
   }
 

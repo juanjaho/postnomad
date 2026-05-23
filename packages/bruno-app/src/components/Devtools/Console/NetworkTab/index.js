@@ -1,31 +1,19 @@
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  IconNetwork
-} from '@tabler/icons';
-import {
-  setSelectedRequest
-} from 'providers/ReduxStore/slices/logs';
+import { IconNetwork } from '@tabler/icons';
+import { setSelectedRequest } from 'providers/ReduxStore/slices/logs';
 import StyledWrapper from './StyledWrapper';
 
 const MethodBadge = ({ method }) => {
   const methodLower = method?.toLowerCase() || 'get';
 
-  return (
-    <span className={`method-badge ${methodLower}`}>
-      {method?.toUpperCase() || 'GET'}
-    </span>
-  );
+  return <span className={`method-badge ${methodLower}`}>{method?.toUpperCase() || 'GET'}</span>;
 };
 
 const StatusBadge = ({ status, statusCode }) => {
   const displayStatus = statusCode || status;
 
-  return (
-    <span className="status-badge">
-      {displayStatus}
-    </span>
-  );
+  return <span className="status-badge">{displayStatus}</span>;
 };
 
 const RequestRow = ({ request, isSelected, onClick }) => {
@@ -79,10 +67,7 @@ const RequestRow = ({ request, isSelected, onClick }) => {
   };
 
   return (
-    <div
-      className={`request-row ${isSelected ? 'selected' : ''}`}
-      onClick={onClick}
-    >
+    <div className={`request-row ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <div className="request-method">
         <MethodBadge method={req?.method} />
       </div>
@@ -99,17 +84,11 @@ const RequestRow = ({ request, isSelected, onClick }) => {
         {getPath()}
       </div>
 
-      <div className="request-time">
-        {formatTime(timestamp)}
-      </div>
+      <div className="request-time">{formatTime(timestamp)}</div>
 
-      <div className="request-duration">
-        {formatDuration(res?.duration)}
-      </div>
+      <div className="request-duration">{formatDuration(res?.duration)}</div>
 
-      <div className="request-size">
-        {formatSize(res?.size)}
-      </div>
+      <div className="request-size">{formatSize(res?.size)}</div>
     </div>
   );
 };
@@ -176,7 +155,9 @@ const NetworkTab = () => {
                 <RequestRow
                   key={`${request.collectionUid}-${request.itemUid}-${request.timestamp}-${index}`}
                   request={request}
-                  isSelected={selectedRequest?.timestamp === request.timestamp && selectedRequest?.itemUid === request.itemUid}
+                  isSelected={
+                    selectedRequest?.timestamp === request.timestamp && selectedRequest?.itemUid === request.itemUid
+                  }
                   onClick={() => handleRequestClick(request)}
                 />
               ))}

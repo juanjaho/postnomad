@@ -9,9 +9,28 @@ describe('getOauth2AdditionalParameters', () => {
     expect(additionalParameters.token).toHaveLength(6);
     expect(additionalParameters.refresh).toHaveLength(6);
 
-    expect(additionalParameters.authorization.map(p => p.sendIn).sort()).toEqual(['headers', 'headers', 'queryparams', 'queryparams']);
-    expect(additionalParameters.token.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
-    expect(additionalParameters.refresh.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
+    expect(additionalParameters.authorization.map((p) => p.sendIn).sort()).toEqual([
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
+    expect(additionalParameters.token.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
+    expect(additionalParameters.refresh.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
   });
 
   it('client_credentials', () => {
@@ -20,8 +39,22 @@ describe('getOauth2AdditionalParameters', () => {
     expect(additionalParameters.token).toHaveLength(6);
     expect(additionalParameters.refresh).toHaveLength(6);
 
-    expect(additionalParameters.token.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
-    expect(additionalParameters.refresh.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
+    expect(additionalParameters.token.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
+    expect(additionalParameters.refresh.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
   });
 
   it('password', () => {
@@ -30,8 +63,22 @@ describe('getOauth2AdditionalParameters', () => {
     expect(additionalParameters.token).toHaveLength(6);
     expect(additionalParameters.refresh).toHaveLength(6);
 
-    expect(additionalParameters.token.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
-    expect(additionalParameters.refresh.map(p => p.sendIn).sort()).toEqual(['body', 'body', 'headers', 'headers', 'queryparams', 'queryparams']);
+    expect(additionalParameters.token.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
+    expect(additionalParameters.refresh.map((p) => p.sendIn).sort()).toEqual([
+      'body',
+      'body',
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
   });
 
   it('implicit', () => {
@@ -40,6 +87,11 @@ describe('getOauth2AdditionalParameters', () => {
     expect(additionalParameters.token).toBeUndefined();
     expect(additionalParameters.refresh).toBeUndefined();
 
-    expect(additionalParameters.authorization.map(p => p.sendIn).sort()).toEqual(['headers', 'headers', 'queryparams', 'queryparams']);
+    expect(additionalParameters.authorization.map((p) => p.sendIn).sort()).toEqual([
+      'headers',
+      'headers',
+      'queryparams',
+      'queryparams'
+    ]);
   });
 });

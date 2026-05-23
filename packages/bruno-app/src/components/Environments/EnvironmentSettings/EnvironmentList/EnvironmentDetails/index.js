@@ -10,7 +10,17 @@ import EnvironmentVariables from './EnvironmentVariables';
 import ColorPicker from 'components/ColorPicker';
 import StyledWrapper from './StyledWrapper';
 
-const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuery, setSearchQuery, isSearchExpanded, setIsSearchExpanded, debouncedSearchQuery, searchInputRef }) => {
+const EnvironmentDetails = ({
+  environment,
+  setIsModified,
+  collection,
+  searchQuery,
+  setSearchQuery,
+  isSearchExpanded,
+  setIsSearchExpanded,
+  debouncedSearchQuery,
+  searchInputRef
+}) => {
   const dispatch = useDispatch();
   const environments = collection?.environments || [];
 
@@ -136,7 +146,11 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
   return (
     <StyledWrapper>
       {openDeleteModal && (
-        <DeleteEnvironment onClose={() => setOpenDeleteModal(false)} environment={environment} collection={collection} />
+        <DeleteEnvironment
+          onClose={() => setOpenDeleteModal(false)}
+          environment={environment}
+          collection={collection}
+        />
       )}
       {openCopyModal && (
         <CopyEnvironment onClose={() => setOpenCopyModal(false)} environment={environment} collection={collection} />

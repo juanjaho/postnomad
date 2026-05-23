@@ -7,7 +7,16 @@ import ErrorBoundary from './ErrorBoundary';
 import Button from 'ui/Button';
 import StyledWrapper from './StyledWrapper';
 
-const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, variablesValue, loadSchema, isSchemaLoading, schemaError }) => {
+const QueryBuilder = ({
+  schema,
+  onQueryChange,
+  editorValue,
+  onVariablesChange,
+  variablesValue,
+  loadSchema,
+  isSchemaLoading,
+  schemaError
+}) => {
   const {
     selections,
     expandedPaths,
@@ -73,9 +82,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
     const lower = searchText.toLowerCase();
     const map = {};
     for (const type of availableRootTypes) {
-      map[type] = (rootFieldsByType[type] || []).filter((f) =>
-        f.name.toLowerCase().includes(lower)
-      );
+      map[type] = (rootFieldsByType[type] || []).filter((f) => f.name.toLowerCase().includes(lower));
     }
     return map;
   }, [rootFieldsByType, searchText, availableRootTypes]);
@@ -158,7 +165,9 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
             {syncError === 'multiple_operations' ? (
               <>
                 <strong>Multiple operations detected</strong>
-                <span>The Query Builder supports a single operation at a time. Combine into one operation to sync.</span>
+                <span>
+                  The Query Builder supports a single operation at a time. Combine into one operation to sync.
+                </span>
               </>
             ) : null}
           </div>
@@ -205,8 +214,9 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                   <span className="root-type-name">{rootType}</span>
                   <span className="root-type-count">{(rootFieldsByType[rootType] || []).length}</span>
                 </button>
-                {isExpanded && !isDisabled && (
-                  fields.length > 0 ? (
+                {isExpanded &&
+                  !isDisabled &&
+                  (fields.length > 0 ? (
                     <QueryBuilderTree
                       fields={fields}
                       depth={1}
@@ -222,11 +232,8 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                       onSetInputFieldValue={setInputFieldValue}
                     />
                   ) : (
-                    <div className="empty-state">
-                      {searchText ? 'No matching fields.' : 'No fields available.'}
-                    </div>
-                  )
-                )}
+                    <div className="empty-state">{searchText ? 'No matching fields.' : 'No fields available.'}</div>
+                  ))}
               </div>
             );
           })}

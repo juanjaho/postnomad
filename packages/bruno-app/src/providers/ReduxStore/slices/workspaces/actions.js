@@ -8,8 +8,20 @@ import {
   updateWorkspaceLoadingState,
   setWorkspaceScratchCollection
 } from '../workspaces';
-import { createCollection, openCollection, openMultipleCollections, openScratchCollectionEvent, mountCollection } from '../collections/actions';
-import { removeCollection, addTransientDirectory, updateCollectionMountStatus, expandCollection, sortCollections } from '../collections';
+import {
+  createCollection,
+  openCollection,
+  openMultipleCollections,
+  openScratchCollectionEvent,
+  mountCollection
+} from '../collections/actions';
+import {
+  removeCollection,
+  addTransientDirectory,
+  updateCollectionMountStatus,
+  expandCollection,
+  sortCollections
+} from '../collections';
 import { sanitizeName } from 'utils/common/regex';
 import { clearCollectionState } from '../openapi-sync';
 import { updateGlobalEnvironments } from '../global-environments';
@@ -20,7 +32,12 @@ import {
   markSnapshotCollectionHydrated,
   clearSnapshotHydrationSession
 } from '../app';
-import { openConsole, closeConsole, setActiveTab as setActiveDevToolsTab, TAB_IDENFIERS as DEVTOOL_TABS } from '../logs';
+import {
+  openConsole,
+  closeConsole,
+  setActiveTab as setActiveDevToolsTab,
+  TAB_IDENFIERS as DEVTOOL_TABS
+} from '../logs';
 import { normalizePath } from 'utils/common/path';
 import { hydrateTabs, getActiveTabFromSnapshot, hydrateSnapshotLookups } from 'utils/snapshot';
 import toast from 'react-hot-toast';
@@ -85,16 +102,20 @@ export const createWorkspaceWithUniqueName = (location) => {
   return async (dispatch) => {
     const { uuid: generateUuid } = await import('utils/common');
     const tempUid = generateUuid();
-    const name = await ipcRenderer?.invoke('renderer:find-unique-folder-name', 'Untitled Workspace', location) || 'Untitled Workspace';
+    const name =
+      (await ipcRenderer?.invoke('renderer:find-unique-folder-name', 'Untitled Workspace', location)) ||
+      'Untitled Workspace';
 
-    dispatch(createWorkspace({
-      uid: tempUid,
-      name,
-      pathname: null,
-      collections: [],
-      isCreating: true,
-      creationLocation: location
-    }));
+    dispatch(
+      createWorkspace({
+        uid: tempUid,
+        name,
+        pathname: null,
+        collections: [],
+        isCreating: true,
+        creationLocation: location
+      })
+    );
 
     dispatch(updateWorkspace({ uid: tempUid, isNewlyCreated: true }));
     await dispatch(switchWorkspace(tempUid));
@@ -119,14 +140,10 @@ export const confirmWorkspaceCreation = (tempWorkspaceUid, workspaceName) => {
     }
 
     const baseFolderName = sanitizeName(workspaceName);
-    const folderName = await ipcRenderer?.invoke('renderer:find-unique-folder-name', baseFolderName, location) || baseFolderName;
+    const folderName =
+      (await ipcRenderer?.invoke('renderer:find-unique-folder-name', baseFolderName, location)) || baseFolderName;
 
-    const result = await ipcRenderer.invoke(
-      'renderer:create-workspace',
-      workspaceName,
-      folderName,
-      location
-    );
+    const result = await ipcRenderer.invoke('renderer:create-workspace', workspaceName, folderName, location);
 
     const { workspaceUid: realUid, workspacePath, workspaceConfig } = result;
 
@@ -142,11 +159,13 @@ export const confirmWorkspaceCreation = (tempWorkspaceUid, workspaceName) => {
     // Ensure the real workspace exists in Redux (the workspace-opened event may or may not have fired yet)
     const existing = getState().workspaces.workspaces.find((w) => w.uid === realUid);
     if (!existing) {
-      dispatch(createWorkspace({
-        uid: realUid,
-        pathname: workspacePath,
-        ...workspaceConfig
-      }));
+      dispatch(
+        createWorkspace({
+          uid: realUid,
+          pathname: workspacePath,
+          ...workspaceConfig
+        })
+      );
     }
 
     dispatch(updateWorkspace({ uid: realUid, name: workspaceName }));
@@ -187,19 +206,23 @@ export const cancelWorkspaceCreation = (tempWorkspaceUid) => {
 export const createWorkspaceAction = (workspaceName, workspaceFolderName, workspaceLocation) => {
   return async (dispatch) => {
     try {
-      const result = await ipcRenderer.invoke('renderer:create-workspace',
+      const result = await ipcRenderer.invoke(
+        'renderer:create-workspace',
         workspaceName,
         workspaceFolderName,
-        workspaceLocation);
+        workspaceLocation
+      );
 
       const { workspaceConfig, workspaceUid, workspacePath } = result;
 
-      dispatch(createWorkspace({
-        uid: workspaceUid,
-        name: workspaceName,
-        pathname: workspacePath,
-        ...workspaceConfig
-      }));
+      dispatch(
+        createWorkspace({
+          uid: workspaceUid,
+          name: workspaceName,
+          pathname: workspacePath,
+          ...workspaceConfig
+        })
+      );
 
       await dispatch(switchWorkspace(workspaceUid));
 
@@ -218,11 +241,13 @@ export const openWorkspace = () => {
         const result = await ipcRenderer.invoke('renderer:open-workspace', workspacePath);
         const { workspaceConfig, workspaceUid } = result;
 
-        dispatch(createWorkspace({
-          uid: workspaceUid,
-          pathname: workspacePath,
-          ...workspaceConfig
-        }));
+        dispatch(
+          createWorkspace({
+            uid: workspaceUid,
+            pathname: workspacePath,
+            ...workspaceConfig
+          })
+        );
 
         await dispatch(switchWorkspace(workspaceUid));
 
@@ -241,11 +266,13 @@ export const openWorkspaceDialog = () => {
       if (result) {
         const { workspaceConfig, workspaceUid } = result;
 
-        dispatch(createWorkspace({
-          uid: workspaceUid,
-          pathname: result.workspacePath,
-          ...workspaceConfig
-        }));
+        dispatch(
+          createWorkspace({
+            uid: workspaceUid,
+            pathname: result.workspacePath,
+            ...workspaceConfig
+          })
+        );
 
         await dispatch(switchWorkspace(workspaceUid));
 
@@ -265,12 +292,7 @@ export const connectCollectionToGit = ({ workspaceUid, collectionPath, remoteUrl
         throw new Error('Workspace not found');
       }
 
-      await ipcRenderer.invoke(
-        'renderer:connect-collection-to-git',
-        workspace.pathname,
-        collectionPath,
-        remoteUrl
-      );
+      await ipcRenderer.invoke('renderer:connect-collection-to-git', workspace.pathname, collectionPath, remoteUrl);
 
       return true;
     } catch (error) {
@@ -288,11 +310,7 @@ export const disconnectCollectionFromGit = ({ workspaceUid, collectionPath }) =>
         throw new Error('Workspace not found');
       }
 
-      await ipcRenderer.invoke(
-        'renderer:disconnect-collection-from-git',
-        workspace.pathname,
-        collectionPath
-      );
+      await ipcRenderer.invoke('renderer:disconnect-collection-from-git', workspace.pathname, collectionPath);
 
       return true;
     } catch (error) {
@@ -320,11 +338,13 @@ export const removeCollectionFromWorkspaceAction = (workspaceUid, collectionPath
         (c) => normalizePath(c.pathname) === normalizedCollectionPath
       );
 
-      await ipcRenderer.invoke('renderer:remove-collection-from-workspace',
+      await ipcRenderer.invoke(
+        'renderer:remove-collection-from-workspace',
         workspaceUid,
         workspace.pathname,
         collectionPath,
-        { deleteFiles });
+        { deleteFiles }
+      );
 
       if (collection) {
         const workspaceCollection = workspace.collections?.find(
@@ -337,10 +357,12 @@ export const removeCollectionFromWorkspaceAction = (workspaceUid, collectionPath
         }
       }
 
-      dispatch(removeCollectionFromWorkspace({
-        workspaceUid,
-        collectionLocation: collectionPath
-      }));
+      dispatch(
+        removeCollectionFromWorkspace({
+          workspaceUid,
+          collectionLocation: collectionPath
+        })
+      );
 
       return true;
     } catch (error) {
@@ -360,7 +382,9 @@ const loadWorkspaceCollectionsForSwitch = async (dispatch, workspace) => {
   try {
     const shouldRefreshCollections = workspace.collections?.some((collection) => collection.notFoundLocally);
     await dispatch(loadWorkspaceCollections(workspace.uid, shouldRefreshCollections));
-    updatedWorkspace = await dispatch((_, getState) => getState().workspaces.workspaces.find((w) => w.uid === workspace.uid));
+    updatedWorkspace = await dispatch((_, getState) =>
+      getState().workspaces.workspaces.find((w) => w.uid === workspace.uid)
+    );
 
     if (updatedWorkspace?.collections?.length > 0) {
       const alreadyOpenCollections = await dispatch((_, getState) =>
@@ -372,15 +396,13 @@ const loadWorkspaceCollectionsForSwitch = async (dispatch, workspace) => {
         .map((wc) => wc.path)
         .filter((p) => p && !alreadyOpenCollections.includes(normalizePath(p)));
 
-      const uniqueCollectionPaths = [...new Map(
-        collectionPaths.map((collectionPath) => [normalizePath(collectionPath), collectionPath])
-      ).values()];
+      const uniqueCollectionPaths = [
+        ...new Map(collectionPaths.map((collectionPath) => [normalizePath(collectionPath), collectionPath])).values()
+      ];
 
       if (uniqueCollectionPaths.length > 0) {
         const openResult = await openCollectionsFunction(uniqueCollectionPaths, updatedWorkspace.pathname);
-        openedCollectionPaths = Array.isArray(openResult?.opened)
-          ? openResult.opened
-          : uniqueCollectionPaths;
+        openedCollectionPaths = Array.isArray(openResult?.opened) ? openResult.opened : uniqueCollectionPaths;
 
         if (Array.isArray(openResult?.failed) && openResult.failed.length > 0) {
           console.warn('Some workspace collections failed to open during switch:', openResult.failed);
@@ -447,8 +469,8 @@ const scheduleSnapshotHydrationTimeout = (dispatch, getState, workspaceUid) => {
     const pendingCount = session.pendingCollectionPathnames.length;
     if (pendingCount > 0) {
       console.warn(
-        `Snapshot hydration timeout for workspace ${workspaceUid}. `
-        + `Proceeding with ${pendingCount} collection(s) still pending.`
+        `Snapshot hydration timeout for workspace ${workspaceUid}. ` +
+          `Proceeding with ${pendingCount} collection(s) still pending.`
       );
     }
 
@@ -500,28 +522,25 @@ export const hydrateSnapshotForOpenedCollection = (collectionPathname) => {
     await hydrateTabs([collection], dispatch, restoreTabs, null, activeWorkspacePathname);
 
     if (
-      snapshotHydration.activeCollectionPathname
-      && normalizePath(snapshotHydration.activeCollectionPathname) === normalizedCollectionPath
+      snapshotHydration.activeCollectionPathname &&
+      normalizePath(snapshotHydration.activeCollectionPathname) === normalizedCollectionPath
     ) {
       dispatch(expandCollection(collection.uid));
 
       const needsMount = collection.mountStatus !== 'mounted' && collection.mountStatus !== 'mounting';
       if (needsMount) {
-        await dispatch(mountCollection({
-          collectionUid: collection.uid,
-          collectionPathname: collection.pathname,
-          brunoConfig: collection.brunoConfig,
-          skipTabRestore: true,
-          workspacePathname: activeWorkspacePathname
-        })).catch((err) => console.error('Failed to mount active collection:', err));
+        await dispatch(
+          mountCollection({
+            collectionUid: collection.uid,
+            collectionPathname: collection.pathname,
+            brunoConfig: collection.brunoConfig,
+            skipTabRestore: true,
+            workspacePathname: activeWorkspacePathname
+          })
+        ).catch((err) => console.error('Failed to mount active collection:', err));
       }
 
-      const activeTab = await getActiveTabFromSnapshot(
-        collection.pathname,
-        collection,
-        null,
-        activeWorkspacePathname
-      );
+      const activeTab = await getActiveTabFromSnapshot(collection.pathname, collection, null, activeWorkspacePathname);
       if (activeTab) {
         dispatch(addTab(activeTab));
       }
@@ -542,10 +561,12 @@ export const loadWorkspaceApiSpecs = (workspaceUid) => {
 
       const apiSpecs = await ipcRenderer.invoke('renderer:load-workspace-apispecs', workspace.pathname);
 
-      dispatch(updateWorkspace({
-        uid: workspaceUid,
-        apiSpecs: apiSpecs
-      }));
+      dispatch(
+        updateWorkspace({
+          uid: workspaceUid,
+          apiSpecs: apiSpecs
+        })
+      );
 
       const allApiSpecs = getState().apiSpec.apiSpecs;
       const alreadyOpenApiSpecs = allApiSpecs.map((a) => a.pathname);
@@ -588,49 +609,68 @@ export const switchWorkspace = (workspaceUid) => {
       dispatch(sortCollections({ order: snapshotCollectionSortOrder }));
 
       // Load global environments
-      const envResult = await ipcRenderer.invoke('renderer:get-global-environments', {
-        workspaceUid,
-        workspacePath: workspace.pathname
-      }).catch(() => null);
+      const envResult = await ipcRenderer
+        .invoke('renderer:get-global-environments', {
+          workspaceUid,
+          workspacePath: workspace.pathname
+        })
+        .catch(() => null);
 
-      dispatch(updateGlobalEnvironments({
-        globalEnvironments: envResult?.globalEnvironments || [],
-        activeGlobalEnvironmentUid: envResult?.activeGlobalEnvironmentUid || null
-      }));
+      dispatch(
+        updateGlobalEnvironments({
+          globalEnvironments: envResult?.globalEnvironments || [],
+          activeGlobalEnvironmentUid: envResult?.activeGlobalEnvironmentUid || null
+        })
+      );
 
       // Mount scratch collection and load workspace collections
       const scratchCollection = await dispatch(mountScratchCollection(workspaceUid));
       const { updatedWorkspace, openedCollectionPaths } = await loadWorkspaceCollectionsForSwitch(dispatch, workspace);
 
       const latestWorkspace = updatedWorkspace || getState().workspaces.workspaces.find((w) => w.uid === workspaceUid);
-      const workspaceCollectionPaths = [...new Map(
-        (latestWorkspace?.collections || [])
-          .map((workspaceCollection) => workspaceCollection.path)
-          .filter(Boolean)
-          .map((collectionPath) => [normalizePath(collectionPath), collectionPath])
-      ).values()];
+      const workspaceCollectionPaths = [
+        ...new Map(
+          (latestWorkspace?.collections || [])
+            .map((workspaceCollection) => workspaceCollection.path)
+            .filter(Boolean)
+            .map((collectionPath) => [normalizePath(collectionPath), collectionPath])
+        ).values()
+      ];
       const workspaceCollectionPathSet = new Set(
         workspaceCollectionPaths.map((collectionPath) => normalizePath(collectionPath))
       );
 
       // Hydrate tabs for workspace collections currently present in Redux
       const collections = getState().collections.collections.filter(
-        (c) => c.pathname
-          && c.uid !== scratchCollection?.uid
-          && workspaceCollectionPathSet.has(normalizePath(c.pathname))
+        (c) =>
+          c.pathname && c.uid !== scratchCollection?.uid && workspaceCollectionPathSet.has(normalizePath(c.pathname))
       );
       await hydrateTabs(collections, dispatch, restoreTabs, snapshotLookups, workspace.pathname || null);
 
       // Add workspace tabs
       if (scratchCollection?.uid) {
-        dispatch(addTab({ uid: `${scratchCollection.uid}-overview`, collectionUid: scratchCollection.uid, type: 'workspaceOverview' }));
-        dispatch(addTab({ uid: `${scratchCollection.uid}-environments`, collectionUid: scratchCollection.uid, type: 'workspaceEnvironments' }));
+        dispatch(
+          addTab({
+            uid: `${scratchCollection.uid}-overview`,
+            collectionUid: scratchCollection.uid,
+            type: 'workspaceOverview'
+          })
+        );
+        dispatch(
+          addTab({
+            uid: `${scratchCollection.uid}-environments`,
+            collectionUid: scratchCollection.uid,
+            type: 'workspaceEnvironments'
+          })
+        );
       }
 
       // Restore active collection from snapshot using lastActiveCollectionPathname
       const lastActiveCollectionPathname = workspaceSnapshot?.lastActiveCollectionPathname || null;
       const activeCollection = lastActiveCollectionPathname
-        ? getState().collections.collections.find((c) => normalizePath(c.pathname) === normalizePath(lastActiveCollectionPathname))
+        ? getState().collections.collections.find(
+            (c) => normalizePath(c.pathname) === normalizePath(lastActiveCollectionPathname)
+          )
         : null;
 
       if (activeCollection) {
@@ -638,13 +678,15 @@ export const switchWorkspace = (workspaceUid) => {
 
         const needsMount = activeCollection.mountStatus !== 'mounted' && activeCollection.mountStatus !== 'mounting';
         if (needsMount) {
-          await dispatch(mountCollection({
-            collectionUid: activeCollection.uid,
-            collectionPathname: activeCollection.pathname,
-            brunoConfig: activeCollection.brunoConfig,
-            skipTabRestore: true,
-            workspacePathname: workspace.pathname || null
-          })).catch((err) => console.error('Failed to mount active collection:', err));
+          await dispatch(
+            mountCollection({
+              collectionUid: activeCollection.uid,
+              collectionPathname: activeCollection.pathname,
+              brunoConfig: activeCollection.brunoConfig,
+              skipTabRestore: true,
+              workspacePathname: workspace.pathname || null
+            })
+          ).catch((err) => console.error('Failed to mount active collection:', err));
         }
 
         // Focus the active tab from the collection's tab snapshot
@@ -658,31 +700,47 @@ export const switchWorkspace = (workspaceUid) => {
         if (activeTab) {
           dispatch(addTab(activeTab));
         } else if (scratchCollection?.uid) {
-          dispatch(addTab({ uid: `${scratchCollection.uid}-overview`, collectionUid: scratchCollection.uid, type: 'workspaceOverview' }));
+          dispatch(
+            addTab({
+              uid: `${scratchCollection.uid}-overview`,
+              collectionUid: scratchCollection.uid,
+              type: 'workspaceOverview'
+            })
+          );
         }
       } else if (scratchCollection?.uid) {
         // No active collection, focus the workspace overview tab
-        dispatch(addTab({ uid: `${scratchCollection.uid}-overview`, collectionUid: scratchCollection.uid, type: 'workspaceOverview' }));
+        dispatch(
+          addTab({
+            uid: `${scratchCollection.uid}-overview`,
+            collectionUid: scratchCollection.uid,
+            type: 'workspaceOverview'
+          })
+        );
       }
 
       const openWorkspaceCollectionPaths = new Set(
-        getState().collections.collections
-          .filter((c) => c.pathname && workspaceCollectionPathSet.has(normalizePath(c.pathname)))
+        getState()
+          .collections.collections.filter(
+            (c) => c.pathname && workspaceCollectionPathSet.has(normalizePath(c.pathname))
+          )
           .map((c) => normalizePath(c.pathname))
       );
 
-      const expectedHydrationCollectionPathnames = Array.isArray(openedCollectionPaths) && openedCollectionPaths.length > 0
-        ? openedCollectionPaths
-        : [];
+      const expectedHydrationCollectionPathnames =
+        Array.isArray(openedCollectionPaths) && openedCollectionPaths.length > 0 ? openedCollectionPaths : [];
 
-      const pendingCollectionPathnames = expectedHydrationCollectionPathnames
-        .filter((collectionPath) => !openWorkspaceCollectionPaths.has(normalizePath(collectionPath)));
+      const pendingCollectionPathnames = expectedHydrationCollectionPathnames.filter(
+        (collectionPath) => !openWorkspaceCollectionPaths.has(normalizePath(collectionPath))
+      );
 
-      dispatch(startSnapshotHydrationSession({
-        workspaceUid,
-        pendingCollectionPathnames,
-        activeCollectionPathname: lastActiveCollectionPathname || null
-      }));
+      dispatch(
+        startSnapshotHydrationSession({
+          workspaceUid,
+          pendingCollectionPathnames,
+          activeCollectionPathname: lastActiveCollectionPathname || null
+        })
+      );
 
       const completed = maybeCompleteSnapshotHydrationSession(dispatch, getState);
       if (!completed && pendingCollectionPathnames.length > 0) {
@@ -708,9 +766,10 @@ export const loadWorkspaceCollections = (workspaceUid, force = false) => {
         throw new Error('Workspace not found');
       }
 
-      const hasProcessedCollections = workspace.collections
-        && workspace.collections.length > 0
-        && workspace.collections.some((c) => c.path && path.isAbsolute(c.path));
+      const hasProcessedCollections =
+        workspace.collections &&
+        workspace.collections.length > 0 &&
+        workspace.collections.some((c) => c.path && path.isAbsolute(c.path));
 
       if (!force && hasProcessedCollections) {
         return workspace.collections;
@@ -732,10 +791,12 @@ export const loadWorkspaceCollections = (workspaceUid, force = false) => {
         });
       }
 
-      dispatch(updateWorkspace({
-        uid: workspaceUid,
-        collections
-      }));
+      dispatch(
+        updateWorkspace({
+          uid: workspaceUid,
+          collections
+        })
+      );
 
       dispatch(updateWorkspaceLoadingState({ workspaceUid, loadingState: 'loaded' }));
 
@@ -775,8 +836,7 @@ export const loadLastOpenedWorkspaces = () => {
           if (workspace.pathname) {
             try {
               await ipcRenderer.invoke('renderer:start-workspace-watcher', workspace.pathname);
-            } catch (error) {
-            }
+            } catch (error) {}
           }
         }
       }
@@ -790,16 +850,17 @@ export const loadLastOpenedWorkspaces = () => {
 
 export const workspaceOpenedEvent = (workspacePath, workspaceUid, workspaceConfig) => {
   return async (dispatch, getState) => {
-    dispatch(createWorkspace({
-      uid: workspaceUid,
-      pathname: workspacePath,
-      ...workspaceConfig
-    }));
+    dispatch(
+      createWorkspace({
+        uid: workspaceUid,
+        pathname: workspacePath,
+        ...workspaceConfig
+      })
+    );
 
     try {
       await dispatch(loadWorkspaceCollections(workspaceUid));
-    } catch (error) {
-    }
+    } catch (error) {}
 
     const state = getState();
     const activeWorkspaceUid = state.workspaces.activeWorkspaceUid;
@@ -829,10 +890,13 @@ export const workspaceOpenedEvent = (workspacePath, workspaceUid, workspaceConfi
         // If the snapshot points to a workspace that no longer exists on disk,
         // fall back to the default workspace instead of leaving stale active state.
         if (!shouldSwitch && workspaceConfig.type === 'default') {
-          const lastOpenedWorkspacePaths = await ipcRenderer.invoke('renderer:get-last-opened-workspaces').catch(() => []);
+          const lastOpenedWorkspacePaths = await ipcRenderer
+            .invoke('renderer:get-last-opened-workspaces')
+            .catch(() => []);
           const normalizedLastOpenedWorkspacePaths = new Set(
-            (Array.isArray(lastOpenedWorkspacePaths) ? lastOpenedWorkspacePaths : [])
-              .map((pathname) => normalizePath(pathname))
+            (Array.isArray(lastOpenedWorkspacePaths) ? lastOpenedWorkspacePaths : []).map((pathname) =>
+              normalizePath(pathname)
+            )
           );
           const hasActiveWorkspacePath = normalizedLastOpenedWorkspacePaths.has(normalizedActiveWorkspacePath);
 
@@ -860,10 +924,12 @@ export const workspaceConfigUpdatedEvent = (workspacePath, workspaceUid, workspa
 
     const { collections, apiSpecs, ...configWithoutCollections } = workspaceConfig;
 
-    dispatch(updateWorkspace({
-      uid: workspaceUid,
-      ...configWithoutCollections
-    }));
+    dispatch(
+      updateWorkspace({
+        uid: workspaceUid,
+        ...configWithoutCollections
+      })
+    );
 
     const activeWorkspaceUid = getState().workspaces.activeWorkspaceUid;
     if (activeWorkspaceUid === workspaceUid) {
@@ -880,22 +946,18 @@ export const workspaceConfigUpdatedEvent = (workspacePath, workspaceUid, workspa
             .filter((collectionPath) => collectionPath && !openCollections.includes(normalizePath(collectionPath)));
 
           // Deduplicate paths to prevent "collection already opened" toast
-          const uniqueNewCollectionPaths = [...new Map(
-            newCollectionPaths.map((p) => [normalizePath(p), p])
-          ).values()];
+          const uniqueNewCollectionPaths = [...new Map(newCollectionPaths.map((p) => [normalizePath(p), p])).values()];
 
           if (uniqueNewCollectionPaths.length > 0) {
             try {
               await dispatch(openMultipleCollections(uniqueNewCollectionPaths, { workspacePath: workspace.pathname }));
-            } catch (error) {
-            }
+            } catch (error) {}
           }
         }
 
         // Load API specs when workspace config is updated
         await dispatch(loadWorkspaceApiSpecs(workspaceUid));
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
 };
@@ -914,10 +976,12 @@ export const saveWorkspaceDocs = (workspaceUid, docs) => {
 
       await ipcRenderer.invoke('renderer:save-workspace-docs', workspace.pathname, docs || '');
 
-      dispatch(updateWorkspace({
-        uid: workspaceUid,
-        docs: docs
-      }));
+      dispatch(
+        updateWorkspace({
+          uid: workspaceUid,
+          docs: docs
+        })
+      );
 
       return docs;
     } catch (error) {
@@ -935,9 +999,11 @@ export const createCollectionInWorkspace = (collectionName, collectionFolderName
 
     const projectCollectionLocation = path.join(currentWorkspace.pathname, 'collections');
 
-    return await dispatch(createCollection(collectionName, collectionFolderName, projectCollectionLocation, {
-      workspaceId: currentWorkspace.pathname
-    }));
+    return await dispatch(
+      createCollection(collectionName, collectionFolderName, projectCollectionLocation, {
+        workspaceId: currentWorkspace.pathname
+      })
+    );
   };
 };
 
@@ -966,14 +1032,18 @@ export const renameWorkspaceAction = (workspaceUid, newName) => {
         throw new Error('Workspace not found');
       }
 
-      await handleWorkspaceAction((...args) => ipcRenderer.invoke('renderer:rename-workspace', ...args),
+      await handleWorkspaceAction(
+        (...args) => ipcRenderer.invoke('renderer:rename-workspace', ...args),
         workspace.pathname,
-        newName);
+        newName
+      );
 
-      dispatch(updateWorkspace({
-        uid: workspaceUid,
-        name: newName
-      }));
+      dispatch(
+        updateWorkspace({
+          uid: workspaceUid,
+          name: newName
+        })
+      );
     } catch (error) {
       throw error;
     }
@@ -1032,10 +1102,12 @@ export const loadWorkspaceEnvironments = (workspaceUid) => {
 
       const environments = await ipcRenderer.invoke('renderer:load-workspace-environments', workspace.pathname);
 
-      dispatch(updateWorkspace({
-        uid: workspaceUid,
-        environments: environments
-      }));
+      dispatch(
+        updateWorkspace({
+          uid: workspaceUid,
+          environments: environments
+        })
+      );
 
       return environments;
     } catch (error) {
@@ -1052,7 +1124,11 @@ export const createWorkspaceEnvironment = (workspaceUid, environmentName) => {
         throw new Error('Workspace not found');
       }
 
-      const environment = await ipcRenderer.invoke('renderer:create-workspace-environment', workspace.pathname, environmentName);
+      const environment = await ipcRenderer.invoke(
+        'renderer:create-workspace-environment',
+        workspace.pathname,
+        environmentName
+      );
 
       await dispatch(loadWorkspaceEnvironments(workspaceUid));
 
@@ -1090,7 +1166,11 @@ export const importWorkspaceEnvironment = (workspaceUid, environmentData) => {
         throw new Error('Workspace not found');
       }
 
-      const environment = await ipcRenderer.invoke('renderer:import-workspace-environment', workspace.pathname, environmentData);
+      const environment = await ipcRenderer.invoke(
+        'renderer:import-workspace-environment',
+        workspace.pathname,
+        environmentData
+      );
 
       await dispatch(loadWorkspaceEnvironments(workspaceUid));
 
@@ -1109,7 +1189,12 @@ export const updateWorkspaceEnvironment = (workspaceUid, environmentUid, environ
         throw new Error('Workspace not found');
       }
 
-      await ipcRenderer.invoke('renderer:update-workspace-environment', workspace.pathname, environmentUid, environmentData);
+      await ipcRenderer.invoke(
+        'renderer:update-workspace-environment',
+        workspace.pathname,
+        environmentUid,
+        environmentData
+      );
 
       await dispatch(loadWorkspaceEnvironments(workspaceUid));
 
@@ -1147,7 +1232,12 @@ export const copyWorkspaceEnvironment = (workspaceUid, environmentUid, newName) 
         throw new Error('Workspace not found');
       }
 
-      const newEnvironment = await ipcRenderer.invoke('renderer:copy-workspace-environment', workspace.pathname, environmentUid, newName);
+      const newEnvironment = await ipcRenderer.invoke(
+        'renderer:copy-workspace-environment',
+        workspace.pathname,
+        environmentUid,
+        newName
+      );
 
       await dispatch(loadWorkspaceEnvironments(workspaceUid));
 
@@ -1191,11 +1281,13 @@ export const importWorkspaceAction = (zipFilePath, extractLocation) => {
       const result = await ipcRenderer.invoke('renderer:import-workspace', zipFilePath, extractLocation);
 
       if (result.success) {
-        dispatch(createWorkspace({
-          uid: result.workspaceUid,
-          pathname: result.workspacePath,
-          ...result.workspaceConfig
-        }));
+        dispatch(
+          createWorkspace({
+            uid: result.workspaceUid,
+            pathname: result.workspacePath,
+            ...result.workspaceConfig
+          })
+        );
 
         await dispatch(switchWorkspace(result.workspaceUid));
       }
@@ -1207,85 +1299,93 @@ export const importWorkspaceAction = (zipFilePath, extractLocation) => {
   };
 };
 
-export const saveWorkspaceDotEnvVariables = (workspaceUid, variables, filename = '.env') => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
-    const state = getState();
-    const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
+export const saveWorkspaceDotEnvVariables =
+  (workspaceUid, variables, filename = '.env') =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const state = getState();
+      const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
 
-    if (!workspace) {
-      return reject(new Error('Workspace not found'));
-    }
+      if (!workspace) {
+        return reject(new Error('Workspace not found'));
+      }
 
-    if (!workspace.pathname) {
-      return reject(new Error('Workspace path not found'));
-    }
+      if (!workspace.pathname) {
+        return reject(new Error('Workspace path not found'));
+      }
 
-    ipcRenderer
-      .invoke('renderer:save-workspace-dotenv-variables', { workspacePath: workspace.pathname, variables, filename })
-      .then(resolve)
-      .catch(reject);
-  });
-};
+      ipcRenderer
+        .invoke('renderer:save-workspace-dotenv-variables', { workspacePath: workspace.pathname, variables, filename })
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
-export const saveWorkspaceDotEnvRaw = (workspaceUid, content, filename = '.env') => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
-    const state = getState();
-    const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
+export const saveWorkspaceDotEnvRaw =
+  (workspaceUid, content, filename = '.env') =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const state = getState();
+      const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
 
-    if (!workspace) {
-      return reject(new Error('Workspace not found'));
-    }
+      if (!workspace) {
+        return reject(new Error('Workspace not found'));
+      }
 
-    if (!workspace.pathname) {
-      return reject(new Error('Workspace path not found'));
-    }
+      if (!workspace.pathname) {
+        return reject(new Error('Workspace path not found'));
+      }
 
-    ipcRenderer
-      .invoke('renderer:save-workspace-dotenv-raw', { workspacePath: workspace.pathname, content, filename })
-      .then(resolve)
-      .catch(reject);
-  });
-};
+      ipcRenderer
+        .invoke('renderer:save-workspace-dotenv-raw', { workspacePath: workspace.pathname, content, filename })
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
-export const createWorkspaceDotEnvFile = (workspaceUid, filename = '.env') => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
-    const state = getState();
-    const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
+export const createWorkspaceDotEnvFile =
+  (workspaceUid, filename = '.env') =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const state = getState();
+      const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
 
-    if (!workspace) {
-      return reject(new Error('Workspace not found'));
-    }
+      if (!workspace) {
+        return reject(new Error('Workspace not found'));
+      }
 
-    if (!workspace.pathname) {
-      return reject(new Error('Workspace path not found'));
-    }
+      if (!workspace.pathname) {
+        return reject(new Error('Workspace path not found'));
+      }
 
-    ipcRenderer
-      .invoke('renderer:create-workspace-dotenv-file', { workspacePath: workspace.pathname, filename })
-      .then(resolve)
-      .catch(reject);
-  });
-};
+      ipcRenderer
+        .invoke('renderer:create-workspace-dotenv-file', { workspacePath: workspace.pathname, filename })
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
-export const deleteWorkspaceDotEnvFile = (workspaceUid, filename = '.env') => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
-    const state = getState();
-    const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
+export const deleteWorkspaceDotEnvFile =
+  (workspaceUid, filename = '.env') =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const state = getState();
+      const workspace = state.workspaces.workspaces.find((w) => w.uid === workspaceUid);
 
-    if (!workspace) {
-      return reject(new Error('Workspace not found'));
-    }
+      if (!workspace) {
+        return reject(new Error('Workspace not found'));
+      }
 
-    if (!workspace.pathname) {
-      return reject(new Error('Workspace path not found'));
-    }
+      if (!workspace.pathname) {
+        return reject(new Error('Workspace path not found'));
+      }
 
-    ipcRenderer
-      .invoke('renderer:delete-workspace-dotenv-file', { workspacePath: workspace.pathname, filename })
-      .then(resolve)
-      .catch(reject);
-  });
-};
+      ipcRenderer
+        .invoke('renderer:delete-workspace-dotenv-file', { workspacePath: workspace.pathname, filename })
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
 // Scratch Collection Actions
 
@@ -1316,9 +1416,7 @@ export const mountScratchCollection = (workspaceUid) => {
     }
 
     if (workspace.scratchCollectionUid) {
-      const existingCollection = state.collections.collections.find(
-        (c) => c.uid === workspace.scratchCollectionUid
-      );
+      const existingCollection = state.collections.collections.find((c) => c.uid === workspace.scratchCollectionUid);
       if (existingCollection) {
         return existingCollection;
       }
@@ -1353,16 +1451,20 @@ export const mountScratchCollection = (workspaceUid) => {
 
       await dispatch(openScratchCollectionEvent(scratchCollectionUid, tempDirectoryPath, brunoConfig));
 
-      dispatch(setWorkspaceScratchCollection({
-        workspaceUid,
-        scratchCollectionUid,
-        scratchTempDirectory: tempDirectoryPath
-      }));
+      dispatch(
+        setWorkspaceScratchCollection({
+          workspaceUid,
+          scratchCollectionUid,
+          scratchTempDirectory: tempDirectoryPath
+        })
+      );
 
-      dispatch(addTransientDirectory({
-        collectionUid: scratchCollectionUid,
-        pathname: tempDirectoryPath
-      }));
+      dispatch(
+        addTransientDirectory({
+          collectionUid: scratchCollectionUid,
+          pathname: tempDirectoryPath
+        })
+      );
 
       dispatch(updateCollectionMountStatus({ collectionUid: scratchCollectionUid, mountStatus: 'mounted' }));
 
@@ -1370,7 +1472,9 @@ export const mountScratchCollection = (workspaceUid) => {
     } catch (error) {
       console.error('Error mounting scratch collection:', error);
       if (workspace.scratchCollectionUid) {
-        dispatch(updateCollectionMountStatus({ collectionUid: workspace.scratchCollectionUid, mountStatus: 'unmounted' }));
+        dispatch(
+          updateCollectionMountStatus({ collectionUid: workspace.scratchCollectionUid, mountStatus: 'unmounted' })
+        );
       }
       return null;
     }

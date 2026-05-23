@@ -26,7 +26,13 @@ const Documentation = ({ collection, folder }) => {
 
   const wrapperRef = useRef(null);
   const [scroll, setScroll] = usePersistedState({ key: `folder-docs-scroll-${folder.uid}`, default: 0 });
-  useTrackScroll({ ref: wrapperRef, selector: '.folder-settings-content', onChange: setScroll, enabled: !isEditing, initialValue: scroll });
+  useTrackScroll({
+    ref: wrapperRef,
+    selector: '.folder-settings-content',
+    onChange: setScroll,
+    enabled: !isEditing,
+    initialValue: scroll
+  });
 
   const toggleViewMode = () => {
     dispatch(updateDocsEditing({ uid: activeTabUid, docsEditing: !isEditing }));

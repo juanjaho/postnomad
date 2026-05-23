@@ -75,12 +75,16 @@ const StyledWrapper = styled.div`
 
     &.request {
       border-left: none;
-      &::before { right: -4px; }
+      &::before {
+        right: -4px;
+      }
     }
 
     &.response {
       border-right: none;
-      &::before { left: -4px; }
+      &::before {
+        left: -4px;
+      }
     }
   }
 
@@ -114,12 +118,16 @@ const StyledWrapper = styled.div`
 
     &.request {
       border-top: none;
-      &::before { bottom: -4px; }
+      &::before {
+        bottom: -4px;
+      }
     }
 
     &.response {
       border-bottom: none;
-      &::before { top: -4px; }
+      &::before {
+        top: -4px;
+      }
     }
   }
 `;

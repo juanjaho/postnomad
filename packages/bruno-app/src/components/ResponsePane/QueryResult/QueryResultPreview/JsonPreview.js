@@ -34,11 +34,29 @@ const JsonPreview = ({ data, displayedTheme }) => {
 
   // Validate that data can be rendered as JSON tree
   if (jsonData.data === null || jsonData.data === undefined) {
-    return <ErrorBanner errors={[{ title: 'Cannot preview as JSON', message: 'Data is null or undefined. Expected a valid JSON object or array.' }]} />;
+    return (
+      <ErrorBanner
+        errors={[
+          {
+            title: 'Cannot preview as JSON',
+            message: 'Data is null or undefined. Expected a valid JSON object or array.'
+          }
+        ]}
+      />
+    );
   }
 
   if (typeof jsonData.data !== 'object') {
-    return <ErrorBanner errors={[{ title: 'Cannot preview as JSON', message: 'Data cannot be rendered as a JSON tree. Expected a JSON object or array.' }]} />;
+    return (
+      <ErrorBanner
+        errors={[
+          {
+            title: 'Cannot preview as JSON',
+            message: 'Data cannot be rendered as a JSON tree. Expected a JSON object or array.'
+          }
+        ]}
+      />
+    );
   }
 
   return (

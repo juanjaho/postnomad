@@ -12,9 +12,7 @@ const getMethodText = (item, { isGrpc, isWS, isGraphQL }) => {
   if (isGrpc) return 'grpc';
   if (isWS) return 'ws';
   if (isGraphQL) return 'gql';
-  return item.request.method.length > 5
-    ? item.request.method.substring(0, 3)
-    : item.request.method;
+  return item.request.method.length > 5 ? item.request.method.substring(0, 3) : item.request.method;
 };
 
 const getClassname = (method = '', { isGrpc, isWS, isGraphQL }) => {
@@ -45,9 +43,7 @@ const RequestMethod = ({ item }) => {
   return (
     <StyledWrapper>
       <div className={className}>
-        <span className="uppercase">
-          {methodText}
-        </span>
+        <span className="uppercase">{methodText}</span>
       </div>
     </StyledWrapper>
   );

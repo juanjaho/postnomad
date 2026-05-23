@@ -66,9 +66,9 @@ describe('setupLinkAware', () => {
 
     mockDoc = {
       getValue: jest.fn().mockReturnValue('Check out https://example.com and http://test.org'),
-      getLine: jest.fn().mockImplementation((lineNum) =>
-        lineNum === 0 ? 'Check out https://example.com and http://test.org' : ''
-      ),
+      getLine: jest
+        .fn()
+        .mockImplementation((lineNum) => (lineNum === 0 ? 'Check out https://example.com and http://test.org' : '')),
       lineCount: jest.fn().mockReturnValue(1)
     };
 
@@ -156,13 +156,15 @@ describe('setupLinkAware', () => {
       jest.runAllTimers();
 
       // Verify that markUrls was called which sets the hint
-      expect(mockEditor.markText).toHaveBeenCalledWith(expect.anything(),
+      expect(mockEditor.markText).toHaveBeenCalledWith(
+        expect.anything(),
         expect.anything(),
         expect.objectContaining({
           attributes: expect.objectContaining({
             title: 'Hold Cmd and click to open link'
           })
-        }));
+        })
+      );
     });
 
     it('should use Ctrl key hint on non-macOS', () => {
@@ -174,13 +176,15 @@ describe('setupLinkAware', () => {
       jest.runAllTimers();
 
       // Verify that markUrls was called which sets the hint
-      expect(mockEditor.markText).toHaveBeenCalledWith(expect.anything(),
+      expect(mockEditor.markText).toHaveBeenCalledWith(
+        expect.anything(),
         expect.anything(),
         expect.objectContaining({
           attributes: expect.objectContaining({
             title: 'Hold Ctrl and click to open link'
           })
-        }));
+        })
+      );
     });
   });
 
@@ -327,15 +331,17 @@ describe('setupLinkAware', () => {
       changeHandler();
       jest.runAllTimers();
 
-      expect(mockEditor.markText).toHaveBeenCalledWith({ line: 0, ch: 10 },
+      expect(mockEditor.markText).toHaveBeenCalledWith(
+        { line: 0, ch: 10 },
         { line: 0, ch: 28 },
         {
           className: 'CodeMirror-link',
           attributes: {
             'data-url': 'https://example.com',
-            'title': 'Hold Cmd and click to open link'
+            title: 'Hold Cmd and click to open link'
           }
-        });
+        }
+      );
     });
   });
 
@@ -357,7 +363,9 @@ describe('setupLinkAware', () => {
     it('should add hover class on mouseover for link elements', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
 
       const mockTarget = {
         classList: {
@@ -394,7 +402,9 @@ describe('setupLinkAware', () => {
     it('should not add hover class for non-link elements', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
 
       const mockTarget = {
         classList: {
@@ -446,7 +456,9 @@ describe('setupLinkAware', () => {
     it('should handle multi-span links correctly on hover', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
 
       // Create a mock with a chain of link spans
       const mockNestedPrev = {
@@ -521,7 +533,9 @@ describe('setupLinkAware', () => {
     it('should handle missing target in mouse event', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
       const mockEvent = { target: null };
 
       // Note: This will throw as the implementation accesses target.classList without null check
@@ -557,7 +571,9 @@ describe('setupLinkAware', () => {
     it('should handle null siblings in mouseover events', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
 
       const mockTarget = {
         classList: {
@@ -577,7 +593,9 @@ describe('setupLinkAware', () => {
     it('should handle non-link siblings in mouseover events', () => {
       setupLinkAware(mockEditor);
 
-      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find((call) => call[0] === 'mouseover')[1];
+      const mouseoverHandler = mockWrapperElement.addEventListener.mock.calls.find(
+        (call) => call[0] === 'mouseover'
+      )[1];
 
       const mockPrev = {
         classList: {
@@ -614,7 +632,11 @@ describe('setupLinkAware', () => {
 
 describe('extendUrlWithBalancedParentheses', () => {
   it('should not modify URLs with balanced parentheses', () => {
-    const result = extendUrlWithBalancedParentheses('https://example.com/path?q=(a)', 'https://example.com/path?q=(a) end', 31);
+    const result = extendUrlWithBalancedParentheses(
+      'https://example.com/path?q=(a)',
+      'https://example.com/path?q=(a) end',
+      31
+    );
     expect(result.url).toBe('https://example.com/path?q=(a)');
   });
 
@@ -636,8 +658,10 @@ describe('extendUrlWithBalancedParentheses', () => {
   });
 
   it('should handle Kibana/RISON URLs with deeply nested parentheses', () => {
-    const fullUrl = 'https://example.com/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-24h%2Fh,to:now))&_a=(columns:!(TopicName,key),dataSource:(dataViewId:f45f79b9,type:dataView),filters:!(),query:(language:kuery,query:\'%22test%22\'),sort:!(!(Timestamp,asc)))';
-    const truncatedUrl = 'https://example.com/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-24h%2Fh,to:now)';
+    const fullUrl =
+      "https://example.com/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-24h%2Fh,to:now))&_a=(columns:!(TopicName,key),dataSource:(dataViewId:f45f79b9,type:dataView),filters:!(),query:(language:kuery,query:'%22test%22'),sort:!(!(Timestamp,asc)))";
+    const truncatedUrl =
+      'https://example.com/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-24h%2Fh,to:now)';
     const result = extendUrlWithBalancedParentheses(truncatedUrl, fullUrl, 120);
     expect(result.url).toBe(fullUrl);
   });

@@ -11,7 +11,9 @@ const RequestTabLoading = ({ handleCloseClick, name }) => {
   return (
     <>
       <div className="flex items-baseline tab-label">
-        <span className="tab-name" title={name}>{name}</span>
+        <span className="tab-name" title={name}>
+          {name}
+        </span>
       </div>
       <GradientCloseButton onClick={handleCloseClick} hasChanges={false} />
     </>

@@ -26,11 +26,13 @@ test.describe('CLI JSON Environment File Support', () => {
     const invalidEnvPath = path.join(tempDir, 'invalid-env.json');
 
     fs.mkdirSync(tempDir, { recursive: true });
-    fs.writeFileSync(invalidEnvPath,
+    fs.writeFileSync(
+      invalidEnvPath,
       JSON.stringify({
         name: 'Invalid Env'
         // missing variables array - invalid JSON
-      }));
+      })
+    );
 
     const status = runFrom(collectionPath, `run --env-file "${invalidEnvPath}"`);
     expect(status).toBe(constants.EXIT_STATUS.ERROR_INVALID_FILE);

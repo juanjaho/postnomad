@@ -88,13 +88,13 @@ bru import openapi --source api.yml --output-file ~/Desktop/my-collection.json -
 
 Import Options:
 
-| Option                    | Details                                            |
-| ------------------------- | -------------------------------------------------- |
-| --source, -s              | Path to the source file or URL (required)          |
-| --output, -o              | Path to the output directory                       |
-| --output-file, -f         | Path to the output JSON file                       |
-| --collection-name, -n     | Name for the imported collection                   |
-| --insecure                | Skip SSL certificate validation when fetching from URLs |
+| Option                | Details                                                 |
+| --------------------- | ------------------------------------------------------- |
+| --source, -s          | Path to the source file or URL (required)               |
+| --output, -o          | Path to the output directory                            |
+| --output-file, -f     | Path to the output JSON file                            |
+| --collection-name, -n | Name for the imported collection                        |
+| --insecure            | Skip SSL certificate validation when fetching from URLs |
 
 ## Command Line Options
 

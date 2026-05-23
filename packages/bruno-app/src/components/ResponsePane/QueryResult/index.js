@@ -31,7 +31,7 @@ const PREVIEW_FORMAT_OPTIONS = [
 const formatErrorMessage = (error) => {
   if (!error) return 'Something went wrong';
 
-  const remoteMethodError = 'Error invoking remote method \'send-http-request\':';
+  const remoteMethodError = "Error invoking remote method 'send-http-request':";
 
   if (error?.includes(remoteMethodError)) {
     const parts = error.split(remoteMethodError);
@@ -128,15 +128,12 @@ const QueryResult = ({
     return detectContentTypeFromBase64(dataBuffer);
   }, [dataBuffer, isLargeResponse]);
 
-  const formattedData = useMemo(
-    () => {
-      if (isLargeResponse && !showLargeResponse) {
-        return '';
-      }
-      return formatResponse(data, dataBuffer, selectedFormat, filter);
-    },
-    [data, dataBuffer, selectedFormat, filter, isLargeResponse, showLargeResponse]
-  );
+  const formattedData = useMemo(() => {
+    if (isLargeResponse && !showLargeResponse) {
+      return '';
+    }
+    return formatResponse(data, dataBuffer, selectedFormat, filter);
+  }, [data, dataBuffer, selectedFormat, filter, isLargeResponse, showLargeResponse]);
 
   const handleFilterChange = (value) => {
     if (onFilterChange) {
@@ -168,23 +165,27 @@ const QueryResult = ({
 
   const codeMirrorMode = useMemo(() => {
     // Find the codeMirrorMode from PREVIEW_FORMAT_OPTIONS (contains all format options)
-    return PREVIEW_FORMAT_OPTIONS
-      .filter((option) => option.type === 'item' || !option.type)
-      .find((option) => option.id === selectedFormat)?.codeMirrorMode || 'text/plain';
+    return (
+      PREVIEW_FORMAT_OPTIONS.filter((option) => option.type === 'item' || !option.type).find(
+        (option) => option.id === selectedFormat
+      )?.codeMirrorMode || 'text/plain'
+    );
   }, [selectedFormat]);
 
-  const queryFilterEnabled = useMemo(() => codeMirrorMode.includes('json') && selectedFormat === 'json' && selectedTab === 'editor', [codeMirrorMode, selectedFormat, selectedTab]);
+  const queryFilterEnabled = useMemo(
+    () => codeMirrorMode.includes('json') && selectedFormat === 'json' && selectedTab === 'editor',
+    [codeMirrorMode, selectedFormat, selectedTab]
+  );
   const hasScriptError = item.preRequestScriptErrorMessage || item.postResponseScriptErrorMessage;
 
   return (
-    <StyledWrapper
-      className="w-full h-full relative flex"
-      queryFilterEnabled={queryFilterEnabled}
-    >
+    <StyledWrapper className="w-full h-full relative flex" queryFilterEnabled={queryFilterEnabled}>
       {error ? (
         <div>
           {hasScriptError ? null : (
-            <div className="error" style={{ whiteSpace: 'pre-line' }}>{formatErrorMessage(error)}</div>
+            <div className="error" style={{ whiteSpace: 'pre-line' }}>
+              {formatErrorMessage(error)}
+            </div>
           )}
 
           {error && typeof error === 'string' && error.toLowerCase().includes('self signed certificate') ? (

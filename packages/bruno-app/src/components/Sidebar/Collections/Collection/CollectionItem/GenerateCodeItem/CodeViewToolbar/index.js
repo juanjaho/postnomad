@@ -36,22 +36,28 @@ const CodeViewToolbar = () => {
     const newMainLang = e.target.value;
     const defaultLibrary = languageGroups[newMainLang][0].libraryName;
 
-    dispatch(updateGenerateCode({
-      mainLanguage: newMainLang,
-      library: defaultLibrary
-    }));
+    dispatch(
+      updateGenerateCode({
+        mainLanguage: newMainLang,
+        library: defaultLibrary
+      })
+    );
   };
 
   const handleLibraryChange = (libraryName) => {
-    dispatch(updateGenerateCode({
-      library: libraryName
-    }));
+    dispatch(
+      updateGenerateCode({
+        library: libraryName
+      })
+    );
   };
 
   const handleInterpolateChange = (e) => {
-    dispatch(updateGenerateCode({
-      shouldInterpolate: e.target.checked
-    }));
+    dispatch(
+      updateGenerateCode({
+        shouldInterpolate: e.target.checked
+      })
+    );
   };
 
   return (
@@ -90,11 +96,7 @@ const CodeViewToolbar = () => {
 
         <div className="right-controls">
           <label className="interpolate-checkbox">
-            <input
-              type="checkbox"
-              checked={generateCodePrefs.shouldInterpolate}
-              onChange={handleInterpolateChange}
-            />
+            <input type="checkbox" checked={generateCodePrefs.shouldInterpolate} onChange={handleInterpolateChange} />
             <span>Interpolate Variables</span>
           </label>
         </div>

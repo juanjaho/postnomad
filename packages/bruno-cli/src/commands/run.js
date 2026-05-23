@@ -15,7 +15,12 @@ const { rpad } = require('../utils/common');
 const { getOptions } = require('../utils/bru');
 const { parseDotEnv, parseEnvironment } = require('@usebruno/filestore');
 const constants = require('../constants');
-const { findItemInCollection, createCollectionJsonFromPathname, getCallStack, FORMAT_CONFIG } = require('../utils/collection');
+const {
+  findItemInCollection,
+  createCollectionJsonFromPathname,
+  getCallStack,
+  FORMAT_CONFIG
+} = require('../utils/collection');
 const { hasExecutableTestInScript } = require('../utils/request');
 const { createSkippedFileResults } = require('../utils/run');
 const { sanitizeResultsForReporter } = require('../utils/sanitize-results');
@@ -24,9 +29,7 @@ const command = 'run [paths...]';
 const desc = 'Run one or more requests/folders';
 
 const formatTestSummary = (label, maxLength, passed, failed, total, errorCount = 0, skippedCount = 0) => {
-  const parts = [
-    `${rpad(label, maxLength)} ${chalk.green(`${passed} passed`)}`
-  ];
+  const parts = [`${rpad(label, maxLength)} ${chalk.green(`${passed} passed`)}`];
 
   if (failed > 0) parts.push(chalk.red(`${failed} failed`));
   if (errorCount > 0) parts.push(chalk.red(`${errorCount} error`));
@@ -60,18 +63,44 @@ const printRunSummary = (results) => {
 
   const maxLength = 12;
 
-  const requestSummary = formatTestSummary('Requests:', maxLength, passedRequests, failedRequests, totalRequests, errorRequests, skippedRequests);
+  const requestSummary = formatTestSummary(
+    'Requests:',
+    maxLength,
+    passedRequests,
+    failedRequests,
+    totalRequests,
+    errorRequests,
+    skippedRequests
+  );
   const testSummary = formatTestSummary('Tests:', maxLength, passedTests, failedTests, totalTests);
-  const assertSummary = formatTestSummary('Assertions:', maxLength, passedAssertions, failedAssertions, totalAssertions);
+  const assertSummary = formatTestSummary(
+    'Assertions:',
+    maxLength,
+    passedAssertions,
+    failedAssertions,
+    totalAssertions
+  );
 
   let preRequestTestSummary = '';
   if (totalPreRequestTests > 0) {
-    preRequestTestSummary = formatTestSummary('Pre-Request Tests:', maxLength, passedPreRequestTests, failedPreRequestTests, totalPreRequestTests);
+    preRequestTestSummary = formatTestSummary(
+      'Pre-Request Tests:',
+      maxLength,
+      passedPreRequestTests,
+      failedPreRequestTests,
+      totalPreRequestTests
+    );
   }
 
   let postResponseTestSummary = '';
   if (totalPostResponseTests > 0) {
-    postResponseTestSummary = formatTestSummary('Post-Response Tests:', maxLength, passedPostResponseTests, failedPostResponseTests, totalPostResponseTests);
+    postResponseTestSummary = formatTestSummary(
+      'Post-Response Tests:',
+      maxLength,
+      passedPostResponseTests,
+      failedPostResponseTests,
+      totalPostResponseTests
+    );
   }
 
   console.log('\n' + chalk.bold(requestSummary));
@@ -252,10 +281,22 @@ const builder = async (yargs) => {
     .example('$0 run folder', 'Run all requests in a folder')
     .example('$0 run folder -r', 'Run all requests in a folder recursively')
     .example('$0 run request.bru folder', 'Run a request and all requests in a folder')
-    .example('$0 run --reporter-skip-all-headers', 'Run all requests in a folder recursively with omitted headers from the reporter output')
-    .example('$0 run --reporter-skip-request-body', 'Run all requests with request bodies omitted from the reporter output')
-    .example('$0 run --reporter-skip-response-body', 'Run all requests with response bodies omitted from the reporter output')
-    .example('$0 run --reporter-skip-body', 'Run all requests with both request and response bodies omitted from the reporter output')
+    .example(
+      '$0 run --reporter-skip-all-headers',
+      'Run all requests in a folder recursively with omitted headers from the reporter output'
+    )
+    .example(
+      '$0 run --reporter-skip-request-body',
+      'Run all requests with request bodies omitted from the reporter output'
+    )
+    .example(
+      '$0 run --reporter-skip-response-body',
+      'Run all requests with response bodies omitted from the reporter output'
+    )
+    .example(
+      '$0 run --reporter-skip-body',
+      'Run all requests with both request and response bodies omitted from the reporter output'
+    )
     .example(
       '$0 run --reporter-skip-headers "Authorization"',
       'Run all requests in a folder recursively with skipped headers from the reporter output'
@@ -289,7 +330,10 @@ const builder = async (yargs) => {
       '$0 run folder --cacert myCustomCA.pem --ignore-truststore',
       'Use a custom CA certificate exclusively when validating the peers of the requests in the specified folder.'
     )
-    .example('$0 run --client-cert-config client-cert-config.json', 'Run a request with Client certificate configurations')
+    .example(
+      '$0 run --client-cert-config client-cert-config.json',
+      'Run a request with Client certificate configurations'
+    )
     .example('$0 run folder --delay delayInMs', 'Run a folder with given miliseconds delay between each requests.')
     .example('$0 run --noproxy', 'Run requests with system proxy disabled')
     .example(
@@ -372,7 +416,11 @@ const handler = async function (argv) {
           }
           console.log(chalk.green(`Client certificates has been added`));
         } else {
-          console.warn(chalk.yellow(`Client certificate configuration is enabled, but it either contains no valid "certs" array or the added configuration has been set to false`));
+          console.warn(
+            chalk.yellow(
+              `Client certificate configuration is enabled, but it either contains no valid "certs" array or the added configuration has been set to false`
+            )
+          );
         }
       } catch (err) {
         console.error(chalk.red(`Unexpected error: ${err.message}`));
@@ -462,7 +510,11 @@ const handler = async function (argv) {
       }
 
       if (!workspacePath) {
-        console.error(chalk.red(`Workspace not found. Please specify a workspace path using --workspace-path or ensure the collection is inside a workspace directory.`));
+        console.error(
+          chalk.red(
+            `Workspace not found. Please specify a workspace path using --workspace-path or ensure the collection is inside a workspace directory.`
+          )
+        );
         process.exit(constants.EXIT_STATUS.ERROR_GLOBAL_ENV_REQUIRES_WORKSPACE);
       }
 
@@ -514,8 +566,8 @@ const handler = async function (argv) {
           const match = value.match(/^([^=]+)=(.*)$/);
           if (!match) {
             console.error(
-              chalk.red(`Overridable environment variable not correct: use name=value - presented: `)
-              + chalk.dim(`${value}`)
+              chalk.red(`Overridable environment variable not correct: use name=value - presented: `) +
+                chalk.dim(`${value}`)
             );
             process.exit(constants.EXIT_STATUS.ERROR_INCORRECT_ENV_OVERRIDE);
           }
@@ -756,7 +808,7 @@ const handler = async function (argv) {
         if (nextRequestIdx >= 0) {
           currentRequestIndex = nextRequestIdx;
         } else {
-          console.error('Could not find request with name \'' + nextRequestName + '\'');
+          console.error("Could not find request with name '" + nextRequestName + "'");
           currentRequestIndex++;
         }
       } else {
@@ -815,7 +867,15 @@ const handler = async function (argv) {
       }
     }
 
-    if ((summary.failedAssertions + summary.failedTests + summary.failedPreRequestTests + summary.failedPostResponseTests + summary.failedRequests > 0) || (summary?.errorRequests > 0)) {
+    if (
+      summary.failedAssertions +
+        summary.failedTests +
+        summary.failedPreRequestTests +
+        summary.failedPostResponseTests +
+        summary.failedRequests >
+        0 ||
+      summary?.errorRequests > 0
+    ) {
       process.exit(constants.EXIT_STATUS.ERROR_FAILED_COLLECTION);
     }
   } catch (err) {

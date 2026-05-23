@@ -6,7 +6,10 @@ test.describe('Rename Collection Item - File Extension', () => {
     await closeAllCollections(page);
   });
 
-  test('should show .yml extension for OpenCollection format when renaming a request', async ({ page, createTmpDir }) => {
+  test('should show .yml extension for OpenCollection format when renaming a request', async ({
+    page,
+    createTmpDir
+  }) => {
     const locators = buildCommonLocators(page);
     const testDir = await createTmpDir('yml-rename-test');
 

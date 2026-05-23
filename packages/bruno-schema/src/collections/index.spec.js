@@ -136,9 +136,10 @@ describe('Collection Schema Validation', () => {
       ]
     };
 
-    expect(collectionSchema.validate(collection)).rejects.toThrow('items[0].request field has unspecified keys: params');
+    expect(collectionSchema.validate(collection)).rejects.toThrow(
+      'items[0].request field has unspecified keys: params'
+    );
   });
-
 
   it('collection schema must validate successfully - simple collection, folder inside folder', async () => {
     const collection = {

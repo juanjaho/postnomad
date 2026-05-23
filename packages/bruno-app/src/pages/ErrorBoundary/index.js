@@ -109,9 +109,7 @@ class ErrorBoundary extends React.Component {
 
           <div className="bg-white rounded-lg p-6 flex-shrink-0 flex-1 overflow-auto">
             <h2 className="text-lg font-medium text-red-600 mb-3">Stack Trace</h2>
-            {error?.message && (
-              <p className="text-red-500 font-medium mb-2">{error.message}</p>
-            )}
+            {error?.message && <p className="text-red-500 font-medium mb-2">{error.message}</p>}
             <pre className="text-left text-sm text-gray-700 whitespace-pre-wrap break-words font-mono bg-gray-100 p-4 rounded overflow-auto max-h-full">
               {stackTrace}
             </pre>

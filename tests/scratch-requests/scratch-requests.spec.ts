@@ -1,5 +1,12 @@
 import { test, expect, Page } from '../../playwright';
-import { fillRequestUrl, sendRequest, clickResponseAction, createCollection, closeAllCollections, closeAllTabs } from '../utils/page';
+import {
+  fillRequestUrl,
+  sendRequest,
+  clickResponseAction,
+  createCollection,
+  closeAllCollections,
+  closeAllTabs
+} from '../utils/page';
 import { buildCommonLocators } from '../utils/page/locators';
 
 test.describe.serial('Scratch Requests', () => {
@@ -150,9 +157,13 @@ test.describe.serial('Scratch Requests', () => {
 
       // Copy response to clipboard and verify
       await clickResponseAction(page, 'response-copy-btn');
-      await expect(page.getByText('Response copied to clipboard')).toBeVisible({ timeout: 10000 }).catch(() => {});
+      await expect(page.getByText('Response copied to clipboard'))
+        .toBeVisible({ timeout: 10000 })
+        .catch(() => {});
 
-      await expect.poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => ''))).toBeTruthy();
+      await expect
+        .poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => '')))
+        .toBeTruthy();
       const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
       expect(clipboardText).toBe('pong');
     });

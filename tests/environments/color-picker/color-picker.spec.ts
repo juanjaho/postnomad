@@ -1,14 +1,7 @@
 import { test, expect } from '../../../playwright';
 import { closeAllCollections } from '../../utils/page/actions';
 
-const PRESET_COLORS = [
-  '#CE4F3B',
-  '#2E8A54',
-  '#346AB2',
-  '#C77A0F',
-  '#B83D7F',
-  '#8D44B2'
-];
+const PRESET_COLORS = ['#CE4F3B', '#2E8A54', '#346AB2', '#C77A0F', '#B83D7F', '#8D44B2'];
 
 // Convert hex color to RGB format used by CSS
 const hexToRgb = (hex: string): string => {

@@ -9,7 +9,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     position: relative;
     cursor: pointer;
-    
+
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
@@ -21,7 +21,7 @@ const StyledWrapper = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    visibility: ${(props) => props.checked ? 'visible' : 'hidden'};
+    visibility: ${(props) => (props.checked ? 'visible' : 'hidden')};
     pointer-events: none;
   }
 
@@ -31,17 +31,18 @@ const StyledWrapper = styled.div`
     -moz-appearance: none;
     width: 1rem;
     height: 1rem;
-    border: 2px solid ${(props) => {
-      if (props.checked && props.disabled) {
+    border: 2px solid
+      ${(props) => {
+        if (props.checked && props.disabled) {
+          return props.theme.colors.text.muted;
+        }
+
+        if (props.checked && !props.disabled) {
+          return props.theme.colors.text.yellow;
+        }
+
         return props.theme.colors.text.muted;
-      }
-
-      if (props.checked && !props.disabled) {
-        return props.theme.colors.text.yellow;
-      }
-
-      return props.theme.colors.text.muted;
-    }};
+      }};
     border-radius: 4px;
     background-color: ${(props) => {
       if (props.checked && !props.disabled) {
@@ -59,16 +60,16 @@ const StyledWrapper = styled.div`
     transition: all 0.2s ease;
     outline: none;
     box-shadow: none;
-    
+
     &:hover:not(:disabled) {
       opacity: 0.8;
     }
-    
+
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
     }
-    
+
     &:focus {
       outline: none;
       box-shadow: 0 0 0 2px ${(props) => props.theme.colors.text.yellow}40;

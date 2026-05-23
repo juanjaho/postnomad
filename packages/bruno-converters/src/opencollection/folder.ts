@@ -10,15 +10,7 @@ import {
   toOpenCollectionVariables
 } from './common';
 import { fromOpenCollectionItems, toOpenCollectionItems } from './items';
-import type {
-  Folder,
-  FolderInfo,
-  RequestDefaults,
-  Auth,
-  BrunoItem,
-  BrunoFolderRoot,
-  BrunoKeyValue
-} from './types';
+import type { Folder, FolderInfo, RequestDefaults, Auth, BrunoItem, BrunoFolderRoot, BrunoKeyValue } from './types';
 
 export const fromOpenCollectionFolder = (folder: Folder): BrunoItem => {
   const info = folder.info || {};
@@ -94,7 +86,9 @@ export const toOpenCollectionFolder = (folder: BrunoItem): Folder => {
 
     const headers = toOpenCollectionHeaders(folderRequest.headers as BrunoKeyValue[]);
     const auth = toOpenCollectionAuth(folderRequest.auth);
-    const scripts = toOpenCollectionScripts(folderRequest as { script?: { req: string | null; res: string | null } | null; tests?: string | null });
+    const scripts = toOpenCollectionScripts(
+      folderRequest as { script?: { req: string | null; res: string | null } | null; tests?: string | null }
+    );
     const variables = toOpenCollectionVariables(folderRequest.vars);
 
     if (headers || auth || scripts || variables) {
@@ -128,7 +122,10 @@ export const toOpenCollectionFolder = (folder: BrunoItem): Folder => {
   }
 
   if (folder.items?.length) {
-    ocFolder.items = toOpenCollectionItems(folder.items, toOpenCollectionFolder as (f: BrunoItem) => unknown) as Folder['items'];
+    ocFolder.items = toOpenCollectionItems(
+      folder.items,
+      toOpenCollectionFolder as (f: BrunoItem) => unknown
+    ) as Folder['items'];
   }
 
   return ocFolder;

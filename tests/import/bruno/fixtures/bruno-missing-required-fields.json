@@ -712,9 +712,7 @@
                 {
                   "type": "file",
                   "name": "file",
-                  "value": [
-                    "bruno.png"
-                  ],
+                  "value": ["bruno.png"],
                   "enabled": true
                 }
               ],
@@ -2912,11 +2910,7 @@
       "bypassProxy": ""
     },
     "scripts": {
-      "moduleWhitelist": [
-        "crypto",
-        "buffer",
-        "form-data"
-      ]
+      "moduleWhitelist": ["crypto", "buffer", "form-data"]
     },
     "clientCertificates": {
       "enabled": true,
@@ -2926,10 +2920,7 @@
       "requestType": "http",
       "requestUrl": "http://localhost:6000"
     },
-    "ignore": [
-      "node_modules",
-      ".git"
-    ],
+    "ignore": ["node_modules", ".git"],
     "size": 0.026633262634277344,
     "filesCount": 96
   }

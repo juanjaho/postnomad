@@ -6,11 +6,7 @@ const MethodBadge = ({ method, size = 'md', className = '' }) => {
   const displayText = method?.toUpperCase() || 'GET';
 
   return (
-    <StyledWrapper
-      $method={normalizedMethod}
-      $size={size}
-      className={className}
-    >
+    <StyledWrapper $method={normalizedMethod} $size={size} className={className}>
       {displayText}
     </StyledWrapper>
   );

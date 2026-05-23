@@ -23,9 +23,7 @@ const Headers = ({ collection, folder }) => {
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
-  const headers = folder.draft
-    ? get(folder, 'draft.request.headers', [])
-    : get(folder, 'root.request.headers', []);
+  const headers = folder.draft ? get(folder, 'draft.request.headers', []) : get(folder, 'root.request.headers', []);
   const [isBulkEditMode, setIsBulkEditMode] = useState(false);
   const wrapperRef = useRef(null);
   const [scroll, setScroll] = usePersistedState({ key: `folder-headers-scroll-${folder.uid}`, default: 0 });
@@ -43,13 +41,18 @@ const Headers = ({ collection, folder }) => {
     setIsBulkEditMode(!isBulkEditMode);
   };
 
-  const handleHeadersChange = useCallback((updatedHeaders) => {
-    dispatch(setFolderHeaders({
-      collectionUid: collection.uid,
-      folderUid: folder.uid,
-      headers: updatedHeaders
-    }));
-  }, [dispatch, collection.uid, folder.uid]);
+  const handleHeadersChange = useCallback(
+    (updatedHeaders) => {
+      dispatch(
+        setFolderHeaders({
+          collectionUid: collection.uid,
+          folderUid: folder.uid,
+          headers: updatedHeaders
+        })
+      );
+    },
+    [dispatch, collection.uid, folder.uid]
+  );
 
   const handleSave = () => dispatch(saveFolderRoot(collection.uid, folder.uid));
 
@@ -119,12 +122,7 @@ const Headers = ({ collection, folder }) => {
         <div className="text-xs mb-4 text-muted">
           Request headers that will be sent with every request inside this folder.
         </div>
-        <BulkEditor
-          params={headers}
-          onChange={handleHeadersChange}
-          onToggle={toggleBulkEditMode}
-          onSave={handleSave}
-        />
+        <BulkEditor params={headers} onChange={handleHeadersChange} onToggle={toggleBulkEditMode} onSave={handleSave} />
       </StyledWrapper>
     );
   }

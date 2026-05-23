@@ -5,13 +5,15 @@ export const getLanguages = () => {
   for (const target of Object.values(targets)) {
     const { key, title } = target.info;
     const clients = Object.keys(target.clientsById);
-    const languages
-      = (clients.length === 1)
-        ? [{
-            name: title,
-            target: key,
-            client: clients[0]
-          }]
+    const languages =
+      clients.length === 1
+        ? [
+            {
+              name: title,
+              target: key,
+              client: clients[0]
+            }
+          ]
         : clients.map((client) => ({
             name: `${title}-${client}`,
             target: key,

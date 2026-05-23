@@ -37,7 +37,6 @@ const Checkbox = ({
         />
         <IconCheckMark className="checkbox-checkmark" color={theme.examples.checkbox.color} size={14} />
       </div>
-
     </StyledWrapper>
   );
 };

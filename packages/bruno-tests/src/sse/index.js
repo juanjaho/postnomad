@@ -15,11 +15,13 @@ router.get('/stream', (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
+    Connection: 'keep-alive'
   });
 
   // Send initial connection message
-  res.write(`data: ${JSON.stringify({ message: 'Connected', connectionId, activeConnections: activeConnections.size })}\n\n`);
+  res.write(
+    `data: ${JSON.stringify({ message: 'Connected', connectionId, activeConnections: activeConnections.size })}\n\n`
+  );
 
   // Send data every 500ms
   const interval = setInterval(() => {

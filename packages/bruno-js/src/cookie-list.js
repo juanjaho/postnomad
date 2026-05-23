@@ -90,9 +90,15 @@ class CookieList extends PropertyList {
         if (!url) return [];
         // Normalize tough-cookie Cookie instances to plain objects to avoid
         // circular references and exposing internal library structures.
-        return getCookiesForUrl(url).map(({ key, value, domain, path, secure, httpOnly, expires }) =>
-          ({ key, value, domain, path, secure, httpOnly, expires })
-        );
+        return getCookiesForUrl(url).map(({ key, value, domain, path, secure, httpOnly, expires }) => ({
+          key,
+          value,
+          domain,
+          path,
+          secure,
+          httpOnly,
+          expires
+        }));
       }
     });
     this._getUrl = getUrl;

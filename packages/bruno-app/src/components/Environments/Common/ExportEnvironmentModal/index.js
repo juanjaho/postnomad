@@ -72,10 +72,14 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
   const handleSelectAll = () => {
     const allSelected = environments.every((env) => selectedEnvironments[env.uid]) || false;
 
-    const newSelection = environments.reduce((acc, env) => ({
-      ...acc,
-      [env.uid]: !allSelected
-    }), {}) || {};
+    const newSelection =
+      environments.reduce(
+        (acc, env) => ({
+          ...acc,
+          [env.uid]: !allSelected
+        }),
+        {}
+      ) || {};
 
     setSelectedEnvironments(newSelection);
   };
@@ -93,13 +97,23 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
     if (isMultiple) {
       return [
         { value: 'single-file', label: 'Single JSON file', description: 'All environments in one JSON array' },
-        { value: 'folder', label: 'Separate files in folder', description: 'Each environment as a separate JSON file', disabled: false }
+        {
+          value: 'folder',
+          label: 'Separate files in folder',
+          description: 'Each environment as a separate JSON file',
+          disabled: false
+        }
       ];
     }
 
     return [
       { value: 'single-object', label: 'Single JSON file', description: 'Export as a single environment JSON object' },
-      { value: 'folder', label: 'Separate files in folder', description: 'Each environment as a separate JSON file', disabled: true }
+      {
+        value: 'folder',
+        label: 'Separate files in folder',
+        description: 'Each environment as a separate JSON file',
+        disabled: true
+      }
     ];
   }, [selectedCount, exportFormat]);
 
@@ -119,9 +133,10 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
 
       await exportBrunoEnvironment({ environments: selectedEnvs, environmentType, filePath, exportFormat });
 
-      const successMessage = exportFormat === 'folder'
-        ? `Environments exported successfully to bruno-${environmentType}-environments folder`
-        : 'Environment(s) exported successfully';
+      const successMessage =
+        exportFormat === 'folder'
+          ? `Environments exported successfully to bruno-${environmentType}-environments folder`
+          : 'Environment(s) exported successfully';
       toast.success(successMessage);
       onClose();
     } catch (error) {
@@ -135,12 +150,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
   return (
     <Portal>
       <StyledWrapper>
-        <Modal
-          size="md"
-          title="Export Environments"
-          hideFooter={true}
-          handleCancel={onClose}
-        >
+        <Modal size="md" title="Export Environments" hideFooter={true} handleCancel={onClose}>
           <div className="py-2">
             {/* Environments Section */}
             <div className="mb-4">
@@ -192,12 +202,13 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
             {/* Export Format Section */}
             {selectedCount > 0 && (
               <div className="mb-4">
-                <label className="block font-medium mb-2 text-theme">
-                  Export Format
-                </label>
+                <label className="block font-medium mb-2 text-theme">Export Format</label>
                 <div className="space-y-2">
                   {exportFormatOptions.map((option) => (
-                    <label key={option.value} className={`flex items-start p-2 rounded transition-colors ${option.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+                    <label
+                      key={option.value}
+                      className={`flex items-start p-2 rounded transition-colors ${option.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    >
                       <input
                         type="radio"
                         name="exportFormat"
@@ -208,7 +219,9 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                         className={`mt-0.5 mr-3 w-4 h-4 ${option.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       />
                       <div>
-                        <div className={`font-medium ${option.disabled ? 'text-muted' : 'text-theme'}`}>{option.label}</div>
+                        <div className={`font-medium ${option.disabled ? 'text-muted' : 'text-theme'}`}>
+                          {option.label}
+                        </div>
                         <div className="text-xs text-muted">{option.description}</div>
                       </div>
                     </label>
@@ -261,7 +274,9 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                 disabled={isExporting || selectedCount === 0}
                 className="mt-2"
               >
-                {isExporting ? 'Exporting...' : `Export ${selectedCount || ''} Environment${selectedCount !== 1 ? 's' : ''}`}
+                {isExporting
+                  ? 'Exporting...'
+                  : `Export ${selectedCount || ''} Environment${selectedCount !== 1 ? 's' : ''}`}
               </Button>
             </div>
           </div>

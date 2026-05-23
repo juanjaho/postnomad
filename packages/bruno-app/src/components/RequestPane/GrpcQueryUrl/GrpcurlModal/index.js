@@ -28,11 +28,11 @@ const GrpcurlModal = ({ isOpen, onClose, command }) => {
     <Modal
       isOpen={isOpen}
       handleCancel={onClose}
-      title={(
+      title={
         <div className="flex items-center gap-2">
           <span>Generate gRPCurl Command</span>
         </div>
-      )}
+      }
       size="lg"
       hideFooter={true}
     >

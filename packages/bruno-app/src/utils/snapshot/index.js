@@ -19,12 +19,7 @@ const SINGLETON_TAB_TYPES = new Set([
   'openapi-spec'
 ]);
 
-const NON_REPLACEABLE_SINGLETON_TAB_TYPES = new Set([
-  'collection-runner',
-  'variables',
-  'openapi-sync',
-  'openapi-spec'
-]);
+const NON_REPLACEABLE_SINGLETON_TAB_TYPES = new Set(['collection-runner', 'variables', 'openapi-sync', 'openapi-spec']);
 
 export const SAVE_TRIGGERS = new Map([
   ['app/setSnapshotReady', null],
@@ -90,9 +85,12 @@ const normalizeCollectionSnapshotEntry = (pathname, entry = {}, tabsEntry = {}) 
   const environment = isObject(entry.environment) ? entry.environment : {};
   const fallbackEnvironmentPath = entry.environmentPath ?? entry.selectedEnvironment;
 
-  const collectionEnvironmentPath = typeof environment.collection === 'string'
-    ? environment.collection
-    : (typeof fallbackEnvironmentPath === 'string' ? fallbackEnvironmentPath : '');
+  const collectionEnvironmentPath =
+    typeof environment.collection === 'string'
+      ? environment.collection
+      : typeof fallbackEnvironmentPath === 'string'
+        ? fallbackEnvironmentPath
+        : '';
 
   return {
     pathname,
@@ -108,18 +106,21 @@ const normalizeCollectionSnapshotEntry = (pathname, entry = {}, tabsEntry = {}) 
     activeTab: tabsEntry.activeTab ?? entry.activeTab ?? null,
     tabs: Array.isArray(tabsEntry.tabs)
       ? tabsEntry.tabs.filter((tab) => isObject(tab))
-      : (Array.isArray(entry.tabs) ? entry.tabs.filter((tab) => isObject(tab)) : [])
+      : Array.isArray(entry.tabs)
+        ? entry.tabs.filter((tab) => isObject(tab))
+        : []
   };
 };
 
 const normalizeWorkspaceSnapshotEntry = (pathname, entry = {}) => {
-  const collections = Array.isArray(entry.collections) ? entry.collections.filter((collectionPathname) => typeof collectionPathname === 'string') : [];
+  const collections = Array.isArray(entry.collections)
+    ? entry.collections.filter((collectionPathname) => typeof collectionPathname === 'string')
+    : [];
 
   return {
     pathname,
-    lastActiveCollectionPathname: typeof entry.lastActiveCollectionPathname === 'string'
-      ? entry.lastActiveCollectionPathname
-      : null,
+    lastActiveCollectionPathname:
+      typeof entry.lastActiveCollectionPathname === 'string' ? entry.lastActiveCollectionPathname : null,
     sorting: typeof entry.sorting === 'string' ? entry.sorting : 'default',
     collections
   };
@@ -324,23 +325,25 @@ export const findCollectionEnvironmentFromSnapshot = (collection, snapshotData =
     return null;
   }
 
-  return collection.environments.find((environment) => {
-    const environmentPathRef = normalizeSnapshotPathRef(environment?.pathname);
+  return (
+    collection.environments.find((environment) => {
+      const environmentPathRef = normalizeSnapshotPathRef(environment?.pathname);
 
-    if (normalizedEnvironmentPath && environmentPathRef === normalizedEnvironmentPath) {
-      return true;
-    }
+      if (normalizedEnvironmentPath && environmentPathRef === normalizedEnvironmentPath) {
+        return true;
+      }
 
-    if (normalizedEnvironmentPath && environment?.uid === normalizedEnvironmentPath) {
-      return true;
-    }
+      if (normalizedEnvironmentPath && environment?.uid === normalizedEnvironmentPath) {
+        return true;
+      }
 
-    if (normalizedEnvironmentPath && environment?.name === normalizedEnvironmentPath) {
-      return true;
-    }
+      if (normalizedEnvironmentPath && environment?.name === normalizedEnvironmentPath) {
+        return true;
+      }
 
-    return selectedEnvironment && environment?.name === selectedEnvironment;
-  }) || null;
+      return selectedEnvironment && environment?.name === selectedEnvironment;
+    }) || null
+  );
 };
 
 const getAccessor = (tab) => {
@@ -507,9 +510,8 @@ const resolveResponseExampleTabState = ({ item, pathname, exampleName, exampleIn
     }
   }
 
-  const resolvedExampleIndex = hasExamples && resolvedExample?.uid
-    ? item.examples.findIndex((ex) => ex.uid === resolvedExample.uid)
-    : -1;
+  const resolvedExampleIndex =
+    hasExamples && resolvedExample?.uid ? item.examples.findIndex((ex) => ex.uid === resolvedExample.uid) : -1;
 
   const fallbackExampleIdentity = hasProvidedExampleIndex
     ? `${pathname}::${exampleIndex}`
@@ -550,11 +552,11 @@ export const deserializeTab = (snapshotTab, collection) => {
     scriptPaneTab: null
   };
 
-  const isCollectionScopedSingleton = type === 'preferences'
-    || type === 'environment-settings'
-    || type === 'global-environment-settings';
+  const isCollectionScopedSingleton =
+    type === 'preferences' || type === 'environment-settings' || type === 'global-environment-settings';
 
-  const needsTypeBasedFallback = accessor === 'type' || (accessor === 'pathname' && !pathname && isCollectionScopedSingleton);
+  const needsTypeBasedFallback =
+    accessor === 'type' || (accessor === 'pathname' && !pathname && isCollectionScopedSingleton);
 
   if (accessor === 'pathname' && pathname) {
     const item = findItemInCollectionByPathname(collection, pathname);
@@ -575,11 +577,12 @@ export const deserializeTab = (snapshotTab, collection) => {
     tab.exampleName = resolvedTabState.exampleName;
     tab.exampleIndex = resolvedTabState.exampleIndex;
   } else if (needsTypeBasedFallback) {
-    const collectionUidFromSnapshot = typeof snapshotTab.collection === 'string' && snapshotTab.collection.length > 0
-      ? snapshotTab.collection
-      : (typeof snapshotTab.collectionUid === 'string' && snapshotTab.collectionUid.length > 0
+    const collectionUidFromSnapshot =
+      typeof snapshotTab.collection === 'string' && snapshotTab.collection.length > 0
+        ? snapshotTab.collection
+        : typeof snapshotTab.collectionUid === 'string' && snapshotTab.collectionUid.length > 0
           ? snapshotTab.collectionUid
-          : null);
+          : null;
 
     if (type === 'collection-settings') {
       tab.uid = collectionUidFromSnapshot || collection.uid;
@@ -609,46 +612,58 @@ export const hydrateCollectionTabs = async (
 ) => {
   const { ipcRenderer } = window;
 
-  const tabsSnapshot = getTabsSnapshotFromLookups(
-    collection.pathname,
-    snapshotLookups,
-    workspacePathname,
-    strictWorkspaceScope
-  )
-  || await ipcRenderer.invoke('renderer:snapshot:get-tabs', collection.pathname, workspacePathname).catch(() => null);
+  const tabsSnapshot =
+    getTabsSnapshotFromLookups(collection.pathname, snapshotLookups, workspacePathname, strictWorkspaceScope) ||
+    (await ipcRenderer.invoke('renderer:snapshot:get-tabs', collection.pathname, workspacePathname).catch(() => null));
 
   const hasPersistedTabs = Array.isArray(tabsSnapshot?.tabs) && tabsSnapshot.tabs.length > 0;
   const hasPersistedActiveTab = Boolean(tabsSnapshot?.activeTab);
-  const shouldRestoreEmptyWorkspaceScopedTabs = Boolean(workspacePathname) && (
-    strictWorkspaceScope
-    || Boolean(snapshotLookups?.hasWorkspaceScopedTabs)
-    || isCollectionSharedAcrossWorkspaces(snapshotLookups, collection.pathname)
-  );
+  const shouldRestoreEmptyWorkspaceScopedTabs =
+    Boolean(workspacePathname) &&
+    (strictWorkspaceScope ||
+      Boolean(snapshotLookups?.hasWorkspaceScopedTabs) ||
+      isCollectionSharedAcrossWorkspaces(snapshotLookups, collection.pathname));
 
   if (
-    tabsSnapshot
-    && Array.isArray(tabsSnapshot.tabs)
-    && (hasPersistedTabs || hasPersistedActiveTab || shouldRestoreEmptyWorkspaceScopedTabs)
+    tabsSnapshot &&
+    Array.isArray(tabsSnapshot.tabs) &&
+    (hasPersistedTabs || hasPersistedActiveTab || shouldRestoreEmptyWorkspaceScopedTabs)
   ) {
-    dispatch(restoreTabs({
-      collection,
-      tabs: tabsSnapshot.tabs,
-      activeTab: tabsSnapshot.activeTab
-    }));
+    dispatch(
+      restoreTabs({
+        collection,
+        tabs: tabsSnapshot.tabs,
+        activeTab: tabsSnapshot.activeTab
+      })
+    );
   }
 };
 
-export const hydrateTabs = async (collections, dispatch, restoreTabs, snapshotLookups = null, workspacePathname = null) => {
+export const hydrateTabs = async (
+  collections,
+  dispatch,
+  restoreTabs,
+  snapshotLookups = null,
+  workspacePathname = null
+) => {
   await Promise.all(
-    collections.map((collection) => hydrateCollectionTabs(collection, dispatch, restoreTabs, snapshotLookups, workspacePathname))
+    collections.map((collection) =>
+      hydrateCollectionTabs(collection, dispatch, restoreTabs, snapshotLookups, workspacePathname)
+    )
   );
 };
 
-export const getActiveTabFromSnapshot = async (collectionPathname, collection, snapshotLookups = null, workspacePathname = null) => {
+export const getActiveTabFromSnapshot = async (
+  collectionPathname,
+  collection,
+  snapshotLookups = null,
+  workspacePathname = null
+) => {
   const { ipcRenderer } = window;
 
-  const tabsSnapshot = getTabsSnapshotFromLookups(collectionPathname, snapshotLookups, workspacePathname)
-    || await ipcRenderer.invoke('renderer:snapshot:get-tabs', collectionPathname, workspacePathname).catch(() => null);
+  const tabsSnapshot =
+    getTabsSnapshotFromLookups(collectionPathname, snapshotLookups, workspacePathname) ||
+    (await ipcRenderer.invoke('renderer:snapshot:get-tabs', collectionPathname, workspacePathname).catch(() => null));
 
   if (!tabsSnapshot?.activeTab || !tabsSnapshot?.tabs?.length) return null;
 

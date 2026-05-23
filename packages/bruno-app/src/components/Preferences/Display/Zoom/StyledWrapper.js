@@ -60,7 +60,9 @@ const StyledWrapper = styled.div`
     background-color: ${(props) => props.theme.input.background};
     border: 1px solid ${(props) => props.theme.input.border};
     border-radius: ${(props) => props.theme.border.radius.sm};
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
     z-index: 50;
     max-height: 200px;
     overflow-y: auto;

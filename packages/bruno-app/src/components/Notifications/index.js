@@ -32,9 +32,11 @@ const Notifications = () => {
   const unreadNotifications = notifications.filter((notification) => !notification.read);
 
   useEffect(() => {
-    dispatch(fetchNotifications({
-      currentVersion: version
-    }));
+    dispatch(
+      fetchNotifications({
+        currentVersion: version
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -101,9 +103,11 @@ const Notifications = () => {
       <a
         className="relative cursor-pointer"
         onClick={() => {
-          dispatch(fetchNotifications({
-            currentVersion: version
-          }));
+          dispatch(
+            fetchNotifications({
+              currentVersion: version
+            })
+          );
           setShowNotificationsModal(true);
         }}
         aria-label="Check all Notifications"
@@ -197,8 +201,7 @@ const Notifications = () => {
                       src={`data:text/html,${getSanitizedDescription(selectedNotification?.description)}`}
                       sandbox="allow-popups"
                       style={{ width: '100%', height: '100%' }}
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               ) : (

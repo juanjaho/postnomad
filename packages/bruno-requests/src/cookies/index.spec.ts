@@ -85,10 +85,13 @@ describe('Bruno Cookie Jar Wrapper - API Examples', () => {
       const cookies = (await jar.getCookies(testUrl)) as Cookie[];
       expect(cookies).toHaveLength(3);
 
-      const cookieMap = (cookies as Cookie[]).reduce<Record<string, string>>((map, cookie: Cookie) => {
-        map[cookie.key] = cookie.value;
-        return map;
-      }, {} as Record<string, string>);
+      const cookieMap = (cookies as Cookie[]).reduce<Record<string, string>>(
+        (map, cookie: Cookie) => {
+          map[cookie.key] = cookie.value;
+          return map;
+        },
+        {} as Record<string, string>
+      );
 
       expect(cookieMap.auth).toBe('token123');
       expect(cookieMap.session).toBe('sess456');

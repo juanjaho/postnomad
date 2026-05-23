@@ -1,9 +1,5 @@
 import { uuid } from '../../common/index.js';
-import type {
-  Variable,
-  BrunoVariable,
-  BrunoVariables
-} from '../types';
+import type { Variable, BrunoVariable, BrunoVariables } from '../types';
 
 interface BrunoVars {
   req: BrunoVariables;
@@ -34,7 +30,8 @@ export const fromOpenCollectionVariables = (variables: Variable[] | undefined): 
     };
 
     if (v.description) {
-      variable.description = typeof v.description === 'string' ? v.description : (v.description as { content?: string })?.content || '';
+      variable.description =
+        typeof v.description === 'string' ? v.description : (v.description as { content?: string })?.content || '';
     }
 
     reqVars.push(variable);
@@ -43,10 +40,12 @@ export const fromOpenCollectionVariables = (variables: Variable[] | undefined): 
   return { req: reqVars, res: [] };
 };
 
-export const toOpenCollectionVariables = (vars: BrunoVars | { req?: BrunoVariables; res?: BrunoVariables } | null | undefined): Variable[] | undefined => {
+export const toOpenCollectionVariables = (
+  vars: BrunoVars | { req?: BrunoVariables; res?: BrunoVariables } | null | undefined
+): Variable[] | undefined => {
   // Handle folder variables (has req/res structure) - only use req vars
   const hasReqRes = vars && 'req' in vars;
-  const reqVars = hasReqRes ? vars.req : vars as BrunoVariables;
+  const reqVars = hasReqRes ? vars.req : (vars as BrunoVariables);
 
   const reqVarsArray = Array.isArray(reqVars) ? reqVars : [];
 

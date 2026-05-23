@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  IconFolder as IconFolderTabler,
-  IconGitFork,
-  IconLock,
-  IconRocket
-} from '@tabler/icons';
+import { IconFolder as IconFolderTabler, IconGitFork, IconLock, IconRocket } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
 const highlights = [

@@ -15,9 +15,5 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests"
-  ],
+  "exclude": ["dist", "node_modules", "tests"]
 }

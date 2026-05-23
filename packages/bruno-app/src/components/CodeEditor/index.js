@@ -83,11 +83,14 @@ class CodeEditor extends React.Component {
       lineWrapping: this.props.enableLineWrapping ?? true,
       tabSize: TAB_SIZE,
       mode: this.props.mode || 'application/ld+json',
-      brunoVarInfo: this.props.enableBrunoVarInfo !== false ? {
-        variables,
-        collection: this.props.collection,
-        item: this.props.item
-      } : false,
+      brunoVarInfo:
+        this.props.enableBrunoVarInfo !== false
+          ? {
+              variables,
+              collection: this.props.collection,
+              item: this.props.item
+            }
+          : false,
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,
@@ -113,7 +116,7 @@ class CodeEditor extends React.Component {
         'Ctrl-H': this.props.readOnly ? false : 'replace',
         'Cmd-Enter': runShortcut,
         'Ctrl-Enter': runShortcut,
-        'Tab': function (cm) {
+        Tab: function (cm) {
           cm.getSelection().includes('\n') || editor.getLine(cm.getCursor().line) == cm.getSelection()
             ? cm.execCommand('indentMore')
             : cm.replaceSelection('  ', 'end');
@@ -143,7 +146,7 @@ class CodeEditor extends React.Component {
             this.editor.toggleComment();
           }
         },
-        'Esc': () => {
+        Esc: () => {
           if (this.state.searchBarVisible) {
             this.setState({ searchBarVisible: false });
           }
@@ -255,10 +258,7 @@ class CodeEditor extends React.Component {
         getAllVariables: getAllVariablesHandler
       };
 
-      this.brunoAutoCompleteCleanup = setupAutoComplete(
-        editor,
-        autoCompleteOptions
-      );
+      this.brunoAutoCompleteCleanup = setupAutoComplete(editor, autoCompleteOptions);
 
       setupLinkAware(editor);
 
@@ -436,7 +436,9 @@ class CodeEditor extends React.Component {
         />
         <div
           className={`editor-container${this.state.searchBarVisible ? ' search-bar-visible' : ''}`}
-          ref={(node) => { this._node = node; }}
+          ref={(node) => {
+            this._node = node;
+          }}
           style={{ height: '100%', width: '100%' }}
         />
       </StyledWrapper>

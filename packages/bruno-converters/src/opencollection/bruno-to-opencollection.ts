@@ -1,8 +1,23 @@
-import { toOpenCollectionAuth, toOpenCollectionHeaders, toOpenCollectionScripts, toOpenCollectionVariables } from "./common";
-import { toOpenCollectionEnvironments } from "./environment";
-import { toOpenCollectionFolder } from "./folder";
-import { toOpenCollectionItems } from "./items";
-import { BrunoCollection, BrunoCollectionRoot, BrunoConfig, ClientCertificate, CollectionConfig, OpenCollection, PemCertificate, Pkcs12Certificate, Protobuf } from "./types";
+import {
+  toOpenCollectionAuth,
+  toOpenCollectionHeaders,
+  toOpenCollectionScripts,
+  toOpenCollectionVariables
+} from './common';
+import { toOpenCollectionEnvironments } from './environment';
+import { toOpenCollectionFolder } from './folder';
+import { toOpenCollectionItems } from './items';
+import {
+  BrunoCollection,
+  BrunoCollectionRoot,
+  BrunoConfig,
+  ClientCertificate,
+  CollectionConfig,
+  OpenCollection,
+  PemCertificate,
+  Pkcs12Certificate,
+  Protobuf
+} from './types';
 
 const toOpenCollectionConfig = (brunoConfig: BrunoConfig | undefined): CollectionConfig | undefined => {
   if (!brunoConfig) {

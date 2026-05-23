@@ -266,7 +266,6 @@ const StyledWrapper = styled.div`
         animation: ${spin} 0.75s linear infinite;
       }
     }
-
   }
 `;
 

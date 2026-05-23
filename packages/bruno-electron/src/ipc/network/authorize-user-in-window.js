@@ -7,11 +7,16 @@ const matchesCallbackUrl = (url, callbackUrl) => {
   // (code query params for authorization code flow, or hash fragment for implicit flow).
   // This prevents false matches on intermediate pages (e.g. /auth/login) when the
   // callback URL is a root path like https://hostname/.
-  return url.href.startsWith(callbackUrl.href)
-    && (url.searchParams.has('code') || url.hash.length > 1);
+  return url.href.startsWith(callbackUrl.href) && (url.searchParams.has('code') || url.hash.length > 1);
 };
 
-const authorizeUserInWindow = ({ authorizeUrl, callbackUrl, session, additionalHeaders = {}, grantType = 'authorization_code' }) => {
+const authorizeUserInWindow = ({
+  authorizeUrl,
+  callbackUrl,
+  session,
+  additionalHeaders = {},
+  grantType = 'authorization_code'
+}) => {
   return new Promise(async (resolve, reject) => {
     let finalUrl = null;
     let debugInfo = {
@@ -42,7 +47,9 @@ const authorizeUserInWindow = ({ authorizeUrl, callbackUrl, session, additionalH
       const shouldAllow = !preferencesUtil.shouldVerifyTls();
       if (!shouldAllow) {
         console.error(`Bruno OAuth: SSL Certificate verification failed for ${url}. Error: ${error}`);
-        console.error('Bruno OAuth: Disable "SSL/TLS Certificate Verification" in settings to proceed with OAuth flows that use self-signed certificates.');
+        console.error(
+          'Bruno OAuth: Disable "SSL/TLS Certificate Verification" in settings to proceed with OAuth flows that use self-signed certificates.'
+        );
       }
       callback(shouldAllow);
     });

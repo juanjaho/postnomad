@@ -69,8 +69,8 @@ const DotEnvFileEditor = ({
           errors[index].name = 'Name cannot be empty';
         } else if (!variableNameRegex.test(variable.name)) {
           if (!errors[index]) errors[index] = {};
-          errors[index].name
-            = 'Name contains invalid characters. Must only contain alphanumeric characters, "-", "_", "." and cannot start with a digit.';
+          errors[index].name =
+            'Name contains invalid characters. Must only contain alphanumeric characters, "-", "_", "." and cannot start with a digit.';
         }
       });
       return Object.keys(errors).length > 0 ? errors : {};
@@ -94,10 +94,7 @@ const DotEnvFileEditor = ({
         setRawValue(newRawValue);
       } else if (viewMode === 'table' && prevViewMode === 'raw') {
         const parsedVars = rawToVariables(rawValue);
-        const newValues = [
-          ...parsedVars,
-          { uid: uuid(), name: '', value: '' }
-        ];
+        const newValues = [...parsedVars, { uid: uuid(), name: '', value: '' }];
         formikRef.current.setValues(newValues);
       }
       setPrevViewMode(viewMode);
@@ -105,9 +102,7 @@ const DotEnvFileEditor = ({
   }, [viewMode, prevViewMode, rawValue]);
 
   const normalizeForComparison = (vars) => {
-    return vars
-      .filter((v) => v.name && v.name.trim() !== '')
-      .map(({ name, value }) => ({ name, value: value || '' }));
+    return vars.filter((v) => v.name && v.name.trim() !== '').map(({ name, value }) => ({ name, value: value || '' }));
   };
 
   const savedValuesJson = useMemo(() => {
@@ -145,17 +140,11 @@ const DotEnvFileEditor = ({
 
     const filteredValues = currentValues.filter((variable) => variable.uid !== id);
 
-    const hasEmptyLastRow
-      = filteredValues.length > 0
-        && (!filteredValues[filteredValues.length - 1].name
-          || filteredValues[filteredValues.length - 1].name.trim() === '');
+    const hasEmptyLastRow =
+      filteredValues.length > 0 &&
+      (!filteredValues[filteredValues.length - 1].name || filteredValues[filteredValues.length - 1].name.trim() === '');
 
-    const newValues = hasEmptyLastRow
-      ? filteredValues
-      : [
-          ...filteredValues,
-          { uid: uuid(), name: '', value: '' }
-        ];
+    const newValues = hasEmptyLastRow ? filteredValues : [...filteredValues, { uid: uuid(), name: '', value: '' }];
 
     formikRef.current.setValues(newValues);
   }, []);
@@ -213,10 +202,7 @@ const DotEnvFileEditor = ({
     onSave(variablesToSave)
       .then(() => {
         toast.success('Changes saved successfully');
-        const newValues = [
-          ...variablesToSave,
-          { uid: uuid(), name: '', value: '' }
-        ];
+        const newValues = [...variablesToSave, { uid: uuid(), name: '', value: '' }];
         formik.resetForm({ values: newValues });
         setIsModified(false);
         window.dispatchEvent(new Event('dotenv-save-complete'));
@@ -265,10 +251,7 @@ const DotEnvFileEditor = ({
         ...v,
         uid: v.uid || uuid()
       }));
-      const resetValues = [
-        ...originalVars,
-        { uid: uuid(), name: '', value: '' }
-      ];
+      const resetValues = [...originalVars, { uid: uuid(), name: '', value: '' }];
       formik.resetForm({ values: resetValues });
       setIsModified(false);
     }

@@ -17,7 +17,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
     await expect(page.locator('.request-tab .tab-label').filter({ hasText: 'Collection' })).toBeVisible();
 
     // Verify initially there is NO draft indicator (close icon is present)
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab.locator('.close-icon')).toBeVisible();
     await expect(collectionTab.locator('.has-changes-icon')).not.toBeVisible();
 
@@ -48,7 +50,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
 
   test('Verify draft indicator appears when changing collection settings - Auth', async ({ page }) => {
     // Verify the collection settings tab is open
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab).toBeVisible();
 
     // Verify initially there is NO draft indicator
@@ -75,7 +79,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
   });
 
   test('Verify draft indicator appears when changing collection settings - Protobuf', async ({ page }) => {
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab).toBeVisible();
 
     // Verify initially there is NO draft indicator
@@ -109,7 +115,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
   });
 
   test('Verify draft indicator appears when changing client certificate settings', async ({ page }) => {
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab).toBeVisible();
 
     // Verify initially there is NO draft indicator
@@ -150,7 +158,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
   });
 
   test('Verify draft indicator appears when changing proxy settings', async ({ page }) => {
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab).toBeVisible();
 
     // Verify initially there is NO draft indicator
@@ -180,7 +190,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
   });
 
   test('Verify draft indicator appears when changing collection settings - Vars', async ({ page }) => {
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
 
     // Verify initially there is NO draft indicator
     await expect(collectionTab.locator('.close-icon')).toBeVisible();
@@ -230,7 +242,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
     await page.locator('.collection-item-name').filter({ hasText: 'test-folder' }).dblclick();
 
     // Verify folder settings tab is open
-    const folderTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
+    const folderTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
     await expect(folderTab).toBeVisible();
 
     await expect(folderTab.locator('.close-icon')).toBeVisible();
@@ -264,7 +278,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
     await page.locator('.collection-item-name').filter({ hasText: 'test-folder' }).dblclick();
 
     // Verify folder settings tab is open
-    const folderTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
+    const folderTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
     await expect(folderTab).toBeVisible();
 
     // Verify initially no draft indicator
@@ -294,7 +310,9 @@ test.describe('Draft indicator in collection and folder settings', () => {
     await page.locator('.collection-item-name').filter({ hasText: 'test-folder' }).dblclick();
 
     // Verify folder settings tab is open
-    const folderTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
+    const folderTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'test-folder' }) });
     await expect(folderTab).toBeVisible();
 
     await expect(folderTab.locator('.close-icon')).toBeVisible();

@@ -72,7 +72,7 @@ const RequestTabs = () => {
 
   const getTabClassname = (tab, index) => {
     return classnames('request-tab select-none', {
-      'active': tab.uid === activeTabUid,
+      active: tab.uid === activeTabUid,
       'last-tab': tabs && tabs.length && index === tabs.length - 1,
       'has-overflow': tabOverflowStates[tab.uid]
     });
@@ -116,10 +116,7 @@ const RequestTabs = () => {
       {collectionRequestTabs && collectionRequestTabs.length ? (
         <>
           {activeCollection && (
-            <CollectionHeader
-              collection={activeCollection}
-              isScratchCollection={isScratchCollection}
-            />
+            <CollectionHeader collection={activeCollection} isScratchCollection={isScratchCollection} />
           )}
           <div className="flex items-center gap-2 pl-2" ref={collectionTabsRef}>
             <div className={classnames('scroll-chevrons', { hidden: !showChevrons })}>
@@ -143,10 +140,12 @@ const RequestTabs = () => {
                           id={tab.uid}
                           index={index}
                           onMoveTab={(source, target) => {
-                            dispatch(reorderTabs({
-                              sourceUid: source,
-                              targetUid: target
-                            }));
+                            dispatch(
+                              reorderTabs({
+                                sourceUid: source,
+                                targetUid: target
+                              })
+                            );
                           }}
                           className={getTabClassname(tab, index)}
                           onClick={() => handleClick(tab)}
@@ -169,9 +168,7 @@ const RequestTabs = () => {
               </ul>
             </div>
 
-            {activeCollection && (
-              <CreateTransientRequest collectionUid={activeCollection.uid} />
-            )}
+            {activeCollection && <CreateTransientRequest collectionUid={activeCollection.uid} />}
 
             <div className={classnames('scroll-chevrons', { hidden: !showChevrons })}>
               <ActionIcon size="lg" onClick={rightSlide} aria-label="Right Chevron" style={{ marginBottom: '3px' }}>

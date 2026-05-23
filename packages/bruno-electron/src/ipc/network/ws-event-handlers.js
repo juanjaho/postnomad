@@ -95,7 +95,12 @@ const prepareWsRequest = async (item, collection, environment, runtimeVariables,
 
   if (wsRequest.oauth2) {
     let requestCopy = cloneDeep(wsRequest);
-    const { oauth2: { grantType, tokenPlacement, tokenHeaderPrefix, tokenQueryKey, accessTokenUrl, refreshTokenUrl } = {}, collectionVariables, folderVariables, requestVariables } = requestCopy || {};
+    const {
+      oauth2: { grantType, tokenPlacement, tokenHeaderPrefix, tokenQueryKey, accessTokenUrl, refreshTokenUrl } = {},
+      collectionVariables,
+      folderVariables,
+      requestVariables
+    } = requestCopy || {};
 
     // Get cert/proxy configs for token and refresh URLs
     let certsAndProxyConfigForTokenUrl = certsAndProxyConfig;

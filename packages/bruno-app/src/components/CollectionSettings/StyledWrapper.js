@@ -28,8 +28,7 @@ const StyledWrapper = styled.div`
       }
 
       &.active {
-        font-weight: ${(props) =>
-          props.theme.tabs.active.fontWeight} !important;
+        font-weight: ${(props) => props.theme.tabs.active.fontWeight} !important;
         color: ${(props) => props.theme.tabs.active.color} !important;
         border-bottom: solid 2px ${(props) => props.theme.tabs.active.border} !important;
       }
@@ -50,7 +49,7 @@ const StyledWrapper = styled.div`
     color: ${(props) => props.theme.colors.text.muted};
   }
 
-  input[type="radio"] {
+  input[type='radio'] {
     cursor: pointer;
     accent-color: ${(props) => props.theme.primary.solid};
   }

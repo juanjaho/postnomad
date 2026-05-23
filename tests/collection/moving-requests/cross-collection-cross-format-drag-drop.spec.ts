@@ -20,10 +20,7 @@ test.describe('Cross-Format Collection Drag and Drop', () => {
 
     // Expand the bru collection and locate the request
     await page.locator('#sidebar-collection-name').filter({ hasText: 'bru-collection' }).click();
-    const bruCollectionContainer = page
-      .locator('.collection-name')
-      .filter({ hasText: 'bru-collection' })
-      .locator('..');
+    const bruCollectionContainer = page.locator('.collection-name').filter({ hasText: 'bru-collection' }).locator('..');
     const bruRequest = bruCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName }).first();
     await expect(bruRequest).toBeVisible();
 
@@ -32,15 +29,12 @@ test.describe('Cross-Format Collection Drag and Drop', () => {
     await bruRequest.dragTo(ymlCollection);
 
     // Verify the request appears in the yml collection (increase timeout for file watcher processing)
-    const ymlCollectionContainer = page
-      .locator('.collection-name')
-      .filter({ hasText: 'yml-collection' })
-      .locator('..');
+    const ymlCollectionContainer = page.locator('.collection-name').filter({ hasText: 'yml-collection' }).locator('..');
     // The yml collection may need to be expanded after the drop
     const ymlCollectionItems = ymlCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName });
     // Wait for file watcher to process the new file, then expand collection if needed
     await expect(async () => {
-      if (await ymlCollectionItems.count() === 0) {
+      if ((await ymlCollectionItems.count()) === 0) {
         await page.locator('#sidebar-collection-name').filter({ hasText: 'yml-collection' }).click();
       }
       await expect(ymlCollectionItems).toBeVisible();
@@ -48,7 +42,9 @@ test.describe('Cross-Format Collection Drag and Drop', () => {
 
     // Verify the request is no longer in the bru collection
     await page.locator('#sidebar-collection-name').filter({ hasText: 'bru-collection' }).click();
-    await expect(bruCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })).toHaveCount(0);
+    await expect(bruCollectionContainer.locator('.collection-item-name').filter({ hasText: requestName })).toHaveCount(
+      0
+    );
 
     // Verify the file was converted to .yml format on disk
     const ymlFile = path.join(collectionFixturePath!, 'yml-collection', `${requestName}.yml`);

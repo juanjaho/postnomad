@@ -25,7 +25,7 @@ const toNumber = (value) => {
 };
 
 const removeQuotes = (str) => {
-  if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith('\'') && str.endsWith('\''))) {
+  if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'"))) {
     return str.slice(1, -1);
   }
   return str;
@@ -89,7 +89,12 @@ const executeQuickJsVm = ({ script: externalScript, context: externalContext, sc
   }
 };
 
-const executeQuickJsVmAsync = async ({ script: externalScript, context: externalContext, collectionPath, scriptPath }) => {
+const executeQuickJsVmAsync = async ({
+  script: externalScript,
+  context: externalContext,
+  collectionPath,
+  scriptPath
+}) => {
   if (!externalScript?.length || typeof externalScript !== 'string') {
     return externalScript;
   }

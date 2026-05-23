@@ -37,7 +37,13 @@ const ImportCollection = ({ onClose, handleSubmit }) => {
   }
 
   return (
-    <Modal size="md" title="Import Collection" hideFooter={true} handleCancel={onClose} dataTestId="import-collection-modal">
+    <Modal
+      size="md"
+      title="Import Collection"
+      hideFooter={true}
+      handleCancel={onClose}
+      dataTestId="import-collection-modal"
+    >
       <StyledWrapper className="flex flex-col h-full w-[600px] max-w-[600px]">
         <div className="flex w-full mb-6">
           <div className="flex justify-start w-full tabs">
@@ -78,10 +84,7 @@ const ImportCollection = ({ onClose, handleSubmit }) => {
             }}
           >
             <div className="flex gap-2">
-              <div
-                className="text-xs flex-1"
-                style={{ color: theme.status.danger.text }}
-              >
+              <div className="text-xs flex-1" style={{ color: theme.status.danger.text }}>
                 {errorMessage}
               </div>
               <div
@@ -96,24 +99,11 @@ const ImportCollection = ({ onClose, handleSubmit }) => {
         )}
 
         {tab === IMPORT_TABS.FILE && (
-          <FileTab
-            setIsLoading={setIsLoading}
-            handleSubmit={handleSubmit}
-            setErrorMessage={setErrorMessage}
-          />
+          <FileTab setIsLoading={setIsLoading} handleSubmit={handleSubmit} setErrorMessage={setErrorMessage} />
         )}
-        {tab === IMPORT_TABS.GITHUB && (
-          <GitHubTab
-            handleSubmit={handleSubmit}
-            setErrorMessage={setErrorMessage}
-          />
-        )}
+        {tab === IMPORT_TABS.GITHUB && <GitHubTab handleSubmit={handleSubmit} setErrorMessage={setErrorMessage} />}
         {tab === IMPORT_TABS.URL && (
-          <UrlTab
-            setIsLoading={setIsLoading}
-            handleSubmit={handleSubmit}
-            setErrorMessage={setErrorMessage}
-          />
+          <UrlTab setIsLoading={setIsLoading} handleSubmit={handleSubmit} setErrorMessage={setErrorMessage} />
         )}
       </StyledWrapper>
     </Modal>

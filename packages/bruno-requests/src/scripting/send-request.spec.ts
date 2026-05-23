@@ -84,9 +84,7 @@ describe('sendRequest', () => {
       const callbackError = new Error('Callback error');
       const callback = jest.fn().mockRejectedValue(callbackError);
 
-      await expect(sendRequest({ url: 'http://example.com' }, callback)).rejects.toThrow(
-        'Callback error'
-      );
+      await expect(sendRequest({ url: 'http://example.com' }, callback)).rejects.toThrow('Callback error');
     });
 
     test('should reject if callback throws on error', async () => {
@@ -95,9 +93,7 @@ describe('sendRequest', () => {
       const callbackError = new Error('Callback error');
       const callback = jest.fn().mockRejectedValue(callbackError);
 
-      await expect(sendRequest({ url: 'http://example.com' }, callback)).rejects.toThrow(
-        'Callback error'
-      );
+      await expect(sendRequest({ url: 'http://example.com' }, callback)).rejects.toThrow('Callback error');
     });
   });
 });

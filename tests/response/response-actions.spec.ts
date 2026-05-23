@@ -29,8 +29,12 @@ test.describe('Response Pane Actions', () => {
     await test.step('Copy response to clipboard', async () => {
       await page.evaluate(() => navigator.clipboard.writeText(''));
       await clickResponseAction(page, 'response-copy-btn');
-      await expect(page.getByText('Response copied to clipboard')).toBeVisible({ timeout: 10000 }).catch(() => {});
-      await expect.poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => ''))).toBeTruthy();
+      await expect(page.getByText('Response copied to clipboard'))
+        .toBeVisible({ timeout: 10000 })
+        .catch(() => {});
+      await expect
+        .poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => '')))
+        .toBeTruthy();
     });
   });
 
@@ -55,7 +59,9 @@ test.describe('Response Pane Actions', () => {
 
     await test.step('Copy response and verify clipboard contains Base64', async () => {
       await clickResponseAction(page, 'response-copy-btn');
-      await expect(page.getByText('Response copied to clipboard')).toBeVisible({ timeout: 10000 }).catch(() => {});
+      await expect(page.getByText('Response copied to clipboard'))
+        .toBeVisible({ timeout: 10000 })
+        .catch(() => {});
 
       const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
       // "pong" in Base64 is "cG9uZw=="

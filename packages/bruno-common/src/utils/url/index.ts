@@ -78,22 +78,28 @@ function parseQueryParams(query: string, { decode = false }: ExtractQueryParamsO
     const [queryString, ...hashParts] = query.split('#');
     const pairs = queryString.split('&');
 
-    const params = pairs.map((pair) => {
-      const [name, ...valueParts] = pair.split('=');
+    const params = pairs
+      .map((pair) => {
+        const [name, ...valueParts] = pair.split('=');
 
-      if (!name) {
-        return null;
-      }
+        if (!name) {
+          return null;
+        }
 
-      // Distinguish between ?param (no '=' at all) and ?param= (has '=' with empty value)
-      const hasEqualsSign = pair.includes('=');
-      const value = hasEqualsSign ? (decode ? decodeURIComponent(valueParts.join('=')) : valueParts.join('=')) : undefined;
+        // Distinguish between ?param (no '=' at all) and ?param= (has '=' with empty value)
+        const hasEqualsSign = pair.includes('=');
+        const value = hasEqualsSign
+          ? decode
+            ? decodeURIComponent(valueParts.join('='))
+            : valueParts.join('=')
+          : undefined;
 
-      return {
-        name: decode ? decodeURIComponent(name) : name,
-        value
-      };
-    }).filter((param): param is NonNullable<typeof param> => param !== null);
+        return {
+          name: decode ? decodeURIComponent(name) : name,
+          value
+        };
+      })
+      .filter((param): param is NonNullable<typeof param> => param !== null);
 
     return params;
   } catch (error) {

@@ -47,13 +47,7 @@ const SaveTransientRequestContainer = () => {
   if (openItemUid) {
     const modalToOpen = modals.find((modal) => modal.item.uid === openItemUid);
     if (modalToOpen) {
-      return (
-        <SaveTransientRequest
-          item={modalToOpen.item}
-          collection={modalToOpen.collection}
-          isOpen={true}
-        />
-      );
+      return <SaveTransientRequest item={modalToOpen.item} collection={modalToOpen.collection} isOpen={true} />;
     }
   }
 
@@ -72,30 +66,23 @@ const SaveTransientRequestContainer = () => {
         <h1 className="ml-2 text-lg font-medium">You have unsaved transient requests</h1>
       </div>
       <p className="mt-4">
-        You have <span className="font-medium">{modals.length}</span>{' '}
-        {pluralizeWord('request', modals.length)} that need to be saved.
+        You have <span className="font-medium">{modals.length}</span> {pluralizeWord('request', modals.length)} that
+        need to be saved.
       </p>
 
       <div className="mt-4">
         <p className="text-sm font-medium mb-2">
           Transient {pluralizeWord('Request', modals.length)} ({modals.length})
         </p>
-        <p className="text-xs text-orange-600 mb-3">
-          These requests need to be saved before you can proceed.
-        </p>
+        <p className="text-xs text-orange-600 mb-3">These requests need to be saved before you can proceed.</p>
         <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
           {modals.map((modal) => {
             const { item, collection } = modal;
             return (
-              <StyledWrapper
-                key={item.uid}
-                className="flex items-center justify-between"
-              >
+              <StyledWrapper key={item.uid} className="flex items-center justify-between">
                 <div className="flex flex-col flex-1 min-w-0 mr-3">
                   <span className="text-sm request-name truncate">{item.name}</span>
-                  <span className="text-xs collection-name truncate">
-                    {collection.name}
-                  </span>
+                  <span className="text-xs collection-name truncate">{collection.name}</span>
                 </div>
                 <Button
                   color="primary"

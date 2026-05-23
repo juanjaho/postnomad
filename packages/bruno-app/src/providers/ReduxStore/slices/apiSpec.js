@@ -77,7 +77,14 @@ export const apiSpecSlice = createSlice({
   }
 });
 
-export const { apiSpecAddFileEvent, apiSpecChangeFileEvent, saveApiSpec, removeApiSpec, setActiveApiSpecUid, updateApiSpecPanelLeftPaneWidth } = apiSpecSlice.actions;
+export const {
+  apiSpecAddFileEvent,
+  apiSpecChangeFileEvent,
+  saveApiSpec,
+  removeApiSpec,
+  setActiveApiSpecUid,
+  updateApiSpecPanelLeftPaneWidth
+} = apiSpecSlice.actions;
 
 export default apiSpecSlice.reducer;
 
@@ -85,8 +92,47 @@ const findApiSpecByUid = (apiSpecs, uid) => {
   return find(apiSpecs, (apiSpec) => apiSpec.uid === uid);
 };
 
-export const openApiSpec = (workspacePath = null) => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
+export const openApiSpec =
+  (workspacePath = null) =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window;
+
+      if (!workspacePath) {
+        const state = getState();
+        const activeWorkspace = state.workspaces.workspaces.find((w) => w.uid === state.workspaces.activeWorkspaceUid);
+        workspacePath = activeWorkspace?.pathname || null;
+      }
+
+      ipcRenderer.invoke('renderer:open-api-spec', workspacePath).then(resolve).catch(reject);
+    });
+  };
+
+export const saveApiSpecToFile =
+  ({ uid, content }) =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const { ipcRenderer } = window;
+      const state = getState();
+      const apiSpec = findApiSpecByUid(state.apiSpec.apiSpecs, uid);
+      const { pathname } = apiSpec;
+      ipcRenderer
+        .invoke('renderer:save-api-spec', pathname, content)
+        .then(() => {
+          dispatch(saveApiSpec({ content, uid }));
+          toast.success('Saved API spec successfully!');
+          resolve();
+        })
+        .catch((reject) => {
+          toast.error('Error saving file');
+          resolve();
+        });
+    });
+  };
+
+export const createApiSpecFile =
+  (apiSpecName, apiSpecLocation, content, workspacePath = null) =>
+  (dispatch, getState) => {
     const { ipcRenderer } = window;
 
     if (!workspacePath) {
@@ -95,75 +141,43 @@ export const openApiSpec = (workspacePath = null) => (dispatch, getState) => {
       workspacePath = activeWorkspace?.pathname || null;
     }
 
-    ipcRenderer.invoke('renderer:open-api-spec', workspacePath).then(resolve).catch(reject);
-  });
-};
+    return new Promise((resolve, reject) => {
+      ipcRenderer
+        .invoke('renderer:create-api-spec', apiSpecName, apiSpecLocation, content, workspacePath)
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
-export const saveApiSpecToFile
-  = ({ uid, content }) =>
-    (dispatch, getState) => {
-      return new Promise((resolve, reject) => {
+export const closeApiSpecFile =
+  ({ uid }) =>
+  (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      const state = getState();
+      const apiSpec = findApiSpecByUid(state.apiSpec.apiSpecs, uid);
+      if (!apiSpec) {
+        return reject(new Error('API Spec not found'));
+      }
+      if (apiSpec) {
         const { ipcRenderer } = window;
-        const state = getState();
-        const apiSpec = findApiSpecByUid(state.apiSpec.apiSpecs, uid);
-        const { pathname } = apiSpec;
+
+        const activeWorkspace = state.workspaces.workspaces.find((w) => w.uid === state.workspaces.activeWorkspaceUid);
+        const workspacePath = activeWorkspace?.pathname || null;
+
         ipcRenderer
-          .invoke('renderer:save-api-spec', pathname, content)
-          .then(() => {
-            dispatch(saveApiSpec({ content, uid }));
-            toast.success('Saved API spec successfully!');
+          .invoke('renderer:remove-api-spec', apiSpec.pathname, workspacePath)
+          .then(async () => {
+            dispatch(removeApiSpec({ uid }));
+
+            if (activeWorkspace) {
+              const { loadWorkspaceApiSpecs } = require('./workspaces/actions');
+              await dispatch(loadWorkspaceApiSpecs(activeWorkspace.uid));
+            }
+
             resolve();
           })
-          .catch((reject) => {
-            toast.error('Error saving file');
-            resolve();
-          });
-      });
-    };
-
-export const createApiSpecFile = (apiSpecName, apiSpecLocation, content, workspacePath = null) => (dispatch, getState) => {
-  const { ipcRenderer } = window;
-
-  if (!workspacePath) {
-    const state = getState();
-    const activeWorkspace = state.workspaces.workspaces.find((w) => w.uid === state.workspaces.activeWorkspaceUid);
-    workspacePath = activeWorkspace?.pathname || null;
-  }
-
-  return new Promise((resolve, reject) => {
-    ipcRenderer.invoke('renderer:create-api-spec', apiSpecName, apiSpecLocation, content, workspacePath).then(resolve).catch(reject);
-  });
-};
-
-export const closeApiSpecFile
-  = ({ uid }) =>
-    (dispatch, getState) => {
-      return new Promise((resolve, reject) => {
-        const state = getState();
-        const apiSpec = findApiSpecByUid(state.apiSpec.apiSpecs, uid);
-        if (!apiSpec) {
-          return reject(new Error('API Spec not found'));
-        }
-        if (apiSpec) {
-          const { ipcRenderer } = window;
-
-          const activeWorkspace = state.workspaces.workspaces.find((w) => w.uid === state.workspaces.activeWorkspaceUid);
-          const workspacePath = activeWorkspace?.pathname || null;
-
-          ipcRenderer
-            .invoke('renderer:remove-api-spec', apiSpec.pathname, workspacePath)
-            .then(async () => {
-              dispatch(removeApiSpec({ uid }));
-
-              if (activeWorkspace) {
-                const { loadWorkspaceApiSpecs } = require('./workspaces/actions');
-                await dispatch(loadWorkspaceApiSpecs(activeWorkspace.uid));
-              }
-
-              resolve();
-            })
-            .catch((error) => reject(error));
-        }
-        return;
-      });
-    };
+          .catch((error) => reject(error));
+      }
+      return;
+    });
+  };

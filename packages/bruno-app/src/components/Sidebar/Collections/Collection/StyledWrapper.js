@@ -84,7 +84,7 @@ const Wrapper = styled.div`
       border-bottom: 1px solid ${(props) => props.theme.sidebar.collection.item.focusBorder};
       outline: none;
 
-       &:hover {
+      &:hover {
         background: ${(props) => props.theme.sidebar.collection.item.keyboardFocusBg} !important;
       }
     }

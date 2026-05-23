@@ -37,7 +37,9 @@ interface NewProxyConfig {
   };
 }
 
-export const transformProxyConfig = (proxy: OldProxyConfig | NewProxyConfig | null | undefined): NewProxyConfig | OldProxyConfig => {
+export const transformProxyConfig = (
+  proxy: OldProxyConfig | NewProxyConfig | null | undefined
+): NewProxyConfig | OldProxyConfig => {
   proxy = proxy || {};
   // Check if this is an old format (has 'enabled' property)
   if (proxy.hasOwnProperty('enabled')) {

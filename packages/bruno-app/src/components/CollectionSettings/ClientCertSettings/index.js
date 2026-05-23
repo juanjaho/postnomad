@@ -82,10 +82,12 @@ const ClientCertSettings = ({ collection }) => {
         certs: updatedCerts
       };
 
-      dispatch(updateCollectionClientCertificates({
-        collectionUid: collection.uid,
-        clientCertificates
-      }));
+      dispatch(
+        updateCollectionClientCertificates({
+          collectionUid: collection.uid,
+          clientCertificates
+        })
+      );
 
       formik.resetForm();
       resetFileInputFields();
@@ -135,10 +137,12 @@ const ClientCertSettings = ({ collection }) => {
       certs: updatedCerts
     };
 
-    dispatch(updateCollectionClientCertificates({
-      collectionUid: collection.uid,
-      clientCertificates
-    }));
+    dispatch(
+      updateCollectionClientCertificates({
+        collectionUid: collection.uid,
+        clientCertificates
+      })
+    );
   };
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));

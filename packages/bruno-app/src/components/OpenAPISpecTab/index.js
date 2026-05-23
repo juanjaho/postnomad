@@ -110,7 +110,10 @@ const OpenAPISpecTab = ({ collection, tabUid }) => {
   return (
     <StyledWrapper className="flex flex-col flex-grow relative">
       {isRemote && (
-        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs opacity-60" style={{ borderBottom: '1px solid var(--color-border)' }}>
+        <div
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs opacity-60"
+          style={{ borderBottom: '1px solid var(--color-border)' }}
+        >
           <IconCloud size={14} />
           <span>Showing spec file from {sourceUrl}.</span>
         </div>

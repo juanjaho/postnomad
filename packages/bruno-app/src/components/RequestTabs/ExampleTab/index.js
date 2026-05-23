@@ -3,7 +3,12 @@ import { useDispatch } from 'react-redux';
 import { makeTabPermanent, syncTabUid } from 'providers/ReduxStore/slices/tabs';
 import { deleteRequestDraft } from 'providers/ReduxStore/slices/collections';
 import { saveRequest, closeTabs } from 'providers/ReduxStore/slices/collections/actions';
-import { hasExampleChanges, findItemInCollection, findItemInCollectionByPathname, areItemsLoading } from 'utils/collections';
+import {
+  hasExampleChanges,
+  findItemInCollection,
+  findItemInCollectionByPathname,
+  areItemsLoading
+} from 'utils/collections';
 import ExampleIcon from 'components/Icons/ExampleIcon';
 import ConfirmRequestClose from '../RequestTab/ConfirmRequestClose';
 import RequestTabNotFound from '../RequestTab/RequestTabNotFound';
@@ -51,9 +56,11 @@ const ExampleTab = ({ tab, collection }) => {
   const handleCloseClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    dispatch(closeTabs({
-      tabUids: [tab.uid]
-    }));
+    dispatch(
+      closeTabs({
+        tabUids: [tab.uid]
+      })
+    );
   };
 
   const handleRightClick = (_event) => {
@@ -82,9 +89,11 @@ const ExampleTab = ({ tab, collection }) => {
       e.stopPropagation();
 
       // Close the tab
-      dispatch(closeTabs({
-        tabUids: [tab.uid]
-      }));
+      dispatch(
+        closeTabs({
+          tabUids: [tab.uid]
+        })
+      );
     }
   };
 
@@ -121,22 +130,28 @@ const ExampleTab = ({ tab, collection }) => {
           example={example}
           onCancel={() => setShowConfirmClose(false)}
           onCloseWithoutSave={() => {
-            dispatch(deleteRequestDraft({
-              itemUid: item.uid,
-              collectionUid: collection.uid
-            }));
-            dispatch(closeTabs({
-              tabUids: [tab.uid]
-            }));
+            dispatch(
+              deleteRequestDraft({
+                itemUid: item.uid,
+                collectionUid: collection.uid
+              })
+            );
+            dispatch(
+              closeTabs({
+                tabUids: [tab.uid]
+              })
+            );
             setShowConfirmClose(false);
           }}
           onSaveAndClose={() => {
             // For examples, we don't have a separate save action
             // The changes are saved automatically when the request is saved
             dispatch(saveRequest(item.uid, collection.uid, true));
-            dispatch(closeTabs({
-              tabUids: [tab.uid]
-            }));
+            dispatch(
+              closeTabs({
+                tabUids: [tab.uid]
+              })
+            );
             setShowConfirmClose(false);
           }}
         />

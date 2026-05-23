@@ -151,11 +151,7 @@ const validateName = (name) => {
   if (name.length > 255) return false; // max name length
   if (reservedDeviceNames.test(name)) return false; // windows reserved names
 
-  return (
-    firstCharacter.test(name)
-    && middleCharacters.test(name)
-    && lastCharacter.test(name)
-  );
+  return firstCharacter.test(name) && middleCharacters.test(name) && lastCharacter.test(name);
 };
 
 /**

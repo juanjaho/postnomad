@@ -35,7 +35,12 @@ const findTabByPathname = (tabs, { collectionUid, pathname, type, exampleName, e
     }
 
     if (type === 'response-example') {
-      if (typeof exampleIndex === 'number' && exampleIndex >= 0 && typeof tab.exampleIndex === 'number' && tab.exampleIndex >= 0) {
+      if (
+        typeof exampleIndex === 'number' &&
+        exampleIndex >= 0 &&
+        typeof tab.exampleIndex === 'number' &&
+        tab.exampleIndex >= 0
+      ) {
         return tab.exampleIndex === exampleIndex;
       }
 
@@ -51,7 +56,19 @@ export const tabsSlice = createSlice({
   initialState,
   reducers: {
     addTab: (state, action) => {
-      const { uid, collectionUid, type, requestPaneTab, preview, exampleUid, itemUid, pathname, exampleName, exampleIndex, isTransient } = action.payload;
+      const {
+        uid,
+        collectionUid,
+        type,
+        requestPaneTab,
+        preview,
+        exampleUid,
+        itemUid,
+        pathname,
+        exampleName,
+        exampleIndex,
+        isTransient
+      } = action.payload;
 
       const nonReplaceableTabTypes = [
         'variables',
@@ -71,7 +88,13 @@ export const tabsSlice = createSlice({
         return;
       }
 
-      const existingPathnameTab = findTabByPathname(state.tabs, { collectionUid, pathname, type, exampleName, exampleIndex });
+      const existingPathnameTab = findTabByPathname(state.tabs, {
+        collectionUid,
+        pathname,
+        type,
+        exampleName,
+        exampleIndex
+      });
       if (existingPathnameTab) {
         state.activeTabUid = existingPathnameTab.uid;
         return;
@@ -111,9 +134,7 @@ export const tabsSlice = createSlice({
           responseFormat: null,
           responseViewTab: null,
           scriptPaneTab: null,
-          preview: preview !== undefined
-            ? preview
-            : !nonReplaceableTabTypes.includes(type),
+          preview: preview !== undefined ? preview : !nonReplaceableTabTypes.includes(type),
           ...(uid ? { folderUid: uid } : {}),
           ...(exampleUid ? { exampleUid } : {}),
           ...(itemUid ? { itemUid } : {}),
@@ -148,9 +169,7 @@ export const tabsSlice = createSlice({
         scriptPaneTab: null,
         docsEditing: false,
         ...(uid ? { folderUid: uid } : {}),
-        preview: preview !== undefined
-          ? preview
-          : !nonReplaceableTabTypes.includes(type),
+        preview: preview !== undefined ? preview : !nonReplaceableTabTypes.includes(type),
         ...(exampleUid ? { exampleUid } : {}),
         ...(itemUid ? { itemUid } : {}),
         ...(exampleName ? { exampleName } : {}),
@@ -314,8 +333,8 @@ export const tabsSlice = createSlice({
 
       // Push closed tabs onto the recently closed stack (LIFO)
       // Exclude transient requests — they have no persisted file and can't be reopened
-      const closedTabs = state.tabs.filter((t) =>
-        tabUids.includes(t.uid) && !NON_CLOSABLE_TAB_TYPES.includes(t.type) && !t.isTransient
+      const closedTabs = state.tabs.filter(
+        (t) => tabUids.includes(t.uid) && !NON_CLOSABLE_TAB_TYPES.includes(t.type) && !t.isTransient
       );
       if (closedTabs.length > 0) {
         state.recentlyClosedTabs.push(...closedTabs);
@@ -325,9 +344,7 @@ export const tabsSlice = createSlice({
         }
       }
 
-      state.tabs = filter(state.tabs, (t) =>
-        !tabUids.includes(t.uid) || NON_CLOSABLE_TAB_TYPES.includes(t.type)
-      );
+      state.tabs = filter(state.tabs, (t) => !tabUids.includes(t.uid) || NON_CLOSABLE_TAB_TYPES.includes(t.type));
 
       if (activeTab && state.tabs.length) {
         const { collectionUid } = activeTab;

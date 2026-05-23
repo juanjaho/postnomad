@@ -83,7 +83,7 @@ describe('utils', () => {
     });
 
     it('should be ok picking extra vars from strings', () => {
-      const expr = '\'hello\' + \' \' + res.data.pets[0]';
+      const expr = "'hello' + ' ' + res.data.pets[0]";
       const result = evaluateJsExpression(expr, context);
       expect(result).toBe('hello bruno');
       // extra var hello is harmless
@@ -132,7 +132,7 @@ describe('utils', () => {
       const expr = 'res["__bruno__functionInnerContext"].toUpperCase()';
       expect(() => evaluateJsExpression(expr, context)).toThrow(SyntaxError);
       expect(() => evaluateJsExpression(expr, context)).toThrow(
-        'Identifier \'__bruno__functionInnerContext\' has already been declared'
+        "Identifier '__bruno__functionInnerContext' has already been declared"
       );
     });
   });
@@ -323,7 +323,7 @@ describe('utils', () => {
 
     it('parses quoted strings', () => {
       expect(evaluateJsTemplateLiteral('"hello"')).toBe('hello');
-      expect(evaluateJsTemplateLiteral('\'world\'')).toBe('world');
+      expect(evaluateJsTemplateLiteral("'world'")).toBe('world');
     });
 
     it('parses numbers', () => {

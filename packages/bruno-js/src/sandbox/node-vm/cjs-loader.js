@@ -140,8 +140,8 @@ function loadLocalModule({
   if (!isPathWithinAllowedRoots(path.normalize(preliminaryPath), additionalContextRootsAbsolute)) {
     const allowedRootsDisplay = additionalContextRootsAbsolute.map((root) => `  - ${root}`).join('\n');
     throw new Error(
-      `Access to files outside of the allowed context roots is not allowed: ${moduleName}\n\n`
-      + `Allowed context roots:\n${allowedRootsDisplay}`
+      `Access to files outside of the allowed context roots is not allowed: ${moduleName}\n\n` +
+        `Allowed context roots:\n${allowedRootsDisplay}`
     );
   }
 
@@ -152,8 +152,8 @@ function loadLocalModule({
   if (!isPathWithinAllowedRoots(normalizedFilePath, additionalContextRootsAbsolute)) {
     const allowedRootsDisplay = additionalContextRootsAbsolute.map((root) => `  - ${root}`).join('\n');
     throw new Error(
-      `Access to files outside of the allowed context roots is not allowed: ${moduleName}\n\n`
-      + `Allowed context roots:\n${allowedRootsDisplay}`
+      `Access to files outside of the allowed context roots is not allowed: ${moduleName}\n\n` +
+        `Allowed context roots:\n${allowedRootsDisplay}`
     );
   }
 
@@ -204,13 +204,7 @@ function loadLocalModule({
  * @returns {*} The exported content of the loaded module
  * @throws {Error} When module cannot be loaded
  */
-function executeModuleInVmContext({
-  resolvedPath,
-  moduleName,
-  isolatedContext,
-  collectionPath,
-  localModuleCache
-}) {
+function executeModuleInVmContext({ resolvedPath, moduleName, isolatedContext, collectionPath, localModuleCache }) {
   // Check cache - we cache moduleObj, return its exports
   if (localModuleCache.has(resolvedPath)) {
     return localModuleCache.get(resolvedPath).exports;
@@ -274,12 +268,7 @@ function executeModuleInVmContext({
  * @returns {*} The exported content of the loaded module
  * @throws {Error} When module cannot be resolved or loaded
  */
-function loadNpmModule({
-  moduleName,
-  collectionPath,
-  isolatedContext,
-  localModuleCache
-}) {
+function loadNpmModule({ moduleName, collectionPath, isolatedContext, localModuleCache }) {
   let resolvedPath;
 
   // Module resolution order:
@@ -304,8 +293,8 @@ function loadNpmModule({
       resolvedPath = require.resolve(moduleName, { paths: module.paths });
     } catch (mainError) {
       throw new Error(
-        `Could not resolve module "${moduleName}": ${mainError.message}\n\n`
-        + `Install it with: npm install ${moduleName}`
+        `Could not resolve module "${moduleName}": ${mainError.message}\n\n` +
+          `Install it with: npm install ${moduleName}`
       );
     }
   }
@@ -324,12 +313,7 @@ function loadNpmModule({
  * @param {Object} options - Configuration options
  * @returns {Function} Custom require function for npm module dependencies
  */
-function createNpmModuleRequire({
-  collectionPath,
-  isolatedContext,
-  currentModuleDir,
-  localModuleCache
-}) {
+function createNpmModuleRequire({ collectionPath, isolatedContext, currentModuleDir, localModuleCache }) {
   const moduleRequire = nodeModule.createRequire(path.join(currentModuleDir, 'index.js'));
 
   return (moduleName) => {

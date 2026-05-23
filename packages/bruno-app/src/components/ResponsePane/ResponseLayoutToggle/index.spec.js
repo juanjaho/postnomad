@@ -72,9 +72,7 @@ const renderWithProviders = (component, customState = initialState) => {
     store,
     ...render(
       <Provider store={store}>
-        <ThemeProvider>
-          {component}
-        </ThemeProvider>
+        <ThemeProvider>{component}</ThemeProvider>
       </Provider>
     )
   };
@@ -124,11 +122,13 @@ describe('ResponseLayoutToggle', () => {
       });
 
       // Manually update store to simulate state change
-      store.dispatch(mockSavePreferences({
-        layout: {
-          responsePaneOrientation: 'vertical'
-        }
-      }));
+      store.dispatch(
+        mockSavePreferences({
+          layout: {
+            responsePaneOrientation: 'vertical'
+          }
+        })
+      );
 
       // Check if button title was updated
       expect(button).toHaveAttribute('title', 'Switch to horizontal layout');
@@ -160,11 +160,13 @@ describe('ResponseLayoutToggle', () => {
       });
 
       // Manually update store to simulate state change
-      store.dispatch(mockSavePreferences({
-        layout: {
-          responsePaneOrientation: 'horizontal'
-        }
-      }));
+      store.dispatch(
+        mockSavePreferences({
+          layout: {
+            responsePaneOrientation: 'horizontal'
+          }
+        })
+      );
 
       // Check if button title was updated
       expect(button).toHaveAttribute('title', 'Switch to vertical layout');

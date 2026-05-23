@@ -84,3 +84,4 @@ npm test --workspaces --if-present
     - Príklad: feature/dark-mode
   - bugfix/[názov chyby]: Táto vetva by mala obsahovať iba opravy konkrétnej chyby
     - Príklad: bugfix/bug-1
+````

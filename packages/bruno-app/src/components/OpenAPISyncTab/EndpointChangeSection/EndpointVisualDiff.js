@@ -48,7 +48,15 @@ const openAPISectionHasChanges = (sectionKey, oldData, newData) => {
       const grantType = oldConfig.grantType || newConfig.grantType;
       const commonFields = ['grantType', 'scope', 'state'];
       const grantTypeFields = {
-        authorization_code: [...commonFields, 'authorizationUrl', 'accessTokenUrl', 'refreshTokenUrl', 'callbackUrl', 'clientId', 'clientSecret'],
+        authorization_code: [
+          ...commonFields,
+          'authorizationUrl',
+          'accessTokenUrl',
+          'refreshTokenUrl',
+          'callbackUrl',
+          'clientId',
+          'clientSecret'
+        ],
         implicit: [...commonFields, 'authorizationUrl', 'callbackUrl'],
         password: [...commonFields, 'accessTokenUrl', 'refreshTokenUrl', 'clientId', 'clientSecret'],
         client_credentials: [...commonFields, 'accessTokenUrl', 'clientId', 'clientSecret']
@@ -89,9 +97,14 @@ const openAPIDiffHasContent = {
     if (!data?.request?.body) return false;
     const mode = data.request.body.mode;
     if (!mode || mode === 'none') return false;
-    return data.request.body.json || data.request.body.text || data.request.body.xml
-      || data.request.body.graphql || data.request.body.formUrlEncoded?.length > 0
-      || data.request.body.multipartForm?.length > 0;
+    return (
+      data.request.body.json ||
+      data.request.body.text ||
+      data.request.body.xml ||
+      data.request.body.graphql ||
+      data.request.body.formUrlEncoded?.length > 0 ||
+      data.request.body.multipartForm?.length > 0
+    );
   }
 };
 

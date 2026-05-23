@@ -37,7 +37,9 @@ const mapSendIn = (sendIn?: string | null): OAuth2AdditionalParameter['placement
   }
 };
 
-const mapAdditionalParameters = (params?: BrunoOAuthAdditionalParameter[] | null): OAuth2AdditionalParameter[] | undefined => {
+const mapAdditionalParameters = (
+  params?: BrunoOAuthAdditionalParameter[] | null
+): OAuth2AdditionalParameter[] | undefined => {
   if (!Array.isArray(params) || params.length === 0) {
     return undefined;
   }
@@ -297,7 +299,9 @@ export const toOpenCollectionOAuth2 = (oauth?: BrunoOAuth2 | null): AuthOAuth2 |
   }
 };
 
-const reversePlacementMapping = (placement?: OAuth2AdditionalParameter['placement']): 'headers' | 'queryparams' | 'body' | null => {
+const reversePlacementMapping = (
+  placement?: OAuth2AdditionalParameter['placement']
+): 'headers' | 'queryparams' | 'body' | null => {
   if (!placement) {
     return null;
   }

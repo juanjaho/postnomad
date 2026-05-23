@@ -56,9 +56,7 @@ const CollectionsList = ({ workspace }) => {
     });
 
     return filteredCollections.map((wc) => {
-      const loadedCollection = collections.find(
-        (c) => normalizePath(c.pathname) === normalizePath(wc.path)
-      );
+      const loadedCollection = collections.find((c) => normalizePath(c.pathname) === normalizePath(wc.path));
 
       if (loadedCollection) {
         return {
@@ -304,16 +302,14 @@ const CollectionsList = ({ workspace }) => {
                   </div>
                   <div className="collection-name">{collection.name}</div>
                   {!isDefaultWorkspace && collection.isGitBacked && (
-                    <StatusBadge
-                      status="info"
-                      size="xs"
-                      leftSection={<IconBrandGit size={11} strokeWidth={2} />}
-                    >
+                    <StatusBadge status="info" size="xs" leftSection={<IconBrandGit size={11} strokeWidth={2} />}>
                       Git
                     </StatusBadge>
                   )}
                   {!isDefaultWorkspace && collection.isLoaded === false && (
-                    <StatusBadge status="warning" size="xs">Not cloned</StatusBadge>
+                    <StatusBadge status="warning" size="xs">
+                      Not cloned
+                    </StatusBadge>
                   )}
                 </div>
                 <div className="collection-path">{collection.pathname}</div>

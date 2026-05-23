@@ -10,9 +10,11 @@ function mockResolve(method: DnsMethod, result: string[], err: Error | null = nu
 }
 
 function mockLookup(address: string, family: number): void {
-  (jest.spyOn(dns, 'lookup') as any).mockImplementation((_hostname: string, _options: dns.LookupOptions, cb: Function) => {
-    cb(null, address, family);
-  });
+  (jest.spyOn(dns, 'lookup') as any).mockImplementation(
+    (_hostname: string, _options: dns.LookupOptions, cb: Function) => {
+      cb(null, address, family);
+    }
+  );
 }
 
 describe('fastLookup', () => {

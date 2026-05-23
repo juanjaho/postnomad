@@ -69,9 +69,9 @@ describe('bruno response shim', () => {
     const response = Object.assign(
       (expr, predicate) => {
         expect(expr).toBe('resources[?].id');
-        return resources.filter((item) =>
-          Object.entries(predicate).every(([key, value]) => item[key] === value)
-        ).map((item) => item.id);
+        return resources
+          .filter((item) => Object.entries(predicate).every(([key, value]) => item[key] === value))
+          .map((item) => item.id);
       },
       { status: 200, statusText: 'OK', headers: {}, body: { resources } }
     );

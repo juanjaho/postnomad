@@ -37,7 +37,14 @@ export default function XmlPreview({ data, defaultExpanded = true }) {
   if (!isValidTreeData(parsedData)) {
     return (
       <div className="px-2">
-        <ErrorBanner errors={[{ title: 'Cannot preview as XML', message: 'Data cannot be rendered as a tree. Expected a valid XML string.' }]} />
+        <ErrorBanner
+          errors={[
+            {
+              title: 'Cannot preview as XML',
+              message: 'Data cannot be rendered as a tree. Expected a valid XML string.'
+            }
+          ]}
+        />
       </div>
     );
   }
@@ -55,7 +62,9 @@ export default function XmlPreview({ data, defaultExpanded = true }) {
       // Empty object with no children
       return (
         <div className="px-2">
-          <ErrorBanner errors={[{ title: 'Cannot preview as XML', message: 'Cannot render XML tree. Root object is empty.' }]} />
+          <ErrorBanner
+            errors={[{ title: 'Cannot preview as XML', message: 'Cannot render XML tree. Root object is empty.' }]}
+          />
         </div>
       );
     }
@@ -88,12 +97,7 @@ const XmlArrayNode = ({ arrayKey, items, depth, defaultExpanded = true }) => {
   return (
     <div style={{ paddingLeft: `${(depth + 1) * 20}px` }}>
       <div className="flex items-center mb-1">
-        <button
-          onClick={toggle}
-          className="xml-array-toggle-button"
-          tabIndex={-1}
-          aria-expanded={expanded}
-        >
+        <button onClick={toggle} className="xml-array-toggle-button" tabIndex={-1} aria-expanded={expanded}>
           {expanded ? '▼' : '▶'}
         </button>
         <span className="xml-node-name">{arrayKey}</span>
@@ -117,14 +121,7 @@ const XmlArrayNode = ({ arrayKey, items, depth, defaultExpanded = true }) => {
   );
 };
 
-const XmlNode = ({
-  node,
-  nodeName = '',
-  isRoot = false,
-  isLast = true,
-  defaultExpanded = true,
-  depth = 0
-}) => {
+const XmlNode = ({ node, nodeName = '', isRoot = false, isLast = true, defaultExpanded = true, depth = 0 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   let displayNodeName = nodeName;
@@ -229,24 +226,13 @@ const XmlNode = ({
   return (
     <div style={{ paddingLeft: `${depth * 20}px` }}>
       <div className="flex items-center mb-1">
-        <button
-          onClick={toggle}
-          className="xml-toggle-button"
-          tabIndex={-1}
-          aria-expanded={expanded}
-        >
+        <button onClick={toggle} className="xml-toggle-button" tabIndex={-1} aria-expanded={expanded}>
           {expanded ? '▼' : '▶'}
         </button>
 
-        <span className="xml-node-name">
-          {displayNodeName}
-        </span>
+        <span className="xml-node-name">{displayNodeName}</span>
 
-        {childCount > 0 && (
-          <span className="xml-count">
-            {`{${childCount}}`}
-          </span>
-        )}
+        {childCount > 0 && <span className="xml-count">{`{${childCount}}`}</span>}
       </div>
 
       {expanded && childEntries.length > 0 && (
@@ -273,13 +259,7 @@ const XmlNode = ({
 
             if (isArrayChild) {
               return (
-                <XmlArrayNode
-                  key={`${key}-${idx}`}
-                  arrayKey={key}
-                  items={value}
-                  depth={depth}
-                  defaultExpanded={true}
-                />
+                <XmlArrayNode key={`${key}-${idx}`} arrayKey={key} items={value} depth={depth} defaultExpanded={true} />
               );
             }
 
@@ -336,7 +316,10 @@ function parseXMLString(xmlString) {
 
       // If only text children and no element children, return text content
       if (elementChildren.length === 0 && textChildren.length > 0) {
-        const textContent = textChildren.map((t) => t.textContent.trim()).join(' ').trim();
+        const textContent = textChildren
+          .map((t) => t.textContent.trim())
+          .join(' ')
+          .trim();
         // If has attributes, store text as a special property
         if (Object.keys(result).length > 0) {
           result['_text'] = textContent;

@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { fetchAndValidateApiSpecFromUrl } from 'utils/importers/common';
 import { isValidUrl } from 'utils/url/index';
 import Button from 'ui/Button';
-const UrlTab = ({
-  setIsLoading,
-  handleSubmit,
-  setErrorMessage
-}) => {
+const UrlTab = ({ setIsLoading, handleSubmit, setErrorMessage }) => {
   const [urlInput, setUrlInput] = useState('');
 
   const handleUrlImport = async (event) => {

@@ -160,11 +160,11 @@ const simpleTranslations = {
 };
 
 /* Complex transformations that need custom handling
-* Note: Transform functions can return either a single node or an array of nodes.
-* When returning an array of nodes, each node in the array will be inserted
-* as a separate statement, which allows a single Postman expression to be
-* transformed into multiple Bruno statements (e.g. for complex assertions).
-*/
+ * Note: Transform functions can return either a single node or an array of nodes.
+ * When returning an array of nodes, each node in the array will be inserted
+ * as a separate statement, which allows a single Postman expression to be
+ * transformed into multiple Bruno statements (e.g. for complex assertions).
+ */
 
 const complexTransformations = [
   // pm.sendRequest transformation
@@ -184,16 +184,8 @@ const complexTransformations = [
       // Create: bru.getEnvVar(arg) !== undefined && bru.getEnvVar(arg) !== null
       return j.logicalExpression(
         '&&',
-        j.binaryExpression(
-          '!==',
-          j.callExpression(j.identifier('bru.getEnvVar'), args),
-          j.identifier('undefined')
-        ),
-        j.binaryExpression(
-          '!==',
-          j.callExpression(j.identifier('bru.getEnvVar'), args),
-          j.identifier('null')
-        )
+        j.binaryExpression('!==', j.callExpression(j.identifier('bru.getEnvVar'), args), j.identifier('undefined')),
+        j.binaryExpression('!==', j.callExpression(j.identifier('bru.getEnvVar'), args), j.identifier('null'))
       );
     }
   },
@@ -234,10 +226,7 @@ const complexTransformations = [
       const negated = pattern.includes('.not.');
 
       if (args.length > 0) {
-        args[0] = j.callExpression(
-          j.memberExpression(args[0], j.identifier('toLowerCase')),
-          []
-        );
+        args[0] = j.callExpression(j.memberExpression(args[0], j.identifier('toLowerCase')), []);
       }
 
       return j.callExpression(
@@ -275,16 +264,10 @@ const complexTransformations = [
       const args = callExpr.arguments;
 
       if (args[0] && args[0].type === 'Literal' && args[0].value === null) {
-        return j.callExpression(
-          j.identifier('bru.runner.stopExecution'),
-          []
-        );
+        return j.callExpression(j.identifier('bru.runner.stopExecution'), []);
       }
 
-      return j.callExpression(
-        j.identifier('bru.runner.setNextRequest'),
-        args
-      );
+      return j.callExpression(j.identifier('bru.runner.setNextRequest'), args);
     }
   },
 
@@ -297,20 +280,12 @@ const complexTransformations = [
       const args = callExpr.arguments;
 
       // If argument is null or 'null', transform to bru.runner.stopExecution()
-      if (
-        args[0] && args[0].type === 'Literal' && (args[0].value === null)
-      ) {
-        return j.callExpression(
-          j.identifier('bru.runner.stopExecution'),
-          []
-        );
+      if (args[0] && args[0].type === 'Literal' && args[0].value === null) {
+        return j.callExpression(j.identifier('bru.runner.stopExecution'), []);
       }
 
       // Otherwise, keep as bru.runner.setNextRequest with the same argument
-      return j.callExpression(
-        j.identifier('bru.runner.setNextRequest'),
-        args
-      );
+      return j.callExpression(j.identifier('bru.runner.setNextRequest'), args);
     }
   },
 
@@ -337,10 +312,7 @@ const complexTransformations = [
         });
 
         if (keyProp && valueProp) {
-          return j.callExpression(
-            j.identifier('req.setHeader'),
-            [keyProp, valueProp]
-          );
+          return j.callExpression(j.identifier('req.setHeader'), [keyProp, valueProp]);
         }
       }
 
@@ -372,10 +344,7 @@ const complexTransformations = [
         });
 
         if (keyProp && valueProp) {
-          return j.callExpression(
-            j.identifier('req.setHeader'),
-            [keyProp, valueProp]
-          );
+          return j.callExpression(j.identifier('req.setHeader'), [keyProp, valueProp]);
         }
       }
 
@@ -416,11 +385,10 @@ const complexTransformations = [
     transform: (path, j) => {
       const callExpr = path.parent.value;
       const args = callExpr.arguments;
-      const expectGetBody = j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]);
-      return j.callExpression(
-        j.memberExpression(expectGetBody, j.identifier('to.have.jsonBody')),
-        args
-      );
+      const expectGetBody = j.callExpression(j.identifier('expect'), [
+        j.callExpression(j.identifier('res.getBody'), [])
+      ]);
+      return j.callExpression(j.memberExpression(expectGetBody, j.identifier('to.have.jsonBody')), args);
     }
   },
 
@@ -430,11 +398,10 @@ const complexTransformations = [
     transform: (path, j) => {
       const callExpr = path.parent.value;
       const args = callExpr.arguments;
-      const expectGetBody = j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]);
-      return j.callExpression(
-        j.memberExpression(expectGetBody, j.identifier('to.not.have.jsonBody')),
-        args
-      );
+      const expectGetBody = j.callExpression(j.identifier('expect'), [
+        j.callExpression(j.identifier('res.getBody'), [])
+      ]);
+      return j.callExpression(j.memberExpression(expectGetBody, j.identifier('to.not.have.jsonBody')), args);
     }
   },
 
@@ -445,9 +412,7 @@ const complexTransformations = [
       const args = path.parent.value.arguments;
       return j.callExpression(
         j.memberExpression(
-          j.callExpression(j.identifier('expect'), [
-            j.callExpression(j.identifier('res.getBody'), [])
-          ]),
+          j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]),
           j.identifier('to.have.jsonSchema')
         ),
         args
@@ -462,9 +427,7 @@ const complexTransformations = [
       const args = path.parent.value.arguments;
       return j.callExpression(
         j.memberExpression(
-          j.callExpression(j.identifier('expect'), [
-            j.callExpression(j.identifier('res.getBody'), [])
-          ]),
+          j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]),
           j.identifier('to.not.have.jsonSchema')
         ),
         args
@@ -479,9 +442,7 @@ const complexTransformations = [
       const args = path.parent.value.arguments;
       return j.callExpression(
         j.memberExpression(
-          j.callExpression(j.identifier('expect'), [
-            j.callExpression(j.identifier('res.getBody'), [])
-          ]),
+          j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]),
           j.identifier('not.to.have.jsonSchema')
         ),
         args
@@ -496,9 +457,7 @@ const complexTransformations = [
       const args = path.parent.value.arguments;
       return j.callExpression(
         j.memberExpression(
-          j.callExpression(j.identifier('expect'), [
-            j.callExpression(j.identifier('res.getBody'), [])
-          ]),
+          j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]),
           j.identifier('to.have.not.jsonSchema')
         ),
         args
@@ -512,11 +471,10 @@ const complexTransformations = [
     transform: (path, j) => {
       const callExpr = path.parent.value;
       const args = callExpr.arguments;
-      const expectGetBody = j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]);
-      return j.callExpression(
-        j.memberExpression(expectGetBody, j.identifier('not.to.have.jsonBody')),
-        args
-      );
+      const expectGetBody = j.callExpression(j.identifier('expect'), [
+        j.callExpression(j.identifier('res.getBody'), [])
+      ]);
+      return j.callExpression(j.memberExpression(expectGetBody, j.identifier('not.to.have.jsonBody')), args);
     }
   },
 
@@ -526,11 +484,10 @@ const complexTransformations = [
     transform: (path, j) => {
       const callExpr = path.parent.value;
       const args = callExpr.arguments;
-      const expectGetBody = j.callExpression(j.identifier('expect'), [j.callExpression(j.identifier('res.getBody'), [])]);
-      return j.callExpression(
-        j.memberExpression(expectGetBody, j.identifier('to.have.not.jsonBody')),
-        args
-      );
+      const expectGetBody = j.callExpression(j.identifier('expect'), [
+        j.callExpression(j.identifier('res.getBody'), [])
+      ]);
+      return j.callExpression(j.memberExpression(expectGetBody, j.identifier('to.have.not.jsonBody')), args);
     }
   },
 
@@ -593,7 +550,20 @@ complexTransformations.forEach((transform) => {
   complexTransformationsMap[transform.pattern] = transform;
 });
 
-const varInitsToReplace = new Set(['pm', 'postman', 'pm.request', 'pm.response', 'pm.test', 'pm.expect', 'pm.environment', 'pm.variables', 'pm.collectionVariables', 'pm.execution', 'pm.globals', 'pm.cookies']);
+const varInitsToReplace = new Set([
+  'pm',
+  'postman',
+  'pm.request',
+  'pm.response',
+  'pm.test',
+  'pm.expect',
+  'pm.environment',
+  'pm.variables',
+  'pm.collectionVariables',
+  'pm.execution',
+  'pm.globals',
+  'pm.cookies'
+]);
 
 /**
  * Process all transformations (both simple and complex) in the AST in a single pass
@@ -682,9 +652,9 @@ function injectLibraryRequires(ast) {
     const parent = path.parent.value;
 
     // check for library usage: X.foo / X['foo'] / X[expr] (X is object) or X(...) (X is callee)
-    const isLibraryUsage
-      = (parent.type === 'MemberExpression' && parent.object === path.value)
-        || (parent.type === 'CallExpression' && parent.callee === path.value);
+    const isLibraryUsage =
+      (parent.type === 'MemberExpression' && parent.object === path.value) ||
+      (parent.type === 'CallExpression' && parent.callee === path.value);
     if (!isLibraryUsage) return;
 
     // skip if the name is bound in any enclosing scope at this position
@@ -695,25 +665,27 @@ function injectLibraryRequires(ast) {
 
   if (usedLibraries.size === 0) return;
 
-  const declarations = [...usedLibraries].sort().map((name) =>
-    j.variableDeclaration('const', [
-      j.variableDeclarator(
-        j.identifier(name),
-        j.callExpression(j.identifier('require'), [j.literal(POSTMAN_LIBRARY_GLOBALS[name])])
-      )
-    ])
-  );
+  const declarations = [...usedLibraries]
+    .sort()
+    .map((name) =>
+      j.variableDeclaration('const', [
+        j.variableDeclarator(
+          j.identifier(name),
+          j.callExpression(j.identifier('require'), [j.literal(POSTMAN_LIBRARY_GLOBALS[name])])
+        )
+      ])
+    );
 
   // insert after directive prologue if present
   const body = ast.get().value.program.body;
   let insertIndex = 0;
   while (insertIndex < body.length) {
     const node = body[insertIndex];
-    const isDirective
-      = node.type === 'ExpressionStatement'
-        && node.expression
-        && node.expression.type === 'Literal'
-        && typeof node.expression.value === 'string';
+    const isDirective =
+      node.type === 'ExpressionStatement' &&
+      node.expression &&
+      node.expression.type === 'Literal' &&
+      typeof node.expression.value === 'string';
     if (!isDirective) break;
     insertIndex++;
   }
@@ -824,10 +796,7 @@ function findVariableDefinitions(ast, symbolTable) {
           symbolTable.set(destVarName, {
             type: 'memberExpression',
             value: `${source}.${prop.key.name}`,
-            node: j.memberExpression(
-              j.identifier(source),
-              j.identifier(prop.key.name)
-            )
+            node: j.memberExpression(j.identifier(source), j.identifier(prop.key.name))
           });
         }
       });
@@ -889,7 +858,11 @@ function resolveVariableReferences(ast, symbolTable) {
     if (path.parent.value.type === 'VariableDeclarator' && path.parent.value.id === path.value) {
       return;
     }
-    if (path.parent.value.type === 'MemberExpression' && path.parent.value.property === path.value && !path.parent.value.computed) {
+    if (
+      path.parent.value.type === 'MemberExpression' &&
+      path.parent.value.property === path.value &&
+      !path.parent.value.computed
+    ) {
       return;
     }
 
@@ -979,11 +952,13 @@ function removeResolvedDeclarations(ast, symbolTable) {
       }
 
       changesMade = true;
-    } else if (path.value.id.type === 'ObjectPattern'
+    } else if (
+      path.value.id.type === 'ObjectPattern' &&
       // Case 2: Handle destructuring of pm
-      && path.value.init
-      && path.value.init.type === 'Identifier'
-      && path.value.init.name === 'pm') {
+      path.value.init &&
+      path.value.init.type === 'Identifier' &&
+      path.value.init.name === 'pm'
+    ) {
       /**
        * Example of destructuring removal:
        *
@@ -1056,9 +1031,11 @@ function processCookieJarVariables(ast) {
 
   // Second pass: Rename method calls on cookie jar variables
   ast.find(j.CallExpression).forEach((path) => {
-    if (path.value.callee.type === 'MemberExpression'
-      && path.value.callee.object.type === 'Identifier'
-      && path.value.callee.property.type === 'Identifier') {
+    if (
+      path.value.callee.type === 'MemberExpression' &&
+      path.value.callee.object.type === 'Identifier' &&
+      path.value.callee.property.type === 'Identifier'
+    ) {
       const varName = path.value.callee.object.name;
       const methodName = path.value.callee.property.name;
 
@@ -1077,38 +1054,36 @@ function processCookieJarVariables(ast) {
  */
 function handleTestsBracketNotation(ast) {
   // Find the ExpressionStatement that contains the assignment
-  ast.find(j.ExpressionStatement, {
-    expression: {
-      type: 'AssignmentExpression',
-      left: {
-        type: 'MemberExpression',
-        object: { name: 'tests' },
-        computed: true,
-        property: {} // Accept any property type
+  ast
+    .find(j.ExpressionStatement, {
+      expression: {
+        type: 'AssignmentExpression',
+        left: {
+          type: 'MemberExpression',
+          object: { name: 'tests' },
+          computed: true,
+          property: {} // Accept any property type
+        }
       }
-    }
-  }).forEach((path) => {
-    // Get the assignment expression
-    const assignment = path.value.expression;
-    const left = assignment.left;
+    })
+    .forEach((path) => {
+      // Get the assignment expression
+      const assignment = path.value.expression;
+      const left = assignment.left;
 
-    // Verify it's a valid tests[] expression
-    if (left.object.type === 'Identifier'
-      && left.object.name === 'tests'
-      && left.computed === true) {
-      const property = left.property;
-      const rightSide = assignment.right;
+      // Verify it's a valid tests[] expression
+      if (left.object.type === 'Identifier' && left.object.name === 'tests' && left.computed === true) {
+        const property = left.property;
+        const rightSide = assignment.right;
 
-      // Handle string literals
-      if (property.type === 'Literal' && typeof property.value === 'string') {
-        const testName = property.value;
+        // Handle string literals
+        if (property.type === 'Literal' && typeof property.value === 'string') {
+          const testName = property.value;
 
-        // Replace with test() function call
-        j(path).replaceWith(
-          j.expressionStatement(
-            j.callExpression(
-              j.identifier('test'),
-              [
+          // Replace with test() function call
+          j(path).replaceWith(
+            j.expressionStatement(
+              j.callExpression(j.identifier('test'), [
                 j.literal(testName),
                 j.functionExpression(
                   null,
@@ -1116,38 +1091,26 @@ function handleTestsBracketNotation(ast) {
                   j.blockStatement([
                     j.expressionStatement(
                       j.memberExpression(
-                        j.callExpression(
-                          j.identifier('expect'),
-                          [
-                            j.callExpression(
-                              j.identifier('Boolean'),
-                              [rightSide]
-                            )
-                          ]
-                        ),
+                        j.callExpression(j.identifier('expect'), [
+                          j.callExpression(j.identifier('Boolean'), [rightSide])
+                        ]),
                         j.identifier('to.be.true')
                       )
                     )
                   ])
                 )
-              ]
+              ])
             )
-          )
-        );
-      } else if (property.type === 'TemplateLiteral') {
-        // Handle template literals
-        // Create a template literal with the same quasi and expressions
-        const templateLiteral = j.templateLiteral(
-          property.quasis,
-          property.expressions
-        );
+          );
+        } else if (property.type === 'TemplateLiteral') {
+          // Handle template literals
+          // Create a template literal with the same quasi and expressions
+          const templateLiteral = j.templateLiteral(property.quasis, property.expressions);
 
-        // Replace with test() function call using template literal
-        j(path).replaceWith(
-          j.expressionStatement(
-            j.callExpression(
-              j.identifier('test'),
-              [
+          // Replace with test() function call using template literal
+          j(path).replaceWith(
+            j.expressionStatement(
+              j.callExpression(j.identifier('test'), [
                 templateLiteral,
                 j.functionExpression(
                   null,
@@ -1155,27 +1118,20 @@ function handleTestsBracketNotation(ast) {
                   j.blockStatement([
                     j.expressionStatement(
                       j.memberExpression(
-                        j.callExpression(
-                          j.identifier('expect'),
-                          [
-                            j.callExpression(
-                              j.identifier('Boolean'),
-                              [rightSide]
-                            )
-                          ]
-                        ),
+                        j.callExpression(j.identifier('expect'), [
+                          j.callExpression(j.identifier('Boolean'), [rightSide])
+                        ]),
                         j.identifier('to.be.true')
                       )
                     )
                   ])
                 )
-              ]
+              ])
             )
-          )
-        );
+          );
+        }
       }
-    }
-  });
+    });
 }
 
 /**
@@ -1215,7 +1171,11 @@ function handleLegacyGlobalAPIs(ast, transformedNodes, code) {
       if (transformedNodes.has(path.node)) return;
 
       const callExpr = path.value;
-      if (callExpr.callee.type === 'MemberExpression' && callExpr.callee.object.name === 'JSON' && callExpr.callee.property.name === 'parse') {
+      if (
+        callExpr.callee.type === 'MemberExpression' &&
+        callExpr.callee.object.name === 'JSON' &&
+        callExpr.callee.property.name === 'parse'
+      ) {
         const args = callExpr.arguments;
 
         // Check if the argument is 'responseBody'

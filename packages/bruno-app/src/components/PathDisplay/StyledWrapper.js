@@ -8,7 +8,7 @@ const StyledWrapper = styled.div`
     padding: 8px 12px;
     font-size: ${(props) => props.theme.font.size.base};
     border: 1px solid rgba(0, 0, 0, 0.08);
-    
+
     .icon-column {
       padding-right: 8px;
       align-items: flex-start;
@@ -23,8 +23,8 @@ const StyledWrapper = styled.div`
       white-space: nowrap;
     }
 
-    
-    .name-container, .file-extension {
+    .name-container,
+    .file-extension {
       color: ${(props) => props.theme.colors.text.yellow};
     }
 

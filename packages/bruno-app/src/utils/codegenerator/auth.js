@@ -64,9 +64,10 @@ export const getAuthHeaders = (requestAuth, collection = null, item = null) => {
           try {
             const grantType = get(oauth2Config, 'grantType', '');
             // For implicit grant type, use authorizationUrl; for others, use accessTokenUrl
-            const urlToLookup = grantType === 'implicit'
-              ? get(oauth2Config, 'authorizationUrl', '')
-              : get(oauth2Config, 'accessTokenUrl', '');
+            const urlToLookup =
+              grantType === 'implicit'
+                ? get(oauth2Config, 'authorizationUrl', '')
+                : get(oauth2Config, 'accessTokenUrl', '');
             const credentialsId = get(oauth2Config, 'credentialsId', 'credentials');
             const collectionUid = get(collection, 'uid');
 
@@ -79,9 +80,9 @@ export const getAuthHeaders = (requestAuth, collection = null, item = null) => {
               const credentialsData = find(
                 collection?.oauth2Credentials || [],
                 (creds) =>
-                  creds?.url === interpolatedUrl
-                  && creds?.collectionUid === collectionUid
-                  && creds?.credentialsId === credentialsId
+                  creds?.url === interpolatedUrl &&
+                  creds?.collectionUid === collectionUid &&
+                  creds?.credentialsId === credentialsId
               );
 
               if (credentialsData?.credentials?.access_token) {
@@ -98,11 +99,7 @@ export const getAuthHeaders = (requestAuth, collection = null, item = null) => {
         // If tokenHeaderPrefix is empty, just use the token
         // Otherwise, use the format: "prefix token"
         // Always trim the final result for consistent formatting
-        const headerValue = (
-          tokenHeaderPrefix
-            ? `${tokenHeaderPrefix} ${accessToken}`
-            : accessToken
-        ).trim();
+        const headerValue = (tokenHeaderPrefix ? `${tokenHeaderPrefix} ${accessToken}` : accessToken).trim();
 
         return [
           {

@@ -1,5 +1,13 @@
 import { test, expect } from '../../../playwright';
-import { closeAllCollections, createCollection, createRequest, openCollection, openRequest, saveRequest, selectRequestPaneTab } from '../../utils/page';
+import {
+  closeAllCollections,
+  createCollection,
+  createRequest,
+  openCollection,
+  openRequest,
+  saveRequest,
+  selectRequestPaneTab
+} from '../../utils/page';
 import { getTableCell } from '../../utils/page/locators';
 
 const saveShortcut = process.platform === 'darwin' ? 'Meta+s' : 'Control+s';

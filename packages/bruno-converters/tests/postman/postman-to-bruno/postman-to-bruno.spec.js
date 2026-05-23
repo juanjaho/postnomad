@@ -127,9 +127,7 @@ describe('postman-collection', () => {
 
     const brunoCollection = await postmanToBruno(collectionWithFalsyVars);
 
-    expect(brunoCollection.items.map((item) => item.request.url)).toEqual([
-      'https://httpbin.org/api/v1/resource'
-    ]);
+    expect(brunoCollection.items.map((item) => item.request.url)).toEqual(['https://httpbin.org/api/v1/resource']);
   });
 
   it('should not mutate a URL path with an empty element representing a trailing slash', async () => {
@@ -180,9 +178,7 @@ describe('postman-collection', () => {
 
     const brunoCollection = await postmanToBruno(collectionWithFalsyVars);
 
-    expect(brunoCollection.items.map((item) => item.request.url)).toEqual([
-      'https://httpbin.org/api/v1/resource/'
-    ]);
+    expect(brunoCollection.items.map((item) => item.request.url)).toEqual(['https://httpbin.org/api/v1/resource/']);
   });
 
   it('should not mutate a URL path with an empty element representing a trailing slash', async () => {
@@ -233,9 +229,7 @@ describe('postman-collection', () => {
 
     const brunoCollection = await postmanToBruno(collectionWithFalsyVars);
 
-    expect(brunoCollection.items.map((item) => item.request.url)).toEqual([
-      'https://httpbin.org/api//resource'
-    ]);
+    expect(brunoCollection.items.map((item) => item.request.url)).toEqual(['https://httpbin.org/api//resource']);
   });
 
   it('should convert non-string variable values to strings', async () => {
@@ -841,15 +835,11 @@ describe('postman-collection', () => {
                 { key: 'limit', value: 100 },
                 { key: 'offset', value: 0 }
               ],
-              variable: [
-                { key: 'accountId', value: 0 }
-              ]
+              variable: [{ key: 'accountId', value: 0 }]
             },
             body: {
               mode: 'urlencoded',
-              urlencoded: [
-                { key: 'timeout', value: 5000 }
-              ]
+              urlencoded: [{ key: 'timeout', value: 5000 }]
             }
           }
         },
@@ -916,33 +906,23 @@ describe('postman-collection', () => {
               name: 'Example with numerics',
               originalRequest: {
                 method: 'GET',
-                header: [
-                  { key: 'X-Account-Id', value: 42 }
-                ],
+                header: [{ key: 'X-Account-Id', value: 42 }],
                 url: {
                   raw: 'https://example.com/api/:id?page=1',
                   protocol: 'https',
                   host: ['example', 'com'],
                   path: ['api', ':id'],
-                  query: [
-                    { key: 'page', value: 1 }
-                  ],
-                  variable: [
-                    { key: 'id', value: 99 }
-                  ]
+                  query: [{ key: 'page', value: 1 }],
+                  variable: [{ key: 'id', value: 99 }]
                 },
                 body: {
                   mode: 'urlencoded',
-                  urlencoded: [
-                    { key: 'retries', value: 3 }
-                  ]
+                  urlencoded: [{ key: 'retries', value: 3 }]
                 }
               },
               status: 'OK',
               code: 200,
-              header: [
-                { key: 'X-RateLimit-Remaining', value: 0 }
-              ],
+              header: [{ key: 'X-RateLimit-Remaining', value: 0 }],
               body: '{"ok": true}'
             }
           ]
@@ -987,9 +967,7 @@ describe('postman-collection', () => {
             url: { raw: 'https://example.com/api' },
             auth: {
               type: 'bearer',
-              bearer: [
-                { key: 'token', value: 123 }
-              ]
+              bearer: [{ key: 'token', value: 123 }]
             }
           }
         },
@@ -1168,7 +1146,8 @@ const postmanCollection = {
     name: 'simple collection',
     schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
     _exporter_id: '21992467',
-    _collection_link: 'https://random-user-007.postman.co/workspace/testing~7523f559-3d5f-4c30-8315-3cb3c3ff98b7/collection/21992467-7f91bbd8-cb97-41ac-8d0b-e1fcd8bb4ce9?action=share&source=collection_link&creator=007'
+    _collection_link:
+      'https://random-user-007.postman.co/workspace/testing~7523f559-3d5f-4c30-8315-3cb3c3ff98b7/collection/21992467-7f91bbd8-cb97-41ac-8d0b-e1fcd8bb4ce9?action=share&source=collection_link&creator=007'
   },
   item: [
     {
@@ -1182,10 +1161,7 @@ const postmanCollection = {
             url: {
               raw: 'https://usebruno.com',
               protocol: 'https',
-              host: [
-                'usebruno',
-                'com'
-              ]
+              host: ['usebruno', 'com']
             }
           },
           response: []
@@ -1200,10 +1176,7 @@ const postmanCollection = {
         url: {
           raw: 'https://usebruno.com',
           protocol: 'https',
-          host: [
-            'usebruno',
-            'com'
-          ]
+          host: ['usebruno', 'com']
         }
       },
       response: []

@@ -344,10 +344,7 @@ body:text {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -388,10 +385,7 @@ body:text {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -432,10 +426,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -476,10 +467,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -520,10 +508,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -570,10 +555,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -616,10 +598,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -650,10 +629,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -696,10 +672,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },
@@ -761,10 +734,7 @@ body:json {
       const expected = {
         meta: {
           name: '[name]',
-          tags: [
-            'tag_1',
-            'tag_2'
-          ],
+          tags: ['tag_1', 'tag_2'],
           seq: 1,
           type: 'http'
         },

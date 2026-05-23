@@ -12,7 +12,8 @@ const renderLine = (line, highlightClass, hunkIdx) => {
     >
       <span className="code-line-number">{line.lineNumber}</span>
       <span className="code-line-content">
-        {isHighlighted ? '> ' : '  '}{line.content}
+        {isHighlighted ? '> ' : '  '}
+        {line.content}
       </span>
     </div>
   );

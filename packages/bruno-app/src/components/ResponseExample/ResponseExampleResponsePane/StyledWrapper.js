@@ -38,7 +38,6 @@ const StyledWrapper = styled.div`
   .all-tests-passed {
     color: ${(props) => props.theme.colors.text.green} !important;
   }
-
 `;
 
 export default StyledWrapper;

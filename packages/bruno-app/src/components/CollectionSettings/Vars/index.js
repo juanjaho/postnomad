@@ -10,13 +10,22 @@ import { useTrackScroll } from 'hooks/useTrackScroll';
 
 const Vars = ({ collection }) => {
   const dispatch = useDispatch();
-  const requestVars = collection.draft?.root ? get(collection, 'draft.root.request.vars.req', []) : get(collection, 'root.request.vars.req', []);
-  const responseVars = collection.draft?.root ? get(collection, 'draft.root.request.vars.res', []) : get(collection, 'root.request.vars.res', []);
+  const requestVars = collection.draft?.root
+    ? get(collection, 'draft.root.request.vars.req', [])
+    : get(collection, 'root.request.vars.req', []);
+  const responseVars = collection.draft?.root
+    ? get(collection, 'draft.root.request.vars.res', [])
+    : get(collection, 'root.request.vars.res', []);
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));
 
   const wrapperRef = useRef(null);
   const [scroll, setScroll] = usePersistedState({ key: `collection-vars-scroll-${collection.uid}`, default: 0 });
-  useTrackScroll({ ref: wrapperRef, selector: '.collection-settings-content', onChange: setScroll, initialValue: scroll });
+  useTrackScroll({
+    ref: wrapperRef,
+    selector: '.collection-settings-content',
+    onChange: setScroll,
+    initialValue: scroll
+  });
 
   return (
     <StyledWrapper className="w-full flex flex-col" ref={wrapperRef}>

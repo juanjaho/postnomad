@@ -131,9 +131,10 @@ const buildOAuth1Auth = (config?: BrunoAuth['oauth1']): AuthOAuth1 => {
   if (isString(config.verifier)) auth.verifier = config.verifier;
   if (isString(config.signatureMethod)) auth.signatureMethod = config.signatureMethod;
   if (isString(config.privateKey)) {
-    auth.privateKey = config.privateKeyType === 'file'
-      ? { type: 'file' as const, value: config.privateKey }
-      : { type: 'text' as const, value: config.privateKey };
+    auth.privateKey =
+      config.privateKeyType === 'file'
+        ? { type: 'file' as const, value: config.privateKey }
+        : { type: 'text' as const, value: config.privateKey };
   }
   if (isString(config.timestamp)) auth.timestamp = config.timestamp;
   if (isString(config.nonce)) auth.nonce = config.nonce;
@@ -259,7 +260,7 @@ export const toBrunoAuth = (auth: Auth | null | undefined): BrunoAuth | null => 
       brunoAuth.apikey = {
         key: auth.key || null,
         value: auth.value || null,
-        placement: auth.placement === 'query' ? 'queryparams' : (auth.placement === 'header' ? 'header' : null)
+        placement: auth.placement === 'query' ? 'queryparams' : auth.placement === 'header' ? 'header' : null
       };
       break;
 
@@ -273,8 +274,11 @@ export const toBrunoAuth = (auth: Auth | null | undefined): BrunoAuth | null => 
         callbackUrl: auth.callbackUrl || null,
         verifier: auth.verifier || null,
         signatureMethod: (auth.signatureMethod as BrunoAuthOauth1['signatureMethod']) || 'HMAC-SHA1',
-        privateKey: (typeof auth.privateKey === 'object' && auth.privateKey ? auth.privateKey.value : auth.privateKey) || null,
-        privateKeyType: (typeof auth.privateKey === 'object' && auth.privateKey ? auth.privateKey.type : 'text') as BrunoAuthOauth1['privateKeyType'],
+        privateKey:
+          (typeof auth.privateKey === 'object' && auth.privateKey ? auth.privateKey.value : auth.privateKey) || null,
+        privateKeyType: (typeof auth.privateKey === 'object' && auth.privateKey
+          ? auth.privateKey.type
+          : 'text') as BrunoAuthOauth1['privateKeyType'],
         timestamp: auth.timestamp || null,
         nonce: auth.nonce || null,
         version: auth.version || '1.0',

@@ -78,7 +78,9 @@ test.describe('Global Environment Variables - Non-string Values', () => {
       // The tooltip explains why the field is locked.
       const tooltip = page.locator('[role="tooltip"], .react-tooltip');
       await expect(tooltip.first()).toBeVisible();
-      await expect(tooltip.first()).toContainText('Non-string values set via scripts are read-only and can only be updated through scripts.');
+      await expect(tooltip.first()).toContainText(
+        'Non-string values set via scripts are read-only and can only be updated through scripts.'
+      );
 
       // Hovering outside the tooltip should hide it.
       await page.mouse.move(0, 0);
@@ -87,7 +89,9 @@ test.describe('Global Environment Variables - Non-string Values', () => {
       // Clicking the info icon reveals the tooltip.
       await infoIcon.click();
       await expect(tooltip.first()).toBeVisible();
-      await expect(tooltip.first()).toContainText('Non-string values set via scripts are read-only and can only be updated through scripts.');
+      await expect(tooltip.first()).toContainText(
+        'Non-string values set via scripts are read-only and can only be updated through scripts.'
+      );
     });
 
     await test.step('Verify that booleanVar is read-only with tooltip', async () => {
@@ -105,7 +109,9 @@ test.describe('Global Environment Variables - Non-string Values', () => {
       // The tooltip explains why the field is locked.
       const tooltip = page.locator('[role="tooltip"], .react-tooltip');
       await expect(tooltip.first()).toBeVisible();
-      await expect(tooltip.first()).toContainText('Non-string values set via scripts are read-only and can only be updated through scripts.');
+      await expect(tooltip.first()).toContainText(
+        'Non-string values set via scripts are read-only and can only be updated through scripts.'
+      );
     });
 
     await test.step('Verify that stringVar remains editable', async () => {

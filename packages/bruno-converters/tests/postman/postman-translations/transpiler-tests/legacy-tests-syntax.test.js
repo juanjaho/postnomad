@@ -120,9 +120,13 @@ describe('Legacy Tests[] Syntax Translation', () => {
     const translatedCode = translateCode(code);
 
     expect(translatedCode).toContain('test("All items have an ID", function() {');
-    expect(translatedCode).toContain('expect(Boolean(res.getBody().items.every(item => item.hasOwnProperty(\'id\')))).to.be.true;');
+    expect(translatedCode).toContain(
+      "expect(Boolean(res.getBody().items.every(item => item.hasOwnProperty('id')))).to.be.true;"
+    );
     expect(translatedCode).toContain('test("Has premium item", function() {');
-    expect(translatedCode).toContain('expect(Boolean(res.getBody().items.some(item => item.type === \'premium\'))).to.be.true;');
+    expect(translatedCode).toContain(
+      "expect(Boolean(res.getBody().items.some(item => item.type === 'premium'))).to.be.true;"
+    );
   });
 
   it('should handle tests[] with template literals in the name', () => {
@@ -146,7 +150,7 @@ describe('Legacy Tests[] Syntax Translation', () => {
     expect(translatedCode).toContain('test("User has admin role", function() {');
     expect(translatedCode).toContain('expect(Boolean(res.getBody().user &&');
     expect(translatedCode).toContain('res.getBody().user.roles &&');
-    expect(translatedCode).toContain('res.getBody().user.roles.includes(\'admin\'))).to.be.true;');
+    expect(translatedCode).toContain("res.getBody().user.roles.includes('admin'))).to.be.true;");
   });
 
   it('should handle tests[] with JSON schema validation patterns', () => {
@@ -173,9 +177,11 @@ describe('Legacy Tests[] Syntax Translation', () => {
     expect(translatedCode).toContain('required: ["id", "name"],');
     expect(translatedCode).toContain('const data = res.getBody();');
     expect(translatedCode).toContain('test("Has required fields", function() {');
-    expect(translatedCode).toContain('expect(Boolean(data.hasOwnProperty(\'id\') && data.hasOwnProperty(\'name\'))).to.be.true;');
+    expect(translatedCode).toContain(
+      "expect(Boolean(data.hasOwnProperty('id') && data.hasOwnProperty('name'))).to.be.true;"
+    );
     expect(translatedCode).toContain('test("ID is string", function() {');
-    expect(translatedCode).toContain('expect(Boolean(typeof data.id === \'string\')).to.be.true;');
+    expect(translatedCode).toContain("expect(Boolean(typeof data.id === 'string')).to.be.true;");
   });
 
   it('should handle tests[] within conditional blocks', () => {
@@ -196,13 +202,13 @@ describe('Legacy Tests[] Syntax Translation', () => {
     expect(translatedCode).toContain('const data = res.getBody();');
     expect(translatedCode).toContain('if (res.getStatus() === 200) {');
     expect(translatedCode).toContain('test("Success response has data", function() {');
-    expect(translatedCode).toContain('expect(Boolean(data.hasOwnProperty(\'items\'))).to.be.true;');
+    expect(translatedCode).toContain("expect(Boolean(data.hasOwnProperty('items'))).to.be.true;");
     expect(translatedCode).toContain('if (data.items.length > 0) {');
     expect(translatedCode).toContain('test("First item has ID", function() {');
-    expect(translatedCode).toContain('expect(Boolean(data.items[0].hasOwnProperty(\'id\'))).to.be.true;');
+    expect(translatedCode).toContain("expect(Boolean(data.items[0].hasOwnProperty('id'))).to.be.true;");
     expect(translatedCode).toContain('} else {');
     expect(translatedCode).toContain('test("Error response has message", function() {');
-    expect(translatedCode).toContain('expect(Boolean(data.hasOwnProperty(\'message\'))).to.be.true;');
+    expect(translatedCode).toContain("expect(Boolean(data.hasOwnProperty('message'))).to.be.true;");
   });
 
   it('should handle tests[] with combination of legacy and modern styles', () => {
@@ -225,10 +231,12 @@ describe('Legacy Tests[] Syntax Translation', () => {
     expect(translatedCode).toContain('expect(Boolean(res.getStatus() === 200)).to.be.true;');
     expect(translatedCode).toContain('test("Response has valid data", function() {');
     expect(translatedCode).toContain('const json = res.getBody();');
-    expect(translatedCode).toContain('expect(json).to.be.an(\'object\');');
-    expect(translatedCode).toContain('expect(json.items).to.be.an(\'array\');');
+    expect(translatedCode).toContain("expect(json).to.be.an('object');");
+    expect(translatedCode).toContain("expect(json.items).to.be.an('array');");
     expect(translatedCode).toContain('test("All items have price", function() {');
-    expect(translatedCode).toContain('expect(Boolean(json.items.every(item => item.hasOwnProperty(\'price\')))).to.be.true;');
+    expect(translatedCode).toContain(
+      "expect(Boolean(json.items.every(item => item.hasOwnProperty('price')))).to.be.true;"
+    );
   });
 
   it('should handle complex real-world tests[] example', () => {
@@ -273,11 +281,15 @@ describe('Legacy Tests[] Syntax Translation', () => {
     expect(translatedCode).toContain('test("Has content-type header", function() {');
     expect(translatedCode).toContain('expect(Boolean(res.headerList.has("Content-Type"))).to.be.true;');
     expect(translatedCode).toContain('test("Content-Type is JSON", function() {');
-    expect(translatedCode).toContain('expect(Boolean(res.getHeader("Content-Type").includes("application/json"))).to.be.true;');
+    expect(translatedCode).toContain(
+      'expect(Boolean(res.getHeader("Content-Type").includes("application/json"))).to.be.true;'
+    );
     expect(translatedCode).toContain('const expectedItems = parseInt(bru.getEnvVar("expectedItemCount"));');
     expect(translatedCode).toContain('test("Has correct number of items", function() {');
     expect(translatedCode).toContain('expect(Boolean(response.items.length === expectedItems)).to.be.true;');
-    expect(translatedCode).toContain('const targetItem = response.items.find(item => item.name === bru.getVar("targetItemName"));');
+    expect(translatedCode).toContain(
+      'const targetItem = response.items.find(item => item.name === bru.getVar("targetItemName"));'
+    );
     expect(translatedCode).toContain('bru.setEnvVar("targetItemId", targetItem.id);');
   });
 });

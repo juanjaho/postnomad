@@ -22,7 +22,7 @@ export const toOpenCollectionActions = (resVariables: BrunoVariables | null | un
       },
       variable: {
         name: v.name || '',
-        scope: v.local ? 'request' : 'runtime' as ActionVariableScope
+        scope: v.local ? 'request' : ('runtime' as ActionVariableScope)
       }
     };
 
@@ -65,9 +65,10 @@ export const toBrunoPostResponseVariables = (actions: Action[] | null | undefine
       };
 
       if (setVarAction.description) {
-        variable.description = typeof setVarAction.description === 'string'
-          ? setVarAction.description
-          : (setVarAction.description as any)?.content || '';
+        variable.description =
+          typeof setVarAction.description === 'string'
+            ? setVarAction.description
+            : (setVarAction.description as any)?.content || '';
       }
 
       resVars.push(variable);

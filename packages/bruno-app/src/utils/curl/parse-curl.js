@@ -11,29 +11,29 @@ import { parseQueryParams } from '@usebruno/common/utils';
 const FLAG_CATEGORIES = {
   // State-returning flags (expect a value after the flag)
   'user-agent': ['-A', '--user-agent'],
-  'header': ['-H', '--header'],
-  'data': ['-d', '--data', '--data-ascii', '--data-urlencode'],
-  'json': ['--json'],
-  'user': ['-u', '--user'],
-  'method': ['-X', '--request'],
-  'cookie': ['-b', '--cookie'],
-  'form': ['-F', '--form'],
+  header: ['-H', '--header'],
+  data: ['-d', '--data', '--data-ascii', '--data-urlencode'],
+  json: ['--json'],
+  user: ['-u', '--user'],
+  method: ['-X', '--request'],
+  cookie: ['-b', '--cookie'],
+  form: ['-F', '--form'],
   // Special data flags with properties
   'data-raw': ['--data-raw'],
   'data-binary': ['--data-binary'],
 
   // Immediate action flags (no value expected)
-  'head': ['-I', '--head'],
-  'compressed': ['--compressed'],
-  'insecure': ['-k', '--insecure'],
-  'digest': ['--digest'],
-  'ntlm': ['--ntlm'],
+  head: ['-I', '--head'],
+  compressed: ['--compressed'],
+  insecure: ['-k', '--insecure'],
+  digest: ['--digest'],
+  ntlm: ['--ntlm'],
   /**
    * Query flags: mark data for conversion to query parameters.
    * While this is an immediate action flag, the actual conversion to a query string occurs later during post-build request processing.
    * Due to the unpredictable order of flags, query string construction is deferred to the end.
    */
-  'query': ['-G', '--get']
+  query: ['-G', '--get']
 };
 
 /**
@@ -176,14 +176,14 @@ const handleFlagCategory = (category, arg, request) => {
  */
 const handleValue = (value, state, request) => {
   const valueHandlers = {
-    'header': () => setHeader(request, value),
+    header: () => setHeader(request, value),
     'user-agent': () => setUserAgent(request, value),
-    'data': () => setData(request, value),
-    'json': () => setJsonData(request, value),
-    'form': () => setFormData(request, value),
-    'user': () => setAuth(request, value),
-    'method': () => setMethod(request, value),
-    'cookie': () => setCookie(request, value)
+    data: () => setData(request, value),
+    json: () => setJsonData(request, value),
+    form: () => setFormData(request, value),
+    user: () => setAuth(request, value),
+    method: () => setMethod(request, value),
+    cookie: () => setCookie(request, value)
   };
 
   const handler = valueHandlers[state];
@@ -366,7 +366,8 @@ const isURL = (arg) => {
   // - example.com/path
   // - example.com/path?query=value
   // Must contain at least one dot to be considered a domain
-  const DOMAIN_PATTERN = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(\/[^\s]*)?(\?[^\s]*)?$/;
+  const DOMAIN_PATTERN =
+    /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(\/[^\s]*)?(\?[^\s]*)?$/;
 
   return DOMAIN_PATTERN.test(arg);
 };
@@ -525,7 +526,7 @@ const cleanCurlCommand = (curlCommand) => {
   // Handle bash ANSI $'..' escapes by decoding common sequences
   curlCommand = curlCommand.replace(/\$'((?:\\.|[^'])*)'/g, (match, group) => quoteForShell(decodeAnsiEscapes(group)));
   // Convert escaped single quotes to shell quote pattern
-  curlCommand = curlCommand.replace(/\\'(?!')/g, '\'\\\'\'');
+  curlCommand = curlCommand.replace(/\\'(?!')/g, "'\\''");
   // Fix concatenated HTTP methods
   curlCommand = fixConcatenatedMethods(curlCommand);
 
@@ -561,18 +562,30 @@ const fixConcatenatedMethods = (command) => {
 const decodeAnsiEscapes = (value) => {
   return value.replace(/\\(\\|'|n|r|t|v|f|a|b|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4})/g, (match, seq) => {
     switch (seq[0]) {
-      case '\\': return '\\';
-      case '\'': return '\'';
-      case 'n': return '\n';
-      case 'r': return '\r';
-      case 't': return '\t';
-      case 'v': return '\v';
-      case 'f': return '\f';
-      case 'a': return '\x07';
-      case 'b': return '\b';
-      case 'x': return String.fromCharCode(parseInt(seq.slice(1), 16));
-      case 'u': return String.fromCharCode(parseInt(seq.slice(1), 16));
-      default: return match;
+      case '\\':
+        return '\\';
+      case "'":
+        return "'";
+      case 'n':
+        return '\n';
+      case 'r':
+        return '\r';
+      case 't':
+        return '\t';
+      case 'v':
+        return '\v';
+      case 'f':
+        return '\f';
+      case 'a':
+        return '\x07';
+      case 'b':
+        return '\b';
+      case 'x':
+        return String.fromCharCode(parseInt(seq.slice(1), 16));
+      case 'u':
+        return String.fromCharCode(parseInt(seq.slice(1), 16));
+      default:
+        return match;
     }
   });
 };
@@ -581,7 +594,7 @@ const decodeAnsiEscapes = (value) => {
  * Wrap value in single quotes while preserving embedded single quotes
  */
 const quoteForShell = (value) => {
-  return `'${value.replace(/'/g, '\'\\\'\'')}'`;
+  return `'${value.replace(/'/g, "'\\''")}'`;
 };
 
 export default parseCurlCommand;

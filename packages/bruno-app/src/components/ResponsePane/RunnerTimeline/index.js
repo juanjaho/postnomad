@@ -14,23 +14,14 @@ const RunnerTimeline = ({ request = {}, response = {}, item, collection }) => {
   });
 
   const oauth2Events = useMemo(
-    () =>
-      collection?.timeline?.filter(
-        (event) => event.type === 'oauth2' && event.itemUid === item.uid
-      ) || [],
+    () => collection?.timeline?.filter((event) => event.type === 'oauth2' && event.itemUid === item.uid) || [],
     [collection?.timeline, item.uid]
   );
 
   return (
     <StyledWrapper className="pb-4 w-full">
       {/* Show the main request/response timeline item */}
-      <TimelineItem
-        request={request}
-        response={response}
-        item={item}
-        collection={collection}
-        hideTimestamp={true}
-      />
+      <TimelineItem request={request} response={response} item={item} collection={collection} hideTimestamp={true} />
 
       {oauth2Events.map((event, index) => {
         const { data, timestamp } = event;

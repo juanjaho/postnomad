@@ -3,11 +3,7 @@ const path = require('path');
 const { dialog, ipcMain } = require('electron');
 const { normalizeAndResolvePath } = require('../utils/filesystem');
 const { generateUidBasedOnHash } = require('../utils/common');
-const {
-  addApiSpecToWorkspace,
-  readWorkspaceConfig,
-  getWorkspaceUid
-} = require('../utils/workspace-config');
+const { addApiSpecToWorkspace, readWorkspaceConfig, getWorkspaceUid } = require('../utils/workspace-config');
 
 const DEFAULT_WORKSPACE_NAME = 'My Workspace';
 
@@ -62,9 +58,7 @@ const openApiSpec = async (win, watcher, apiSpecPath, options = {}) => {
 
         const existingSpec = specs.find((a) => {
           if (!a.path) return false;
-          const existingPath = path.isAbsolute(a.path)
-            ? a.path
-            : path.resolve(options.workspacePath, a.path);
+          const existingPath = path.isAbsolute(a.path) ? a.path : path.resolve(options.workspacePath, a.path);
           return existingPath === apiSpecPath || a.name === specName;
         });
 

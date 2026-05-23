@@ -38,15 +38,11 @@ const DeleteWorkspace = ({ onClose, workspace }) => {
           <IconFolder size={18} strokeWidth={1.5} />
           <span className="ml-2 mr-4 font-semibold">{workspace?.name}</span>
         </div>
-        {workspace?.pathname && (
-          <div className="break-words text-xs mt-1">{workspace.pathname}</div>
-        )}
+        {workspace?.pathname && <div className="break-words text-xs mt-1">{workspace.pathname}</div>}
         <div className="mt-4">
           Are you sure you want to remove workspace <span className="font-semibold">{workspace?.name}</span>?
         </div>
-        <div className="mt-4">
-          The workspace will still be available in the file system and can be re-opened later.
-        </div>
+        <div className="mt-4">The workspace will still be available in the file system and can be re-opened later.</div>
       </Modal>
     </Portal>
   );

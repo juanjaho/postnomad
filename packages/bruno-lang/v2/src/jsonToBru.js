@@ -14,7 +14,24 @@ const stripLastLine = (text) => {
 };
 
 const jsonToBru = (json) => {
-  const { meta, http, grpc, ws, params, headers, metadata, auth, body, script, tests, vars, assertions, settings, docs, examples } = json;
+  const {
+    meta,
+    http,
+    grpc,
+    ws,
+    params,
+    headers,
+    metadata,
+    auth,
+    body,
+    script,
+    tests,
+    vars,
+    assertions,
+    settings,
+    docs,
+    examples
+  } = json;
 
   let bru = '';
 
@@ -128,7 +145,10 @@ const jsonToBru = (json) => {
       if (enabled(queryParams).length) {
         bru += `\n${indentString(
           enabled(queryParams)
-            .map((item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`)
+            .map(
+              (item) =>
+                `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`
+            )
             .join('\n')
         )}`;
       }
@@ -136,7 +156,10 @@ const jsonToBru = (json) => {
       if (disabled(queryParams).length) {
         bru += `\n${indentString(
           disabled(queryParams)
-            .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+            .map(
+              (item) =>
+                `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+            )
             .join('\n')
         )}`;
       }
@@ -158,7 +181,10 @@ const jsonToBru = (json) => {
     if (enabled(headers).length) {
       bru += `\n${indentString(
         enabled(headers)
-          .map((item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -166,7 +192,10 @@ const jsonToBru = (json) => {
     if (disabled(headers).length) {
       bru += `\n${indentString(
         disabled(headers)
-          .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -291,10 +320,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -317,10 +350,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -339,10 +376,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -360,10 +401,14 @@ ${indentString(`state: ${auth?.oauth2?.state || ''}`)}
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 }
 
@@ -372,7 +417,11 @@ ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toStr
     }
 
     if (auth?.oauth2?.additionalParameters) {
-      const { authorization: authorizationParams, token: tokenParams, refresh: refreshParams } = auth?.oauth2?.additionalParameters;
+      const {
+        authorization: authorizationParams,
+        token: tokenParams,
+        refresh: refreshParams
+      } = auth?.oauth2?.additionalParameters;
       const authorizationHeaders = authorizationParams?.filter((p) => p?.sendIn == 'headers');
       if (authorizationHeaders?.length) {
         bru += `auth:oauth2:additional_params:auth_req:headers {
@@ -527,14 +576,19 @@ ${indentString(body.sparql)}
 
     if (enabled(body.formUrlEncoded).length) {
       const enabledValues = enabled(body.formUrlEncoded)
-        .map((item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`)
+        .map(
+          (item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`
+        )
         .join('\n');
       bru += `${indentString(enabledValues)}\n`;
     }
 
     if (disabled(body.formUrlEncoded).length) {
       const disabledValues = disabled(body.formUrlEncoded)
-        .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+        .map(
+          (item) =>
+            `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+        )
         .join('\n');
       bru += `${indentString(disabledValues)}\n`;
     }
@@ -551,8 +605,8 @@ ${indentString(body.sparql)}
         multipartForms
           .map((item) => {
             const enabled = item.enabled ? '' : '~';
-            const contentType
-              = item.contentType && item.contentType !== '' ? ' @contentType(' + item.contentType + ')' : '';
+            const contentType =
+              item.contentType && item.contentType !== '' ? ' @contentType(' + item.contentType + ')' : '';
 
             const annotPrefix = serializeAnnotations(item.annotations);
             if (item.type === 'text') {
@@ -583,8 +637,8 @@ ${indentString(body.sparql)}
         files
           .map((item) => {
             const selected = item.selected ? '' : '~';
-            const contentType
-              = item.contentType && item.contentType !== '' ? ' @contentType(' + item.contentType + ')' : '';
+            const contentType =
+              item.contentType && item.contentType !== '' ? ' @contentType(' + item.contentType + ')' : '';
             const annotPrefix = serializeAnnotations(item.annotations);
             const filePath = item.filePath || '';
             const value = `@file(${filePath})`;
@@ -722,7 +776,10 @@ ${indentString(body.sparql)}
     if (disabled(assertions).length) {
       bru += `\n${indentString(
         disabled(assertions)
-          .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }

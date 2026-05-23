@@ -92,7 +92,8 @@ describe('Request Authentication', () => {
       item: [
         {
           name: 'Auth Folder',
-          auth: { // Folder has auth
+          auth: {
+            // Folder has auth
             type: 'bearer',
             bearer: [{ key: 'token', value: 'foldertoken' }]
           },
@@ -130,10 +131,10 @@ describe('Request Authentication', () => {
         name: 'Request Inherit Auth from Collection',
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
-      auth: { // Collection has auth
+      auth: {
+        // Collection has auth
         type: 'basic',
         basic: [
-
           { key: 'username', value: 'requestuser' },
           { key: 'password', value: 'requestpass' }
         ]
@@ -161,12 +162,24 @@ describe('Request Authentication', () => {
     // Check folder first
     expect(result.items[0].root.request.auth).toEqual({
       mode: 'inherit',
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
     // Then check request
     expect(result.items[0].items[0].request.auth).toEqual({
       mode: 'inherit',
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
   });
 
@@ -189,7 +202,8 @@ describe('Request Authentication', () => {
               request: {
                 method: 'GET',
                 url: 'https://api.example.com/test',
-                auth: { // Request explicitly set to "No Auth"
+                auth: {
+                  // Request explicitly set to "No Auth"
                   type: 'noauth'
                 }
               }
@@ -219,7 +233,8 @@ describe('Request Authentication', () => {
         name: 'Multi-Level Inherit Auth',
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
-      auth: { // Collection level auth
+      auth: {
+        // Collection level auth
         type: 'basic',
         basic: [
           { key: 'username', value: 'collectionUser' },
@@ -255,19 +270,37 @@ describe('Request Authentication', () => {
     // Check Folder Level 1
     expect(result.items[0].root.request.auth).toEqual({
       mode: 'inherit',
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check Folder Level 2
     expect(result.items[0].items[0].root.request.auth).toEqual({
       mode: 'inherit',
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check the Request
     expect(result.items[0].items[0].items[0].request.auth).toEqual({
       mode: 'inherit',
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
   });
 
@@ -277,7 +310,8 @@ describe('Request Authentication', () => {
         name: 'Multi-Level Inherit with Override',
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
-      auth: { // Collection level auth
+      auth: {
+        // Collection level auth
         type: 'basic',
         basic: [
           { key: 'username', value: 'collectionUser' },
@@ -287,7 +321,8 @@ describe('Request Authentication', () => {
       item: [
         {
           name: 'Folder Level 1 (Explicit Bearer)',
-          auth: { // This folder has its own auth
+          auth: {
+            // This folder has its own auth
             type: 'bearer',
             bearer: [{ key: 'token', value: 'folder1Token' }]
           },
@@ -318,19 +353,35 @@ describe('Request Authentication', () => {
       mode: 'bearer',
       basic: null,
       bearer: { token: 'folder1Token' }, // Explicitly set
-      awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check Folder Level 2
     expect(result.items[0].items[0].root.request.auth).toEqual({
       mode: 'inherit', // Inherits from Folder 1
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check the Request
     expect(result.items[0].items[0].items[0].request.auth).toEqual({
       mode: 'inherit', // Inherits from Folder 1
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
   });
 
@@ -527,7 +578,8 @@ describe('Request Authentication', () => {
         name: 'Multi-Level Inherit with No Auth Stop',
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
-      auth: { // Collection level auth
+      auth: {
+        // Collection level auth
         type: 'basic',
         basic: [
           { key: 'username', value: 'collectionUser' },
@@ -537,7 +589,8 @@ describe('Request Authentication', () => {
       item: [
         {
           name: 'Folder Level 1 (Explicit No Auth)',
-          auth: { // This folder is explicitly "No Auth"
+          auth: {
+            // This folder is explicitly "No Auth"
             type: 'noauth'
           },
           item: [
@@ -565,19 +618,37 @@ describe('Request Authentication', () => {
     // Check Folder Level 1
     expect(result.items[0].root.request.auth).toEqual({
       mode: 'none', // Explicitly "No Auth"
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check Folder Level 2
     expect(result.items[0].items[0].root.request.auth).toEqual({
       mode: 'inherit', // Inherits from Folder 1
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
 
     // Check the Request
     expect(result.items[0].items[0].items[0].request.auth).toEqual({
       mode: 'inherit', // Inherits from Folder 1
-      basic: null, bearer: null, awsv4: null, apikey: null, oauth2: null, digest: null, oauth1: null
+      basic: null,
+      bearer: null,
+      awsv4: null,
+      apikey: null,
+      oauth2: null,
+      digest: null,
+      oauth1: null
     });
   });
 

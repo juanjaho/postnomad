@@ -16,7 +16,12 @@ import {
   IconTerminal2
 } from '@tabler/icons';
 
-import { importCollection, openCollection, importCollectionFromZip, newHttpRequest } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  importCollection,
+  openCollection,
+  importCollectionFromZip,
+  newHttpRequest
+} from 'providers/ReduxStore/slices/collections/actions';
 import { sortCollections } from 'providers/ReduxStore/slices/collections/index';
 import { savePreferences, setIsCreatingCollection, toggleSidebarSearch } from 'providers/ReduxStore/slices/app';
 import { normalizePath } from 'utils/common/path';
@@ -114,11 +119,10 @@ const CollectionsSection = () => {
       ? importCollectionFromZip(convertedCollection.zipFilePath, collectionLocation)
       : importCollection(convertedCollection, collectionLocation, options);
 
-    dispatch(importAction)
-      .then(() => {
-        setImportCollectionLocationModalOpen(false);
-        setImportData(null);
-      });
+    dispatch(importAction).then(() => {
+      setImportCollectionLocationModalOpen(false);
+      setImportData(null);
+    });
   };
 
   const handleCloseGitModal = () => {
@@ -296,33 +300,18 @@ const CollectionsSection = () => {
 
   const sectionActions = (
     <>
-      <ActionIcon
-        onClick={handleToggleSearch}
-        label="Search requests"
-      >
+      <ActionIcon onClick={handleToggleSearch} label="Search requests">
         <IconSearch size={14} stroke={1.5} aria-hidden="true" />
       </ActionIcon>
 
-      <MenuDropdown
-        data-testid="collections-header-add-menu"
-        items={addDropdownItems}
-        placement="bottom-end"
-      >
-        <ActionIcon
-          label="Add new collection"
-        >
+      <MenuDropdown data-testid="collections-header-add-menu" items={addDropdownItems} placement="bottom-end">
+        <ActionIcon label="Add new collection">
           <IconPlus size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
       </MenuDropdown>
 
-      <MenuDropdown
-        data-testid="collections-header-actions-menu"
-        items={actionsDropdownItems}
-        placement="bottom-end"
-      >
-        <ActionIcon
-          label="More actions"
-        >
+      <MenuDropdown data-testid="collections-header-actions-menu" items={actionsDropdownItems} placement="bottom-end">
+        <ActionIcon label="More actions">
           <IconDotsVertical size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
       </MenuDropdown>
@@ -366,29 +355,31 @@ const CollectionsSection = () => {
         />
       )}
       {importCollectionModalOpen && (
-        <ImportCollection
-          onClose={() => setImportCollectionModalOpen(false)}
-          handleSubmit={handleImportCollection}
-        />
+        <ImportCollection onClose={() => setImportCollectionModalOpen(false)} handleSubmit={handleImportCollection} />
       )}
-      {importCollectionLocationModalOpen && importData && (importData.type !== 'multiple' && importData.type !== 'bulk') && (
-        <ImportCollectionLocation
-          rawData={importData.rawData}
-          format={importData.type}
-          sourceUrl={importData.sourceUrl}
-          filePath={importData.filePath}
-          rawContent={importData.rawContent}
-          onClose={() => setImportCollectionLocationModalOpen(false)}
-          handleSubmit={handleImportCollectionLocation}
-        />
-      )}
-      {importCollectionLocationModalOpen && importData && (importData.type === 'multiple' || importData.type === 'bulk') && (
-        <BulkImportCollectionLocation
-          importData={importData}
-          onClose={() => setImportCollectionLocationModalOpen(false)}
-          handleSubmit={handleImportCollectionLocation}
-        />
-      )}
+      {importCollectionLocationModalOpen &&
+        importData &&
+        importData.type !== 'multiple' &&
+        importData.type !== 'bulk' && (
+          <ImportCollectionLocation
+            rawData={importData.rawData}
+            format={importData.type}
+            sourceUrl={importData.sourceUrl}
+            filePath={importData.filePath}
+            rawContent={importData.rawContent}
+            onClose={() => setImportCollectionLocationModalOpen(false)}
+            handleSubmit={handleImportCollectionLocation}
+          />
+        )}
+      {importCollectionLocationModalOpen &&
+        importData &&
+        (importData.type === 'multiple' || importData.type === 'bulk') && (
+          <BulkImportCollectionLocation
+            importData={importData}
+            onClose={() => setImportCollectionLocationModalOpen(false)}
+            handleSubmit={handleImportCollectionLocation}
+          />
+        )}
       {showCloneGitModal && (
         <CloneGitRepository
           onClose={handleCloseGitModal}
@@ -396,12 +387,7 @@ const CollectionsSection = () => {
           collectionRepositoryUrl={gitRepositoryUrl}
         />
       )}
-      <SidebarSection
-        id="collections"
-        title="Collections"
-        icon={IconBox}
-        actions={sectionActions}
-      >
+      <SidebarSection id="collections" title="Collections" icon={IconBox} actions={sectionActions}>
         <Collections
           showSearch={showSearch}
           isCreatingCollection={isCreatingCollection}

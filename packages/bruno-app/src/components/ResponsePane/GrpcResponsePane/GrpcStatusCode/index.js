@@ -18,7 +18,11 @@ const GrpcStatusCode = ({ status, text }) => {
 
   return (
     <StyledWrapper className={getTabClassname(status)}>
-      {Number.isInteger(status) ? <div className="mr-1" data-testid="grpc-response-status-code">{status}</div> : null}
+      {Number.isInteger(status) ? (
+        <div className="mr-1" data-testid="grpc-response-status-code">
+          {status}
+        </div>
+      ) : null}
       {statusText && <div data-testid="grpc-response-status-text">{statusText}</div>}
     </StyledWrapper>
   );

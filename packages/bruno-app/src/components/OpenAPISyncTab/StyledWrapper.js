@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { rgba, darken } from 'polished';
 
 const StyledWrapper = styled.div`
-
   .setup-header {
     margin-bottom: 1.5rem;
   }
@@ -172,7 +171,6 @@ const StyledWrapper = styled.div`
           color: ${(props) => props.theme.status.info.text};
         }
       }
-
     }
 
     .linked-collection-row {
@@ -211,7 +209,6 @@ const StyledWrapper = styled.div`
         color: ${(props) => props.theme.text};
       }
     }
-
   }
 
   /* Overview Status Banner */
@@ -230,35 +227,45 @@ const StyledWrapper = styled.div`
       background: ${(props) => rgba(props.theme.colors.text.green, 0.07)};
       border-color: ${(props) => rgba(props.theme.colors.text.green, 0.22)};
 
-      .banner-title { color: ${(props) => props.theme.colors.text.green}; }
+      .banner-title {
+        color: ${(props) => props.theme.colors.text.green};
+      }
     }
 
     &.warning {
       background: ${(props) => rgba(props.theme.colors.text.warning, 0.07)};
       border-color: ${(props) => rgba(props.theme.colors.text.warning, 0.22)};
 
-      .banner-title { color: ${(props) => props.theme.colors.text.warning}; }
+      .banner-title {
+        color: ${(props) => props.theme.colors.text.warning};
+      }
     }
 
     &.muted {
       background: ${(props) => rgba(props.theme.colors.text.muted, 0.07)};
       border-color: ${(props) => props.theme.border.border1};
 
-      .banner-title { color: ${(props) => props.theme.text}; }
+      .banner-title {
+        color: ${(props) => props.theme.text};
+      }
     }
 
     &.danger {
       background: ${(props) => rgba(props.theme.colors.text.danger || '#c0392b', 0.07)};
       border-color: ${(props) => rgba(props.theme.colors.text.danger || '#c0392b', 0.22)};
 
-      .banner-title { color: ${(props) => props.theme.colors.text.danger}; }
+      .banner-title {
+        color: ${(props) => props.theme.colors.text.danger};
+      }
     }
 
     &.info {
       background: ${(props) => rgba(props.theme.status.info.text, 0.07)};
       border-color: ${(props) => rgba(props.theme.status.info.text, 0.22)};
 
-      .banner-title { color: ${(props) => props.theme.status.info.text}; }
+      .banner-title {
+        color: ${(props) => props.theme.status.info.text};
+      }
     }
 
     .banner-text {
@@ -320,14 +327,22 @@ const StyledWrapper = styled.div`
         border-right: none;
       }
 
-      &:nth-child(n+4) {
+      &:nth-child(n + 4) {
         border-bottom: none;
       }
 
-      &:first-child { border-top-left-radius: 8px; }
-      &:nth-child(3) { border-top-right-radius: 8px; }
-      &:nth-child(4) { border-bottom-left-radius: 8px; }
-      &:last-child { border-bottom-right-radius: 8px; }
+      &:first-child {
+        border-top-left-radius: 8px;
+      }
+      &:nth-child(3) {
+        border-top-right-radius: 8px;
+      }
+      &:nth-child(4) {
+        border-bottom-left-radius: 8px;
+      }
+      &:last-child {
+        border-bottom-right-radius: 8px;
+      }
     }
 
     .spec-detail-label {
@@ -439,12 +454,17 @@ const StyledWrapper = styled.div`
       gap: 6px;
       flex-shrink: 0;
     }
-
   }
 
   @keyframes radiate {
-    0%   { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(2.8); opacity: 0; }
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(2.8);
+      opacity: 0;
+    }
   }
 
   .status-dot {
@@ -475,19 +495,34 @@ const StyledWrapper = styled.div`
     }
 
     &.success {
-      &::before, &::after { background: ${(props) => props.theme.colors.text.green}; }
+      &::before,
+      &::after {
+        background: ${(props) => props.theme.colors.text.green};
+      }
     }
     &.warning {
-      &::before, &::after { background: ${(props) => props.theme.colors.text.warning}; }
+      &::before,
+      &::after {
+        background: ${(props) => props.theme.colors.text.warning};
+      }
     }
     &.muted {
-      &::before, &::after { background: ${(props) => props.theme.colors.text.muted}; }
+      &::before,
+      &::after {
+        background: ${(props) => props.theme.colors.text.muted};
+      }
     }
     &.danger {
-      &::before, &::after { background: ${(props) => props.theme.colors.text.danger}; }
+      &::before,
+      &::after {
+        background: ${(props) => props.theme.colors.text.danger};
+      }
     }
     &.info {
-      &::before, &::after { background: ${(props) => props.theme.status.info.text}; }
+      &::before,
+      &::after {
+        background: ${(props) => props.theme.status.info.text};
+      }
     }
   }
 
@@ -568,13 +603,27 @@ const StyledWrapper = styled.div`
     font-variant-numeric: tabular-nums;
     line-height: 1;
 
-    &.green  { color: ${(props) => props.theme.colors.text.green}; }
-    &.amber  { color: ${(props) => props.theme.colors.text.warning}; }
-    &.blue   { color: ${(props) => props.theme.status.info.text}; }
-    &.red    { color: ${(props) => props.theme.colors.text.danger || '#c0392b'}; }
-    &.purple { color: #7c3aed; }
-    &.default { color: ${(props) => props.theme.text}; }
-    &.muted  { color: ${(props) => props.theme.colors.text.muted}; }
+    &.green {
+      color: ${(props) => props.theme.colors.text.green};
+    }
+    &.amber {
+      color: ${(props) => props.theme.colors.text.warning};
+    }
+    &.blue {
+      color: ${(props) => props.theme.status.info.text};
+    }
+    &.red {
+      color: ${(props) => props.theme.colors.text.danger || '#c0392b'};
+    }
+    &.purple {
+      color: #7c3aed;
+    }
+    &.default {
+      color: ${(props) => props.theme.text};
+    }
+    &.muted {
+      color: ${(props) => props.theme.colors.text.muted};
+    }
   }
 
   .summary-count-unit {
@@ -613,7 +662,6 @@ const StyledWrapper = styled.div`
 
   /* Connection Settings Modal */
   .settings-modal {
-
     .settings-field {
       margin-bottom: 16px;
 
@@ -699,7 +747,7 @@ const StyledWrapper = styled.div`
         top: 3px;
         left: 3px;
         transition: left 0.2s;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       }
 
       &.active .toggle-knob {
@@ -777,8 +825,12 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .spec-status-section {
@@ -851,7 +903,6 @@ const StyledWrapper = styled.div`
         max-height: none; /* Override default max-height so all items remain visible */
       }
     }
-
   }
 
   /* Expandable endpoint rows — shared base styles */
@@ -963,15 +1014,33 @@ const StyledWrapper = styled.div`
         flex-shrink: 0;
         background: ${(props) => props.theme.colors.text.muted};
 
-        &.type-added { background: ${(props) => props.theme.colors.text.green}; }
-        &.type-modified { background: ${(props) => props.theme.colors.text.warning}; }
-        &.type-removed { background: ${(props) => props.theme.colors.text.danger}; }
-        &.type-missing { background: ${(props) => props.theme.colors.text.danger}; }
-        &.type-local-only { background: ${(props) => props.theme.colors.text.muted}; }
-        &.type-in-sync { background: ${(props) => props.theme.colors.text.green}; }
-        &.type-conflict { background: ${(props) => props.theme.colors.text.danger}; }
-        &.type-spec-modified { background: ${(props) => props.theme.colors.text.warning}; }
-        &.type-collection-drift { background: ${(props) => props.theme.colors.text.warning}; }
+        &.type-added {
+          background: ${(props) => props.theme.colors.text.green};
+        }
+        &.type-modified {
+          background: ${(props) => props.theme.colors.text.warning};
+        }
+        &.type-removed {
+          background: ${(props) => props.theme.colors.text.danger};
+        }
+        &.type-missing {
+          background: ${(props) => props.theme.colors.text.danger};
+        }
+        &.type-local-only {
+          background: ${(props) => props.theme.colors.text.muted};
+        }
+        &.type-in-sync {
+          background: ${(props) => props.theme.colors.text.green};
+        }
+        &.type-conflict {
+          background: ${(props) => props.theme.colors.text.danger};
+        }
+        &.type-spec-modified {
+          background: ${(props) => props.theme.colors.text.warning};
+        }
+        &.type-collection-drift {
+          background: ${(props) => props.theme.colors.text.warning};
+        }
       }
 
       .section-title {
@@ -1264,7 +1333,7 @@ const StyledWrapper = styled.div`
       cursor: pointer;
       margin-bottom: 1.5rem;
 
-      input[type="checkbox"] {
+      input[type='checkbox'] {
         cursor: pointer;
       }
     }
@@ -1337,7 +1406,7 @@ const StyledWrapper = styled.div`
       max-width: 40%;
     }
 
-    input[type="checkbox"] {
+    input[type='checkbox'] {
       accent-color: ${(props) => props.theme.colors.primary};
       cursor: pointer;
     }
@@ -1546,7 +1615,9 @@ const StyledWrapper = styled.div`
         min-height: 18px;
         color: ${(props) => props.theme.text};
         font-variant-ligatures: none;
-        font-feature-settings: 'liga' 0, 'calt' 0;
+        font-feature-settings:
+          'liga' 0,
+          'calt' 0;
       }
 
       /* Vertical divider between the two side-by-side panels. Applied to the
@@ -1672,7 +1743,6 @@ const StyledWrapper = styled.div`
     }
 
     .spec-diff-modal {
-
       .spec-diff-header {
         display: flex;
         align-items: flex-end;
@@ -1760,10 +1830,18 @@ const StyledWrapper = styled.div`
         align-items: center;
         gap: 0.25rem;
 
-        &.add { color: ${(props) => props.theme.colors.text.green}; }
-        &.update { color: ${(props) => props.theme.status.info.text}; }
-        &.remove { color: ${(props) => props.theme.colors.text.danger}; }
-        &.keep { color: ${(props) => props.theme.colors.text.muted}; }
+        &.add {
+          color: ${(props) => props.theme.colors.text.green};
+        }
+        &.update {
+          color: ${(props) => props.theme.status.info.text};
+        }
+        &.remove {
+          color: ${(props) => props.theme.colors.text.danger};
+        }
+        &.keep {
+          color: ${(props) => props.theme.colors.text.muted};
+        }
       }
     }
 
@@ -1880,12 +1958,15 @@ const StyledWrapper = styled.div`
             color: ${(props) => props.theme.status.danger.text};
           }
 
-          &.local-modified, &.local-deleted, &.local-added {
+          &.local-modified,
+          &.local-deleted,
+          &.local-added {
             background: ${(props) => props.theme.status.warning.background};
             color: ${(props) => props.theme.status.warning.text};
           }
 
-          &.spec-modified, &.spec-added {
+          &.spec-modified,
+          &.spec-added {
             background: ${(props) => props.theme.status.info.background};
             color: ${(props) => props.theme.status.info.text};
           }
@@ -1895,7 +1976,6 @@ const StyledWrapper = styled.div`
             color: ${(props) => props.theme.status.danger.text};
           }
         }
-
       }
 
       .decision-buttons {
@@ -1972,7 +2052,8 @@ const StyledWrapper = styled.div`
           border: 1px solid ${(props) => props.theme.border.border1};
           border-radius: ${(props) => props.theme.border.radius.sm};
 
-          th, td {
+          th,
+          td {
             padding: 0.25rem 0.5rem;
             text-align: left;
             border-bottom: 1px solid ${(props) => props.theme.border.border1};
@@ -2084,10 +2165,18 @@ const StyledWrapper = styled.div`
           position: relative;
           cursor: default;
 
-          &.add { color: ${(props) => props.theme.colors.text.green}; }
-          &.update { color: ${(props) => props.theme.status.info.text}; }
-          &.remove { color: ${(props) => props.theme.colors.text.danger}; }
-          &.keep { color: ${(props) => props.theme.colors.text.muted}; }
+          &.add {
+            color: ${(props) => props.theme.colors.text.green};
+          }
+          &.update {
+            color: ${(props) => props.theme.status.info.text};
+          }
+          &.remove {
+            color: ${(props) => props.theme.colors.text.danger};
+          }
+          &.keep {
+            color: ${(props) => props.theme.colors.text.muted};
+          }
 
           .stat-hover-card {
             transform: translateX(-50%);
@@ -2137,7 +2226,6 @@ const StyledWrapper = styled.div`
         gap: 0.5rem;
       }
     }
-
   }
 
   .sync-confirm-modal {
@@ -2170,7 +2258,6 @@ const StyledWrapper = styled.div`
         padding: 0.25rem 0;
         cursor: pointer;
         user-select: none;
-
       }
 
       .confirm-group-label {
@@ -2189,10 +2276,18 @@ const StyledWrapper = styled.div`
         font-weight: 400;
       }
 
-      &.type-add .confirm-group-label { color: ${(props) => props.theme.colors.text.green}; }
-      &.type-update .confirm-group-label { color: ${(props) => props.theme.status.info.text}; }
-      &.type-remove .confirm-group-label { color: ${(props) => props.theme.colors.text.danger}; }
-      &.type-keep .confirm-group-label { color: ${(props) => props.theme.colors.text.muted}; }
+      &.type-add .confirm-group-label {
+        color: ${(props) => props.theme.colors.text.green};
+      }
+      &.type-update .confirm-group-label {
+        color: ${(props) => props.theme.status.info.text};
+      }
+      &.type-remove .confirm-group-label {
+        color: ${(props) => props.theme.colors.text.danger};
+      }
+      &.type-keep .confirm-group-label {
+        color: ${(props) => props.theme.colors.text.muted};
+      }
 
       .endpoints-list {
         margin-top: 0.5rem;
@@ -2284,7 +2379,9 @@ const StyledWrapper = styled.div`
     border: none;
     border-radius: calc(${(props) => props.theme.border.radius.md} - 3px);
     cursor: pointer;
-    transition: background 0.12s, color 0.12s;
+    transition:
+      background 0.12s,
+      color 0.12s;
     white-space: nowrap;
 
     &.active {

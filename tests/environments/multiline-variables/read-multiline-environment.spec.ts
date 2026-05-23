@@ -5,7 +5,10 @@ test.describe('Multiline Variables - Read Environment Test', () => {
     test.setTimeout(30 * 1000);
 
     // open the collection
-    const collection = page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'multiline-variables' });
+    const collection = page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'multiline-variables' });
     await expect(collection).toBeVisible();
     await collection.click();
 

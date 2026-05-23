@@ -5,7 +5,7 @@ const Wrapper = styled.div`
     width: 150px !important;
   }
 
-  .tooltip-icon { 
+  .tooltip-icon {
     color: ${(props) => props.theme.colors.text.danger};
   }
 `;

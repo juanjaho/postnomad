@@ -8,27 +8,28 @@ import {
 } from '../../utils/page';
 
 // Generate a large JSON body that requires scrolling
-const generateLargeJsonBody = () => JSON.stringify(
-  {
-    users: Array.from({ length: 50 }, (_, i) => ({
-      id: i + 1,
-      name: `User ${i + 1}`,
-      email: `user${i + 1}@example.com`,
-      address: {
-        street: `${i + 1} Main Street`,
-        city: 'Test City',
-        zipCode: `${10000 + i}`
-      },
-      metadata: {
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
-        tags: ['tag1', 'tag2', 'tag3']
-      }
-    }))
-  },
-  null,
-  2
-);
+const generateLargeJsonBody = () =>
+  JSON.stringify(
+    {
+      users: Array.from({ length: 50 }, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        email: `user${i + 1}@example.com`,
+        address: {
+          street: `${i + 1} Main Street`,
+          city: 'Test City',
+          zipCode: `${10000 + i}`
+        },
+        metadata: {
+          createdAt: '2024-01-01T00:00:00Z',
+          updatedAt: '2024-01-01T00:00:00Z',
+          tags: ['tag1', 'tag2', 'tag3']
+        }
+      }))
+    },
+    null,
+    2
+  );
 
 // Helper to set body content using CodeMirror API
 const setBodyContent = async (page: Page, content: string) => {
@@ -174,14 +175,17 @@ test.describe('Request Body Scroll Position Restoration', () => {
     // Generate large XML body
     const largeXmlBody = `<?xml version="1.0" encoding="UTF-8"?>
 <root>
-${Array.from({ length: 50 }, (_, i) => `  <item id="${i + 1}">
+${Array.from(
+  { length: 50 },
+  (_, i) => `  <item id="${i + 1}">
     <name>Item ${i + 1}</name>
     <description>This is a description for item ${i + 1}</description>
     <metadata>
       <created>2024-01-01T00:00:00Z</created>
       <updated>2024-01-01T00:00:00Z</updated>
     </metadata>
-  </item>`).join('\n')}
+  </item>`
+).join('\n')}
 </root>`;
 
     await test.step('Create collection and request', async () => {

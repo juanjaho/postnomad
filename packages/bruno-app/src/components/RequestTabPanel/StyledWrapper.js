@@ -58,13 +58,11 @@ const StyledWrapper = styled.div`
     &:hover div.dragbar-handle {
       border-left: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.activeBorder};
     }
-
   }
 
   &.vertical-layout {
     .request-pane {
       padding-bottom: 0.5rem;
-
     }
 
     .response-pane {
@@ -97,7 +95,6 @@ const StyledWrapper = styled.div`
         border-left: none;
         border-top: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.activeBorder};
       }
-
     }
   }
 

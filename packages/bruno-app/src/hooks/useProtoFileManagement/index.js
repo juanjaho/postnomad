@@ -28,18 +28,24 @@ export default function useProtoFileManagement(collection) {
   const collectionProtoFiles = useMemo(() => protobufConfig?.protoFiles || [], [protobufConfig?.protoFiles]);
   const collectionImportPaths = useMemo(() => protobufConfig?.importPaths || [], [protobufConfig?.importPaths]);
 
-  const protoFilesWithExistence = useMemo(() =>
-    collectionProtoFiles.map((protoFile) => ({
-      path: protoFile.path,
-      exists: protoFile.exists || false
-    })), [collectionProtoFiles]);
+  const protoFilesWithExistence = useMemo(
+    () =>
+      collectionProtoFiles.map((protoFile) => ({
+        path: protoFile.path,
+        exists: protoFile.exists || false
+      })),
+    [collectionProtoFiles]
+  );
 
-  const importPathsWithExistence = useMemo(() =>
-    collectionImportPaths.map((importPath) => ({
-      path: importPath.path,
-      exists: importPath.exists || false,
-      enabled: importPath.enabled || false
-    })), [collectionImportPaths]);
+  const importPathsWithExistence = useMemo(
+    () =>
+      collectionImportPaths.map((importPath) => ({
+        path: importPath.path,
+        exists: importPath.exists || false,
+        enabled: importPath.enabled || false
+      })),
+    [collectionImportPaths]
+  );
 
   const loadMethodsFromProtoFile = async (filePath, isManualRefresh = false) => {
     if (!filePath) {
@@ -97,10 +103,12 @@ export default function useProtoFileManagement(collection) {
         protoFiles: [...collectionProtoFiles, protoFileObj]
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true, relativePath };
     } catch (error) {
@@ -163,10 +171,12 @@ export default function useProtoFileManagement(collection) {
         importPaths: [...collectionImportPaths, importPathObj]
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true, relativePath };
     } catch (error) {
@@ -221,10 +231,12 @@ export default function useProtoFileManagement(collection) {
         importPaths: updatedImportPaths
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return {
         success: true,
@@ -300,10 +312,12 @@ export default function useProtoFileManagement(collection) {
         protoFiles: updatedProtoFiles
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true };
     } catch (error) {
@@ -322,10 +336,12 @@ export default function useProtoFileManagement(collection) {
         importPaths: updatedImportPaths
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true };
     } catch (error) {
@@ -349,10 +365,12 @@ export default function useProtoFileManagement(collection) {
         importPaths: updatedImportPaths
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true };
     } catch (error) {
@@ -377,10 +395,12 @@ export default function useProtoFileManagement(collection) {
         protoFiles: updatedProtoFiles
       };
 
-      dispatch(updateCollectionProtobuf({
-        collectionUid: collection.uid,
-        protobuf: updatedProtobuf
-      }));
+      dispatch(
+        updateCollectionProtobuf({
+          collectionUid: collection.uid,
+          protobuf: updatedProtobuf
+        })
+      );
 
       return { success: true };
     } catch (error) {

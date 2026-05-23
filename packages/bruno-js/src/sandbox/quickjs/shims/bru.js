@@ -332,12 +332,7 @@ const addBruShimToContext = (vm, bru) => {
         promise.resolve(marshallToVm(cleanCircularJson(response), vm));
       })
       .catch((err) => {
-        promise.reject(
-          marshallToVm(
-            cleanJson(err),
-            vm
-          )
-        );
+        promise.reject(marshallToVm(cleanJson(err), vm));
       });
     promise.settled.then(vm.runtime.executePendingJobs);
     return promise.handle;

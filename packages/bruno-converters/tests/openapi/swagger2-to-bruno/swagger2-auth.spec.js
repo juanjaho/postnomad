@@ -68,9 +68,7 @@ describe('swagger2-to-bruno auth', () => {
           get: {
             summary: 'Search',
             security: [{ api_key: [] }],
-            parameters: [
-              { in: 'query', name: 'q', type: 'string' }
-            ],
+            parameters: [{ in: 'query', name: 'q', type: 'string' }],
             responses: { 200: { description: 'OK' } }
           }
         }

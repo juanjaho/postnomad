@@ -121,7 +121,9 @@ console.log('');
 if (hasRegression) {
   console.error(`FAILED: One or more benchmarks regressed beyond the ${threshold}% threshold.`);
   console.error('If this regression is expected, update the baseline:');
-  console.error(`  node tests/benchmarks/utils/compare.js --results ${args.results} --baseline ${args.baseline} --update-baseline`);
+  console.error(
+    `  node tests/benchmarks/utils/compare.js --results ${args.results} --baseline ${args.baseline} --update-baseline`
+  );
   process.exit(1);
 } else {
   console.log('PASSED: All benchmarks are within the acceptable threshold.');

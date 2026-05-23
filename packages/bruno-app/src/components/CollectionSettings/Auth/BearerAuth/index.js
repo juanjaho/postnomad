@@ -13,7 +13,9 @@ const BearerAuth = ({ collection }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
 
-  const bearerToken = collection.draft?.root ? get(collection, 'draft.root.request.auth.bearer.token', '') : get(collection, 'root.request.auth.bearer.token', '');
+  const bearerToken = collection.draft?.root
+    ? get(collection, 'draft.root.request.auth.bearer.token', '')
+    : get(collection, 'root.request.auth.bearer.token', '');
   const { isSensitive } = useDetectSensitiveField(collection);
   const { showWarning, warningMessage } = isSensitive(bearerToken);
 

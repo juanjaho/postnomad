@@ -54,7 +54,11 @@ export type GetPacResolverParams = {
   opts?: { cacheTtlMs?: number; timeoutMs?: number };
 };
 
-export async function getPacResolver({ pacSource, httpsAgentRequestFields = {}, opts = {} }: GetPacResolverParams): Promise<PacWrapper> {
+export async function getPacResolver({
+  pacSource,
+  httpsAgentRequestFields = {},
+  opts = {}
+}: GetPacResolverParams): Promise<PacWrapper> {
   if (!pacSource) throw new Error('pacSource must be provided');
 
   const cacheTtlMs = opts.cacheTtlMs ?? 5 * 60 * 1000;
@@ -62,7 +66,11 @@ export async function getPacResolver({ pacSource, httpsAgentRequestFields = {}, 
   if (pacSource.startsWith('https://')) {
     const caRaw = httpsAgentRequestFields.ca;
     const caHash = caRaw
-      ? crypto.createHash('sha256').update(Array.isArray(caRaw) ? caRaw.join('|') : caRaw).digest('hex').slice(0, 16)
+      ? crypto
+          .createHash('sha256')
+          .update(Array.isArray(caRaw) ? caRaw.join('|') : caRaw)
+          .digest('hex')
+          .slice(0, 16)
       : '';
     key = `url:${pacSource}|ca:${caHash}|ru:${httpsAgentRequestFields.rejectUnauthorized ?? ''}|mv:${httpsAgentRequestFields.minVersion ?? ''}`;
   } else {
@@ -90,7 +98,10 @@ export async function getPacResolver({ pacSource, httpsAgentRequestFields = {}, 
         }
         const out = await resolverFn(url, host);
         if (!out || typeof out !== 'string') return [];
-        return out.split(';').map((s) => s.trim()).filter(Boolean);
+        return out
+          .split(';')
+          .map((s) => s.trim())
+          .filter(Boolean);
       }
     };
   })();

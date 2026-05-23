@@ -127,8 +127,8 @@ function createBalancedBatches(scriptEntries, workerCount) {
   // 2. Always assign each script to the batch with lowest current load
   // 3. This minimizes the maximum workload across all workers
   for (const { uid, entry, complexity } of scriptsWithComplexity) {
-    const batchWithLowestComplexity = batches.reduce(
-      (target, current) => current.totalComplexity < target.totalComplexity ? current : target
+    const batchWithLowestComplexity = batches.reduce((target, current) =>
+      current.totalComplexity < target.totalComplexity ? current : target
     );
 
     // Add the script to this batch
@@ -136,9 +136,9 @@ function createBalancedBatches(scriptEntries, workerCount) {
     batchWithLowestComplexity.totalComplexity += complexity;
   }
 
-  return batches.map((batch) =>
-    batch.entries.map(({ uid, entry }) => [uid, entry])
-  ).filter((batch) => batch.length > 0);
+  return batches
+    .map((batch) => batch.entries.map(({ uid, entry }) => [uid, entry]))
+    .filter((batch) => batch.length > 0);
 }
 
 const scriptTranslationWorker = async (scriptMap) => {
@@ -178,12 +178,16 @@ const scriptTranslationWorker = async (scriptMap) => {
   const translatedScripts = new Map();
 
   // Create worker pool with optimal size
-  const workerPool = new WorkerPool(path.join(__dirname, './src/workers/scripts/translate-postman-scripts.js'), workerCount);
+  const workerPool = new WorkerPool(
+    path.join(__dirname, './src/workers/scripts/translate-postman-scripts.js'),
+    workerCount
+  );
   workerPool.initialize();
 
   // Process all batches in parallel using worker pool
   const batchPromises = batches.map((batch) => {
-    return workerPool.runTask({ scripts: batch })
+    return workerPool
+      .runTask({ scripts: batch })
       .then((modScripts) => {
         modScripts.forEach(([name, { request }]) => {
           translatedScripts.set(name, { request });

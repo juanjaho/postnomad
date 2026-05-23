@@ -55,7 +55,9 @@ export const fromOpenCollectionWebsocketItem = (item: WebSocketRequest): BrunoIt
 
   // variables (pre-request from variables, post-response from actions)
   const variables = fromOpenCollectionVariables(runtime.variables);
-  const postResponseVars = fromOpenCollectionActions((runtime as { actions?: Parameters<typeof fromOpenCollectionActions>[0] }).actions);
+  const postResponseVars = fromOpenCollectionActions(
+    (runtime as { actions?: Parameters<typeof fromOpenCollectionActions>[0] }).actions
+  );
 
   const wsBody: BrunoWebSocketRequestBody = {
     mode: 'ws',
@@ -106,7 +108,7 @@ export const toOpenCollectionWebsocketItem = (item: BrunoItem): WebSocketRequest
   }
 
   const websocket: WebSocketRequestDetails = {
-    url: request.url as string || ''
+    url: (request.url as string) || ''
   };
 
   const headers = toOpenCollectionHeaders(request.headers as BrunoKeyValue[]);
@@ -123,13 +125,15 @@ export const toOpenCollectionWebsocketItem = (item: BrunoItem): WebSocketRequest
         data: messages[0].content || ''
       };
     } else {
-      websocket.message = messages.map((msg): WebSocketMessageVariant => ({
-        title: msg.name || 'Untitled',
-        message: {
-          type: (msg.type as WebSocketMessage['type']) || 'json',
-          data: msg.content || ''
-        }
-      }));
+      websocket.message = messages.map(
+        (msg): WebSocketMessageVariant => ({
+          title: msg.name || 'Untitled',
+          message: {
+            type: (msg.type as WebSocketMessage['type']) || 'json',
+            data: msg.content || ''
+          }
+        })
+      );
     }
   }
 

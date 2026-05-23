@@ -19,9 +19,7 @@ const saveCookies = (url, headers) => {
   if (preferencesUtil.shouldStoreCookies()) {
     let setCookieHeaders = [];
     if (headers['set-cookie']) {
-      setCookieHeaders = Array.isArray(headers['set-cookie'])
-        ? headers['set-cookie']
-        : [headers['set-cookie']];
+      setCookieHeaders = Array.isArray(headers['set-cookie']) ? headers['set-cookie'] : [headers['set-cookie']];
       for (let setCookieHeader of setCookieHeaders) {
         if (typeof setCookieHeader === 'string' && setCookieHeader.length) {
           addCookieToJar(setCookieHeader, url);
@@ -375,8 +373,12 @@ function makeAxiosInstance({
             });
           } else {
             // For 307, 308 and other status codes: preserve method and body
-            if (requestConfig.data && typeof requestConfig.data === 'object'
-              && requestConfig.data.constructor && requestConfig.data.constructor.name === 'FormData') {
+            if (
+              requestConfig.data &&
+              typeof requestConfig.data === 'object' &&
+              requestConfig.data.constructor &&
+              requestConfig.data.constructor.name === 'FormData'
+            ) {
               const formData = requestConfig.data;
               if (formData._released || (formData._streams && formData._streams.length === 0)) {
                 if (error.config._originalMultipartData && error.config.collectionPath) {
@@ -386,7 +388,10 @@ function makeAxiosInstance({
                     message: `Recreating consumed FormData for ${statusCode} redirect`
                   });
 
-                  const recreatedForm = createFormData(error.config._originalMultipartData, error.config.collectionPath);
+                  const recreatedForm = createFormData(
+                    error.config._originalMultipartData,
+                    error.config.collectionPath
+                  );
                   requestConfig.data = recreatedForm;
 
                   const formHeaders = recreatedForm.getHeaders();
@@ -459,16 +464,18 @@ function makeAxiosInstance({
             type: 'error',
             message: safeStringifyJSON(errorResponseData?.toString?.())
           });
-          error?.cause && timeline?.push({
-            timestamp: new Date(),
-            type: 'error',
-            message: safeStringifyJSON(error?.cause)
-          });
-          error?.errors && timeline?.push({
-            timestamp: new Date(),
-            type: 'error',
-            message: safeStringifyJSON(error?.errors)
-          });
+          error?.cause &&
+            timeline?.push({
+              timestamp: new Date(),
+              type: 'error',
+              message: safeStringifyJSON(error?.cause)
+            });
+          error?.errors &&
+            timeline?.push({
+              timestamp: new Date(),
+              type: 'error',
+              message: safeStringifyJSON(error?.errors)
+            });
           error.response.timeline = timeline;
           return Promise.reject(error);
         }

@@ -14,14 +14,8 @@
         "url": {
           "raw": "https://testbench-sanity.usebruno.com/ping",
           "protocol": "https",
-          "host": [
-            "testbench-sanity",
-            "usebruno",
-            "com"
-          ],
-          "path": [
-            "ping"
-          ]
+          "host": ["testbench-sanity", "usebruno", "com"],
+          "path": ["ping"]
         }
       },
       "response": [
@@ -33,14 +27,8 @@
             "url": {
               "raw": "https://testbench-sanity.usebruno.com/ping",
               "protocol": "https",
-              "host": [
-                "testbench-sanity",
-                "usebruno",
-                "com"
-              ],
-              "path": [
-                "ping"
-              ]
+              "host": ["testbench-sanity", "usebruno", "com"],
+              "path": ["ping"]
             }
           },
           "status": "OK",
@@ -85,14 +73,8 @@
             "url": {
               "raw": "https://testbench-sanity.usebruno.com/ping",
               "protocol": "https",
-              "host": [
-                "testbench-sanity",
-                "usebruno",
-                "com"
-              ],
-              "path": [
-                "ping"
-              ]
+              "host": ["testbench-sanity", "usebruno", "com"],
+              "path": ["ping"]
             }
           },
           "status": "Internal Server Error",

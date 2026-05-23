@@ -33,9 +33,7 @@ const Auth = ({ item, collection }) => {
   const requestTreePath = getTreePathFromCollectionToItem(collection, item);
 
   // Create a request object to pass to the auth components
-  const request = item.draft
-    ? get(item, 'draft.request', {})
-    : get(item, 'request', {});
+  const request = item.draft ? get(item, 'draft.request', {}) : get(item, 'request', {});
 
   // Save function for request level
   const save = () => {
@@ -117,11 +115,7 @@ const Auth = ({ item, collection }) => {
     }
   };
 
-  return (
-    <StyledWrapper className="w-full overflow-auto">
-      {getAuthView()}
-    </StyledWrapper>
-  );
+  return <StyledWrapper className="w-full overflow-auto">{getAuthView()}</StyledWrapper>;
 };
 
 export default Auth;

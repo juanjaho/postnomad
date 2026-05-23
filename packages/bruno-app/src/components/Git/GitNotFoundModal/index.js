@@ -34,12 +34,7 @@ const GitNotFoundModal = ({ onClose }) => {
 
   return (
     <Portal>
-      <Modal
-        size="sm"
-        title="Git Not Found"
-        handleCancel={onClose}
-        hideFooter={true}
-      >
+      <Modal size="sm" title="Git Not Found" handleCancel={onClose} hideFooter={true}>
         <div>
           <p>Git was not detected on your system. You need to install Git to proceed.</p>
           <p className="mt-2">

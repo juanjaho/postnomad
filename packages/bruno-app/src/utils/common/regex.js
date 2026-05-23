@@ -26,11 +26,7 @@ export const validateName = (name) => {
 
   if (reservedDeviceNames.test(name)) return false; // windows reserved names
 
-  return (
-    firstCharacter.test(name)
-    && middleCharacters.test(name)
-    && lastCharacter.test(name)
-  );
+  return firstCharacter.test(name) && middleCharacters.test(name) && lastCharacter.test(name);
 };
 
 export const validateNameError = (name) => {

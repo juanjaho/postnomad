@@ -49,7 +49,13 @@ const ConnectGitRemote = ({ collectionPath, collectionName, initialUrl = '', onC
   const confirmText = initialUrl ? 'Update' : 'Connect';
 
   return (
-    <Modal size="md" title={title} confirmText={confirmText} handleConfirm={() => formik.handleSubmit()} handleCancel={onClose}>
+    <Modal
+      size="md"
+      title={title}
+      confirmText={confirmText}
+      handleConfirm={() => formik.handleSubmit()}
+      handleCancel={onClose}
+    >
       <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
         {collectionName ? (
           <div className="text-sm text-muted mb-3 leading-relaxed break-words space-y-2">
@@ -61,8 +67,8 @@ const ConnectGitRemote = ({ collectionPath, collectionName, initialUrl = '', onC
               to a remote Git repository.
             </p>
             <p className="m-0">
-              The URL is saved in <span className="font-mono">workspace.yml</span> only. Your collection files on disk are not
-              modified.
+              The URL is saved in <span className="font-mono">workspace.yml</span> only. Your collection files on disk
+              are not modified.
             </p>
           </div>
         ) : null}

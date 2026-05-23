@@ -3,14 +3,7 @@ import { IconTrash } from '@tabler/icons';
 import DeleteDotEnvFile from 'components/Environments/EnvironmentSettings/DeleteDotEnvFile';
 import StyledWrapper from './StyledWrapper';
 
-const DotEnvFileDetails = ({
-  title,
-  children,
-  onDelete,
-  dotEnvExists,
-  viewMode,
-  onViewModeChange
-}) => {
+const DotEnvFileDetails = ({ title, children, onDelete, dotEnvExists, viewMode, onViewModeChange }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteClick = () => {
@@ -49,7 +42,12 @@ const DotEnvFileDetails = ({
                   Raw
                 </button>
               </div>
-              <button type="button" onClick={handleDeleteClick} title="Delete .env file" className="action-btn delete-btn">
+              <button
+                type="button"
+                onClick={handleDeleteClick}
+                title="Delete .env file"
+                className="action-btn delete-btn"
+              >
                 <IconTrash size={15} strokeWidth={1.5} />
               </button>
             </>
@@ -58,16 +56,10 @@ const DotEnvFileDetails = ({
       </div>
 
       {showDeleteModal && (
-        <DeleteDotEnvFile
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleConfirmDelete}
-          filename={title}
-        />
+        <DeleteDotEnvFile onClose={() => setShowDeleteModal(false)} onConfirm={handleConfirmDelete} filename={title} />
       )}
 
-      <div className="content">
-        {children}
-      </div>
+      <div className="content">{children}</div>
     </StyledWrapper>
   );
 };

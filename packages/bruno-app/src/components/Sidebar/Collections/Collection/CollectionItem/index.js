@@ -22,7 +22,13 @@ import {
 } from '@tabler/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { addTab, focusTab, makeTabPermanent } from 'providers/ReduxStore/slices/tabs';
-import { handleCollectionItemDrop, sendRequest, showInFolder, pasteItem, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  handleCollectionItemDrop,
+  sendRequest,
+  showInFolder,
+  pasteItem,
+  saveRequest
+} from 'providers/ReduxStore/slices/collections/actions';
 import { toggleCollectionItem, addResponseExample } from 'providers/ReduxStore/slices/collections';
 import { insertTaskIntoQueue } from 'providers/ReduxStore/slices/app';
 import { uuid } from 'utils/common';
@@ -52,7 +58,11 @@ import {
 } from 'src/selectors/tab';
 import { isEqual } from 'lodash';
 import { createEmptyStateMenuItems } from 'utils/collections/emptyStateRequest';
-import { calculateDraggedItemNewPathname, getInitialExampleName, findParentItemInCollection } from 'utils/collections/index';
+import {
+  calculateDraggedItemNewPathname,
+  getInitialExampleName,
+  findParentItemInCollection
+} from 'utils/collections/index';
 import { sortByNameThenSequence } from 'utils/common/index';
 import { getRevealInFolderLabel } from 'utils/common/platform';
 import CreateExampleModal from 'components/ResponseExample/CreateExampleModal';
@@ -107,25 +117,41 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
   const hasExamples = isItemARequest(item) && item.type === 'http-request' && item.examples && item.examples.length > 0;
 
   // Sidebar shortcuts — only active when this sidebar item has keyboard focus
-  useKeybinding('cloneItem', () => {
-    setCloneItemModalOpen(true);
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'cloneItem',
+    () => {
+      setCloneItemModalOpen(true);
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
-  useKeybinding('copyItem', () => {
-    handleCopyItem();
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'copyItem',
+    () => {
+      handleCopyItem();
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
-  useKeybinding('pasteItem', () => {
-    handlePasteItem();
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'pasteItem',
+    () => {
+      handlePasteItem();
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
-  useKeybinding('renameItem', () => {
-    setRenameItemModalOpen(true);
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'renameItem',
+    () => {
+      setRenameItemModalOpen(true);
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
   const [dropType, setDropType] = useState(null); // 'adjacent' or 'inside'
 
@@ -378,14 +404,12 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
       });
     }
 
-    items.push(
-      {
-        id: 'rename',
-        leftSection: IconEdit,
-        label: 'Rename',
-        onClick: () => setRenameItemModalOpen(true)
-      }
-    );
+    items.push({
+      id: 'rename',
+      leftSection: IconEdit,
+      label: 'Rename',
+      onClick: () => setRenameItemModalOpen(true)
+    });
     if (!isFolder && isItemARequest(item) && !(item.type === 'http-request' || item.type === 'graphql-request')) {
       items.push({
         id: 'run',
@@ -415,14 +439,12 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
       });
     }
 
-    items.push(
-      {
-        id: 'show-in-folder',
-        leftSection: IconFolder,
-        label: getRevealInFolderLabel(),
-        onClick: handleShowInFolder
-      }
-    );
+    items.push({
+      id: 'show-in-folder',
+      leftSection: IconFolder,
+      label: getRevealInFolderLabel(),
+      onClick: handleShowInFolder
+    });
 
     items.push({ id: 'separator-1', type: 'divider' });
 
@@ -515,26 +537,30 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
     const exampleIndex = existingExamples.length;
     const exampleUid = uuid();
 
-    dispatch(addResponseExample({
-      itemUid: item.uid,
-      collectionUid: collectionUid,
-      example: {
-        ...exampleData,
-        uid: exampleUid
-      }
-    }));
+    dispatch(
+      addResponseExample({
+        itemUid: item.uid,
+        collectionUid: collectionUid,
+        example: {
+          ...exampleData,
+          uid: exampleUid
+        }
+      })
+    );
 
     // Save the request
     await dispatch(saveRequest(item.uid, collectionUid, true));
 
     // Task middleware will track this and open the example in a new tab once the file is reloaded
-    dispatch(insertTaskIntoQueue({
-      uid: exampleUid,
-      type: 'OPEN_EXAMPLE',
-      collectionUid: collectionUid,
-      itemUid: item.uid,
-      exampleIndex: exampleIndex
-    }));
+    dispatch(
+      insertTaskIntoQueue({
+        uid: exampleUid,
+        type: 'OPEN_EXAMPLE',
+        collectionUid: collectionUid,
+        itemUid: item.uid,
+        exampleIndex: exampleIndex
+      })
+    );
 
     toast.success(`Example "${name}" created successfully`);
     setCreateExampleModalOpen(false);
@@ -547,10 +573,7 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
   const emptyFolderMenuItems = createEmptyStateMenuItems({ dispatch, collection, itemUid: item.uid });
 
   const handleGenerateCode = () => {
-    if (
-      (item?.request?.url !== '')
-      || (item?.draft?.request?.url !== undefined && item?.draft?.request?.url !== '')
-    ) {
+    if (item?.request?.url !== '' || (item?.draft?.request?.url !== undefined && item?.draft?.request?.url !== '')) {
       setGenerateCodeItemModalOpen(true);
     } else {
       toast.error('URL is required');
@@ -629,11 +652,13 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
         <RunCollectionItem collectionUid={collectionUid} item={item} onClose={() => setRunCollectionModalOpen(false)} />
       )}
       {generateCodeItemModalOpen && (
-        <GenerateCodeItem collectionUid={collectionUid} item={item} onClose={() => setGenerateCodeItemModalOpen(false)} />
+        <GenerateCodeItem
+          collectionUid={collectionUid}
+          item={item}
+          onClose={() => setGenerateCodeItemModalOpen(false)}
+        />
       )}
-      {itemInfoModalOpen && (
-        <CollectionItemInfo item={item} onClose={() => setItemInfoModalOpen(false)} />
-      )}
+      {itemInfoModalOpen && <CollectionItemInfo item={item} onClose={() => setItemInfoModalOpen(false)} />}
       <CreateExampleModal
         isOpen={createExampleModalOpen}
         onClose={() => setCreateExampleModalOpen(false)}
@@ -663,7 +688,7 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
                   key={i}
                   style={{ width: 16, minWidth: 16, height: '100%' }}
                 >
-                &nbsp;{/* Indent */}
+                  &nbsp;{/* Indent */}
                 </div>
               ))
             : null}
@@ -673,7 +698,6 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
             onClick={handleClick}
             onDoubleClick={handleDoubleClick}
           >
-
             {isFolder ? (
               <ActionIcon style={{ width: 16, minWidth: 16 }}>
                 <IconChevronRight
@@ -727,12 +751,28 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
         <div>
           {folderItems && folderItems.length
             ? folderItems.map((i) => {
-                return <CollectionItem key={i.uid} item={i} collectionUid={collectionUid} collectionPathname={collectionPathname} searchText={searchText} />;
+                return (
+                  <CollectionItem
+                    key={i.uid}
+                    item={i}
+                    collectionUid={collectionUid}
+                    collectionPathname={collectionPathname}
+                    searchText={searchText}
+                  />
+                );
               })
             : null}
           {requestItems && requestItems.length
             ? requestItems.map((i) => {
-                return <CollectionItem key={i.uid} item={i} collectionUid={collectionUid} collectionPathname={collectionPathname} searchText={searchText} />;
+                return (
+                  <CollectionItem
+                    key={i.uid}
+                    item={i}
+                    collectionUid={collectionUid}
+                    collectionPathname={collectionPathname}
+                    searchText={searchText}
+                  />
+                );
               })
             : null}
           {showEmptyFolderMessage ? (

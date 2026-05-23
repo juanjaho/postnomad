@@ -11,14 +11,16 @@ const SANDBOX_OPTIONS = [
   {
     key: 'safe',
     label: 'Safe Mode',
-    description: 'JavaScript code is executed in a secure sandbox and cannot access your filesystem or execute system commands.',
+    description:
+      'JavaScript code is executed in a secure sandbox and cannot access your filesystem or execute system commands.',
     icon: IconShieldCheck,
     recommended: true
   },
   {
     key: 'developer',
     label: 'Developer Mode',
-    description: 'JavaScript code has access to the filesystem, can execute system commands and access sensitive information.',
+    description:
+      'JavaScript code has access to the filesystem, can execute system commands and access sensitive information.',
     icon: IconCode,
     warning: 'Use only if you trust the authors of the collection',
     recommended: false
@@ -81,22 +83,20 @@ const JsSandboxMode = ({ collection }) => {
         aria-checked={isActive}
         data-testid={`sandbox-mode-${option.key}`}
       >
-
         <div className="dropdown-label">
           <div className="sandbox-option-title">
             <div className="sandbox-option-radio">
-              <input
-                type="radio"
-                name="sandbox-mode"
-                value={option.key}
-                checked={isActive}
-              />
+              <input type="radio" name="sandbox-mode" value={option.key} checked={isActive} />
             </div>
             <OptionIcon size={24} strokeWidth={1.5} />
             {option.label}
             {option.recommended && <span className="recommended-badge">Recommended</span>}
           </div>
-          {option.warning && (<div><span className="developer-mode-warning">{option.warning}</span></div>)}
+          {option.warning && (
+            <div>
+              <span className="developer-mode-warning">{option.warning}</span>
+            </div>
+          )}
           <div className="sandbox-option-description">{option.description}</div>
         </div>
       </button>
@@ -105,9 +105,20 @@ const JsSandboxMode = ({ collection }) => {
 
   const triggerIcon = (
     <div>
-      <ToolHint text={`${selectedMode === 'developer' ? 'Developer Mode' : 'Safe Mode'}`} toolhintId="JavascriptSandboxToolhintId" place="bottom">
-        <div className={`sandbox-icon ${selectedMode === 'developer' ? 'developer-mode' : 'safe-mode'}`} data-testid="sandbox-mode-selector">
-          {selectedMode === 'developer' ? <IconCode size={14} strokeWidth={2} /> : <IconShieldCheck size={14} strokeWidth={2} />}
+      <ToolHint
+        text={`${selectedMode === 'developer' ? 'Developer Mode' : 'Safe Mode'}`}
+        toolhintId="JavascriptSandboxToolhintId"
+        place="bottom"
+      >
+        <div
+          className={`sandbox-icon ${selectedMode === 'developer' ? 'developer-mode' : 'safe-mode'}`}
+          data-testid="sandbox-mode-selector"
+        >
+          {selectedMode === 'developer' ? (
+            <IconCode size={14} strokeWidth={2} />
+          ) : (
+            <IconShieldCheck size={14} strokeWidth={2} />
+          )}
         </div>
       </ToolHint>
     </div>

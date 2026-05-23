@@ -4,7 +4,13 @@ import toast from 'react-hot-toast';
 import { cloneDeep, find, get } from 'lodash';
 import { IconLoader2, IconX } from '@tabler/icons';
 import { interpolate } from '@usebruno/common';
-import { fetchOauth2Credentials, clearOauth2Cache, refreshOauth2Credentials, cancelOauth2AuthorizationRequest, isOauth2AuthorizationRequestInProgress } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  fetchOauth2Credentials,
+  clearOauth2Cache,
+  refreshOauth2Credentials,
+  cancelOauth2AuthorizationRequest,
+  isOauth2AuthorizationRequestInProgress
+} from 'providers/ReduxStore/slices/collections/actions';
 import { getAllVariables } from 'utils/collections/index';
 import Button from 'ui/Button';
 
@@ -38,7 +44,13 @@ const Oauth2ActionButtons = ({ item, request, collection, url: accessTokenUrl, c
     return interpolate(accessTokenUrl, variables);
   }, [collection, item, accessTokenUrl]);
 
-  const credentialsData = find(collection?.oauth2Credentials, (creds) => creds?.url == interpolatedAccessTokenUrl && creds?.collectionUid == collectionUid && creds?.credentialsId == credentialsId);
+  const credentialsData = find(
+    collection?.oauth2Credentials,
+    (creds) =>
+      creds?.url == interpolatedAccessTokenUrl &&
+      creds?.collectionUid == collectionUid &&
+      creds?.credentialsId == credentialsId
+  );
   const creds = credentialsData?.credentials || {};
 
   const handleFetchOauth2Credentials = async () => {
@@ -47,12 +59,14 @@ const Oauth2ActionButtons = ({ item, request, collection, url: accessTokenUrl, c
     requestCopy.headers = {};
     toggleFetchingToken(true);
     try {
-      const result = await dispatch(fetchOauth2Credentials({
-        itemUid: item.uid,
-        request: requestCopy,
-        collection,
-        forceGetToken: true
-      }));
+      const result = await dispatch(
+        fetchOauth2Credentials({
+          itemUid: item.uid,
+          request: requestCopy,
+          collection,
+          forceGetToken: true
+        })
+      );
 
       // Check if the result contains error or if access_token is missing
       if (!result || !result.access_token) {
@@ -83,12 +97,14 @@ const Oauth2ActionButtons = ({ item, request, collection, url: accessTokenUrl, c
     requestCopy.headers = {};
     toggleRefreshingToken(true);
     try {
-      const result = await dispatch(refreshOauth2Credentials({
-        itemUid: item.uid,
-        request: requestCopy,
-        collection,
-        forceGetToken: true
-      }));
+      const result = await dispatch(
+        refreshOauth2Credentials({
+          itemUid: item.uid,
+          request: requestCopy,
+          collection,
+          forceGetToken: true
+        })
+      );
 
       toggleRefreshingToken(false);
 
@@ -143,37 +159,29 @@ const Oauth2ActionButtons = ({ item, request, collection, url: accessTokenUrl, c
       >
         Get Access Token
       </Button>
-      {creds?.refresh_token
-        ? (
-            <Button
-              size="sm"
-              color="secondary"
-              onClick={handleRefreshAccessToken}
-              disabled={fetchingToken || refreshingToken}
-              loading={refreshingToken}
-            >
-              Refresh Token
-            </Button>
-          )
-        : null}
-      {useSystemBrowser && fetchingAuthorizationCode
-        ? (
-            <Button
-              size="sm"
-              color="secondary"
-              onClick={handleCancelAuthorization}
-              icon={<IconX size={16} />}
-              iconPosition="left"
-            >
-              Cancel Authorization
-            </Button>
-          ) : null}
-      <Button
-        size="sm"
-        color="secondary"
-        variant="ghost"
-        onClick={handleClearCache}
-      >
+      {creds?.refresh_token ? (
+        <Button
+          size="sm"
+          color="secondary"
+          onClick={handleRefreshAccessToken}
+          disabled={fetchingToken || refreshingToken}
+          loading={refreshingToken}
+        >
+          Refresh Token
+        </Button>
+      ) : null}
+      {useSystemBrowser && fetchingAuthorizationCode ? (
+        <Button
+          size="sm"
+          color="secondary"
+          onClick={handleCancelAuthorization}
+          icon={<IconX size={16} />}
+          iconPosition="left"
+        >
+          Cancel Authorization
+        </Button>
+      ) : null}
+      <Button size="sm" color="secondary" variant="ghost" onClick={handleClearCache}>
         Clear Cache
       </Button>
     </div>

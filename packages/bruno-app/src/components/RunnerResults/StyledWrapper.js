@@ -44,7 +44,11 @@ const Wrapper = styled.div`
 
     &:checked {
       border: 1px solid ${(props) => props.theme.primary.solid};
-      background-image: radial-gradient(circle, ${(props) => props.theme.primary.solid} 40%, ${(props) => props.theme.bg} 42%);
+      background-image: radial-gradient(
+        circle,
+        ${(props) => props.theme.primary.solid} 40%,
+        ${(props) => props.theme.bg} 42%
+      );
     }
   }
 
@@ -73,7 +77,7 @@ const Wrapper = styled.div`
       color: ${(props) => props.theme.colors.text.muted};
     }
   }
-  
+
   .skipped-request {
     color: ${(props) => props.theme.colors.text.muted};
   }
@@ -104,7 +108,8 @@ const Wrapper = styled.div`
     font-size: ${(props) => props.theme.font.size.sm};
   }
 
-  .run-config-panel, .run-config-option {
+  .run-config-panel,
+  .run-config-option {
     border-color: ${(props) => props.theme.background.surface1};
   }
 
@@ -143,7 +148,6 @@ const Wrapper = styled.div`
       }
     }
   }
-
 
   .filter-bar {
     display: flex;
@@ -194,7 +198,9 @@ const Wrapper = styled.div`
     line-height: 100%;
     letter-spacing: 0%;
     cursor: pointer;
-    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      border-bottom-color 0.15s ease;
     outline: none;
 
     &:focus-visible {

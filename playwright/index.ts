@@ -5,10 +5,14 @@ import * as fs from 'fs';
 
 const electronAppPath = path.join(__dirname, '../packages/bruno-electron');
 
-const existsAsync = (filepath: string) => fs.promises.access(filepath).then(() => true).catch(() => false);
+const existsAsync = (filepath: string) =>
+  fs.promises
+    .access(filepath)
+    .then(() => true)
+    .catch(() => false);
 
 async function recursiveCopy(src: string, dest: string) {
-  if (!await existsAsync(src)) {
+  if (!(await existsAsync(src))) {
     throw new Error(`${src} doesn't exist`);
   }
 
@@ -72,19 +76,25 @@ async function usePageWithTracing(
   if (initTracing) {
     try {
       await context.tracing.start(TRACING_OPTIONS);
-    } catch (e) { }
+    } catch (e) {}
   }
 
   if (useChunks) {
     await context.tracing.startChunk();
     await use(page);
-    try { await context.tracing.stopChunk({ path: tracePath }); } catch { }
+    try {
+      await context.tracing.stopChunk({ path: tracePath });
+    } catch {}
   } else {
     await use(page);
-    try { await context.tracing.stop({ path: tracePath }); } catch { }
+    try {
+      await context.tracing.stop({ path: tracePath });
+    } catch {}
   }
 
-  try { await testInfo.attach('trace', { path: tracePath }); } catch { }
+  try {
+    await testInfo.attach('trace', { path: tracePath });
+  } catch {}
 }
 
 // Sentinel returned by `withTimeout` when the deadline fires before the wrapped
@@ -98,10 +108,12 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof WIT
     const timer = setTimeout(() => resolve(WITH_TIMEOUT), ms);
     promise.then(
       (v) => {
-        clearTimeout(timer); resolve(v);
+        clearTimeout(timer);
+        resolve(v);
       },
       () => {
-        clearTimeout(timer); resolve(undefined as T);
+        clearTimeout(timer);
+        resolve(undefined as T);
       }
     );
   });
@@ -123,21 +135,31 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | typeof WIT
  */
 export async function closeElectronApp(app: ElectronApplication) {
   await withTimeout(
-    app.evaluate(({ BrowserWindow }) => {
-      for (const win of BrowserWindow.getAllWindows()) {
-        if (!win.isDestroyed()) win.close();
-      }
-    }).catch(() => { /* CDP may have closed already */ }),
+    app
+      .evaluate(({ BrowserWindow }) => {
+        for (const win of BrowserWindow.getAllWindows()) {
+          if (!win.isDestroyed()) win.close();
+        }
+      })
+      .catch(() => {
+        /* CDP may have closed already */
+      }),
     3000
   );
 
   const closed = await withTimeout(
-    app.close().catch(() => { /* already exited */ }),
+    app.close().catch(() => {
+      /* already exited */
+    }),
     5000
   );
 
   if (closed === WITH_TIMEOUT) {
-    try { app.process()?.kill('SIGKILL'); } catch { /* already dead */ }
+    try {
+      app.process()?.kill('SIGKILL');
+    } catch {
+      /* already dead */
+    }
   }
 }
 
@@ -152,13 +174,25 @@ export const test = baseTest.extend<
   },
   {
     createTmpDir: (tag?: string) => Promise<string>;
-    launchElectronApp: (options?: { initUserDataPath?: string; userDataPath?: string; dotEnv?: Record<string, string>; templateVars?: Record<string, string> }) => Promise<ElectronApplication>;
+    launchElectronApp: (options?: {
+      initUserDataPath?: string;
+      userDataPath?: string;
+      dotEnv?: Record<string, string>;
+      templateVars?: Record<string, string>;
+    }) => Promise<ElectronApplication>;
     electronApp: ElectronApplication;
-    reuseOrLaunchElectronApp: (options?: { initUserDataPath?: string; testFile?: string; userDataPath?: string; dotEnv?: Record<string, string>; templateVars?: Record<string, string>; closePrevious?: boolean }) => Promise<ElectronApplication>;
+    reuseOrLaunchElectronApp: (options?: {
+      initUserDataPath?: string;
+      testFile?: string;
+      userDataPath?: string;
+      dotEnv?: Record<string, string>;
+      templateVars?: Record<string, string>;
+      closePrevious?: boolean;
+    }) => Promise<ElectronApplication>;
   }
 >({
   createTmpDir: [
-    async ({ }, use) => {
+    async ({}, use) => {
       const dirs: string[] = [];
       await use(async (tag?: string) => {
         const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), `pw-${tag || ''}-`));
@@ -177,8 +211,9 @@ export const test = baseTest.extend<
     const fixturesDir = path.join(testDir, 'fixtures');
     // fixtures/collections — multiple named collections (subdirs with bruno.json/opencollection.yml)
     // fixtures/collection — single collection (single dir with bruno.json/opencollection.yml)
-    const srcPath = [path.join(fixturesDir, 'collections'), path.join(fixturesDir, 'collection')]
-      .find((p) => fs.existsSync(p));
+    const srcPath = [path.join(fixturesDir, 'collections'), path.join(fixturesDir, 'collection')].find((p) =>
+      fs.existsSync(p)
+    );
 
     if (srcPath) {
       const tmpDir = await createTmpDir(path.basename(srcPath));
@@ -195,82 +230,80 @@ export const test = baseTest.extend<
   launchElectronApp: [
     async ({ playwright, createTmpDir }, use, workerInfo) => {
       const apps: ElectronApplication[] = [];
-      await use(async ({ initUserDataPath, userDataPath: providedUserDataPath, dotEnv = {}, templateVars = {} } = {}) => {
-        const userDataPath = providedUserDataPath || (await createTmpDir('electron-userdata'));
+      await use(
+        async ({ initUserDataPath, userDataPath: providedUserDataPath, dotEnv = {}, templateVars = {} } = {}) => {
+          const userDataPath = providedUserDataPath || (await createTmpDir('electron-userdata'));
 
-        // Ensure dir exists when caller supplies their own path
-        if (providedUserDataPath) {
-          await fs.promises.mkdir(userDataPath, { recursive: true });
-        }
-
-        if (initUserDataPath) {
-          const replacements: Record<string, string> = {
-            projectRoot: path.join(__dirname, '..').replace(/\\/g, '/'),
-            ...templateVars
-          };
-
-          for (const file of await fs.promises.readdir(initUserDataPath)) {
-            let content = await fs.promises.readFile(path.join(initUserDataPath, file), 'utf-8');
-            content = content.replace(/{{(\w+)}}/g, (_, key) => {
-              if (replacements[key]) {
-                return replacements[key].replace(/\\/g, '/');
-              } else {
-                throw new Error(`\tNo replacement for {{${key}}} in ${path.join(initUserDataPath, file)}`);
-              }
-            });
-            await fs.promises.writeFile(path.join(userDataPath, file), content, 'utf-8');
+          // Ensure dir exists when caller supplies their own path
+          if (providedUserDataPath) {
+            await fs.promises.mkdir(userDataPath, { recursive: true });
           }
-        } else {
-          // No initUserDataPath provided: create default preferences to skip onboarding
-          // BUT only if preferences.json doesn't already exist
-          const prefsPath = path.join(userDataPath, 'preferences.json');
-          const prefsExist = await existsAsync(prefsPath);
 
-          if (!prefsExist) {
-            const defaultPreferences = {
-              preferences: {
-                onboarding: {
-                  hasLaunchedBefore: true,
-                  hasSeenWelcomeModal: true
-                }
-              }
+          if (initUserDataPath) {
+            const replacements: Record<string, string> = {
+              projectRoot: path.join(__dirname, '..').replace(/\\/g, '/'),
+              ...templateVars
             };
-            await fs.promises.writeFile(
-              prefsPath,
-              JSON.stringify(defaultPreferences, null, 2),
-              'utf-8'
-            );
+
+            for (const file of await fs.promises.readdir(initUserDataPath)) {
+              let content = await fs.promises.readFile(path.join(initUserDataPath, file), 'utf-8');
+              content = content.replace(/{{(\w+)}}/g, (_, key) => {
+                if (replacements[key]) {
+                  return replacements[key].replace(/\\/g, '/');
+                } else {
+                  throw new Error(`\tNo replacement for {{${key}}} in ${path.join(initUserDataPath, file)}`);
+                }
+              });
+              await fs.promises.writeFile(path.join(userDataPath, file), content, 'utf-8');
+            }
+          } else {
+            // No initUserDataPath provided: create default preferences to skip onboarding
+            // BUT only if preferences.json doesn't already exist
+            const prefsPath = path.join(userDataPath, 'preferences.json');
+            const prefsExist = await existsAsync(prefsPath);
+
+            if (!prefsExist) {
+              const defaultPreferences = {
+                preferences: {
+                  onboarding: {
+                    hasLaunchedBefore: true,
+                    hasSeenWelcomeModal: true
+                  }
+                }
+              };
+              await fs.promises.writeFile(prefsPath, JSON.stringify(defaultPreferences, null, 2), 'utf-8');
+            }
           }
-        }
 
-        const app = await playwright._electron.launch({
-          args: [electronAppPath, '--disable-gpu'],
-          env: {
-            ...process.env,
-            ELECTRON_USER_DATA_PATH: userDataPath,
-            DISABLE_SAMPLE_COLLECTION_IMPORT: 'true',
-            PLAYWRIGHT: 'true',
-            DISABLE_SINGLE_INSTANCE: 'true',
-            ...dotEnv
+          const app = await playwright._electron.launch({
+            args: [electronAppPath, '--disable-gpu'],
+            env: {
+              ...process.env,
+              ELECTRON_USER_DATA_PATH: userDataPath,
+              DISABLE_SAMPLE_COLLECTION_IMPORT: 'true',
+              PLAYWRIGHT: 'true',
+              DISABLE_SINGLE_INSTANCE: 'true',
+              ...dotEnv
+            }
+          });
+
+          const { workerIndex } = workerInfo;
+          const electronProcess = app.process();
+          if (electronProcess?.stdout) {
+            electronProcess.stdout.on('data', (data) => {
+              process.stdout.write(data.toString().replace(/^(?=.)/gm, `[Electron #${workerIndex}] |`));
+            });
           }
-        });
+          if (electronProcess?.stderr) {
+            electronProcess.stderr.on('data', (error) => {
+              process.stderr.write(error.toString().replace(/^(?=.)/gm, `[Electron #${workerIndex}] |`));
+            });
+          }
 
-        const { workerIndex } = workerInfo;
-        const electronProcess = app.process();
-        if (electronProcess?.stdout) {
-          electronProcess.stdout.on('data', (data) => {
-            process.stdout.write(data.toString().replace(/^(?=.)/gm, `[Electron #${workerIndex}] |`));
-          });
+          apps.push(app);
+          return app;
         }
-        if (electronProcess?.stderr) {
-          electronProcess.stderr.on('data', (error) => {
-            process.stderr.write(error.toString().replace(/^(?=.)/gm, `[Electron #${workerIndex}] |`));
-          });
-        }
-
-        apps.push(app);
-        return app;
-      });
+      );
       // Close every still-tracked app in parallel.
       // `closeElectronApp` is internally bounded, so this can't hang.
       await Promise.allSettled(apps.map((app) => closeElectronApp(app)));
@@ -291,7 +324,7 @@ export const test = baseTest.extend<
     if (isTracingEnabled(testInfo)) {
       try {
         await context.tracing.start(TRACING_OPTIONS);
-      } catch (e) { }
+      } catch (e) {}
     }
     await use(context);
   },
@@ -311,31 +344,40 @@ export const test = baseTest.extend<
   reuseOrLaunchElectronApp: [
     async ({ launchElectronApp }, use, testInfo) => {
       const apps: Record<string, ElectronApplication> = {};
-      await use(async ({ initUserDataPath, testFile, userDataPath, dotEnv = {}, templateVars = {}, closePrevious = false } = {}) => {
-        const key = testFile || userDataPath || initUserDataPath;
-        if (key && apps[key]) {
-          if (closePrevious) {
-            await closeElectronApp(apps[key]);
-            delete apps[key];
-          } else {
-            return apps[key];
+      await use(
+        async ({
+          initUserDataPath,
+          testFile,
+          userDataPath,
+          dotEnv = {},
+          templateVars = {},
+          closePrevious = false
+        } = {}) => {
+          const key = testFile || userDataPath || initUserDataPath;
+          if (key && apps[key]) {
+            if (closePrevious) {
+              await closeElectronApp(apps[key]);
+              delete apps[key];
+            } else {
+              return apps[key];
+            }
           }
-        }
 
-        // Close other cached apps to prevent resource accumulation across test files
-        for (const existingKey of Object.keys(apps)) {
-          if (existingKey !== key) {
-            await closeElectronApp(apps[existingKey]);
-            delete apps[existingKey];
+          // Close other cached apps to prevent resource accumulation across test files
+          for (const existingKey of Object.keys(apps)) {
+            if (existingKey !== key) {
+              await closeElectronApp(apps[existingKey]);
+              delete apps[existingKey];
+            }
           }
-        }
 
-        const app = await launchElectronApp({ initUserDataPath, userDataPath, dotEnv, templateVars });
-        if (key) {
-          apps[key] = app;
+          const app = await launchElectronApp({ initUserDataPath, userDataPath, dotEnv, templateVars });
+          if (key) {
+            apps[key] = app;
+          }
+          return app;
         }
-        return app;
-      });
+      );
     },
     { scope: 'worker' }
   ],
@@ -380,8 +422,10 @@ export const test = baseTest.extend<
     try {
       await recursiveCopy(initUserDataPath, tmpAppDataDir);
     } catch (err) {
-      if (err instanceof Error && err.message.includes('doesn\'t exist')) {
-        throw new Error(`${initUserDataPath} doesn't exist, either add one or if you don't need an initial state then use the \`page\` fixture instead of \`pageWithUserData\`.`);
+      if (err instanceof Error && err.message.includes("doesn't exist")) {
+        throw new Error(
+          `${initUserDataPath} doesn't exist, either add one or if you don't need an initial state then use the \`page\` fixture instead of \`pageWithUserData\`.`
+        );
       }
       throw err;
     }
@@ -391,7 +435,11 @@ export const test = baseTest.extend<
       templateVars.collectionPath = collectionFixturePath.split(path.sep).join('/');
     }
 
-    const app = await reuseOrLaunchElectronApp({ initUserDataPath: tmpAppDataDir, testFile: testInfo.file, templateVars });
+    const app = await reuseOrLaunchElectronApp({
+      initUserDataPath: tmpAppDataDir,
+      testFile: testInfo.file,
+      templateVars
+    });
 
     const context = await app.context();
     const page = await waitForReadyPage(app);

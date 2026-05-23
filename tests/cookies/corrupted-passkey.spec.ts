@@ -3,7 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import { waitForReadyPage } from '../utils/page';
 
-test('should handle corrupted passkey and still display saved cookie list', async ({ createTmpDir, launchElectronApp }) => {
+test('should handle corrupted passkey and still display saved cookie list', async ({
+  createTmpDir,
+  launchElectronApp
+}) => {
   const userDataPath = await createTmpDir('corrupted-passkey');
 
   const app1 = await launchElectronApp({ userDataPath });

@@ -28,7 +28,14 @@ const ThemePreviewBox = ({ themeId, isDark }) => {
   );
 };
 
-const ThemeStep = ({ storedTheme, setStoredTheme, themeVariantLight, setThemeVariantLight, themeVariantDark, setThemeVariantDark }) => {
+const ThemeStep = ({
+  storedTheme,
+  setStoredTheme,
+  themeVariantLight,
+  setThemeVariantLight,
+  themeVariantDark,
+  setThemeVariantDark
+}) => {
   const lightThemeList = getLightThemes();
   const darkThemeList = getDarkThemes();
 

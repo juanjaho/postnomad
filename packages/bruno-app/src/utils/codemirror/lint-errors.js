@@ -61,7 +61,7 @@ function showLintTooltip(errors, targetElement, container) {
   // Position the tooltip
   const rect = targetElement.getBoundingClientRect();
   tooltip.style.left = `${rect.right + 8}px`;
-  tooltip.style.top = `${rect.top + (rect.height / 2)}px`;
+  tooltip.style.top = `${rect.top + rect.height / 2}px`;
   tooltip.style.transform = 'translateY(-50%)';
 }
 
@@ -114,9 +114,10 @@ export function setupLintErrorTooltip(editor) {
   const handleMouseOut = (e) => {
     const relatedTarget = e.relatedTarget;
     // Don't hide if moving to another line number or the tooltip
-    if (relatedTarget
-      && (relatedTarget.classList?.contains('CodeMirror-linenumber')
-        || relatedTarget.closest?.('.lint-error-tooltip'))) {
+    if (
+      relatedTarget &&
+      (relatedTarget.classList?.contains('CodeMirror-linenumber') || relatedTarget.closest?.('.lint-error-tooltip'))
+    ) {
       return;
     }
     hideLintTooltip();

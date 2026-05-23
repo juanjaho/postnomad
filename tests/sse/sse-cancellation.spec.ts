@@ -16,21 +16,31 @@ test.describe('SSE Connection Cancellation', () => {
     await page.getByTestId('send-arrow-icon').click();
 
     // Poll until the SSE connection is established
-    await expect.poll(async () => {
-      const response = await page.request.get('http://localhost:8081/api/sse/connections');
-      const data = await response.json();
-      return data.connectionIds;
-    }, { timeout: 5000 }).toStrictEqual([1]);
+    await expect
+      .poll(
+        async () => {
+          const response = await page.request.get('http://localhost:8081/api/sse/connections');
+          const data = await response.json();
+          return data.connectionIds;
+        },
+        { timeout: 5000 }
+      )
+      .toStrictEqual([1]);
 
     // Resend the request (this should cancel the old connection and start a new one)
     const resendShortcut = process.platform === 'darwin' ? 'Meta+Enter' : 'Control+Enter';
     await page.keyboard.press(resendShortcut);
 
     // Poll until the old connection is closed and a new one is established
-    await expect.poll(async () => {
-      const response = await page.request.get('http://localhost:8081/api/sse/connections');
-      const data = await response.json();
-      return data.connectionIds;
-    }, { timeout: 5000 }).toStrictEqual([2]);
+    await expect
+      .poll(
+        async () => {
+          const response = await page.request.get('http://localhost:8081/api/sse/connections');
+          const data = await response.json();
+          return data.connectionIds;
+        },
+        { timeout: 5000 }
+      )
+      .toStrictEqual([2]);
   });
 });

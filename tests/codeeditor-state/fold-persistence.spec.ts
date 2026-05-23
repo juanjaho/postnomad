@@ -79,10 +79,7 @@ const LARGE_BODY = JSON.stringify(
 const cmFor = (page: Page, scope: Locator) => scope.locator('.CodeMirror').first();
 
 const setBodyContent = async (page: Page, value: string) => {
-  await cmFor(page, page.locator('.request-pane')).evaluate(
-    (el, v) => (el as any).CodeMirror?.setValue(v),
-    value
-  );
+  await cmFor(page, page.locator('.request-pane')).evaluate((el, v) => (el as any).CodeMirror?.setValue(v), value);
 };
 
 const selectBodyMode = async (page: Page, mode: 'JSON' | 'XML' | 'Text') => {
@@ -108,10 +105,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await closeAllCollections(page);
   });
 
-  test('Body editor: folded {} block survives Body → Headers → Body', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Body editor: folded {} block survives Body → Headers → Body', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-body-curly', await createTmpDir('fold-body-curly'));
     await createRequest(page, 'echo-curly', 'fold-body-curly', {
       url: ECHO_URL,
@@ -141,10 +135,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await expect(restored.getByText('↤3↦')).toHaveCount(1);
   });
 
-  test('Body editor: folded [] block survives Body → Headers → Body', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Body editor: folded [] block survives Body → Headers → Body', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-body-array', await createTmpDir('fold-body-array'));
     await createRequest(page, 'echo-array', 'fold-body-array', {
       url: ECHO_URL,
@@ -172,10 +163,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await expect(restored.getByText('↤3↦')).toHaveCount(1);
   });
 
-  test('Body editor: nested {} + [] folds both restore on return', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Body editor: nested {} + [] folds both restore on return', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-body-nested', await createTmpDir('fold-body-nested'));
     await createRequest(page, 'echo-nested', 'fold-body-nested', {
       url: ECHO_URL,
@@ -204,10 +192,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await expect(restored.getByText('↤3↦')).toHaveCount(2);
   });
 
-  test('Response editor: folded {} block survives response sub-tab switch', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Response editor: folded {} block survives response sub-tab switch', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-response-curly', await createTmpDir('fold-response-curly'));
     await createRequest(page, 'echo-resp-curly', 'fold-response-curly', {
       url: ECHO_URL,
@@ -238,10 +223,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await expect(restored.getByText('↤3↦')).toHaveCount(1);
   });
 
-  test('Response editor: folded [] block survives response sub-tab switch', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Response editor: folded [] block survives response sub-tab switch', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-response-array', await createTmpDir('fold-response-array'));
     await createRequest(page, 'echo-resp-array', 'fold-response-array', {
       url: ECHO_URL,
@@ -269,10 +251,7 @@ test.describe('CodeEditor — fold state persists across tab switches', () => {
     await expect(restored.getByText('↤3↦')).toHaveCount(1);
   });
 
-  test('Folds in body editor survive a parent tab switch (different request)', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Folds in body editor survive a parent tab switch (different request)', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-parent-tab', await createTmpDir('fold-parent-tab'));
     await createRequest(page, 'echo-a', 'fold-parent-tab', { url: ECHO_URL, method: 'POST' });
     await createRequest(page, 'echo-b', 'fold-parent-tab', { url: ECHO_URL, method: 'POST' });
@@ -417,8 +396,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
     for (const subTab of ['Headers', 'Params', 'Vars', 'Script'] as const) {
       await selectRequestPaneTab(page, subTab);
       await selectRequestPaneTab(page, 'Body');
-      await expect(cmFor(page, page.locator('.request-pane')))
-        .toContainText('SENTINEL_WALK');
+      await expect(cmFor(page, page.locator('.request-pane'))).toContainText('SENTINEL_WALK');
     }
 
     // Undo at the very end — the saved history must include the typed line
@@ -429,10 +407,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
     await expect(cmAfter).not.toContainText('SENTINEL_WALK');
   });
 
-  test('Cmd-Z reverts an edit when applied after each sub-tab return', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Cmd-Z reverts an edit when applied after each sub-tab return', async ({ page, createTmpDir }) => {
     // Independently verify undo for every sub-tab — type a unique sentinel,
     // visit one sub-tab and return, undo, assert clean. This catches a sub-tab
     // whose remount path corrupts the history while others stay healthy.
@@ -469,10 +444,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
     }
   });
 
-  test('Cmd-Shift-Z (redo) restores a previously undone edit across a tab switch', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Cmd-Shift-Z (redo) restores a previously undone edit across a tab switch', async ({ page, createTmpDir }) => {
     await createCollection(page, 'undo-redo', await createTmpDir('undo-redo'));
     await createRequest(page, 'echo-redo', 'undo-redo', { url: ECHO_URL, method: 'POST' });
     await openRequest(page, 'undo-redo', 'echo-redo');
@@ -513,10 +485,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
     await expect(cmAfter).not.toContainText('SENTINEL_REDO');
   });
 
-  test('Multi-step undo preserves edit order across a tab switch', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Multi-step undo preserves edit order across a tab switch', async ({ page, createTmpDir }) => {
     // Type three discrete edits, switch sub-tab, switch back, then undo three
     // times — each undo must remove the most-recent sentinel, in reverse order.
     //
@@ -559,12 +528,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
         const append = (sentinel: string, originSuffix: string) => {
           const lastLine = doc.lastLine();
           const lastLineLen = doc.getLine(lastLine).length;
-          doc.replaceRange(
-            `\n${sentinel}`,
-            { line: lastLine, ch: lastLineLen },
-            undefined,
-            `*${originSuffix}`
-          );
+          doc.replaceRange(`\n${sentinel}`, { line: lastLine, ch: lastLineLen }, undefined, `*${originSuffix}`);
         };
         append('// SENTINEL_ONE', 'sentinel-1');
         append('// SENTINEL_TWO', 'sentinel-2');
@@ -615,10 +579,7 @@ test.describe('CodeEditor — undo (Cmd-Z) survives a tab switch', () => {
     await expect(cmAfter).not.toContainText('SENTINEL_ONE');
   });
 
-  test('Undo persists across switching to a different request and back', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Undo persists across switching to a different request and back', async ({ page, createTmpDir }) => {
     // Parent-tab switch (different request) is a stronger remount path than
     // sub-tab switches — verify undo history survives that too.
     await createCollection(page, 'undo-parent', await createTmpDir('undo-parent'));
@@ -699,10 +660,7 @@ test.describe('CodeEditor — varied {} / [] folds with distinct widget counts',
     await expect(restored.getByText('↤2↦')).toHaveCount(1);
   });
 
-  test('Body: a random subset of folds restores intact (only items + tags)', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Body: a random subset of folds restores intact (only items + tags)', async ({ page, createTmpDir }) => {
     // Pick a non-trivial subset (the array blocks only) to confirm we don't
     // accidentally over-restore — only the folds the user made should come back.
     await createCollection(page, 'fold-subset-body', await createTmpDir('fold-subset-body'));
@@ -747,10 +705,7 @@ test.describe('CodeEditor — response folds survive Timeline and Headers tab sw
     await closeAllCollections(page);
   });
 
-  test('Response → Timeline → Response preserves multiple varied folds', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Response → Timeline → Response preserves multiple varied folds', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-resp-timeline', await createTmpDir('fold-resp-timeline'));
     await createRequest(page, 'echo-resp-timeline', 'fold-resp-timeline', {
       url: ECHO_URL,
@@ -788,10 +743,7 @@ test.describe('CodeEditor — response folds survive Timeline and Headers tab sw
     await expect(restored.getByText('↤6↦')).toHaveCount(1);
   });
 
-  test('Response → Headers → Response preserves multiple varied folds', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Response → Headers → Response preserves multiple varied folds', async ({ page, createTmpDir }) => {
     await createCollection(page, 'fold-resp-headers', await createTmpDir('fold-resp-headers'));
     await createRequest(page, 'echo-resp-headers', 'fold-resp-headers', {
       url: ECHO_URL,
@@ -825,10 +777,7 @@ test.describe('CodeEditor — response folds survive Timeline and Headers tab sw
     await expect(restored.getByText('↤2↦')).toHaveCount(1);
   });
 
-  test('Response folds survive Response → Timeline → Headers → Response chain', async ({
-    page,
-    createTmpDir
-  }) => {
+  test('Response folds survive Response → Timeline → Headers → Response chain', async ({ page, createTmpDir }) => {
     // Walk through several response sub-tabs without folding back the editor —
     // each transition triggers an unmount/mount of the response editor, so
     // every step exercises the persistence layer.

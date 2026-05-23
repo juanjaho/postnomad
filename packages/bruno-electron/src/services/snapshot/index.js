@@ -35,16 +35,20 @@ const tabSchema = yup.object({
   exampleName: yup.string().optional(),
   exampleIndex: yup.number().integer().min(0).optional(),
   exampleUid: yup.string().optional(),
-  request: yup.object({
-    tab: yup.string(),
-    width: yup.number().nullable(),
-    height: yup.number().nullable()
-  }).optional(),
-  response: yup.object({
-    tab: yup.string(),
-    format: yup.string().nullable(),
-    viewTab: yup.string().nullable()
-  }).optional()
+  request: yup
+    .object({
+      tab: yup.string(),
+      width: yup.number().nullable(),
+      height: yup.number().nullable()
+    })
+    .optional(),
+  response: yup
+    .object({
+      tab: yup.string(),
+      format: yup.string().nullable(),
+      viewTab: yup.string().nullable()
+    })
+    .optional()
 });
 
 const activeTabSchema = yup.object({
@@ -55,10 +59,12 @@ const activeTabSchema = yup.object({
 const collectionSchema = yup.object({
   pathname: yup.string().required(),
   workspacePathname: yup.string().optional().default(''),
-  environment: yup.object({
-    collection: yup.string(),
-    global: yup.string()
-  }).required(),
+  environment: yup
+    .object({
+      collection: yup.string(),
+      global: yup.string()
+    })
+    .required(),
   environmentPath: yup.string().optional(),
   selectedEnvironment: yup.string().optional(),
   isOpen: yup.boolean().required(),
@@ -89,9 +95,11 @@ const devToolsSchema = yup.object({
 const snapshotSchema = yup.object({
   version: yup.string().defined(),
   activeWorkspacePath: yup.string().nullable(),
-  extras: yup.object({
-    devTools: devToolsSchema.required()
-  }).required(),
+  extras: yup
+    .object({
+      devTools: devToolsSchema.required()
+    })
+    .required(),
   workspaces: yup.array().of(workspaceSchema).required(),
   collections: yup.array().of(collectionSchema).required()
 });
@@ -189,19 +197,25 @@ class SnapshotManager {
 
   resetSnapshot() {
     this.store.delete('activeWorkspacePath');
-    this.store.set('workspaces', (this.store.store?.workspaces ?? []).map((d) => {
-      d.lastActiveCollectionPathname = undefined;
-      return d;
-    }));
-    this.store.set('collections', (this.store.store?.collections ?? []).map((d) => {
-      if ('tabs' in d) {
-        d.tabs = [];
-      }
-      if ('activeTab' in d) {
-        d.activeTab = undefined;
-      }
-      return d;
-    }));
+    this.store.set(
+      'workspaces',
+      (this.store.store?.workspaces ?? []).map((d) => {
+        d.lastActiveCollectionPathname = undefined;
+        return d;
+      })
+    );
+    this.store.set(
+      'collections',
+      (this.store.store?.collections ?? []).map((d) => {
+        if ('tabs' in d) {
+          d.tabs = [];
+        }
+        if ('activeTab' in d) {
+          d.activeTab = undefined;
+        }
+        return d;
+      })
+    );
   }
 
   setCollection(pathname, data) {
@@ -211,7 +225,9 @@ class SnapshotManager {
     }
 
     const snapshot = this._normalizeSnapshot(this.store.store);
-    const existingCollection = snapshot.collections.find((collection) => normalizeLookupKey(collection.pathname) === normalizedPath);
+    const existingCollection = snapshot.collections.find(
+      (collection) => normalizeLookupKey(collection.pathname) === normalizedPath
+    );
 
     const mergedCollection = {
       ...(existingCollection || {}),
@@ -227,7 +243,9 @@ class SnapshotManager {
     };
 
     const normalizedCollection = this._normalizeCollectionEntry(pathname, mergedCollection);
-    const collectionIndex = snapshot.collections.findIndex((collection) => normalizeLookupKey(collection.pathname) === normalizedPath);
+    const collectionIndex = snapshot.collections.findIndex(
+      (collection) => normalizeLookupKey(collection.pathname) === normalizedPath
+    );
 
     if (collectionIndex === -1) {
       snapshot.collections.push(normalizedCollection);
@@ -257,10 +275,14 @@ class SnapshotManager {
     const existingCollection = this.getCollection(collectionPath) || {};
     const existingEnvironment = isObject(existingCollection.environment) ? existingCollection.environment : {};
     const incomingEnvironmentRef = environmentPath === undefined ? selectedEnvironment : environmentPath;
-    const normalizedEnvironmentPath = await this._normalizeCollectionEnvironmentRefAsync(collectionPath, incomingEnvironmentRef);
+    const normalizedEnvironmentPath = await this._normalizeCollectionEnvironmentRefAsync(
+      collectionPath,
+      incomingEnvironmentRef
+    );
 
     this.setCollection(collectionPath, {
-      workspacePathname: typeof existingCollection.workspacePathname === 'string' ? existingCollection.workspacePathname : '',
+      workspacePathname:
+        typeof existingCollection.workspacePathname === 'string' ? existingCollection.workspacePathname : '',
       environment: {
         collection: normalizedEnvironmentPath,
         global: typeof existingEnvironment.global === 'string' ? existingEnvironment.global : ''
@@ -285,12 +307,7 @@ class SnapshotManager {
   }
 
   _normalizeDevTools(devTools = {}) {
-    const devToolKeys = [
-      'console',
-      'network',
-      'performance',
-      'terminal'
-    ];
+    const devToolKeys = ['console', 'network', 'performance', 'terminal'];
 
     const _snapshotEntry = {
       open: typeof devTools?.open === 'boolean' ? devTools.open : false,
@@ -343,9 +360,8 @@ class SnapshotManager {
     return {
       pathname,
       environment: typeof workspace.environment === 'string' ? workspace.environment : '',
-      lastActiveCollectionPathname: typeof workspace.lastActiveCollectionPathname === 'string'
-        ? workspace.lastActiveCollectionPathname
-        : null,
+      lastActiveCollectionPathname:
+        typeof workspace.lastActiveCollectionPathname === 'string' ? workspace.lastActiveCollectionPathname : null,
       sorting: typeof workspace.sorting === 'string' ? workspace.sorting : 'default',
       collections
     };
@@ -359,9 +375,12 @@ class SnapshotManager {
     const dedupedPaths = new Map();
 
     collectionPaths.forEach((collectionPath) => {
-      const rawPath = typeof collectionPath === 'string'
-        ? collectionPath
-        : (isObject(collectionPath) && typeof collectionPath.path === 'string' ? collectionPath.path : null);
+      const rawPath =
+        typeof collectionPath === 'string'
+          ? collectionPath
+          : isObject(collectionPath) && typeof collectionPath.path === 'string'
+            ? collectionPath.path
+            : null;
 
       if (!rawPath) {
         return;
@@ -427,12 +446,15 @@ class SnapshotManager {
   _normalizeCollectionEntry(pathname, collection = {}, tabsEntry = {}) {
     const environment = isObject(collection.environment) ? collection.environment : {};
     const tabsEntryObject = isObject(tabsEntry) ? tabsEntry : {};
-    const collectionEnvironmentRef = environment.collection ?? collection.environmentPath ?? collection.selectedEnvironment;
+    const collectionEnvironmentRef =
+      environment.collection ?? collection.environmentPath ?? collection.selectedEnvironment;
     const normalizedEnvironmentPath = this._normalizeCollectionEnvironmentRef(pathname, collectionEnvironmentRef);
 
     const tabs = Array.isArray(tabsEntryObject.tabs)
       ? tabsEntryObject.tabs.filter((tab) => isObject(tab))
-      : (Array.isArray(collection.tabs) ? collection.tabs.filter((tab) => isObject(tab)) : []);
+      : Array.isArray(collection.tabs)
+        ? collection.tabs.filter((tab) => isObject(tab))
+        : [];
 
     return {
       pathname,
@@ -490,7 +512,12 @@ class SnapshotManager {
   }
 
   async _resolveEnvironmentPathByNameAsync(collectionPath, environmentName) {
-    if (typeof collectionPath !== 'string' || !collectionPath || typeof environmentName !== 'string' || !environmentName) {
+    if (
+      typeof collectionPath !== 'string' ||
+      !collectionPath ||
+      typeof environmentName !== 'string' ||
+      !environmentName
+    ) {
       return null;
     }
 
@@ -519,7 +546,10 @@ class SnapshotManager {
       return null;
     }
 
-    if (!['pathname', 'pathname::exampleName', 'pathname::exampleIndex', 'type'].includes(activeTab.accessor) || typeof activeTab.value !== 'string') {
+    if (
+      !['pathname', 'pathname::exampleName', 'pathname::exampleIndex', 'type'].includes(activeTab.accessor) ||
+      typeof activeTab.value !== 'string'
+    ) {
       return null;
     }
 
@@ -561,7 +591,10 @@ class SnapshotManager {
         tabs: collection.tabs
       };
 
-      const workspaceCollectionKey = buildWorkspaceCollectionLookupKey(collection.workspacePathname, collection.pathname);
+      const workspaceCollectionKey = buildWorkspaceCollectionLookupKey(
+        collection.workspacePathname,
+        collection.pathname
+      );
       if (workspaceCollectionKey) {
         tabsByWorkspaceAndCollectionPath[workspaceCollectionKey] = {
           activeTab: collection.activeTab,

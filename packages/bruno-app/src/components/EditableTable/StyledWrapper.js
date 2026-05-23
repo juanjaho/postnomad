@@ -186,7 +186,9 @@ const StyledWrapper = styled.div`
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: color 0.15s ease, background 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
 
     &:hover {
       color: ${(props) => props.theme.colors.text.danger};

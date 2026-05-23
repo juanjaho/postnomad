@@ -1,5 +1,14 @@
 import React, { useMemo } from 'react';
-import { IconCaretDown, IconForms, IconBraces, IconCode, IconFileText, IconDatabase, IconFile, IconX } from '@tabler/icons';
+import {
+  IconCaretDown,
+  IconForms,
+  IconBraces,
+  IconCode,
+  IconFileText,
+  IconDatabase,
+  IconFile,
+  IconX
+} from '@tabler/icons';
 import MenuDropdown from 'ui/MenuDropdown';
 import { humanizeRequestBodyMode } from 'utils/collections';
 import StyledWrapper from './StyledWrapper';
@@ -63,9 +72,7 @@ const BodyModeSelector = ({
           groupStyle="select"
         >
           <div className="flex items-center justify-center pl-3 py-1 select-none selected-body-mode">
-            {humanizeRequestBodyMode(currentMode)}
-            {' '}
-            <IconCaretDown className="caret ml-2" size={14} strokeWidth={2} />
+            {humanizeRequestBodyMode(currentMode)} <IconCaretDown className="caret ml-2" size={14} strokeWidth={2} />
           </div>
         </MenuDropdown>
       </div>

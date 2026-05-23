@@ -16,7 +16,6 @@ const Wrapper = styled.div`
     padding-bottom: 4px;
     overflow-y: auto;
     overflow-x: hidden;
-
   }
 `;
 

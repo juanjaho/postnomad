@@ -45,7 +45,10 @@ const MessageToolbar = ({
         </ToolHint>
 
         {canClientStream && (
-          <ToolHint text={isConnectionActive ? 'Send message' : 'Connection not active'} toolhintId={`send-msg-${index}`}>
+          <ToolHint
+            text={isConnectionActive ? 'Send message' : 'Connection not active'}
+            toolhintId={`send-msg-${index}`}
+          >
             <button
               onClick={onSend}
               disabled={!isConnectionActive}
@@ -69,12 +72,24 @@ const MessageToolbar = ({
   );
 };
 
-const SingleGrpcMessage = ({ message, item, collection, index, methodType, handleRun, canClientSendMultipleMessages, isLast }) => {
+const SingleGrpcMessage = ({
+  message,
+  item,
+  collection,
+  index,
+  methodType,
+  handleRun,
+  canClientSendMultipleMessages,
+  isLast
+}) => {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { displayedTheme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
-  const [grpcScroll, setGrpcScroll] = usePersistedState({ key: `request-grpc-msg-scroll-${item.uid}-${index}`, default: 0 });
+  const [grpcScroll, setGrpcScroll] = usePersistedState({
+    key: `request-grpc-msg-scroll-${item.uid}-${index}`,
+    default: 0
+  });
   const body = item.draft ? get(item, 'draft.request.body') : get(item, 'request.body');
   const isConnectionActive = useSelector((state) => state.collections.activeConnections.includes(item.uid));
 
@@ -90,11 +105,13 @@ const SingleGrpcMessage = ({ message, item, collection, index, methodType, handl
       name: name ? name : `message ${index + 1}`,
       content: value
     };
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   const onSend = async () => {
@@ -143,11 +160,13 @@ const SingleGrpcMessage = ({ message, item, collection, index, methodType, handl
           name: name ? name : `message ${index + 1}`,
           content: result.message
         };
-        dispatch(updateRequestBody({
-          content: currentMessages,
-          itemUid: item.uid,
-          collectionUid: collection.uid
-        }));
+        dispatch(
+          updateRequestBody({
+            content: currentMessages,
+            itemUid: item.uid,
+            collectionUid: collection.uid
+          })
+        );
         toast.success('Sample message generated');
       } else {
         toastError(new Error(result.error || 'Failed to generate sample message'));
@@ -161,11 +180,13 @@ const SingleGrpcMessage = ({ message, item, collection, index, methodType, handl
   const onDeleteMessage = () => {
     const currentMessages = [...(body.grpc || [])];
     currentMessages.splice(index, 1);
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   const onPrettify = () => {
@@ -176,11 +197,13 @@ const SingleGrpcMessage = ({ message, item, collection, index, methodType, handl
         name: name ? name : `message ${index + 1}`,
         content: prettyBodyJson
       };
-      dispatch(updateRequestBody({
-        content: currentMessages,
-        itemUid: item.uid,
-        collectionUid: collection.uid
-      }));
+      dispatch(
+        updateRequestBody({
+          content: currentMessages,
+          itemUid: item.uid,
+          collectionUid: collection.uid
+        })
+      );
     } catch (e) {
       toastError(new Error('Unable to prettify. Invalid JSON format.'));
     }
@@ -241,11 +264,13 @@ const GrpcBody = ({ item, collection, handleRun }) => {
       name: `message ${currentMessages.length + 1}`,
       content: '{}'
     });
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   if (!body?.grpc || !Array.isArray(body.grpc)) {

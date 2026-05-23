@@ -14,7 +14,7 @@ test.describe('Global Environment Configuration Selection Tests', () => {
     await page.locator('#sidebar-collection-name').filter({ hasText: 'global-env-config-selection' }).click();
 
     // Get the currently active environment name
-    const currentEnvName = await page.locator('.current-environment').textContent() as string;
+    const currentEnvName = (await page.locator('.current-environment').textContent()) as string;
 
     // Open global environment configuration
     await page.getByTestId('environment-selector-trigger').click();

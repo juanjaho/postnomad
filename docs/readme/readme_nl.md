@@ -115,7 +115,6 @@ Als je Bruno leuk vindt en ons open-source werk wilt ondersteunen, overweeg dan 
 
 Als Bruno je heeft geholpen op je werk en in je teams, deel dan je [getuigenissen op onze GitHub-discussie](https://github.com/usebruno/bruno/discussions/343).
 
-
 ### Blijf in contact 🌐
 
 [𝕏 (Twitter)](https://twitter.com/use_bruno) <br />

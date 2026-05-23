@@ -2,9 +2,7 @@ import { test, expect } from '../../../playwright';
 import { closeAllCollections, selectRequestPaneTab } from '../../utils/page';
 
 test.describe('Timeout Settings Tests', () => {
-  test('should configure and test timeout settings', async ({
-    pageWithUserData: page
-  }) => {
+  test('should configure and test timeout settings', async ({ pageWithUserData: page }) => {
     // Navigate to the test collection and request
     await expect(page.locator('#sidebar-collection-name').getByText('settings-test')).toBeVisible();
 

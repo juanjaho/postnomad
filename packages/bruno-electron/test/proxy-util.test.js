@@ -119,7 +119,9 @@ describe('proxy-util', () => {
     jest.doMock('@usebruno/requests', () => ({
       getOrCreateHttpsAgent: jest.fn(() => ({ type: 'https-agent' })),
       getOrCreateHttpAgent: jest.fn(() => ({ type: 'http-agent' })),
-      getPacResolver: jest.fn(async () => { throw new Error('PAC fetch timeout'); }),
+      getPacResolver: jest.fn(async () => {
+        throw new Error('PAC fetch timeout');
+      }),
       clearPacCache: jest.fn()
     }));
 

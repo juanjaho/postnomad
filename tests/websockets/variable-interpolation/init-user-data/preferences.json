@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/websockets/variable-interpolation/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/websockets/variable-interpolation/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

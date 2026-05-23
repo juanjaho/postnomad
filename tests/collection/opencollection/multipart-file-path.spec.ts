@@ -24,21 +24,11 @@ const setupOpenCollection = async (collectionDir: string, userDataDir: string) =
 
   await fs.promises.writeFile(
     path.join(collectionDir, 'opencollection.yml'),
-    [
-      'opencollection: "1.0.0"',
-      'info:',
-      `  name: ${collectionName}`,
-      '  type: collection',
-      ''
-    ].join('\n'),
+    ['opencollection: "1.0.0"', 'info:', `  name: ${collectionName}`, '  type: collection', ''].join('\n'),
     'utf-8'
   );
 
-  await fs.promises.writeFile(
-    path.join(collectionDir, relativePayloadPath),
-    '{"ok":true}\n',
-    'utf-8'
-  );
+  await fs.promises.writeFile(path.join(collectionDir, relativePayloadPath), '{"ok":true}\n', 'utf-8');
 
   await fs.promises.writeFile(
     path.join(collectionDir, `${requestName}.yml`),
@@ -91,7 +81,9 @@ const expectRequestFileToContainRelativePayload = async (requestFilePath: string
 };
 
 const expectRequestFileNotToContainPayload = async (requestFilePath: string, payloadPath: string) => {
-  await expect.poll(async () => fs.promises.readFile(requestFilePath, 'utf-8')).not.toContain(` ${relativePayloadPath}\n`);
+  await expect
+    .poll(async () => fs.promises.readFile(requestFilePath, 'utf-8'))
+    .not.toContain(` ${relativePayloadPath}\n`);
   await expect.poll(async () => fs.promises.readFile(requestFilePath, 'utf-8')).not.toContain(payloadPath);
 };
 
@@ -112,9 +104,11 @@ test.describe('OpenCollection multipart file paths', () => {
     await page.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
 
     await expect(page.locator('#sidebar-collection-name').filter({ hasText: collectionName })).toBeVisible();
-    await expect.poll(async () => fs.existsSync(requestFilePath), {
-      timeout: 15000
-    }).toBe(true);
+    await expect
+      .poll(async () => fs.existsSync(requestFilePath), {
+        timeout: 15000
+      })
+      .toBe(true);
 
     await openRequest(page, collectionName, requestName, { persist: true });
     await selectRequestBodyMode(page, 'Multipart Form');

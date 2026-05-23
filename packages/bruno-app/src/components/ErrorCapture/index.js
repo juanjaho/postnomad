@@ -43,7 +43,11 @@ const serializeArgs = (args) => {
         }
         seen.add(value);
 
-        if (value instanceof Error || Object.prototype.toString.call(value) === '[object Error]' || (typeof value.message === 'string' && typeof value.stack === 'string')) {
+        if (
+          value instanceof Error ||
+          Object.prototype.toString.call(value) === '[object Error]' ||
+          (typeof value.message === 'string' && typeof value.stack === 'string')
+        ) {
           const error = {};
           Object.getOwnPropertyNames(value).forEach((prop) => {
             error[prop] = value[prop];
@@ -124,15 +128,17 @@ const useGlobalErrorCapture = () => {
 
       const serializedArgs = serializeArgs(args);
 
-      dispatch(addDebugError({
-        message: errorMessage,
-        stack: currentStack,
-        filename: filename,
-        lineno: lineno,
-        colno: colno,
-        args: serializedArgs,
-        timestamp: new Date().toISOString()
-      }));
+      dispatch(
+        addDebugError({
+          message: errorMessage,
+          stack: currentStack,
+          filename: filename,
+          lineno: lineno,
+          colno: colno,
+          args: serializedArgs,
+          timestamp: new Date().toISOString()
+        })
+      );
     };
 
     return () => {
@@ -150,11 +156,7 @@ const ErrorCapture = ({ children }) => {
     dispatch(addDebugError(errorData));
   };
 
-  return (
-    <ErrorBoundary onError={handleReactError}>
-      {children}
-    </ErrorBoundary>
-  );
+  return <ErrorBoundary onError={handleReactError}>{children}</ErrorBoundary>;
 };
 
 export default ErrorCapture;

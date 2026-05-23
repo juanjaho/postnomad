@@ -65,64 +65,73 @@ const VisualDiffAuth = ({ oldData, newData, showSide }) => {
   }, [currentAuth, otherAuth]);
 
   const authSections = useMemo(() => {
-    return authTypes.map((authType) => {
-      const rawCurrentConfig = currentAuth[authType];
-      const rawOtherConfig = otherAuth[authType];
-      const currentConfig = (typeof rawCurrentConfig === 'object' && rawCurrentConfig !== null) ? rawCurrentConfig : {};
-      const otherConfig = (typeof rawOtherConfig === 'object' && rawOtherConfig !== null) ? rawOtherConfig : {};
+    return authTypes
+      .map((authType) => {
+        const rawCurrentConfig = currentAuth[authType];
+        const rawOtherConfig = otherAuth[authType];
+        const currentConfig = typeof rawCurrentConfig === 'object' && rawCurrentConfig !== null ? rawCurrentConfig : {};
+        const otherConfig = typeof rawOtherConfig === 'object' && rawOtherConfig !== null ? rawOtherConfig : {};
 
-      if (Object.keys(currentConfig).length === 0 && showSide === 'old') {
-        return null;
-      }
-      if (Object.keys(currentConfig).length === 0 && showSide === 'new') {
-        return null;
-      }
-
-      let sectionStatus = 'unchanged';
-      if (Object.keys(otherConfig).length === 0) {
-        sectionStatus = showSide === 'old' ? 'deleted' : 'added';
-      } else if (!isEqual(currentConfig, otherConfig)) {
-        sectionStatus = 'modified';
-      }
-
-      const allFields = new Set([...Object.keys(currentConfig), ...Object.keys(otherConfig)]);
-      const fields = Array.from(allFields).map((field) => {
-        const currentValue = currentConfig[field];
-        const otherValue = otherConfig[field];
-
-        let status = 'unchanged';
-        if (otherValue === undefined) {
-          status = showSide === 'old' ? 'deleted' : 'added';
-        } else if (currentValue !== otherValue) {
-          status = 'modified';
+        if (Object.keys(currentConfig).length === 0 && showSide === 'old') {
+          return null;
+        }
+        if (Object.keys(currentConfig).length === 0 && showSide === 'new') {
+          return null;
         }
 
-        let displayValue = currentValue;
-        if (typeof displayValue === 'boolean') {
-          displayValue = displayValue ? 'true' : 'false';
-        } else if (displayValue === undefined || displayValue === null) {
-          displayValue = '';
+        let sectionStatus = 'unchanged';
+        if (Object.keys(otherConfig).length === 0) {
+          sectionStatus = showSide === 'old' ? 'deleted' : 'added';
+        } else if (!isEqual(currentConfig, otherConfig)) {
+          sectionStatus = 'modified';
         }
+
+        const allFields = new Set([...Object.keys(currentConfig), ...Object.keys(otherConfig)]);
+        const fields = Array.from(allFields).map((field) => {
+          const currentValue = currentConfig[field];
+          const otherValue = otherConfig[field];
+
+          let status = 'unchanged';
+          if (otherValue === undefined) {
+            status = showSide === 'old' ? 'deleted' : 'added';
+          } else if (currentValue !== otherValue) {
+            status = 'modified';
+          }
+
+          let displayValue = currentValue;
+          if (typeof displayValue === 'boolean') {
+            displayValue = displayValue ? 'true' : 'false';
+          } else if (displayValue === undefined || displayValue === null) {
+            displayValue = '';
+          }
+
+          return {
+            key: AUTH_FIELD_LABELS[field] || field,
+            value: String(displayValue),
+            status
+          };
+        });
 
         return {
-          key: AUTH_FIELD_LABELS[field] || field,
-          value: String(displayValue),
-          status
+          type: authType,
+          label: AUTH_TYPE_LABELS[authType] || authType,
+          status: sectionStatus,
+          fields
         };
-      });
-
-      return {
-        type: authType,
-        label: AUTH_TYPE_LABELS[authType] || authType,
-        status: sectionStatus,
-        fields
-      };
-    }).filter(Boolean);
+      })
+      .filter(Boolean);
   }, [authTypes, currentAuth, otherAuth, showSide]);
 
   const currentMode = currentAuth.mode;
   const otherMode = otherAuth.mode;
-  const modeStatus = currentMode !== otherMode ? (otherMode === undefined ? (showSide === 'old' ? 'deleted' : 'added') : 'modified') : 'unchanged';
+  const modeStatus =
+    currentMode !== otherMode
+      ? otherMode === undefined
+        ? showSide === 'old'
+          ? 'deleted'
+          : 'added'
+        : 'modified'
+      : 'unchanged';
 
   if (authSections.length === 0 && !currentMode) {
     return null;

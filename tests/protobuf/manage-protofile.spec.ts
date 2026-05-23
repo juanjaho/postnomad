@@ -6,7 +6,9 @@ test.describe('manage protofile', () => {
     await closeAllCollections(page);
   });
 
-  test('protofiles, import paths from bruno.json are visible in the protobuf settings', async ({ pageWithUserData: page }) => {
+  test('protofiles, import paths from bruno.json are visible in the protobuf settings', async ({
+    pageWithUserData: page
+  }) => {
     await page.locator('#sidebar-collection-name').filter({ hasText: 'Grpcbin' }).click();
 
     await page.getByRole('tab', { name: 'Protobuf' }).click();
@@ -60,7 +62,10 @@ test.describe('manage protofile', () => {
     await expect(page.getByRole('cell', { name: 'invalid-file-path.proto', exact: true })).not.toBeVisible();
     await expect(invalidProtoFilesMessage).not.toBeVisible();
 
-    await page.getByRole('row', { name: './protos/invalid-import-path' }).getByTestId('protobuf-remove-import-path-button').click();
+    await page
+      .getByRole('row', { name: './protos/invalid-import-path' })
+      .getByTestId('protobuf-remove-import-path-button')
+      .click();
 
     await expect(page.getByRole('cell', { name: './protos/invalid-import-path', exact: true })).not.toBeVisible();
     await expect(invalidImportPathsMessage).not.toBeVisible();
@@ -82,18 +87,25 @@ test.describe('manage protofile', () => {
     await page.getByText('Proto FileReflection').click();
 
     // Use more specific selector for proto file selection
-    await page.locator('div').filter({ hasText: /^order\.proto\.\/protos\/services\/order\.proto$/ }).first().click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^order\.proto\.\/protos\/services\/order\.proto$/ })
+      .first()
+      .click();
 
     // Use test ID for method selection
     const grpcMethodsDropdown = page.getByTestId('grpc-methods-dropdown');
     await grpcMethodsDropdown.click();
-    const method = page.getByTestId('grpc-method-item').filter({ hasText: /^CreateOrderunary$/ }).first();
+    const method = page
+      .getByTestId('grpc-method-item')
+      .filter({ hasText: /^CreateOrderunary$/ })
+      .first();
     await expect(method).toBeVisible();
     await method.click();
     const requestTab = page.getByRole('tab', { name: 'gRPC sayHello' });
     await requestTab.hover();
     await requestTab.getByTestId('request-tab-close-icon').click({ force: true });
-    const dontSaveBtn = page.getByRole('button', { name: 'Don\'t Save' });
+    const dontSaveBtn = page.getByRole('button', { name: "Don't Save" });
     // Wait for actionability
     await expect(dontSaveBtn).toBeVisible();
     await dontSaveBtn.click();
@@ -112,7 +124,11 @@ test.describe('manage protofile', () => {
     await page.getByText('Proto FileReflection').click();
 
     // Use more specific selector for proto file selection
-    await page.locator('div').filter({ hasText: /^product\.proto\.\/protos\/services\/product\.proto$/ }).first().click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^product\.proto\.\/protos\/services\/product\.proto$/ })
+      .first()
+      .click();
 
     // Verify the error message is visible (auto-retrying)
     await expect(page.getByText('Failed to load gRPC methods: Unknown error').first()).toBeVisible();
@@ -124,7 +140,7 @@ test.describe('manage protofile', () => {
     const requestTab = page.getByRole('tab', { name: 'gRPC sayHello' });
     await requestTab.hover();
     await requestTab.getByTestId('request-tab-close-icon').click();
-    const dontSaveBtn = page.getByRole('button', { name: 'Don\'t Save' });
+    const dontSaveBtn = page.getByRole('button', { name: "Don't Save" });
     await expect(dontSaveBtn).toBeVisible();
     await dontSaveBtn.click();
   });
@@ -141,7 +157,9 @@ test.describe('manage protofile', () => {
     await expect(importPathTable).toBeVisible();
 
     // Use test ID for checkbox
-    const checkbox = page.getByRole('row', { name: 'Enable this import path types' }).getByTestId('protobuf-import-path-checkbox');
+    const checkbox = page
+      .getByRole('row', { name: 'Enable this import path types' })
+      .getByTestId('protobuf-import-path-checkbox');
     await checkbox.click();
 
     // Save the changes to persist them to bruno.json
@@ -159,7 +177,11 @@ test.describe('manage protofile', () => {
     await page.getByText('Proto FileReflection').click();
 
     // Use more specific selector for proto file selection
-    await page.locator('div').filter({ hasText: /^product\.proto\.\/protos\/services\/product\.proto$/ }).first().click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^product\.proto\.\/protos\/services\/product\.proto$/ })
+      .first()
+      .click();
     const grpcMethodsDropdown = page.getByTestId('grpc-methods-dropdown');
     await grpcMethodsDropdown.click();
     const method = page.getByTestId('grpc-methods-list').filter({ hasText: 'CreateProductunary' }).first();
@@ -170,6 +192,6 @@ test.describe('manage protofile', () => {
     const requestTab = page.getByRole('tab', { name: 'gRPC sayHello' });
     await requestTab.hover();
     await requestTab.getByTestId('request-tab-close-icon').click({ force: true });
-    await page.getByRole('button', { name: 'Don\'t Save' }).click();
+    await page.getByRole('button', { name: "Don't Save" }).click();
   });
 });

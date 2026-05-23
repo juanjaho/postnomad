@@ -39,10 +39,7 @@ const convertObjectToArray = (objectValue) => {
           j.spreadElement(
             j.callExpression(
               j.memberExpression(
-                j.callExpression(
-                  j.memberExpression(j.identifier('Object'), j.identifier('entries')),
-                  [prop.argument]
-                ),
+                j.callExpression(j.memberExpression(j.identifier('Object'), j.identifier('entries')), [prop.argument]),
                 j.identifier('map')
               ),
               [
@@ -85,9 +82,7 @@ const convertObjectToArray = (objectValue) => {
 const getContentType = (requestOptions) => {
   if (requestOptions.type !== 'ObjectExpression') return null;
 
-  const headersProp = requestOptions.properties.find((p) =>
-    (p.key.name === 'headers' || p.key.value === 'headers')
-  );
+  const headersProp = requestOptions.properties.find((p) => p.key.name === 'headers' || p.key.value === 'headers');
 
   if (!headersProp || headersProp.value.type !== 'ObjectExpression') return null;
 
@@ -214,40 +209,31 @@ const transformCallback = (callback) => {
   };
 
   // Process the callback body to transform response property references
-  j(callbackBody).find(j.MemberExpression, {
-    object: {
-      type: 'Identifier',
-      name: responseVarName
-    }
-  }).forEach((memberPath) => {
-    const property = memberPath.node.property;
-
-    // Handle property access
-    if (property.type === 'Identifier' && responsePropertyMap[property.name]) {
-      const pmProperty = responsePropertyMap[property.name];
-
-      if (property.name === 'data') {
-        // response.data -> response.json() (convert to method call)
-        j(memberPath).replaceWith(
-          j.callExpression(
-            j.memberExpression(
-              j.identifier(responseVarName),
-              j.identifier(pmProperty)
-            ),
-            []
-          )
-        );
-      } else {
-        // Regular property replacement (status -> code, statusText -> status)
-        j(memberPath).replaceWith(
-          j.memberExpression(
-            j.identifier(responseVarName),
-            j.identifier(pmProperty)
-          )
-        );
+  j(callbackBody)
+    .find(j.MemberExpression, {
+      object: {
+        type: 'Identifier',
+        name: responseVarName
       }
-    }
-  });
+    })
+    .forEach((memberPath) => {
+      const property = memberPath.node.property;
+
+      // Handle property access
+      if (property.type === 'Identifier' && responsePropertyMap[property.name]) {
+        const pmProperty = responsePropertyMap[property.name];
+
+        if (property.name === 'data') {
+          // response.data -> response.json() (convert to method call)
+          j(memberPath).replaceWith(
+            j.callExpression(j.memberExpression(j.identifier(responseVarName), j.identifier(pmProperty)), [])
+          );
+        } else {
+          // Regular property replacement (status -> code, statusText -> status)
+          j(memberPath).replaceWith(j.memberExpression(j.identifier(responseVarName), j.identifier(pmProperty)));
+        }
+      }
+    });
 
   // Create the callback - Postman uses regular functions
   const bodyStatements = callbackBody.type === 'BlockStatement' ? callbackBody.body : [j.returnStatement(callbackBody)];
@@ -279,25 +265,27 @@ const findAndTransformVariableDeclaration = (root, variableName, visited = new S
   let transformedConfig = null;
 
   // Find the variable declaration
-  root.find(j.VariableDeclarator, {
-    id: { name: variableName }
-  }).forEach((declaratorPath) => {
-    const init = declaratorPath.value.init;
+  root
+    .find(j.VariableDeclarator, {
+      id: { name: variableName }
+    })
+    .forEach((declaratorPath) => {
+      const init = declaratorPath.value.init;
 
-    if (init && init.type === 'ObjectExpression') {
-      // Found the actual object expression - transform it in place
-      // Get Content-Type BEFORE transforming headers (since we rename headers to header)
-      const contentType = getContentType(init);
-      transformHeaders(init);
-      transformBody(init, contentType);
+      if (init && init.type === 'ObjectExpression') {
+        // Found the actual object expression - transform it in place
+        // Get Content-Type BEFORE transforming headers (since we rename headers to header)
+        const contentType = getContentType(init);
+        transformHeaders(init);
+        transformBody(init, contentType);
 
-      transformedConfig = init;
-    } else if (init && init.type === 'Identifier') {
-      // This variable references another variable - follow the chain
-      const referencedVariableName = init.name;
-      transformedConfig = findAndTransformVariableDeclaration(root, referencedVariableName, visited);
-    }
-  });
+        transformedConfig = init;
+      } else if (init && init.type === 'Identifier') {
+        // This variable references another variable - follow the chain
+        const referencedVariableName = init.name;
+        transformedConfig = findAndTransformVariableDeclaration(root, referencedVariableName, visited);
+      }
+    });
 
   return transformedConfig;
 };
@@ -307,10 +295,7 @@ const findAndTransformVariableDeclaration = (root, variableName, visited = new S
  * @returns {Object} - MemberExpression AST node
  */
 const buildPmSendRequest = () => {
-  return j.memberExpression(
-    j.identifier('pm'),
-    j.identifier('sendRequest')
-  );
+  return j.memberExpression(j.identifier('pm'), j.identifier('sendRequest'));
 };
 
 /**

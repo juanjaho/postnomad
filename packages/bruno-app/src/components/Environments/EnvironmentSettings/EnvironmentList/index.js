@@ -85,18 +85,23 @@ const EnvironmentList = ({
 
   const environmentsDraftUid = collection?.environmentsDraft?.environmentUid;
 
-  const handleDotEnvModifiedChange = useCallback((modified) => {
-    setIsDotEnvModified(modified);
-    if (modified) {
-      dispatch(setEnvironmentsDraft({
-        collectionUid: collection.uid,
-        environmentUid: `dotenv:${selectedDotEnvFile}`,
-        variables: []
-      }));
-    } else if (environmentsDraftUid?.startsWith('dotenv:')) {
-      dispatch(clearEnvironmentsDraft({ collectionUid: collection.uid }));
-    }
-  }, [dispatch, collection.uid, selectedDotEnvFile, environmentsDraftUid]);
+  const handleDotEnvModifiedChange = useCallback(
+    (modified) => {
+      setIsDotEnvModified(modified);
+      if (modified) {
+        dispatch(
+          setEnvironmentsDraft({
+            collectionUid: collection.uid,
+            environmentUid: `dotenv:${selectedDotEnvFile}`,
+            variables: []
+          })
+        );
+      } else if (environmentsDraftUid?.startsWith('dotenv:')) {
+        dispatch(clearEnvironmentsDraft({ collectionUid: collection.uid }));
+      }
+    },
+    [dispatch, collection.uid, selectedDotEnvFile, environmentsDraftUid]
+  );
 
   useEffect(() => {
     if (dotEnvFiles.length === 0) {
@@ -195,16 +200,19 @@ const EnvironmentList = ({
     }, 50);
   };
 
-  const handleActivateEnvironment = useCallback((e, env) => {
-    e.stopPropagation();
-    dispatch(selectEnvironment(env.uid, collection.uid))
-      .then(() => {
-        toast.success(`Environment "${env.name}" activated`);
-      })
-      .catch(() => {
-        toast.error('Failed to activate environment');
-      });
-  }, [dispatch, collection.uid]);
+  const handleActivateEnvironment = useCallback(
+    (e, env) => {
+      e.stopPropagation();
+      dispatch(selectEnvironment(env.uid, collection.uid))
+        .then(() => {
+          toast.success(`Environment "${env.name}" activated`);
+        })
+        .catch(() => {
+          toast.error('Failed to activate environment');
+        });
+    },
+    [dispatch, collection.uid]
+  );
 
   const validateEnvironmentName = (name, excludeUid = null) => {
     if (!name || name.trim() === '') {
@@ -473,8 +481,8 @@ const EnvironmentList = ({
     setDotEnvViewMode(mode);
   };
 
-  const filteredEnvironments
-    = environments?.filter((env) => env.name.toLowerCase().includes(searchText.toLowerCase())) || [];
+  const filteredEnvironments =
+    environments?.filter((env) => env.name.toLowerCase().includes(searchText.toLowerCase())) || [];
 
   const selectedDotEnvData = dotEnvFiles.find((f) => f.filename === selectedDotEnvFile);
 
@@ -549,13 +557,12 @@ const EnvironmentList = ({
         )}
 
         <div className="sidebar">
-
           <div className="sections-container">
             <CollapsibleSection
               title="Environments"
               expanded={environmentsExpanded}
               onToggle={() => setEnvironmentsExpanded(!environmentsExpanded)}
-              actions={(
+              actions={
                 <>
                   <button
                     type="button"
@@ -591,7 +598,7 @@ const EnvironmentList = ({
                     <IconUpload size={14} strokeWidth={1.5} />
                   </button>
                 </>
-              )}
+              }
             >
               <div className="env-list-search">
                 <IconSearch size={13} strokeWidth={1.5} className="env-list-search-icon" />
@@ -724,7 +731,9 @@ const EnvironmentList = ({
                   </div>
                 )}
 
-                {envNameError && (isCreatingInline || renamingEnvUid) && <div className="env-error">{envNameError}</div>}
+                {envNameError && (isCreatingInline || renamingEnvUid) && (
+                  <div className="env-error">{envNameError}</div>
+                )}
 
                 {filteredEnvironments.length === 0 && !isCreatingInline && (
                   <div className="no-env-file">
@@ -740,7 +749,7 @@ const EnvironmentList = ({
               expanded={dotEnvExpanded}
               onToggle={() => setDotEnvExpanded(!dotEnvExpanded)}
               badge={dotEnvFiles.length}
-              actions={(
+              actions={
                 <button
                   className="btn-action"
                   onClick={handleCreateDotEnvInlineClick}
@@ -749,7 +758,7 @@ const EnvironmentList = ({
                 >
                   <IconPlus size={14} strokeWidth={1.5} />
                 </button>
-              )}
+              }
             >
               <div className="environments-list">
                 {dotEnvFiles.map((file) => (

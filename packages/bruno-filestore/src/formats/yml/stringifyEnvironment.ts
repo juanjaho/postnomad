@@ -1,9 +1,14 @@
-import type { Environment as BrunoEnvironment, EnvironmentVariable as BrunoEnvironmentVariable } from '@usebruno/schema-types/collection/environment';
+import type {
+  Environment as BrunoEnvironment,
+  EnvironmentVariable as BrunoEnvironmentVariable
+} from '@usebruno/schema-types/collection/environment';
 import type { Environment } from '@opencollection/types/config/environments';
 import type { Variable, SecretVariable } from '@opencollection/types/common/variables';
 import { stringifyYml } from './utils';
 
-const toOpenCollectionEnvironmentVariables = (variables: BrunoEnvironmentVariable[]): (Variable | SecretVariable)[] | undefined => {
+const toOpenCollectionEnvironmentVariables = (
+  variables: BrunoEnvironmentVariable[]
+): (Variable | SecretVariable)[] | undefined => {
   if (!variables?.length) {
     return undefined;
   }

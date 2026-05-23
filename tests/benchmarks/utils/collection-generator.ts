@@ -41,9 +41,16 @@ export function generateCollection({
 }: GenerateCollectionOptions) {
   if (format === 'bru') {
     fs.writeFileSync(path.join(dir, 'bruno.json'), JSON.stringify({ version: '1', name, type: 'collection' }, null, 2));
-    fs.writeFileSync(path.join(dir, 'collection.bru'), stringifyCollection({ name } as any, {}, { format: 'bru' }) || `meta {\n  name: ${name}\n}\n`);
+    fs.writeFileSync(
+      path.join(dir, 'collection.bru'),
+      stringifyCollection({ name } as any, {}, { format: 'bru' }) || `meta {\n  name: ${name}\n}\n`
+    );
   } else {
-    const ymlContent = stringifyCollection({ name } as any, { name, type: 'collection', opencollection: '1.0.0' }, { format: 'yml' });
+    const ymlContent = stringifyCollection(
+      { name } as any,
+      { name, type: 'collection', opencollection: '1.0.0' },
+      { format: 'yml' }
+    );
     fs.writeFileSync(path.join(dir, 'opencollection.yml'), ymlContent);
   }
 
@@ -61,7 +68,10 @@ export function generateCollection({
     const count = Math.min(requestsPerFolder, requestCount - f * requestsPerFolder);
     Array.from({ length: count }).forEach((_, r) => {
       const seq = f * requestsPerFolder + r + 1;
-      fs.writeFileSync(path.join(folderPath, `request-${seq}.${ext}`), stringifyRequest(buildRequestItem(seq), { format }));
+      fs.writeFileSync(
+        path.join(folderPath, `request-${seq}.${ext}`),
+        stringifyRequest(buildRequestItem(seq), { format })
+      );
     });
   });
 }

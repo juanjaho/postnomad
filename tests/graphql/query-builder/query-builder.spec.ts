@@ -6,7 +6,7 @@ const qb = (page: Page) => page.locator('.graphql-query-builder-container');
 const getQueryEditorContent = async (page: Page) => {
   const editor = page.locator('[aria-label="Query Editor"] .CodeMirror').first();
   await expect(editor).toBeVisible();
-  return await editor.evaluate((el) => (el as any).CodeMirror?.getValue() || '') as string;
+  return (await editor.evaluate((el) => (el as any).CodeMirror?.getValue() || '')) as string;
 };
 
 const ensureVariablesPaneOpen = async (page: Page) => {
@@ -20,7 +20,7 @@ const ensureVariablesPaneOpen = async (page: Page) => {
 const getVariablesEditorContent = async (page: Page) => {
   await ensureVariablesPaneOpen(page);
   const editor = page.locator('.variables-section .CodeMirror').first();
-  return await editor.evaluate((el) => (el as any).CodeMirror?.getValue() || '') as string;
+  return (await editor.evaluate((el) => (el as any).CodeMirror?.getValue() || '')) as string;
 };
 
 test.describe('GraphQL Query Builder', () => {
@@ -55,13 +55,20 @@ test.describe('GraphQL Query Builder', () => {
     });
 
     await test.step('Click on "users" field to expand it', async () => {
-      const usersField = qb(page).locator('.field-node').filter({ hasText: /^users/ }).first();
+      const usersField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^users/ })
+        .first();
       await usersField.click();
       await expect(qb(page).locator('.section-header').filter({ hasText: 'ARGUMENTS' }).first()).toBeVisible();
     });
 
     await test.step('Check the "users" field checkbox', async () => {
-      const usersCheckbox = qb(page).locator('.field-node').filter({ hasText: /^users/ }).first().locator('.field-checkbox');
+      const usersCheckbox = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^users/ })
+        .first()
+        .locator('.field-checkbox');
       await usersCheckbox.check();
       await expect(usersCheckbox).toBeChecked();
     });
@@ -75,7 +82,10 @@ test.describe('GraphQL Query Builder', () => {
       const nameField = fieldsSection.locator('.field-node').filter({ hasText: /^name/ }).first();
       await nameField.locator('.field-checkbox').check();
 
-      const emailField = fieldsSection.locator('.field-node').filter({ hasText: /^email/ }).first();
+      const emailField = fieldsSection
+        .locator('.field-node')
+        .filter({ hasText: /^email/ })
+        .first();
       await emailField.locator('.field-checkbox').check();
     });
 
@@ -91,13 +101,20 @@ test.describe('GraphQL Query Builder', () => {
 
   test('Enable argument and set value', async ({ pageWithUserData: page }) => {
     await test.step('Expand "user" field to show arguments', async () => {
-      const userField = qb(page).locator('.field-node').filter({ hasText: /^user\b/ }).first();
+      const userField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^user\b/ })
+        .first();
       await userField.click();
       await expect(qb(page).locator('.section-header').filter({ hasText: 'ARGUMENTS' }).first()).toBeVisible();
     });
 
     await test.step('Check the "user" field', async () => {
-      const userCheckbox = qb(page).locator('.field-node').filter({ hasText: /^user\b/ }).first().locator('.field-checkbox');
+      const userCheckbox = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^user\b/ })
+        .first()
+        .locator('.field-checkbox');
       await userCheckbox.check();
     });
 
@@ -138,18 +155,32 @@ test.describe('GraphQL Query Builder', () => {
     });
 
     await test.step('Check "post" and expand "author" nested field', async () => {
-      const postCheckbox = qb(page).locator('.field-node').filter({ hasText: /^post/ }).first().locator('.field-checkbox');
+      const postCheckbox = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^post/ })
+        .first()
+        .locator('.field-checkbox');
       await postCheckbox.check();
 
-      const titleField = qb(page).locator('.field-node').filter({ hasText: /^title/ }).first();
+      const titleField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^title/ })
+        .first();
       await titleField.locator('.field-checkbox').check();
 
-      const authorField = qb(page).locator('.field-node').filter({ hasText: /^author/ }).first();
+      const authorField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^author/ })
+        .first();
       await authorField.click();
     });
 
     await test.step('Select nested author fields', async () => {
-      const authorCheckbox = qb(page).locator('.field-node').filter({ hasText: /^author/ }).first().locator('.field-checkbox');
+      const authorCheckbox = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^author/ })
+        .first()
+        .locator('.field-checkbox');
       await authorCheckbox.check();
 
       const nameFields = qb(page).locator('.field-node').filter({ hasText: /^name/ });
@@ -168,8 +199,15 @@ test.describe('GraphQL Query Builder', () => {
 
   test('Removing a field in code editor unchecks it in query builder', async ({ pageWithUserData: page }) => {
     await test.step('Ensure "users" is expanded with child fields id, name, email checked', async () => {
-      const usersField = qb(page).locator('.field-node').filter({ hasText: /^users/ }).first();
-      const usersChildrenVisible = await qb(page).locator('.field-node').filter({ hasText: /^email/ }).first().isVisible();
+      const usersField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^users/ })
+        .first();
+      const usersChildrenVisible = await qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^email/ })
+        .first()
+        .isVisible();
       if (!usersChildrenVisible) {
         await usersField.click();
       }
@@ -181,7 +219,10 @@ test.describe('GraphQL Query Builder', () => {
 
       const fieldsSection = qb(page).locator('.query-builder-tree');
       for (const fieldName of ['id', 'name', 'email']) {
-        const field = fieldsSection.locator('.field-node').filter({ hasText: new RegExp(`^${fieldName}`) }).first();
+        const field = fieldsSection
+          .locator('.field-node')
+          .filter({ hasText: new RegExp(`^${fieldName}`) })
+          .first();
         const checkbox = field.locator('.field-checkbox');
         if (!(await checkbox.isChecked())) {
           await checkbox.check();
@@ -220,7 +261,11 @@ test.describe('GraphQL Query Builder', () => {
     await test.step('Verify "id" and "name" are still checked', async () => {
       const fieldsSection = qb(page).locator('.query-builder-tree');
 
-      const idCheckbox = fieldsSection.locator('.field-node').filter({ hasText: /^id/ }).first().locator('.field-checkbox');
+      const idCheckbox = fieldsSection
+        .locator('.field-node')
+        .filter({ hasText: /^id/ })
+        .first()
+        .locator('.field-checkbox');
       await expect(idCheckbox).toBeChecked();
 
       const nameCheckbox = fieldsSection
@@ -236,7 +281,10 @@ test.describe('GraphQL Query Builder', () => {
     pageWithUserData: page
   }) => {
     await test.step('Set up "user" field with "id" argument via query builder', async () => {
-      const userField = qb(page).locator('.field-node').filter({ hasText: /^user\b/ }).first();
+      const userField = qb(page)
+        .locator('.field-node')
+        .filter({ hasText: /^user\b/ })
+        .first();
       await expect(qb(page).locator('.section-header').filter({ hasText: 'ARGUMENTS' }).first()).toBeVisible();
 
       const userCheckbox = userField.locator('.field-checkbox');

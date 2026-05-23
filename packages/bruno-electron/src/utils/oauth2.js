@@ -56,10 +56,19 @@ const safeParseJSONBuffer = (data) => {
 const getCredentialsFromTokenUrl = async ({ requestConfig, certsAndProxyConfig }) => {
   const { proxyMode, proxyConfig, httpsAgentRequestFields, interpolationOptions } = certsAndProxyConfig;
   const axiosInstance = makeAxiosInstance({ proxyMode, proxyConfig, httpsAgentRequestFields, interpolationOptions });
-  let requestDetails = { request: {}, response: {} }, parsedResponseData;
+  let requestDetails = { request: {}, response: {} },
+    parsedResponseData;
   try {
     const response = await axiosInstance(requestConfig);
-    const { url: responseUrl, headers: responseHeaders, status: responseStatus, statusText: responseStatusText, data: responseData, timeline, config } = response || {};
+    const {
+      url: responseUrl,
+      headers: responseHeaders,
+      status: responseStatus,
+      statusText: responseStatusText,
+      data: responseData,
+      timeline,
+      config
+    } = response || {};
     const { url: requestUrl, headers: requestHeaders, data: requestData } = config || {};
     parsedResponseData = safeParseJSONBuffer(responseData);
     requestDetails = {
@@ -81,7 +90,14 @@ const getCredentialsFromTokenUrl = async ({ requestConfig, certsAndProxyConfig }
   } catch (error) {
     if (error.response) {
       const { response, config } = error;
-      const { url: responseUrl, headers: responseHeaders, status: responseStatus, statusText: responseStatusText, data: responseData, timeline } = response || {};
+      const {
+        url: responseUrl,
+        headers: responseHeaders,
+        status: responseStatus,
+        statusText: responseStatusText,
+        data: responseData,
+        timeline
+      } = response || {};
       const { url: requestUrl, headers: requestHeaders, data: requestData } = config || {};
       const errorResponseData = safeStringifyJSON(safeParseJSONBuffer(responseData));
       requestDetails = {
@@ -136,7 +152,13 @@ const getCredentialsFromTokenUrl = async ({ requestConfig, certsAndProxyConfig }
 
 // AUTHORIZATION CODE
 
-const getOAuth2TokenUsingAuthorizationCode = async ({ request, collectionUid, forceFetch = false, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }) => {
+const getOAuth2TokenUsingAuthorizationCode = async ({
+  request,
+  collectionUid,
+  forceFetch = false,
+  certsAndProxyConfigForTokenUrl,
+  certsAndProxyConfigForRefreshUrl
+}) => {
   let codeVerifier = generateCodeVerifier();
   let codeChallenge = generateCodeChallenge(codeVerifier);
 
@@ -208,7 +230,11 @@ const getOAuth2TokenUsingAuthorizationCode = async ({ request, collectionUid, fo
         if (autoRefreshToken && storedCredentials.refresh_token) {
           // Try to refresh token
           try {
-            const refreshedCredentialsData = await refreshOauth2Token({ requestCopy, collectionUid, certsAndProxyConfig: certsAndProxyConfigForRefreshUrl });
+            const refreshedCredentialsData = await refreshOauth2Token({
+              requestCopy,
+              collectionUid,
+              certsAndProxyConfig: certsAndProxyConfigForRefreshUrl
+            });
             return { collectionUid, url, credentials: refreshedCredentialsData.credentials, credentialsId };
           } catch (error) {
             // Refresh failed
@@ -255,7 +281,7 @@ const getOAuth2TokenUsingAuthorizationCode = async ({ request, collectionUid, fo
   axiosRequestConfig.method = 'POST';
   axiosRequestConfig.headers = {
     'content-type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
   if (credentialsPlacement === 'basic_auth_header') {
     const secret = clientSecret ?? '';
@@ -285,7 +311,10 @@ const getOAuth2TokenUsingAuthorizationCode = async ({ request, collectionUid, fo
   }
   axiosRequestConfig.data = qs.stringify(data);
   try {
-    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({ requestConfig: axiosRequestConfig, certsAndProxyConfig: certsAndProxyConfigForTokenUrl });
+    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({
+      requestConfig: axiosRequestConfig,
+      certsAndProxyConfig: certsAndProxyConfigForTokenUrl
+    });
 
     // Ensure debugInfo.data is initialized
     if (!debugInfo) {
@@ -305,7 +334,8 @@ const getOAuth2TokenUsingAuthorizationCode = async ({ request, collectionUid, fo
 const getOAuth2AuthorizationCode = (request, codeChallenge, collectionUid) => {
   return new Promise(async (resolve, reject) => {
     const { oauth2 } = request;
-    const { callbackUrl, clientId, authorizationUrl, scope, state, pkce, accessTokenUrl, additionalParameters } = oauth2;
+    const { callbackUrl, clientId, authorizationUrl, scope, state, pkce, accessTokenUrl, additionalParameters } =
+      oauth2;
     const useSystemBrowser = preferencesUtil.shouldUseSystemBrowser();
     const effectiveCallbackUrl = callbackUrl && callbackUrl.length ? callbackUrl : BRUNO_OAUTH2_CALLBACK_URL;
 
@@ -370,7 +400,13 @@ const getAdditionalHeaders = (params) => {
 
 // CLIENT CREDENTIALS
 
-const getOAuth2TokenUsingClientCredentials = async ({ request, collectionUid, forceFetch = false, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }) => {
+const getOAuth2TokenUsingClientCredentials = async ({
+  request,
+  collectionUid,
+  forceFetch = false,
+  certsAndProxyConfigForTokenUrl,
+  certsAndProxyConfigForRefreshUrl
+}) => {
   let requestCopy = cloneDeep(request);
   const oAuth = get(requestCopy, 'oauth2', {});
   const {
@@ -418,7 +454,11 @@ const getOAuth2TokenUsingClientCredentials = async ({ request, collectionUid, fo
         if (autoRefreshToken && storedCredentials.refresh_token) {
           // Try to refresh token
           try {
-            const refreshedCredentialsData = await refreshOauth2Token({ requestCopy, collectionUid, certsAndProxyConfig: certsAndProxyConfigForRefreshUrl });
+            const refreshedCredentialsData = await refreshOauth2Token({
+              requestCopy,
+              collectionUid,
+              certsAndProxyConfig: certsAndProxyConfigForRefreshUrl
+            });
             return { collectionUid, url, credentials: refreshedCredentialsData.credentials, credentialsId };
           } catch (error) {
             clearOauth2Credentials({ collectionUid, url, credentialsId });
@@ -461,7 +501,7 @@ const getOAuth2TokenUsingClientCredentials = async ({ request, collectionUid, fo
   axiosRequestConfig.method = 'POST';
   axiosRequestConfig.headers = {
     'content-type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
   if (credentialsPlacement === 'basic_auth_header') {
     const secret = clientSecret ?? '';
@@ -487,7 +527,10 @@ const getOAuth2TokenUsingClientCredentials = async ({ request, collectionUid, fo
   axiosRequestConfig.data = qs.stringify(data);
   let debugInfo = { data: [] };
   try {
-    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({ requestConfig: axiosRequestConfig, certsAndProxyConfig: certsAndProxyConfigForTokenUrl });
+    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({
+      requestConfig: axiosRequestConfig,
+      certsAndProxyConfig: certsAndProxyConfigForTokenUrl
+    });
     debugInfo.data.push(requestDetails);
     credentials && persistOauth2Credentials({ collectionUid, url, credentials, credentialsId });
     return { collectionUid, url, credentials, credentialsId, debugInfo };
@@ -498,7 +541,13 @@ const getOAuth2TokenUsingClientCredentials = async ({ request, collectionUid, fo
 
 // PASSWORD CREDENTIALS
 
-const getOAuth2TokenUsingPasswordCredentials = async ({ request, collectionUid, forceFetch = false, certsAndProxyConfigForTokenUrl, certsAndProxyConfigForRefreshUrl }) => {
+const getOAuth2TokenUsingPasswordCredentials = async ({
+  request,
+  collectionUid,
+  forceFetch = false,
+  certsAndProxyConfigForTokenUrl,
+  certsAndProxyConfigForRefreshUrl
+}) => {
   let requestCopy = cloneDeep(request);
   const oAuth = get(requestCopy, 'oauth2', {});
   const {
@@ -565,7 +614,11 @@ const getOAuth2TokenUsingPasswordCredentials = async ({ request, collectionUid, 
         if (autoRefreshToken && storedCredentials.refresh_token) {
           // Try to refresh token
           try {
-            const refreshedCredentialsData = await refreshOauth2Token({ requestCopy, collectionUid, certsAndProxyConfig: certsAndProxyConfigForRefreshUrl });
+            const refreshedCredentialsData = await refreshOauth2Token({
+              requestCopy,
+              collectionUid,
+              certsAndProxyConfig: certsAndProxyConfigForRefreshUrl
+            });
             return { collectionUid, url, credentials: refreshedCredentialsData.credentials, credentialsId };
           } catch (error) {
             clearOauth2Credentials({ collectionUid, url, credentialsId });
@@ -609,7 +662,7 @@ const getOAuth2TokenUsingPasswordCredentials = async ({ request, collectionUid, 
   axiosRequestConfig.method = 'POST';
   axiosRequestConfig.headers = {
     'content-type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
   if (credentialsPlacement === 'basic_auth_header') {
     const secret = clientSecret ?? '';
@@ -637,7 +690,10 @@ const getOAuth2TokenUsingPasswordCredentials = async ({ request, collectionUid, 
   axiosRequestConfig.data = qs.stringify(data);
   let debugInfo = { data: [] };
   try {
-    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({ requestConfig: axiosRequestConfig, certsAndProxyConfig: certsAndProxyConfigForTokenUrl });
+    const { credentials, requestDetails } = await getCredentialsFromTokenUrl({
+      requestConfig: axiosRequestConfig,
+      certsAndProxyConfig: certsAndProxyConfigForTokenUrl
+    });
     debugInfo.data.push(requestDetails);
     credentials && persistOauth2Credentials({ collectionUid, url, credentials, credentialsId });
     return { collectionUid, url, credentials, credentialsId, debugInfo };
@@ -671,7 +727,7 @@ const refreshOauth2Token = async ({ requestCopy, collectionUid, certsAndProxyCon
     axiosRequestConfig.method = 'POST';
     axiosRequestConfig.headers = {
       'content-type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json'
+      Accept: 'application/json'
     };
     if (credentialsPlacement === 'basic_auth_header') {
       const secret = clientSecret ?? '';
@@ -685,7 +741,10 @@ const refreshOauth2Token = async ({ requestCopy, collectionUid, certsAndProxyCon
     axiosRequestConfig.data = qs.stringify(data);
     let debugInfo = { data: [] };
     try {
-      const { credentials, requestDetails } = await getCredentialsFromTokenUrl({ requestConfig: axiosRequestConfig, certsAndProxyConfig });
+      const { credentials, requestDetails } = await getCredentialsFromTokenUrl({
+        requestConfig: axiosRequestConfig,
+        certsAndProxyConfig
+      });
       debugInfo.data.push(requestDetails);
       if (!credentials || credentials?.error) {
         clearOauth2Credentials({ collectionUid, url, credentialsId });
@@ -710,10 +769,7 @@ const generateCodeVerifier = () => {
 const generateCodeChallenge = (codeVerifier) => {
   const hash = crypto.createHash('sha256');
   hash.update(codeVerifier);
-  const base64Hash = hash.digest('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+  const base64Hash = hash.digest('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   return base64Hash;
 };
 
@@ -918,15 +974,19 @@ const getOAuth2TokenUsingImplicitGrant = async ({ request, collectionUid, forceF
   }
 };
 
-const updateCollectionOauth2Credentials = ({ collectionUid, itemUid, collectionOauth2Credentials = [], requestOauth2Credentials = {} }) => {
+const updateCollectionOauth2Credentials = ({
+  collectionUid,
+  itemUid,
+  collectionOauth2Credentials = [],
+  requestOauth2Credentials = {}
+}) => {
   const { url, credentialsId, folderUid, credentials, debugInfo } = requestOauth2Credentials;
 
   // Remove existing credentials for the same combination
-  const filteredOauth2Credentials = filter(cloneDeep(collectionOauth2Credentials),
-    (creds) =>
-      !(creds.url === url
-        && creds.collectionUid === collectionUid
-        && creds.credentialsId === credentialsId));
+  const filteredOauth2Credentials = filter(
+    cloneDeep(collectionOauth2Credentials),
+    (creds) => !(creds.url === url && creds.collectionUid === collectionUid && creds.credentialsId === credentialsId)
+  );
 
   // Add the new credential with folderUid and itemUid
   filteredOauth2Credentials.push({

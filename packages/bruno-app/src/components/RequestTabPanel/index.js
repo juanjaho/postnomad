@@ -65,13 +65,19 @@ const RequestTabPanel = () => {
   const isVerticalLayout = preferences?.layout?.responsePaneOrientation === 'vertical';
   const isConsoleOpen = useSelector((state) => state.logs.isConsoleOpen);
 
-  const isRequestTab = focusedTab && ['request', 'http-request', 'grpc-request', 'ws-request', 'graphql-request'].includes(focusedTab.type);
-  useKeybinding('sendRequest', (e) => {
-    e?.preventDefault?.();
-    e?.stopPropagation?.();
-    handleRun();
-    return false;
-  }, { enabled: !!isRequestTab, deps: [isRequestTab] });
+  const isRequestTab =
+    focusedTab &&
+    ['request', 'http-request', 'grpc-request', 'ws-request', 'graphql-request'].includes(focusedTab.type);
+  useKeybinding(
+    'sendRequest',
+    (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      handleRun();
+      return false;
+    },
+    { enabled: !!isRequestTab, deps: [isRequestTab] }
+  );
 
   // Use ref to avoid stale closure in event handlers
   const isVerticalLayoutRef = useRef(isVerticalLayout);
@@ -130,19 +136,25 @@ const RequestTabPanel = () => {
   const showGqlDocs = focusedTab?.gqlDocsOpen || false;
 
   const onSchemaLoad = useCallback((schema) => setSchema(schema), []);
-  const toggleDocs = useCallback((value = null) => {
-    const newValue = value !== null ? !!value : !showGqlDocs;
-    dispatch(updateGqlDocsOpen({ uid: activeTabUid, gqlDocsOpen: newValue }));
-  }, [dispatch, activeTabUid, showGqlDocs]);
+  const toggleDocs = useCallback(
+    (value = null) => {
+      const newValue = value !== null ? !!value : !showGqlDocs;
+      dispatch(updateGqlDocsOpen({ uid: activeTabUid, gqlDocsOpen: newValue }));
+    },
+    [dispatch, activeTabUid, showGqlDocs]
+  );
 
-  const handleGqlClickReference = useCallback((reference) => {
-    if (docExplorerRef.current) {
-      docExplorerRef.current.showDocForReference(reference);
-    }
-    if (!showGqlDocs) {
-      dispatch(updateGqlDocsOpen({ uid: activeTabUid, gqlDocsOpen: true }));
-    }
-  }, [dispatch, activeTabUid, showGqlDocs]);
+  const handleGqlClickReference = useCallback(
+    (reference) => {
+      if (docExplorerRef.current) {
+        docExplorerRef.current.showDocForReference(reference);
+      }
+      if (!showGqlDocs) {
+        dispatch(updateGqlDocsOpen({ uid: activeTabUid, gqlDocsOpen: true }));
+      }
+    },
+    [dispatch, activeTabUid, showGqlDocs]
+  );
 
   // Refs for panel collapse/expand functions and current collapsed state
   const collapseRequestRef = useRef(collapseRequest);
@@ -165,67 +177,73 @@ const RequestTabPanel = () => {
     setDragging(false);
   }, []);
 
-  const handleMouseMove = useCallback((e) => {
-    if (!draggingRef.current || !mainSectionRef.current) return;
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (!draggingRef.current || !mainSectionRef.current) return;
 
-    e.preventDefault();
-    const mainRect = mainSectionRef.current.getBoundingClientRect();
-
-    if (isVerticalLayoutRef.current) {
-      const newHeight = e.clientY - mainRect.top;
-      const maxHeight = mainRect.height - MIN_BOTTOM_PANE_HEIGHT;
-      const distanceFromBottom = mainRect.bottom - e.clientY;
-
-      if (newHeight < COLLAPSE_EDGE_THRESHOLD) {
-        if (!requestPaneCollapsedRef.current) collapseRequestRef.current();
-        return;
-      }
-
-      if (distanceFromBottom < COLLAPSE_EDGE_THRESHOLD) {
-        if (!responsePaneCollapsedRef.current) collapseResponseRef.current();
-        return;
-      }
-
-      if (requestPaneCollapsedRef.current && newHeight < EXPAND_EDGE_THRESHOLD) return;
-      if (responsePaneCollapsedRef.current && distanceFromBottom < EXPAND_EDGE_THRESHOLD) return;
-
-      if (requestPaneCollapsedRef.current) expandRequestRef.current();
-      if (responsePaneCollapsedRef.current) expandResponseRef.current();
-
-      const clampedHeight = Math.max(MIN_TOP_PANE_HEIGHT, Math.min(newHeight, maxHeight));
-      setTopPaneHeight(clampedHeight);
-    } else {
-      const newWidth = e.clientX - mainRect.left;
-      const maxWidth = mainRect.width - MIN_RIGHT_PANE_WIDTH;
-      const distanceFromRight = mainRect.right - e.clientX;
-
-      if (newWidth < COLLAPSE_EDGE_THRESHOLD) {
-        if (!requestPaneCollapsedRef.current) collapseRequestRef.current();
-        return;
-      }
-
-      if (distanceFromRight < COLLAPSE_EDGE_THRESHOLD) {
-        if (!responsePaneCollapsedRef.current) collapseResponseRef.current();
-        return;
-      }
-
-      if (requestPaneCollapsedRef.current && newWidth < EXPAND_EDGE_THRESHOLD) return;
-      if (responsePaneCollapsedRef.current && distanceFromRight < EXPAND_EDGE_THRESHOLD) return;
-
-      if (requestPaneCollapsedRef.current) expandRequestRef.current();
-      if (responsePaneCollapsedRef.current) expandResponseRef.current();
-
-      const clampedWidth = Math.max(MIN_LEFT_PANE_WIDTH, Math.min(newWidth, maxWidth));
-      setLeftPaneWidth(clampedWidth);
-    }
-  }, [setTopPaneHeight, setLeftPaneWidth]);
-
-  const handleMouseUp = useCallback((e) => {
-    if (draggingRef.current) {
       e.preventDefault();
-      stopDragging();
-    }
-  }, [stopDragging]);
+      const mainRect = mainSectionRef.current.getBoundingClientRect();
+
+      if (isVerticalLayoutRef.current) {
+        const newHeight = e.clientY - mainRect.top;
+        const maxHeight = mainRect.height - MIN_BOTTOM_PANE_HEIGHT;
+        const distanceFromBottom = mainRect.bottom - e.clientY;
+
+        if (newHeight < COLLAPSE_EDGE_THRESHOLD) {
+          if (!requestPaneCollapsedRef.current) collapseRequestRef.current();
+          return;
+        }
+
+        if (distanceFromBottom < COLLAPSE_EDGE_THRESHOLD) {
+          if (!responsePaneCollapsedRef.current) collapseResponseRef.current();
+          return;
+        }
+
+        if (requestPaneCollapsedRef.current && newHeight < EXPAND_EDGE_THRESHOLD) return;
+        if (responsePaneCollapsedRef.current && distanceFromBottom < EXPAND_EDGE_THRESHOLD) return;
+
+        if (requestPaneCollapsedRef.current) expandRequestRef.current();
+        if (responsePaneCollapsedRef.current) expandResponseRef.current();
+
+        const clampedHeight = Math.max(MIN_TOP_PANE_HEIGHT, Math.min(newHeight, maxHeight));
+        setTopPaneHeight(clampedHeight);
+      } else {
+        const newWidth = e.clientX - mainRect.left;
+        const maxWidth = mainRect.width - MIN_RIGHT_PANE_WIDTH;
+        const distanceFromRight = mainRect.right - e.clientX;
+
+        if (newWidth < COLLAPSE_EDGE_THRESHOLD) {
+          if (!requestPaneCollapsedRef.current) collapseRequestRef.current();
+          return;
+        }
+
+        if (distanceFromRight < COLLAPSE_EDGE_THRESHOLD) {
+          if (!responsePaneCollapsedRef.current) collapseResponseRef.current();
+          return;
+        }
+
+        if (requestPaneCollapsedRef.current && newWidth < EXPAND_EDGE_THRESHOLD) return;
+        if (responsePaneCollapsedRef.current && distanceFromRight < EXPAND_EDGE_THRESHOLD) return;
+
+        if (requestPaneCollapsedRef.current) expandRequestRef.current();
+        if (responsePaneCollapsedRef.current) expandResponseRef.current();
+
+        const clampedWidth = Math.max(MIN_LEFT_PANE_WIDTH, Math.min(newWidth, maxWidth));
+        setLeftPaneWidth(clampedWidth);
+      }
+    },
+    [setTopPaneHeight, setLeftPaneWidth]
+  );
+
+  const handleMouseUp = useCallback(
+    (e) => {
+      if (draggingRef.current) {
+        e.preventDefault();
+        stopDragging();
+      }
+    },
+    [stopDragging]
+  );
 
   const startDragging = useCallback((e) => {
     e.preventDefault();
@@ -233,34 +251,43 @@ const RequestTabPanel = () => {
     setDragging(true);
   }, []);
 
-  const applyPointerResize = useCallback((e) => {
-    if (!mainSectionRef.current) return;
-    const mainRect = mainSectionRef.current.getBoundingClientRect();
+  const applyPointerResize = useCallback(
+    (e) => {
+      if (!mainSectionRef.current) return;
+      const mainRect = mainSectionRef.current.getBoundingClientRect();
 
-    if (isVerticalLayoutRef.current) {
-      const newHeight = e.clientY - mainRect.top;
-      const maxHeight = mainRect.height - MIN_BOTTOM_PANE_HEIGHT;
-      const clampedHeight = Math.max(MIN_TOP_PANE_HEIGHT, Math.min(newHeight, maxHeight));
-      setTopPaneHeight(clampedHeight);
-    } else {
-      const newWidth = e.clientX - mainRect.left;
-      const maxWidth = mainRect.width - MIN_RIGHT_PANE_WIDTH;
-      const clampedWidth = Math.max(MIN_LEFT_PANE_WIDTH, Math.min(newWidth, maxWidth));
-      setLeftPaneWidth(clampedWidth);
-    }
-  }, [setTopPaneHeight, setLeftPaneWidth]);
+      if (isVerticalLayoutRef.current) {
+        const newHeight = e.clientY - mainRect.top;
+        const maxHeight = mainRect.height - MIN_BOTTOM_PANE_HEIGHT;
+        const clampedHeight = Math.max(MIN_TOP_PANE_HEIGHT, Math.min(newHeight, maxHeight));
+        setTopPaneHeight(clampedHeight);
+      } else {
+        const newWidth = e.clientX - mainRect.left;
+        const maxWidth = mainRect.width - MIN_RIGHT_PANE_WIDTH;
+        const clampedWidth = Math.max(MIN_LEFT_PANE_WIDTH, Math.min(newWidth, maxWidth));
+        setLeftPaneWidth(clampedWidth);
+      }
+    },
+    [setTopPaneHeight, setLeftPaneWidth]
+  );
 
-  const handleRequestIndicatorDragStart = useCallback((e) => {
-    expandRequest();
-    applyPointerResize(e);
-    startDragging(e);
-  }, [expandRequest, applyPointerResize, startDragging]);
+  const handleRequestIndicatorDragStart = useCallback(
+    (e) => {
+      expandRequest();
+      applyPointerResize(e);
+      startDragging(e);
+    },
+    [expandRequest, applyPointerResize, startDragging]
+  );
 
-  const handleResponseIndicatorDragStart = useCallback((e) => {
-    expandResponse();
-    applyPointerResize(e);
-    startDragging(e);
-  }, [expandResponse, applyPointerResize, startDragging]);
+  const handleResponseIndicatorDragStart = useCallback(
+    (e) => {
+      expandResponse();
+      applyPointerResize(e);
+      startDragging(e);
+    },
+    [expandResponse, applyPointerResize, startDragging]
+  );
 
   useEffect(() => {
     document.addEventListener('mouseup', handleMouseUp);
@@ -421,9 +448,7 @@ const RequestTabPanel = () => {
 
   if (!item || !item.uid) {
     const showLoading = focusedTab.name && isItemsLoading;
-    return showLoading
-      ? <RequestTabPanelLoading name={focusedTab.name} />
-      : <RequestNotFound itemUid={activeTabUid} />;
+    return showLoading ? <RequestTabPanelLoading name={focusedTab.name} /> : <RequestNotFound itemUid={activeTabUid} />;
   }
 
   if (item.partial) {
@@ -455,7 +480,8 @@ const RequestTabPanel = () => {
       dispatch(sendRequest(item, collection.uid)).catch((err) =>
         toast.custom((t) => <NetworkError onClose={() => toast.dismiss(t.id)} />, {
           duration: 5000
-        }));
+        })
+      );
     }
   };
   const renderQueryUrl = () => {
@@ -504,9 +530,7 @@ const RequestTabPanel = () => {
 
   const getRequestPaneStyle = () => {
     if (responsePaneCollapsed) {
-      return isVerticalLayout
-        ? { flex: 1, width: '100%' }
-        : { flex: 1 };
+      return isVerticalLayout ? { flex: 1, width: '100%' } : { flex: 1 };
     }
 
     return isVerticalLayout
@@ -523,13 +547,15 @@ const RequestTabPanel = () => {
   return (
     <ScopedPersistenceProvider scope={focusedTab.uid}>
       <StyledWrapper
-        className={`flex flex-col flex-grow relative ${dragging ? 'dragging' : ''} ${isVerticalLayout ? 'vertical-layout' : ''
+        className={`flex flex-col flex-grow relative ${dragging ? 'dragging' : ''} ${
+          isVerticalLayout ? 'vertical-layout' : ''
         } ${requestPaneCollapsed ? 'request-collapsed' : ''} ${responsePaneCollapsed ? 'response-collapsed' : ''}`}
       >
-        <div className="query-url-wrapper pt-3 pb-4 px-4">
-          {renderQueryUrl()}
-        </div>
-        <section ref={mainSectionRef} className={`main flex ${isVerticalLayout ? 'flex-col' : ''} flex-grow relative overflow-auto`}>
+        <div className="query-url-wrapper pt-3 pb-4 px-4">{renderQueryUrl()}</div>
+        <section
+          ref={mainSectionRef}
+          className={`main flex ${isVerticalLayout ? 'flex-col' : ''} flex-grow relative overflow-auto`}
+        >
           {requestPaneCollapsed ? (
             <CollapsedPanelIndicator
               panelType="request"
@@ -540,9 +566,7 @@ const RequestTabPanel = () => {
             />
           ) : (
             <section className="request-pane" data-testid="request-pane" style={getRequestPaneStyle()}>
-              <div className="px-4 h-full">
-                {renderRequestPane()}
-              </div>
+              <div className="px-4 h-full">{renderRequestPane()}</div>
             </section>
           )}
 
@@ -568,7 +592,11 @@ const RequestTabPanel = () => {
               dragThresholdPx={isVerticalLayout ? MIN_BOTTOM_PANE_HEIGHT / 2 : MIN_RIGHT_PANE_WIDTH / 2}
             />
           ) : (
-            <section className="response-pane flex-grow overflow-x-auto" data-testid="response-pane" style={requestPaneCollapsed ? { flex: 1 } : undefined}>
+            <section
+              className="response-pane flex-grow overflow-x-auto"
+              data-testid="response-pane"
+              style={requestPaneCollapsed ? { flex: 1 } : undefined}
+            >
               {renderResponsePane()}
             </section>
           )}
@@ -577,7 +605,12 @@ const RequestTabPanel = () => {
         {item.type === 'graphql-request' ? (
           <div className={`graphql-docs-explorer-container ${showGqlDocs ? '' : 'hidden'}`}>
             <DocExplorer schema={schema} ref={(r) => (docExplorerRef.current = r)}>
-              <button className="mr-2" data-testid="graphql-docs-close-button" onClick={() => toggleDocs(false)} aria-label="Close Documentation Explorer">
+              <button
+                className="mr-2"
+                data-testid="graphql-docs-close-button"
+                onClick={() => toggleDocs(false)}
+                aria-label="Close Documentation Explorer"
+              >
                 {'\u2715'}
               </button>
             </DocExplorer>

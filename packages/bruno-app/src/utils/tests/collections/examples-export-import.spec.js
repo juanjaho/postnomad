@@ -16,9 +16,7 @@ describe('Examples Export/Import', () => {
             request: {
               url: 'https://api.example.com/test',
               method: 'POST',
-              headers: [
-                { uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-              ],
+              headers: [{ uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
               params: [],
               body: {
                 mode: 'json',
@@ -35,9 +33,7 @@ describe('Examples Export/Import', () => {
                 request: {
                   url: 'https://api.example.com/test',
                   method: 'POST',
-                  headers: [
-                    { uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   params: [],
                   body: {
                     mode: 'json',
@@ -47,9 +43,7 @@ describe('Examples Export/Import', () => {
                 response: {
                   status: 200,
                   statusText: 'OK',
-                  headers: [
-                    { uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   body: '{"success": true, "data": "test"}'
                 }
               }
@@ -156,9 +150,7 @@ describe('Examples Export/Import', () => {
             request: {
               url: 'https://api.example.com/graphql',
               method: 'POST',
-              headers: [
-                { uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-              ],
+              headers: [{ uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
               params: [],
               body: {
                 mode: 'graphql',
@@ -178,9 +170,7 @@ describe('Examples Export/Import', () => {
                 request: {
                   url: 'https://api.example.com/graphql',
                   method: 'POST',
-                  headers: [
-                    { uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   params: [],
                   body: {
                     mode: 'graphql',
@@ -193,9 +183,7 @@ describe('Examples Export/Import', () => {
                 response: {
                   status: 200,
                   statusText: 'OK',
-                  headers: [
-                    { uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   body: '{"data": {"user": {"name": "John Doe"}}}'
                 }
               }
@@ -298,9 +286,7 @@ describe('Examples Export/Import', () => {
             request: {
               url: 'https://api.example.com/test',
               method: 'POST',
-              headers: [
-                { uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-              ],
+              headers: [{ uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
               params: [],
               body: { mode: 'json', json: '{}' }
             },
@@ -314,18 +300,14 @@ describe('Examples Export/Import', () => {
                 request: {
                   url: 'https://api.example.com/test',
                   method: 'POST',
-                  headers: [
-                    { uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   params: [],
                   body: { mode: 'json', json: '{}' }
                 },
                 response: {
                   status: '200',
                   statusText: 'OK',
-                  headers: [
-                    { uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   body: '{"success": true}'
                 }
               }
@@ -510,9 +492,7 @@ describe('Examples Export/Import', () => {
             request: {
               url: 'https://api.example.com/test',
               method: 'POST',
-              headers: [
-                { uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-              ],
+              headers: [{ uid: 'header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
               params: [],
               body: { mode: 'json', json: '{"message": "test"}' }
             },
@@ -526,9 +506,7 @@ describe('Examples Export/Import', () => {
                 request: {
                   url: 'https://api.example.com/test',
                   method: 'POST',
-                  headers: [
-                    { uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'ex-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   params: [],
                   body: {
                     mode: 'json',
@@ -538,9 +516,7 @@ describe('Examples Export/Import', () => {
                 response: {
                   status: 200,
                   statusText: 'OK',
-                  headers: [
-                    { uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }
-                  ],
+                  headers: [{ uid: 'res-header-1', name: 'Content-Type', value: 'application/json', enabled: true }],
                   body: '{"success": true, "data": "test"}'
                 }
               }

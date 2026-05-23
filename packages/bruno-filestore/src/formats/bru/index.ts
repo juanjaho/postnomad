@@ -36,7 +36,7 @@ export const parseBruRequest = (data: string | any, parsed: boolean = false): an
     const urlPath: Record<typeof requestType, string> = {
       'grpc-request': 'grpc.url',
       'ws-request': 'ws.url',
-      'default': 'http.url'
+      default: 'http.url'
     };
     const transformedJson = {
       type: requestType,
@@ -342,7 +342,12 @@ export const stringifyBruEnvironment = (json: any): string => {
 };
 
 // New functions for example handling
-export const bruExampleToJson = (data: string | any, parsed: boolean = false, parentType?: string, parentMethod?: string): any => {
+export const bruExampleToJson = (
+  data: string | any,
+  parsed: boolean = false,
+  parentType?: string,
+  parentMethod?: string
+): any => {
   try {
     const json = parsed ? data : bruToJsonV2(data);
 

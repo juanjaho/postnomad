@@ -33,7 +33,12 @@ const IMPORT_TYPE = {
 };
 
 const groupingOptions = [
-  { value: 'tags', label: 'Tags', description: 'Group requests by OpenAPI/Swagger tags', testId: 'grouping-option-tags' },
+  {
+    value: 'tags',
+    label: 'Tags',
+    description: 'Group requests by OpenAPI/Swagger tags',
+    testId: 'grouping-option-tags'
+  },
   { value: 'path', label: 'Paths', description: 'Group requests by URL path structure', testId: 'grouping-option-path' }
 ];
 
@@ -122,11 +127,7 @@ export function generateUniqueName(baseName, checkExists) {
   return uniqueName;
 }
 
-export const BulkImportCollectionLocation = ({
-  onClose,
-  handleSubmit,
-  importData
-}) => {
+export const BulkImportCollectionLocation = ({ onClose, handleSubmit, importData }) => {
   const dispatch = useDispatch();
   const dropdownTippyRef = useRef();
 
@@ -136,7 +137,9 @@ export const BulkImportCollectionLocation = ({
   const isDefaultWorkspace = !activeWorkspace || activeWorkspace.type === 'default';
   const defaultLocation = isDefaultWorkspace
     ? get(preferences, 'general.defaultLocation', '')
-    : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
 
   const [status, setStatus] = useState({});
   const [errorMessages, setErrorMessages] = useState({});
@@ -158,7 +161,7 @@ export const BulkImportCollectionLocation = ({
 
   // For bulk import (ZIP files)
   const importedCollectionFromBulk = isBulkImport ? importData.collection : [];
-  const importedEnvironmentFromBulk = isBulkImport ? (importData.environment || []) : [];
+  const importedEnvironmentFromBulk = isBulkImport ? importData.environment || [] : [];
 
   // For multiple files import
   const filesData = isMultipleImport ? importData.filesData : [];
@@ -180,7 +183,9 @@ export const BulkImportCollectionLocation = ({
 
   // Initialize selected items based on import type
   const [selectedCollections, setSelectedCollections] = useState(importedCollection.map((col) => col.uid));
-  const [selectedEnvironments, setSelectedEnvironments] = useState(isBulkImport ? importedEnvironmentFromBulk.map((env) => env.uid) : []);
+  const [selectedEnvironments, setSelectedEnvironments] = useState(
+    isBulkImport ? importedEnvironmentFromBulk.map((env) => env.uid) : []
+  );
 
   // Sort collections to show selected items first, then unselected items
   // This helps users see their selections at the top of the list
@@ -224,22 +229,16 @@ export const BulkImportCollectionLocation = ({
 
   // Handlers
   const handleCollectionToggle = (uid) => {
-    setSelectedCollections((prev) =>
-      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
-    );
+    setSelectedCollections((prev) => (prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]));
   };
   const handleEnvironmentToggle = (uid) => {
-    setSelectedEnvironments((prev) =>
-      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
-    );
+    setSelectedEnvironments((prev) => (prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]));
   };
   const handleSelectAllCollections = (e) => {
     setSelectedCollections(e.target.checked ? importedCollection.map((col) => col.uid) : []);
   };
   const handleSelectAllEnvironments = (e) => {
-    setSelectedEnvironments(
-      e.target.checked ? importedEnvironment.map((env) => env.uid) : []
-    );
+    setSelectedEnvironments(e.target.checked ? importedEnvironment.map((env) => env.uid) : []);
   };
 
   const onDropdownCreate = (ref) => {
@@ -301,9 +300,7 @@ export const BulkImportCollectionLocation = ({
       setStatus(initialStatus);
       setErrorMessages({});
 
-      const filteredEnvironments = importedEnvironment.filter((env) =>
-        selectedEnvironments.includes(env.uid)
-      );
+      const filteredEnvironments = importedEnvironment.filter((env) => selectedEnvironments.includes(env.uid));
 
       // Handle duplicate collection names by renaming new ones to a unique "{originalName} N" suffix
       const existingCollectionNames = new Set(existingCollections.map((col) => normalizeName(col.name)));
@@ -412,14 +409,15 @@ export const BulkImportCollectionLocation = ({
       setImportStarted(true);
 
       if (filteredCollections.length > 1 || isBulkImport || isMultipleImport) {
-        dispatch(importCollection(filteredCollections, values.collectionLocation, { format: collectionFormat }))
-          .catch((err) => {
+        dispatch(importCollection(filteredCollections, values.collectionLocation, { format: collectionFormat })).catch(
+          (err) => {
             console.error('Failed to import collections', err);
             filteredCollections.forEach((collection) => {
               setStatus((prev) => ({ ...prev, [collection.uid]: STATUS.ERROR }));
               setErrorMessages((prev) => ({ ...prev, [collection.uid]: err.message || 'Failed to import collection' }));
             });
-          });
+          }
+        );
       } else {
         handleSubmit(filteredCollections[0], values.collectionLocation, { format: collectionFormat });
       }
@@ -441,7 +439,7 @@ export const BulkImportCollectionLocation = ({
 
   useEffect(() => {
     if (!isElectron()) {
-      return () => { };
+      return () => {};
     }
 
     const { ipcRenderer } = window;
@@ -456,30 +454,18 @@ export const BulkImportCollectionLocation = ({
       }
     };
 
-    const importingCollectionStarted = ipcRenderer.on(
-      'main:collection-import-started',
-      (collectionId) => {
-        handleImportStatus(collectionId, STATUS.LOADING);
-      }
-    );
-    const importingCollectionCompleted = ipcRenderer.on(
-      'main:collection-import-ended',
-      (collectionId) => {
-        handleImportStatus(collectionId, STATUS.SUCCESS);
-      }
-    );
-    const importingCollectionFailed = ipcRenderer.on(
-      'main:collection-import-failed',
-      (collectionId, { message }) => {
-        handleImportStatus(collectionId, STATUS.ERROR, message);
-      }
-    );
-    const allCollectionsImportCompleted = ipcRenderer.on(
-      'main:all-collections-import-ended',
-      (report) => {
-        toast.success(report?.message);
-      }
-    );
+    const importingCollectionStarted = ipcRenderer.on('main:collection-import-started', (collectionId) => {
+      handleImportStatus(collectionId, STATUS.LOADING);
+    });
+    const importingCollectionCompleted = ipcRenderer.on('main:collection-import-ended', (collectionId) => {
+      handleImportStatus(collectionId, STATUS.SUCCESS);
+    });
+    const importingCollectionFailed = ipcRenderer.on('main:collection-import-failed', (collectionId, { message }) => {
+      handleImportStatus(collectionId, STATUS.ERROR, message);
+    });
+    const allCollectionsImportCompleted = ipcRenderer.on('main:all-collections-import-ended', (report) => {
+      toast.success(report?.message);
+    });
     return () => {
       importingCollectionStarted();
       importingCollectionCompleted();
@@ -539,15 +525,12 @@ export const BulkImportCollectionLocation = ({
                   <div className="flex items-center justify-between relative mb-5 w-full">
                     <div className="font-semibold">Location</div>
                     <div className="text-sm border border-slate-600 rounded px-3 py-1.5 ml-4 flex-1">
-                      {formik.values.collectionLocation
-                        || 'No location selected'}
+                      {formik.values.collectionLocation || 'No location selected'}
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mb-2">
-                    <div className="font-semibold">
-                      Importing Collections ({importStatus.totalSelected})
-                    </div>
+                    <div className="font-semibold">Importing Collections ({importStatus.totalSelected})</div>
                     {importStatus.failedCount > 0 && importStatus.totalSelected > 0 && (
                       <div className="text-sm text-red-500">
                         ({importStatus.failedCount}/{importStatus.totalSelected} failed)
@@ -556,9 +539,7 @@ export const BulkImportCollectionLocation = ({
                   </div>
                   <div className="max-h-[180px] overflow-y-scroll border border-slate-600 rounded-md py-2 scrollbar-visible">
                     {sortedCollections
-                      .filter((collection) =>
-                        selectedCollections.includes(collection.uid)
-                      )
+                      .filter((collection) => selectedCollections.includes(collection.uid))
                       .map((collection) => (
                         <div
                           key={collection.uid}
@@ -567,11 +548,7 @@ export const BulkImportCollectionLocation = ({
                           <div className="flex items-center flex-1">
                             <div className="flex items-center mr-2">
                               {status[collection.uid] === STATUS.LOADING && (
-                                <IconLoader2
-                                  className="animate-spin text-blue-500"
-                                  size={16}
-                                  strokeWidth={1.5}
-                                />
+                                <IconLoader2 className="animate-spin text-blue-500" size={16} strokeWidth={1.5} />
                               )}
                               {status[collection.uid] === STATUS.SUCCESS && (
                                 <div className="flex items-center text-green-500">
@@ -580,11 +557,7 @@ export const BulkImportCollectionLocation = ({
                               )}
                               {status[collection.uid] === STATUS.ERROR && (
                                 <div className="flex items-center">
-                                  <IconX
-                                    className="text-red-500"
-                                    size={16}
-                                    strokeWidth={1.5}
-                                  />
+                                  <IconX className="text-red-500" size={16} strokeWidth={1.5} />
                                 </div>
                               )}
                             </div>
@@ -592,11 +565,7 @@ export const BulkImportCollectionLocation = ({
                           </div>
                           {status[collection.uid] === STATUS.ERROR && (
                             <button
-                              onClick={() =>
-                                handleErrorClick(
-                                  errorMessages[collection.uid],
-                                  collection.uid
-                                )}
+                              onClick={() => handleErrorClick(errorMessages[collection.uid], collection.uid)}
                               className="text-red-500 text-sm hover:underline"
                             >
                               See error
@@ -609,9 +578,7 @@ export const BulkImportCollectionLocation = ({
 
                 {selectedEnvironments.length > 0 && (
                   <div className="mb-6">
-                    <div className="font-semibold mb-2">
-                      Importing Environments ({selectedEnvironments.length})
-                    </div>
+                    <div className="font-semibold mb-2">Importing Environments ({selectedEnvironments.length})</div>
                     <div className="max-h-[180px] overflow-y-scroll border border-slate-600 rounded-md py-2 scrollbar-visible">
                       {sortedEnvironments
                         .filter((env) => selectedEnvironments.includes(env.uid))
@@ -623,22 +590,14 @@ export const BulkImportCollectionLocation = ({
                             <div className="flex items-center flex-1">
                               <div className="flex items-center mr-2">
                                 {!environmentStatus[env.uid] || environmentStatus[env.uid] === STATUS.LOADING ? (
-                                  <IconLoader2
-                                    className="animate-spin text-blue-500"
-                                    size={16}
-                                    strokeWidth={1.5}
-                                  />
+                                  <IconLoader2 className="animate-spin text-blue-500" size={16} strokeWidth={1.5} />
                                 ) : environmentStatus[env.uid] === STATUS.SUCCESS ? (
                                   <div className="flex items-center text-green-500">
                                     <IconCheck size={16} strokeWidth={1.5} />
                                   </div>
                                 ) : environmentStatus[env.uid] === STATUS.ERROR ? (
                                   <div className="flex items-center">
-                                    <IconX
-                                      className="text-red-500"
-                                      size={16}
-                                      strokeWidth={1.5}
-                                    />
+                                    <IconX className="text-red-500" size={16} strokeWidth={1.5} />
                                   </div>
                                 ) : null}
                               </div>
@@ -646,11 +605,7 @@ export const BulkImportCollectionLocation = ({
                             </div>
                             {environmentStatus[env.uid] === STATUS.ERROR && (
                               <button
-                                onClick={() =>
-                                  handleErrorClick(
-                                    errorMessages[env.uid],
-                                    env.uid
-                                  )}
+                                onClick={() => handleErrorClick(errorMessages[env.uid], env.uid)}
                                 className="text-red-500 text-sm hover:underline"
                               >
                                 See error
@@ -695,9 +650,7 @@ export const BulkImportCollectionLocation = ({
                     </div>
 
                     <div className="mb-6">
-                      <div className="font-semibold mb-2">
-                        Environment Assignment
-                      </div>
+                      <div className="font-semibold mb-2">Environment Assignment</div>
                       <div className="flex gap-8 mt-2 ml-2">
                         <label className="flex items-center">
                           <input
@@ -718,8 +671,7 @@ export const BulkImportCollectionLocation = ({
                           <input
                             type="checkbox"
                             checked={applyToCollection}
-                            onChange={(e) =>
-                              setApplyToCollection(e.target.checked)}
+                            onChange={(e) => setApplyToCollection(e.target.checked)}
                             className="mr-2"
                           />
                           <span className="ml-2">
@@ -754,9 +706,7 @@ export const BulkImportCollectionLocation = ({
                     }}
                   />
                   {formik.touched.collectionLocation && formik.errors.collectionLocation ? (
-                    <div className="text-red-500 mt-1">
-                      {formik.errors.collectionLocation}
-                    </div>
+                    <div className="text-red-500 mt-1">{formik.errors.collectionLocation}</div>
                   ) : null}
                   <div className="mt-1">
                     <span className="text-link cursor-pointer hover:underline" onClick={browse}>
@@ -827,12 +777,7 @@ export const BulkImportCollectionLocation = ({
         </form>
       </Modal>
 
-      {showErrorModal && (
-        <ErrorModal
-          error={selectedError?.message}
-          onClose={() => setShowErrorModal(false)}
-        />
-      )}
+      {showErrorModal && <ErrorModal error={selectedError?.message} onClose={() => setShowErrorModal(false)} />}
     </StyledWrapper>
   );
 };

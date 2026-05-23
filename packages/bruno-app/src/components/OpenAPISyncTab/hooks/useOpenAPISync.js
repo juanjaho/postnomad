@@ -43,12 +43,14 @@ const useOpenAPISync = (collection) => {
 
   const updateStoredSpec = (spec) => {
     dispatch(setStoredSpec({ collectionUid: collection.uid, spec }));
-    dispatch(setStoredSpecMeta({
-      collectionUid: collection.uid,
-      title: spec?.info?.title || null,
-      version: spec?.info?.version || null,
-      endpointCount: spec ? countEndpoints(spec) : null
-    }));
+    dispatch(
+      setStoredSpecMeta({
+        collectionUid: collection.uid,
+        title: spec?.info?.title || null,
+        version: spec?.info?.version || null,
+        endpointCount: spec ? countEndpoints(spec) : null
+      })
+    );
   };
 
   // Flatten collection items including nested items in folders
@@ -62,13 +64,14 @@ const useOpenAPISync = (collection) => {
 
   // Map endpoint drift id (METHOD:path) → collection item uid
   const endpointUidMap = useMemo(() => {
-    const normalize = (url) => (url || '')
-      .replace(/\{\{[^}]+\}\}/g, '')
-      .replace(/^https?:\/\/[^/]+/, '')
-      .replace(/\?.*$/, '')
-      .replace(/{([^}]+)}/g, ':$1')
-      .replace(/\/+/g, '/')
-      .replace(/\/$/, '');
+    const normalize = (url) =>
+      (url || '')
+        .replace(/\{\{[^}]+\}\}/g, '')
+        .replace(/^https?:\/\/[^/]+/, '')
+        .replace(/\?.*$/, '')
+        .replace(/{([^}]+)}/g, ':$1')
+        .replace(/\/+/g, '/')
+        .replace(/\/$/, '');
     const map = {};
     allHttpItems.forEach((item) => {
       if (item.request?.method && item.request?.url) {
@@ -89,12 +92,14 @@ const useOpenAPISync = (collection) => {
       dispatch(focusTab({ uid: itemUid }));
     } else {
       const item = allHttpItems.find((i) => i.uid === itemUid);
-      dispatch(addTab({
-        uid: itemUid,
-        collectionUid: collection.uid,
-        requestPaneTab: item ? getDefaultRequestPaneTab(item) : undefined,
-        type: item?.type ?? 'request'
-      }));
+      dispatch(
+        addTab({
+          uid: itemUid,
+          collectionUid: collection.uid,
+          requestPaneTab: item ? getDefaultRequestPaneTab(item) : undefined,
+          type: item?.type ?? 'request'
+        })
+      );
     }
   };
 
@@ -159,11 +164,13 @@ const useOpenAPISync = (collection) => {
       updateStoredSpec(result.storedSpec || null);
 
       // Update Redux store so toolbar status stays in sync
-      dispatch(setCollectionUpdate({
-        collectionUid: collection.uid,
-        hasUpdates: result.isValid !== false && result.hasChanges,
-        error: result.isValid === false ? result.error : null
-      }));
+      dispatch(
+        setCollectionUpdate({
+          collectionUid: collection.uid,
+          hasUpdates: result.isValid !== false && result.hasChanges,
+          error: result.isValid === false ? result.error : null
+        })
+      );
 
       // Fetch remote drift (remote spec vs collection) for collection-centric categorization
       if (result.newSpec) {
@@ -186,11 +193,13 @@ const useOpenAPISync = (collection) => {
     } catch (err) {
       console.error('Error checking for updates:', err);
       setError(formatIpcError(err) || 'Failed to check for updates');
-      dispatch(setCollectionUpdate({
-        collectionUid: collection.uid,
-        hasUpdates: false,
-        error: formatIpcError(err) || 'Failed to check for updates'
-      }));
+      dispatch(
+        setCollectionUpdate({
+          collectionUid: collection.uid,
+          hasUpdates: false,
+          error: formatIpcError(err) || 'Failed to check for updates'
+        })
+      );
     } finally {
       updateDrift({ fetching: false });
       setIsLoading(false);
@@ -277,10 +286,11 @@ const useOpenAPISync = (collection) => {
           compareSpec: result.newSpec
         });
 
-        const isInSync = !initialDrift.error
-          && (!initialDrift.missing || initialDrift.missing.length === 0)
-          && (!initialDrift.modified || initialDrift.modified.length === 0)
-          && (!initialDrift.localOnly || initialDrift.localOnly.length === 0);
+        const isInSync =
+          !initialDrift.error &&
+          (!initialDrift.missing || initialDrift.missing.length === 0) &&
+          (!initialDrift.modified || initialDrift.modified.length === 0) &&
+          (!initialDrift.localOnly || initialDrift.localOnly.length === 0);
 
         if (isInSync) {
           // Collection matches — save spec file silently to complete setup
@@ -395,9 +405,11 @@ const useOpenAPISync = (collection) => {
 
   return {
     // State
-    sourceUrl, setSourceUrl,
+    sourceUrl,
+    setSourceUrl,
     isLoading,
-    error, setError,
+    error,
+    setError,
     fileNotFound,
     specDrift,
     collectionDrift,

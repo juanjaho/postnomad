@@ -1,6 +1,17 @@
-import type { Item as BrunoItem, HttpItemSettings as BrunoHttpItemSettings } from '@usebruno/schema-types/collection/item';
+import type {
+  Item as BrunoItem,
+  HttpItemSettings as BrunoHttpItemSettings
+} from '@usebruno/schema-types/collection/item';
 import type { HttpRequest as BrunoHttpRequest } from '@usebruno/schema-types/requests/http';
-import type { HttpRequest, HttpRequestSettings, HttpRequestExample, HttpRequestInfo, HttpRequestDetails, HttpRequestRuntime, HttpRequestHeader } from '@opencollection/types/requests/http';
+import type {
+  HttpRequest,
+  HttpRequestSettings,
+  HttpRequestExample,
+  HttpRequestInfo,
+  HttpRequestDetails,
+  HttpRequestRuntime,
+  HttpRequestHeader
+} from '@opencollection/types/requests/http';
 import type { Auth } from '@opencollection/types/common/auth';
 import type { Scripts } from '@opencollection/types/common/scripts';
 import type { Variable } from '@opencollection/types/common/variables';

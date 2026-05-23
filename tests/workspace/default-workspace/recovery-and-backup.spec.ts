@@ -5,7 +5,10 @@ import { waitForReadyPage } from '../../utils/page';
 
 test.describe('Default Workspace Recovery and Backup', () => {
   test.describe('Global Environments Backup', () => {
-    test('should create backup file for global environments during migration', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create backup file for global environments during migration', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('global-env-backup');
 
       // Setup: Create global-environments.json
@@ -15,23 +18,34 @@ test.describe('Default Workspace Recovery and Backup', () => {
             uid: 'env1abcdefghijk123456',
             name: 'Production',
             variables: [
-              { uid: 'var1abcdefghijk123456', name: 'API_URL', value: 'https://api.prod.com', secret: false, type: 'text', enabled: true }
+              {
+                uid: 'var1abcdefghijk123456',
+                name: 'API_URL',
+                value: 'https://api.prod.com',
+                secret: false,
+                type: 'text',
+                enabled: true
+              }
             ]
           },
           {
             uid: 'env2abcdefghijk123456',
             name: 'Staging',
             variables: [
-              { uid: 'var2abcdefghijk123456', name: 'API_URL', value: 'https://api.staging.com', secret: false, type: 'text', enabled: true }
+              {
+                uid: 'var2abcdefghijk123456',
+                name: 'API_URL',
+                value: 'https://api.staging.com',
+                secret: false,
+                type: 'text',
+                enabled: true
+              }
             ]
           }
         ],
         activeGlobalEnvironmentUid: 'env1abcdefghijk123456'
       };
-      fs.writeFileSync(
-        path.join(userDataPath, 'global-environments.json'),
-        JSON.stringify(globalEnvData)
-      );
+      fs.writeFileSync(path.join(userDataPath, 'global-environments.json'), JSON.stringify(globalEnvData));
 
       // Also add lastOpenedCollections to trigger migration
       const collectionPath = path.join(userDataPath, 'test-collection');
@@ -64,20 +78,18 @@ test.describe('Default Workspace Recovery and Backup', () => {
       await closeElectronApp(app);
     });
 
-    test('should preserve global environments backup across multiple app restarts', async ({ launchElectronApp, createTmpDir }) => {
+    test('should preserve global environments backup across multiple app restarts', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('global-env-backup-persist');
 
       // Setup: Create legacy global environments
       const globalEnvData = {
-        environments: [
-          { uid: 'env1abcdefghijk123456', name: 'Dev', variables: [] }
-        ],
+        environments: [{ uid: 'env1abcdefghijk123456', name: 'Dev', variables: [] }],
         activeGlobalEnvironmentUid: 'env1abcdefghijk123456'
       };
-      fs.writeFileSync(
-        path.join(userDataPath, 'global-environments.json'),
-        JSON.stringify(globalEnvData)
-      );
+      fs.writeFileSync(path.join(userDataPath, 'global-environments.json'), JSON.stringify(globalEnvData));
 
       // Add collection to trigger migration
       const collectionPath = path.join(userDataPath, 'test-collection');
@@ -116,7 +128,10 @@ test.describe('Default Workspace Recovery and Backup', () => {
   });
 
   test.describe('lastOpenedCollections Preservation', () => {
-    test('should NOT delete lastOpenedCollections from preferences after migration', async ({ launchElectronApp, createTmpDir }) => {
+    test('should NOT delete lastOpenedCollections from preferences after migration', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('preserve-last-opened');
 
       // Setup: Create a valid collection
@@ -148,7 +163,10 @@ test.describe('Default Workspace Recovery and Backup', () => {
   });
 
   test.describe('Workspace Discovery (No Path in Preferences)', () => {
-    test('should find and use existing valid default workspace when path not in preferences', async ({ launchElectronApp, createTmpDir }) => {
+    test('should find and use existing valid default workspace when path not in preferences', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('discover-existing');
 
       // Setup: Create a valid default workspace manually (without setting in preferences)
@@ -169,10 +187,7 @@ docs: ''
       );
 
       // Create empty preferences (no defaultWorkspacePath)
-      fs.writeFileSync(
-        path.join(userDataPath, 'preferences.json'),
-        JSON.stringify({})
-      );
+      fs.writeFileSync(path.join(userDataPath, 'preferences.json'), JSON.stringify({}));
 
       // Launch app - should discover and use existing workspace
       const app = await launchElectronApp({ userDataPath });
@@ -191,7 +206,10 @@ docs: ''
       await closeElectronApp(app);
     });
 
-    test('should find latest numbered workspace when multiple exist and path not in preferences', async ({ launchElectronApp, createTmpDir }) => {
+    test('should find latest numbered workspace when multiple exist and path not in preferences', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('discover-numbered');
 
       // Setup: Create multiple numbered workspaces
@@ -216,10 +234,7 @@ docs: ''
       }
 
       // Create empty preferences
-      fs.writeFileSync(
-        path.join(userDataPath, 'preferences.json'),
-        JSON.stringify({})
-      );
+      fs.writeFileSync(path.join(userDataPath, 'preferences.json'), JSON.stringify({}));
 
       // Launch app - should use workspace-2 (latest/highest number)
       const app = await launchElectronApp({ userDataPath });
@@ -278,10 +293,7 @@ docs: ''
       fs.writeFileSync(path.join(workspace2, 'workspace.yml'), 'invalid: yaml: [[[');
 
       // Create empty preferences
-      fs.writeFileSync(
-        path.join(userDataPath, 'preferences.json'),
-        JSON.stringify({})
-      );
+      fs.writeFileSync(path.join(userDataPath, 'preferences.json'), JSON.stringify({}));
 
       // Launch app - should skip workspace-2, use workspace-1
       const app = await launchElectronApp({ userDataPath });
@@ -298,7 +310,10 @@ docs: ''
   });
 
   test.describe('Recovery from Broken Workspace', () => {
-    test('should recover collections from broken workspace to new workspace', async ({ launchElectronApp, createTmpDir }) => {
+    test('should recover collections from broken workspace to new workspace', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('recover-collections');
 
       // Setup: Create a valid collection
@@ -350,7 +365,10 @@ docs: ''
       await closeElectronApp(app);
     });
 
-    test('should recover environments from broken workspace to new workspace', async ({ launchElectronApp, createTmpDir }) => {
+    test('should recover environments from broken workspace to new workspace', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('recover-envs');
 
       // Setup: Create a workspace with environments
@@ -423,7 +441,10 @@ docs: ''
       await closeElectronApp(app);
     });
 
-    test('should use lastOpenedCollections as fallback when workspace config parsing fails', async ({ launchElectronApp, createTmpDir }) => {
+    test('should use lastOpenedCollections as fallback when workspace config parsing fails', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('recover-fallback');
 
       // Setup: Create a valid collection
@@ -464,7 +485,10 @@ docs: ''
   });
 
   test.describe('Recovery from Non-Existent Workspace Path', () => {
-    test('should recover from previously created workspace when path in preferences does not exist', async ({ launchElectronApp, createTmpDir }) => {
+    test('should recover from previously created workspace when path in preferences does not exist', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('recover-from-old');
 
       // Setup: Create a valid collection
@@ -518,7 +542,10 @@ docs: ''
       await closeElectronApp(app);
     });
 
-    test('should recover from latest workspace when path does not exist and multiple workspaces exist', async ({ launchElectronApp, createTmpDir }) => {
+    test('should recover from latest workspace when path does not exist and multiple workspaces exist', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('recover-from-latest');
 
       // Create collection
@@ -598,7 +625,10 @@ docs: ''
   });
 
   test.describe('App Restart After Breaking Workspace', () => {
-    test('should recover data after workspace is corrupted between app restarts', async ({ launchElectronApp, createTmpDir }) => {
+    test('should recover data after workspace is corrupted between app restarts', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('restart-after-break');
 
       // Setup collection
@@ -695,7 +725,10 @@ variables:
       await closeElectronApp(app2);
     });
 
-    test('should preserve all data through multiple corruption and recovery cycles', async ({ launchElectronApp, createTmpDir }) => {
+    test('should preserve all data through multiple corruption and recovery cycles', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('multiple-recovery-cycles');
 
       // Create collection
@@ -793,7 +826,10 @@ variables: []
       await closeElectronApp(app);
     });
 
-    test('should handle missing environments directory during recovery', async ({ launchElectronApp, createTmpDir }) => {
+    test('should handle missing environments directory during recovery', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('missing-env-dir');
 
       // Create workspace WITHOUT environments dir
@@ -815,7 +851,10 @@ variables: []
       await closeElectronApp(app);
     });
 
-    test('should deduplicate collections between recovered and preference sources', async ({ launchElectronApp, createTmpDir }) => {
+    test('should deduplicate collections between recovered and preference sources', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('dedup-collections');
 
       // Create collection
@@ -856,7 +895,10 @@ variables: []
       await closeElectronApp(app);
     });
 
-    test('should not overwrite recovered environments with global environments of same name', async ({ launchElectronApp, createTmpDir }) => {
+    test('should not overwrite recovered environments with global environments of same name', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('env-no-overwrite');
 
       // Create workspace with environment
@@ -886,11 +928,22 @@ variables:
       fs.writeFileSync(
         path.join(userDataPath, 'global-environments.json'),
         JSON.stringify({
-          environments: [{
-            uid: 'env1abcdefghijk123456',
-            name: 'Production',
-            variables: [{ uid: 'var1abcdefghijk123456', name: 'URL', value: 'global-value', secret: false, type: 'text', enabled: true }]
-          }],
+          environments: [
+            {
+              uid: 'env1abcdefghijk123456',
+              name: 'Production',
+              variables: [
+                {
+                  uid: 'var1abcdefghijk123456',
+                  name: 'URL',
+                  value: 'global-value',
+                  secret: false,
+                  type: 'text',
+                  enabled: true
+                }
+              ]
+            }
+          ],
           activeGlobalEnvironmentUid: 'env1abcdefghijk123456'
         })
       );

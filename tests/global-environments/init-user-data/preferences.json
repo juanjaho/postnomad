@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/global-environments/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/global-environments/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

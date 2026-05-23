@@ -48,7 +48,7 @@ describe('exportApiSpec - server variables reconstruction', () => {
     const { content } = exportApiSpec({ variables, items, name: 'Test API' });
 
     // Should contain the template server URL
-    expect(content).toContain('url: \'{protocol}://{host}:{port}/v1\'');
+    expect(content).toContain("url: '{protocol}://{host}:{port}/v1'");
 
     // Should contain the variables with defaults (js-yaml may or may not quote values)
     expect(content).toContain('protocol:');
@@ -105,7 +105,7 @@ describe('exportApiSpec - server variables reconstruction', () => {
     const { content } = exportApiSpec({ variables, items, name: 'Test API' });
 
     // Template server should be in root servers
-    expect(content).toContain('url: \'{protocol}://{host}/v1\'');
+    expect(content).toContain("url: '{protocol}://{host}/v1'");
 
     // Other server should appear as an operation-level override under /data
     expect(content).toContain('/data:');
@@ -148,9 +148,7 @@ describe('exportApiSpec - server variables reconstruction', () => {
           body: {},
           auth: {},
           vars: {
-            req: [
-              { name: 'baseUrl', value: 'https://files.example.com', enabled: true }
-            ]
+            req: [{ name: 'baseUrl', value: 'https://files.example.com', enabled: true }]
           }
         }
       }
@@ -212,19 +210,23 @@ describe('exportApiSpec - server variables reconstruction', () => {
 describe('exportApiSpec - parameter and body value preservation', () => {
   it('should export path parameter values from params array', () => {
     const variables = { baseUrl: 'https://api.example.com' };
-    const items = [{
-      name: 'Get user',
-      type: 'http-request',
-      request: {
-        url: '{{baseUrl}}/users/{userId}',
-        method: 'GET',
-        params: [
-          { name: 'userId', value: '123', type: 'path', enabled: true },
-          { name: 'include', value: 'profile', type: 'query', enabled: true }
-        ],
-        headers: [], body: {}, auth: {}
+    const items = [
+      {
+        name: 'Get user',
+        type: 'http-request',
+        request: {
+          url: '{{baseUrl}}/users/{userId}',
+          method: 'GET',
+          params: [
+            { name: 'userId', value: '123', type: 'path', enabled: true },
+            { name: 'include', value: 'profile', type: 'query', enabled: true }
+          ],
+          headers: [],
+          body: {},
+          auth: {}
+        }
       }
-    }];
+    ];
     const { content } = exportApiSpec({ variables, items, name: 'Test' });
     const parsed = require('js-yaml').load(content);
     const params = parsed.paths['/users/{userId}'].get.parameters;
@@ -240,18 +242,20 @@ describe('exportApiSpec - parameter and body value preservation', () => {
 
   it('should not export path-type params as query params', () => {
     const variables = { baseUrl: 'https://api.example.com' };
-    const items = [{
-      name: 'Get user',
-      type: 'http-request',
-      request: {
-        url: '{{baseUrl}}/users/{userId}',
-        method: 'GET',
-        params: [
-          { name: 'userId', value: '123', type: 'path', enabled: true }
-        ],
-        headers: [], body: {}, auth: {}
+    const items = [
+      {
+        name: 'Get user',
+        type: 'http-request',
+        request: {
+          url: '{{baseUrl}}/users/{userId}',
+          method: 'GET',
+          params: [{ name: 'userId', value: '123', type: 'path', enabled: true }],
+          headers: [],
+          body: {},
+          auth: {}
+        }
       }
-    }];
+    ];
     const { content } = exportApiSpec({ variables, items, name: 'Test' });
     const parsed = require('js-yaml').load(content);
     const params = parsed.paths['/users/{userId}'].get.parameters;
@@ -266,16 +270,20 @@ describe('exportApiSpec - parameter and body value preservation', () => {
 
   it('should fall back to URL regex for path params not in params array', () => {
     const variables = { baseUrl: 'https://api.example.com' };
-    const items = [{
-      name: 'Get user',
-      type: 'http-request',
-      request: {
-        url: '{{baseUrl}}/users/{userId}',
-        method: 'GET',
-        params: [],
-        headers: [], body: {}, auth: {}
+    const items = [
+      {
+        name: 'Get user',
+        type: 'http-request',
+        request: {
+          url: '{{baseUrl}}/users/{userId}',
+          method: 'GET',
+          params: [],
+          headers: [],
+          body: {},
+          auth: {}
+        }
       }
-    }];
+    ];
     const { content } = exportApiSpec({ variables, items, name: 'Test' });
     const parsed = require('js-yaml').load(content);
     const params = parsed.paths['/users/{userId}'].get.parameters;
@@ -288,17 +296,20 @@ describe('exportApiSpec - parameter and body value preservation', () => {
 
   it('should preserve JSON body example for round-trip', () => {
     const variables = { baseUrl: 'https://api.example.com' };
-    const items = [{
-      name: 'Create user',
-      type: 'http-request',
-      request: {
-        url: '{{baseUrl}}/users',
-        method: 'POST',
-        params: [], headers: [],
-        body: { mode: 'json', json: '{"name":"John","age":30}' },
-        auth: {}
+    const items = [
+      {
+        name: 'Create user',
+        type: 'http-request',
+        request: {
+          url: '{{baseUrl}}/users',
+          method: 'POST',
+          params: [],
+          headers: [],
+          body: { mode: 'json', json: '{"name":"John","age":30}' },
+          auth: {}
+        }
       }
-    }];
+    ];
     const { content } = exportApiSpec({ variables, items, name: 'Test' });
     const parsed = require('js-yaml').load(content);
     const schema = parsed.components.schemas.create_user;
@@ -352,7 +363,7 @@ describe('exportApiSpec - multi-environment servers', () => {
     expect(content).toContain('description: Staging');
 
     // Template URL should be used
-    expect(content).toContain('url: \'{protocol}://{host}/v1\'');
+    expect(content).toContain("url: '{protocol}://{host}/v1'");
 
     // Production vars
     expect(content).toContain('api.prod.com');
@@ -393,7 +404,7 @@ describe('exportApiSpec - multi-environment servers', () => {
     const { content } = exportApiSpec({ variables, items, name: 'Test API' });
 
     // Should use collection baseUrl as template
-    expect(content).toContain('url: \'{protocol}://{host}/v1\'');
+    expect(content).toContain("url: '{protocol}://{host}/v1'");
     expect(content).toMatch(/default:\s*'?https'?/);
     expect(content).toContain('api.example.com');
     expect(content).toContain('description: Base Server');
@@ -414,7 +425,7 @@ describe('exportApiSpec - multi-environment servers', () => {
     const { content } = exportApiSpec({ variables, items, name: 'Test API', environments });
 
     // Collection template server should be present
-    expect(content).toContain('url: \'{protocol}://{host}/v1\'');
+    expect(content).toContain("url: '{protocol}://{host}/v1'");
     expect(content).toContain('description: Base Server');
 
     // Production's plain URL override should also be present
@@ -429,9 +440,7 @@ describe('exportApiSpec - multi-environment servers', () => {
     const variables = {
       baseUrl: 'https://api.example.com/v1'
     };
-    const environments = [
-      makeEnv('Production', { baseUrl: 'https://api.example.com/v1' })
-    ];
+    const environments = [makeEnv('Production', { baseUrl: 'https://api.example.com/v1' })];
     const items = makeItems(['{{baseUrl}}/users']);
 
     const { content } = exportApiSpec({ variables, items, name: 'Test API', environments });

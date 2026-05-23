@@ -143,7 +143,9 @@ describe('pac-resolver (shared)', () => {
     jest.doMock('quickjs-emscripten', () => ({ getQuickJS: jest.fn(async () => ({})) }));
 
     const { getPacResolver } = require('./pac-resolver');
-    await expect(getPacResolver({ pacSource: 'http://example.com/missing.pac' })).rejects.toThrow('Failed to fetch PAC (404)');
+    await expect(getPacResolver({ pacSource: 'http://example.com/missing.pac' })).rejects.toThrow(
+      'Failed to fetch PAC (404)'
+    );
   });
 
   test('re-downloads PAC after cache TTL expires', async () => {
@@ -171,7 +173,9 @@ describe('pac-resolver (shared)', () => {
 
   test('resolve propagates error from a malformed PAC script', async () => {
     mockAxiosSuccess('not valid JS {{{{');
-    setupPacMocks(async () => { throw new Error('invalid PAC script'); });
+    setupPacMocks(async () => {
+      throw new Error('invalid PAC script');
+    });
 
     const { getPacResolver } = require('./pac-resolver');
     const wrapper = await getPacResolver({ pacSource: 'http://example.com/bad.pac' });
@@ -228,7 +232,9 @@ describe('pac-resolver (shared)', () => {
     jest.doMock('quickjs-emscripten', () => ({ getQuickJS: jest.fn(async () => ({})) }));
 
     const { getPacResolver } = require('./pac-resolver');
-    await expect(getPacResolver({ pacSource: 'file:///nonexistent/proxy.pac' })).rejects.toThrow('no such file or directory');
+    await expect(getPacResolver({ pacSource: 'file:///nonexistent/proxy.pac' })).rejects.toThrow(
+      'no such file or directory'
+    );
   });
 
   test('caches resolver for file:// URL and reads file only once', async () => {

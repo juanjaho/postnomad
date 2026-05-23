@@ -25,14 +25,24 @@ const Request = ({ collection, request, item }) => {
     <div>
       {/* Method and URL */}
       <div className="mb-1 flex gap-2">
-        <pre className="whitespace-pre-wrap" title={url}>{url}</pre>
+        <pre className="whitespace-pre-wrap" title={url}>
+          {url}
+        </pre>
       </div>
 
       {/* Headers */}
       <Headers headers={headers} type="request" />
 
       {/* Body */}
-      <BodyBlock collection={collection} data={data} dataBuffer={dataBuffer} error={error} headers={headers} item={item} type="request" />
+      <BodyBlock
+        collection={collection}
+        data={data}
+        dataBuffer={dataBuffer}
+        error={error}
+        headers={headers}
+        item={item}
+        type="request"
+      />
     </div>
   );
 };

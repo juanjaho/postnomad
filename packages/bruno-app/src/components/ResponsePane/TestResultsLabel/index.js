@@ -24,7 +24,8 @@ const TestResultsLabel = ({ results, assertionResults, preRequestTestResults, po
   const numberOfFailedPostResponseTests = postResponseTestResults.filter((result) => result.status === 'fail').length;
 
   const totalNumberOfTests = numberOfTests + numberOfAssertions + numberOfPreRequestTests + numberOfPostResponseTests;
-  const totalNumberOfFailedTests = numberOfFailedTests + numberOfFailedAssertions + numberOfFailedPreRequestTests + numberOfFailedPostResponseTests;
+  const totalNumberOfFailedTests =
+    numberOfFailedTests + numberOfFailedAssertions + numberOfFailedPreRequestTests + numberOfFailedPostResponseTests;
 
   return (
     <div className="flex items-center">

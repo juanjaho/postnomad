@@ -35,7 +35,9 @@ import type {
 } from '../types';
 import type { HttpItemSettings as BrunoHttpItemSettings } from '@usebruno/schema-types/collection/item';
 
-const getHttpBody = (body: HttpRequestBody | Array<{ title: string; selected?: boolean; body: HttpRequestBody }> | undefined): HttpRequestBody | undefined => {
+const getHttpBody = (
+  body: HttpRequestBody | Array<{ title: string; selected?: boolean; body: HttpRequestBody }> | undefined
+): HttpRequestBody | undefined => {
   if (!body) return undefined;
   if (Array.isArray(body)) {
     const selected = body.find((v) => v.selected);
@@ -106,36 +108,46 @@ export const fromOpenCollectionHttpItem = (ocRequest: HttpRequest): BrunoItem =>
     const settings: BrunoHttpItemSettings = {
       encodeUrl: typeof ocRequest.settings.encodeUrl === 'boolean' ? ocRequest.settings.encodeUrl : true,
       timeout: typeof ocRequest.settings.timeout === 'number' ? ocRequest.settings.timeout : 0,
-      followRedirects: typeof ocRequest.settings.followRedirects === 'boolean' ? ocRequest.settings.followRedirects : true,
+      followRedirects:
+        typeof ocRequest.settings.followRedirects === 'boolean' ? ocRequest.settings.followRedirects : true,
       maxRedirects: typeof ocRequest.settings.maxRedirects === 'number' ? ocRequest.settings.maxRedirects : 5
     };
     brunoItem.settings = settings;
   }
 
   if (ocRequest.examples?.length) {
-    brunoItem.examples = ocRequest.examples.map((example): BrunoExample => ({
-      uid: uuid(),
-      itemUid: brunoItem.uid,
-      name: example.name || 'Untitled Example',
-      description: typeof example.description === 'string' ? example.description : (example.description as { content?: string })?.content || null,
-      type: 'http-request',
-      request: {
-        url: example.request?.url || '',
-        method: example.request?.method || 'GET',
-        headers: fromOpenCollectionHeaders(example.request?.headers) || [],
-        params: fromOpenCollectionParams(example.request?.params) || [],
-        body: fromOpenCollectionBody(example.request?.body) || null
-      },
-      response: example.response ? {
-        status: example.response.status || 200,
-        statusText: example.response.statusText || 'OK',
-        headers: fromOpenCollectionHeaders(example.response.headers as HttpRequestHeader[]) || [],
-        body: example.response.body ? {
-          type: example.response.body.type || 'text',
-          content: example.response.body.data || ''
-        } : null
-      } : null
-    }));
+    brunoItem.examples = ocRequest.examples.map(
+      (example): BrunoExample => ({
+        uid: uuid(),
+        itemUid: brunoItem.uid,
+        name: example.name || 'Untitled Example',
+        description:
+          typeof example.description === 'string'
+            ? example.description
+            : (example.description as { content?: string })?.content || null,
+        type: 'http-request',
+        request: {
+          url: example.request?.url || '',
+          method: example.request?.method || 'GET',
+          headers: fromOpenCollectionHeaders(example.request?.headers) || [],
+          params: fromOpenCollectionParams(example.request?.params) || [],
+          body: fromOpenCollectionBody(example.request?.body) || null
+        },
+        response: example.response
+          ? {
+              status: example.response.status || 200,
+              statusText: example.response.statusText || 'OK',
+              headers: fromOpenCollectionHeaders(example.response.headers as HttpRequestHeader[]) || [],
+              body: example.response.body
+                ? {
+                    type: example.response.body.type || 'text',
+                    content: example.response.body.data || ''
+                  }
+                : null
+            }
+          : null
+      })
+    );
   }
 
   return brunoItem;

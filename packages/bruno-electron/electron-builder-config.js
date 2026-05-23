@@ -42,9 +42,7 @@ const config = {
     protocols: [
       {
         name: 'Bruno',
-        schemes: [
-          'bruno'
-        ]
+        schemes: ['bruno']
       }
     ]
   },

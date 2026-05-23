@@ -76,7 +76,9 @@ describe('Bruno to Postman Request Translation', () => {
   it('should translate req.setHeader() to pm.request.headers.upsert() with object arg', () => {
     const code = 'req.setHeader("Authorization", "Bearer token123");';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toContain('pm.request.headers.upsert({\n  key: "Authorization",\n  value: "Bearer token123"\n})');
+    expect(translatedCode).toContain(
+      'pm.request.headers.upsert({\n  key: "Authorization",\n  value: "Bearer token123"\n})'
+    );
   });
 
   it('should translate req.deleteHeader() to pm.request.headers.remove()', () => {
@@ -163,14 +165,18 @@ console.log("Headers:", JSON.stringify(pm.request.headers));
   it('should translate req.setBody() to pm.request.body.update()', () => {
     const code = 'req.setBody({name: "John", age: 30});';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toBe('pm.request.body.update({\n  mode: "raw",\n  raw: JSON.stringify({name: "John", age: 30})\n});');
+    expect(translatedCode).toBe(
+      'pm.request.body.update({\n  mode: "raw",\n  raw: JSON.stringify({name: "John", age: 30})\n});'
+    );
   });
 
   it('should translate req.setHeaders() to pm.request.headers.upsert() calls', () => {
     const code = 'req.setHeaders({"Content-Type": "application/json", "Authorization": "Bearer token"});';
     const translatedCode = translateBruToPostman(code);
     // Should generate an IIFE with a for...in loop that calls upsert for each header
-    expect(translatedCode).toBe('(function() {\n  const _headers = {"Content-Type": "application/json", "Authorization": "Bearer token"};\n\n  for (const key in _headers) {\n    pm.request.headers.upsert({\n      key: key,\n      value: _headers[key]\n    });\n  }\n})();');
+    expect(translatedCode).toBe(
+      '(function() {\n  const _headers = {"Content-Type": "application/json", "Authorization": "Bearer token"};\n\n  for (const key in _headers) {\n    pm.request.headers.upsert({\n      key: key,\n      value: _headers[key]\n    });\n  }\n})();'
+    );
   });
 
   it('should handle req.setUrl() with variable', () => {
@@ -188,7 +194,9 @@ console.log("Headers:", JSON.stringify(pm.request.headers));
   it('should handle req.setBody() with variable', () => {
     const code = 'const body = {id: 1}; req.setBody(body);';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toBe('const body = {id: 1}; pm.request.body.update({\n  mode: "raw",\n  raw: JSON.stringify(body)\n});');
+    expect(translatedCode).toBe(
+      'const body = {id: 1}; pm.request.body.update({\n  mode: "raw",\n  raw: JSON.stringify(body)\n});'
+    );
   });
 
   // URL helper methods tests

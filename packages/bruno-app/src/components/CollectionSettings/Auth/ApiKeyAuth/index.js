@@ -16,7 +16,9 @@ const ApiKeyAuth = ({ collection }) => {
   const dropdownTippyRef = useRef();
   const onDropdownCreate = (ref) => (dropdownTippyRef.current = ref);
 
-  const apikeyAuth = collection.draft?.root ? get(collection, 'draft.root.request.auth.apikey', {}) : get(collection, 'root.request.auth.apikey', {});
+  const apikeyAuth = collection.draft?.root
+    ? get(collection, 'draft.root.request.auth.apikey', {})
+    : get(collection, 'root.request.auth.apikey', {});
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));
 
@@ -43,16 +45,16 @@ const ApiKeyAuth = ({ collection }) => {
   };
 
   useEffect(() => {
-    !apikeyAuth?.placement
-    && dispatch(
-      updateCollectionAuth({
-        mode: 'apikey',
-        collectionUid: collection.uid,
-        content: {
-          placement: 'header'
-        }
-      })
-    );
+    !apikeyAuth?.placement &&
+      dispatch(
+        updateCollectionAuth({
+          mode: 'apikey',
+          collectionUid: collection.uid,
+          content: {
+            placement: 'header'
+          }
+        })
+      );
   }, [apikeyAuth]);
 
   return (

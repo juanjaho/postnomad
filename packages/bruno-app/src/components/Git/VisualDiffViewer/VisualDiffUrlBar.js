@@ -44,9 +44,7 @@ const VisualDiffUrlBar = ({ oldData, newData, showSide }) => {
         <span className={`method ${methodStatus !== 'unchanged' ? `diff-inline ${methodStatus}` : ''}`}>
           {currentMethod?.toUpperCase() || 'GET'}
         </span>
-        <span className="url">
-          {renderDiffSegments(urlDiffSegments)}
-        </span>
+        <span className="url">{renderDiffSegments(urlDiffSegments)}</span>
       </div>
     </div>
   );

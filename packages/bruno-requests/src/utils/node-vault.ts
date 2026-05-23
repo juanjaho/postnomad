@@ -152,12 +152,7 @@ function createVaultClient(config: VaultConfig = {}): VaultClient {
   /**
    * Makes an HTTP request to the Vault API
    */
-  async function request(
-    method: string,
-    path: string,
-    data?: any,
-    requestOptions?: VaultRequestOptions
-  ): Promise<any> {
+  async function request(method: string, path: string, data?: any, requestOptions?: VaultRequestOptions): Promise<any> {
     // Merge request options: defaults from config + per-request options
     const mergedOptions: VaultRequestOptions = {
       ...defaultRequestOptions,
@@ -237,11 +232,7 @@ function createVaultClient(config: VaultConfig = {}): VaultClient {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
           // Server responded with error status
-          return handleVaultResponse(
-            axiosError.response.status,
-            axiosError.response.data,
-            path
-          );
+          return handleVaultResponse(axiosError.response.status, axiosError.response.data, path);
         }
         // Network error - preserve original error structure
         const vaultError = new VaultError(axiosError.message);

@@ -6,9 +6,11 @@ export const normalizeQuery = (searchQuery) => {
 };
 
 export const isValidQuery = (normalizedQuery) => {
-  return normalizedQuery
-    && normalizedQuery !== '/'
-    && !(normalizedQuery.length === 1 && !normalizedQuery.match(/[a-zA-Z0-9]/));
+  return (
+    normalizedQuery &&
+    normalizedQuery !== '/' &&
+    !(normalizedQuery.length === 1 && !normalizedQuery.match(/[a-zA-Z0-9]/))
+  );
 };
 
 export const highlightText = (text, searchQuery) => {
@@ -19,8 +21,12 @@ export const highlightText = (text, searchQuery) => {
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
     return text.split(regex).map((part, i) =>
       regex.test(part) ? (
-        <span key={i} className="highlight">{part}</span>
-      ) : part
+        <span key={i} className="highlight">
+          {part}
+        </span>
+      ) : (
+        part
+      )
     );
   } catch {
     return text;

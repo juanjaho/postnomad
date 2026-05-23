@@ -3,12 +3,7 @@ import Modal from 'components/Modal';
 
 const DisconnectSyncModal = ({ onConfirm, onClose }) => {
   return (
-    <Modal
-      size="sm"
-      title="Disconnect Sync"
-      hideFooter={true}
-      handleCancel={onClose}
-    >
+    <Modal size="sm" title="Disconnect Sync" hideFooter={true} handleCancel={onClose}>
       <div className="disconnect-modal">
         <p className="disconnect-message">
           <>Are you sure you want to disconnect OpenAPI sync? </> <br /> <br />

@@ -32,30 +32,34 @@ const clickCollectionsSortAction = async (page: Page, times: number = 1) => {
 const expectSidebarCollectionOrder = async (page: Page, expectedNames: string[]) => {
   const rows = page.getByTestId('sidebar-collection-row');
 
-  await expect.poll(async () => {
-    const actualNames: string[] = [];
-    const count = await rows.count();
+  await expect
+    .poll(async () => {
+      const actualNames: string[] = [];
+      const count = await rows.count();
 
-    for (let i = 0; i < count; i += 1) {
-      const name = await rows.nth(i).locator('#sidebar-collection-name').textContent();
-      if (name) {
-        actualNames.push(name.trim());
+      for (let i = 0; i < count; i += 1) {
+        const name = await rows.nth(i).locator('#sidebar-collection-name').textContent();
+        if (name) {
+          actualNames.push(name.trim());
+        }
       }
-    }
 
-    return actualNames;
-  }).toEqual(expectedNames);
+      return actualNames;
+    })
+    .toEqual(expectedNames);
 };
 
 const expectSnapshotWorkspaceSortings = async (userDataPath: string, expectedSortings: string[]) => {
-  await expect.poll(() => {
-    const snapshot = readSnapshot(userDataPath);
-    const sortings = Array.isArray(snapshot?.workspaces)
-      ? snapshot.workspaces.map((workspace) => workspace?.sorting).filter(Boolean)
-      : [];
+  await expect
+    .poll(() => {
+      const snapshot = readSnapshot(userDataPath);
+      const sortings = Array.isArray(snapshot?.workspaces)
+        ? snapshot.workspaces.map((workspace) => workspace?.sorting).filter(Boolean)
+        : [];
 
-    return sortings.sort();
-  }).toEqual([...expectedSortings].sort());
+      return sortings.sort();
+    })
+    .toEqual([...expectedSortings].sort());
 };
 
 // ─── Tab Persistence ────────────────────────────────────────────────────────
@@ -227,7 +231,7 @@ test.describe('Snapshot: Workspace State', () => {
       '  type: workspace',
       'collections:',
       'specs: []',
-      'docs: \'\'',
+      "docs: ''",
       ''
     ].join('\n');
     fs.writeFileSync(path.join(workspaceBPath, 'workspace.yml'), WORKSPACE_YML);
@@ -236,13 +240,9 @@ test.describe('Snapshot: Workspace State', () => {
     const page = await waitForReadyPage(app);
 
     await test.step('Open WorkspaceB and switch to it', async () => {
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        workspaceBPath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, workspaceBPath);
       await page.getByTestId('workspace-menu').click();
       await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
       await expect(page.getByTestId('workspace-name')).toHaveText('WorkspaceB', { timeout: 10000 });
@@ -264,7 +264,10 @@ test.describe('Snapshot: Workspace State', () => {
     });
   });
 
-  test('workspace collection sorting persists across workspace switches and restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('workspace collection sorting persists across workspace switches and restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-ws-collection-sorting');
 
     const defaultColZPath = await createTmpDir('default-col-zulu');
@@ -280,7 +283,7 @@ test.describe('Snapshot: Workspace State', () => {
       '  type: workspace',
       'collections:',
       'specs: []',
-      'docs: \'\'',
+      "docs: ''",
       ''
     ].join('\n');
     fs.writeFileSync(path.join(secondWorkspacePath, 'workspace.yml'), WORKSPACE_YML);
@@ -300,13 +303,9 @@ test.describe('Snapshot: Workspace State', () => {
     });
 
     await test.step('Open second workspace and set Z-A sort', async () => {
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        secondWorkspacePath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, secondWorkspacePath);
 
       await page.getByTestId('workspace-menu').click();
       await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
@@ -363,7 +362,7 @@ test.describe('Snapshot: Workspace State', () => {
       '  type: workspace',
       'collections:',
       'specs: []',
-      'docs: \'\'',
+      "docs: ''",
       ''
     ].join('\n');
     fs.writeFileSync(path.join(workspaceBPath, 'workspace.yml'), WORKSPACE_YML);
@@ -378,13 +377,9 @@ test.describe('Snapshot: Workspace State', () => {
     });
 
     await test.step('Open WorkspaceB', async () => {
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        workspaceBPath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, workspaceBPath);
       await page.getByTestId('workspace-menu').click();
       await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
       await expect(page.getByTestId('workspace-name')).toHaveText('WorkspaceB', { timeout: 10000 });
@@ -461,7 +456,10 @@ test.describe('Snapshot: Collection State', () => {
 // ─── Multi-Workspace Tab Isolation ──────────────────────────────────────────
 
 test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
-  test('tabs from workspace A do not leak into workspace B after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('tabs from workspace A do not leak into workspace B after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     test.setTimeout(60000);
     const userDataPath = await createTmpDir('snap-tab-isolation');
     const colAPath = await createTmpDir('col-a');
@@ -474,7 +472,7 @@ test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
       '  type: workspace',
       'collections:',
       'specs: []',
-      'docs: \'\'',
+      "docs: ''",
       ''
     ].join('\n');
     fs.writeFileSync(path.join(workspaceBPath, 'workspace.yml'), WORKSPACE_YML);
@@ -489,13 +487,9 @@ test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
     });
 
     await test.step('Switch to WorkspaceB and create ReqB', async () => {
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        workspaceBPath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, workspaceBPath);
       await page.getByTestId('workspace-menu').click();
       await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
       await expect(page.getByTestId('workspace-name')).toHaveText('WorkspaceB', { timeout: 10000 });
@@ -538,7 +532,10 @@ test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
     });
   });
 
-  test('same collection in two workspaces keeps tabs isolated after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('same collection in two workspaces keeps tabs isolated after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-tab-isolation-shared-col');
     const sharedColPath = await createTmpDir('shared-col');
     const workspaceBPath = await createTmpDir('workspace-b-shared-col');
@@ -550,7 +547,7 @@ test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
       '  type: workspace',
       'collections:',
       'specs: []',
-      'docs: \'\'',
+      "docs: ''",
       ''
     ].join('\n');
     fs.writeFileSync(path.join(workspaceBPath, 'workspace.yml'), WORKSPACE_YML);
@@ -568,24 +565,16 @@ test.describe('Snapshot: Multi-Workspace Tab Isolation', () => {
     const sharedCollectionPath = path.join(sharedColPath, 'SharedCol');
 
     await test.step('Open WorkspaceB and add the same collection path', async () => {
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        workspaceBPath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, workspaceBPath);
       await page.getByTestId('workspace-menu').click();
       await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
       await expect(page.getByTestId('workspace-name')).toHaveText('WorkspaceB', { timeout: 10000 });
 
-      await app.evaluate(
-        ({ dialog }, targetPath: string) => {
-          (dialog as any).showOpenDialog = () =>
-            Promise.resolve({ canceled: false, filePaths: [targetPath] });
-        },
-        sharedCollectionPath
-      );
+      await app.evaluate(({ dialog }, targetPath: string) => {
+        (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+      }, sharedCollectionPath);
 
       await page.getByTestId('collections-header-add-menu').click();
       await page.locator('.tippy-box .dropdown-item').filter({ hasText: 'Open collection' }).click();
@@ -812,7 +801,10 @@ test.describe('Snapshot: Basic Request Movement', () => {
     });
   });
 
-  test('graphql request pane tab interactivity is restored after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('graphql request pane tab interactivity is restored after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-graphql-interactivity');
     const colPath = await createTmpDir('col');
 

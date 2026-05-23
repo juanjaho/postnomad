@@ -162,7 +162,7 @@ paths:
       description: Authenticate user and get access token
       tags:
         - Authentication
-      security: []  # No security required for login
+      security: [] # No security required for login
       requestBody:
         required: true
         content:

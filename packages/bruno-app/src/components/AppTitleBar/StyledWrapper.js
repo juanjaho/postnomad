@@ -172,7 +172,10 @@ const Wrapper = styled.div`
       border-radius: 4px;
       cursor: pointer;
       color: ${(props) => props.theme.dropdown.mutedText};
-      transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+      transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
       opacity: 0;
 
       &.pinned {

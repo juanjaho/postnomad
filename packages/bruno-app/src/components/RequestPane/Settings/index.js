@@ -29,51 +29,66 @@ const Settings = ({ item, collection }) => {
   const { encodeUrl, followRedirects, maxRedirects, timeout } = settings;
 
   // Reusable function to update settings
-  const updateSetting = useCallback((settingUpdate) => {
-    const updatedSettings = { ...settings, ...settingUpdate };
-    dispatch(updateItemSettings({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      settings: updatedSettings
-    }));
-  }, [dispatch, collection.uid, item.uid, settings]);
+  const updateSetting = useCallback(
+    (settingUpdate) => {
+      const updatedSettings = { ...settings, ...settingUpdate };
+      dispatch(
+        updateItemSettings({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          settings: updatedSettings
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid, settings]
+  );
 
   // Setting change handlers
-  const onToggleUrlEncoding = useCallback(() =>
-    updateSetting({ encodeUrl: !encodeUrl }), [encodeUrl, updateSetting]);
+  const onToggleUrlEncoding = useCallback(() => updateSetting({ encodeUrl: !encodeUrl }), [encodeUrl, updateSetting]);
 
-  const onToggleFollowRedirects = useCallback(() =>
-    updateSetting({ followRedirects: !followRedirects }), [followRedirects, updateSetting]);
+  const onToggleFollowRedirects = useCallback(
+    () => updateSetting({ followRedirects: !followRedirects }),
+    [followRedirects, updateSetting]
+  );
 
-  const onMaxRedirectsChange = useCallback((e) => {
-    const value = e.target.value;
-    // Only allow empty string or digits
-    if (value === '' || /^\d+$/.test(value)) {
-      const numericValue = value === '' ? 0 : parseInt(value, 10);
-      updateSetting({ maxRedirects: numericValue });
-    }
-  }, [updateSetting]);
+  const onMaxRedirectsChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      // Only allow empty string or digits
+      if (value === '' || /^\d+$/.test(value)) {
+        const numericValue = value === '' ? 0 : parseInt(value, 10);
+        updateSetting({ maxRedirects: numericValue });
+      }
+    },
+    [updateSetting]
+  );
 
-  const onTimeoutChange = useCallback((e) => {
-    const value = e.target.value;
-    // Only allow empty string or digits
-    if (value === '' || /^\d+$/.test(value)) {
-      const numericValue = value === '' ? 0 : parseInt(value, 10);
-      updateSetting({ timeout: numericValue });
-    }
-  }, [updateSetting]);
+  const onTimeoutChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      // Only allow empty string or digits
+      if (value === '' || /^\d+$/.test(value)) {
+        const numericValue = value === '' ? 0 : parseInt(value, 10);
+        updateSetting({ timeout: numericValue });
+      }
+    },
+    [updateSetting]
+  );
 
   // Check if timeout is inherited
   const isTimeoutInherited = timeout === 'inherit' || timeout === undefined || timeout === null;
 
-  const handleTimeoutDropdownSelect = useCallback((option) => {
-    if (option === 'inherit') {
-      updateSetting({ timeout: 'inherit' });
-    } else if (option === 'custom') {
-      // Switch to custom value - start with 0
-      updateSetting({ timeout: 0 });
-    }
-  }, [updateSetting]);
+  const handleTimeoutDropdownSelect = useCallback(
+    (option) => {
+      if (option === 'inherit') {
+        updateSetting({ timeout: 'inherit' });
+      } else if (option === 'custom') {
+        // Switch to custom value - start with 0
+        updateSetting({ timeout: 0 });
+      }
+    },
+    [updateSetting]
+  );
 
   // Keyboard shortcut handlers
   const onSave = useCallback(() => {
@@ -85,15 +100,18 @@ const Settings = ({ item, collection }) => {
   }, [dispatch, item, collection.uid]);
 
   // Keyboard shortcut handler for input fields
-  const handleKeyDown = useCallback((e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault();
-      onSave();
-    } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      onRun();
-    }
-  }, [onSave, onRun]);
+  const handleKeyDown = useCallback(
+    (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        onSave();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        onRun();
+      }
+    },
+    [onSave, onRun]
+  );
 
   return (
     <div className="h-full w-full">
@@ -108,7 +126,6 @@ const Settings = ({ item, collection }) => {
         </div>
 
         <div className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-4">
             <ToggleSelector
               checked={encodeUrl}

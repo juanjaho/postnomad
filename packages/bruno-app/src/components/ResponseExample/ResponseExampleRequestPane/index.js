@@ -18,19 +18,9 @@ const ResponseExampleRequestPane = ({ item, collection, editMode, exampleUid, on
           onSave={onSave}
         />
 
-        <ResponseExampleParams
-          editMode={editMode}
-          item={item}
-          collection={collection}
-          exampleUid={exampleUid}
-        />
+        <ResponseExampleParams editMode={editMode} item={item} collection={collection} exampleUid={exampleUid} />
 
-        <ResponseExampleHeaders
-          editMode={editMode}
-          item={item}
-          collection={collection}
-          exampleUid={exampleUid}
-        />
+        <ResponseExampleHeaders editMode={editMode} item={item} collection={collection} exampleUid={exampleUid} />
 
         <ResponseExampleBody
           editMode={editMode}

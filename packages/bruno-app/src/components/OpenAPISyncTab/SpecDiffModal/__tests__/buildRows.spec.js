@@ -38,9 +38,7 @@ describe('buildRows', () => {
   });
 
   test('3. pure-deletion run → del rows with empty placeholders on right', () => {
-    const parsed = file(
-      block('@@ -1,3 +1,1 @@', [ctx('keep', 1, 1), del('gone1', 2), del('gone2', 3)])
-    );
+    const parsed = file(block('@@ -1,3 +1,1 @@', [ctx('keep', 1, 1), del('gone1', 2), del('gone2', 3)]));
     const { rows, changeBlocks } = buildRows(parsed);
     expect(rows).toHaveLength(4); // 1 hunk + 1 ctx + 2 del rows
     expect(rows[2].leftKind).toBe('del');
@@ -56,9 +54,7 @@ describe('buildRows', () => {
   });
 
   test('4. pure-insertion run → empty placeholders on left, ins on right', () => {
-    const parsed = file(
-      block('@@ -1,1 +1,3 @@', [ctx('keep', 1, 1), ins('new1', 2), ins('new2', 3)])
-    );
+    const parsed = file(block('@@ -1,1 +1,3 @@', [ctx('keep', 1, 1), ins('new1', 2), ins('new2', 3)]));
     const { rows, changeBlocks } = buildRows(parsed);
     expect(rows).toHaveLength(4);
     expect(rows[2].leftKind).toBe('empty');
@@ -110,9 +106,7 @@ describe('buildRows', () => {
     // must produce the same count for the same diff shape.
 
     // Fixture A: small diff, one contiguous change region
-    const fixtureA = file(
-      block('@@ -1,4 +1,4 @@', [ctx('a', 1, 1), del('b', 2), ins('B', 2), ctx('c', 3, 3)])
-    );
+    const fixtureA = file(block('@@ -1,4 +1,4 @@', [ctx('a', 1, 1), del('b', 2), ins('B', 2), ctx('c', 3, 3)]));
     expect(buildRows(fixtureA).changeBlocks).toHaveLength(1);
 
     // Fixture B: medium, two separate change regions in one hunk
@@ -134,13 +128,7 @@ describe('buildRows', () => {
     // contiguous change region per hunk
     const fixtureC = file(
       block('@@ -1,3 +1,4 @@', [ctx('a', 1, 1), del('b', 2), ins('B', 2), ins('C', 3)]),
-      block('@@ -10,4 +11,4 @@', [
-        ctx('x', 10, 11),
-        del('y', 11),
-        del('z', 12),
-        ins('Y', 12),
-        ins('Z', 13)
-      ])
+      block('@@ -10,4 +11,4 @@', [ctx('x', 10, 11), del('y', 11), del('z', 12), ins('Y', 12), ins('Z', 13)])
     );
     expect(buildRows(fixtureC).changeBlocks).toHaveLength(2);
   });

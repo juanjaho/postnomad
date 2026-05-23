@@ -2,7 +2,9 @@ import { test, expect } from '../../../playwright';
 
 const EXPECTED_PATH_SUFFIX = 'tests/preferences/default-collection-location';
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const DEFAULT_LOCATION_SUFFIX_PATTERN = new RegExp(`${escapeRegExp('tests/preferences')}(\\/default-collection-location)?$`);
+const DEFAULT_LOCATION_SUFFIX_PATTERN = new RegExp(
+  `${escapeRegExp('tests/preferences')}(\\/default-collection-location)?$`
+);
 
 test.describe('Default Location Feature', () => {
   test('Should hydrate the default location from preferences', async ({ pageWithUserData: page }) => {

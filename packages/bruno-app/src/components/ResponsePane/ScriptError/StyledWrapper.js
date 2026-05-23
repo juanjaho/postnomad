@@ -65,7 +65,9 @@ const StyledWrapper = styled.div`
     letter-spacing: normal;
     color: ${(props) => props.theme.colors.text.muted};
     opacity: 0.8;
-    transition: opacity 0.15s, text-decoration 0.15s;
+    transition:
+      opacity 0.15s,
+      text-decoration 0.15s;
 
     span {
       overflow: hidden;

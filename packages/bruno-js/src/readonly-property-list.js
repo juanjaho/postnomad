@@ -113,9 +113,7 @@ class ReadOnlyPropertyList {
     if (!item || typeof item !== 'object') return -1;
     const items = this.#getItems();
     const keyProp = this._keyProperty;
-    return items.findIndex(
-      (i) => i[keyProp] === item[keyProp] && i[this.#valueProperty] === item[this.#valueProperty]
-    );
+    return items.findIndex((i) => i[keyProp] === item[keyProp] && i[this.#valueProperty] === item[this.#valueProperty]);
   }
 
   // ── Search ─────────────────────────────────────────────────────────────

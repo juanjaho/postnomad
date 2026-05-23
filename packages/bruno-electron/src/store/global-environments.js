@@ -36,10 +36,11 @@ class GlobalEnvironmentsStore {
 
   encryptGlobalEnvironmentVariables({ globalEnvironments }) {
     return globalEnvironments?.map((env) => {
-      const variables = env.variables?.map((v) => ({
-        ...v,
-        value: v?.secret ? encryptStringSafe(v.value).value : v?.value
-      })) || [];
+      const variables =
+        env.variables?.map((v) => ({
+          ...v,
+          value: v?.secret ? encryptStringSafe(v.value).value : v?.value
+        })) || [];
 
       return {
         ...env,
@@ -50,10 +51,11 @@ class GlobalEnvironmentsStore {
 
   decryptGlobalEnvironmentVariables({ globalEnvironments }) {
     return globalEnvironments?.map((env) => {
-      const variables = env.variables?.map((v) => ({
-        ...v,
-        value: v?.secret ? decryptStringSafe(v.value).value : v?.value
-      })) || [];
+      const variables =
+        env.variables?.map((v) => ({
+          ...v,
+          value: v?.secret ? decryptStringSafe(v.value).value : v?.value
+        })) || [];
 
       return {
         ...env,

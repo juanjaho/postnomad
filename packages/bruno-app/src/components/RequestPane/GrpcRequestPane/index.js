@@ -21,19 +21,30 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
   const focusedTab = find(tabs, (t) => t.uid === activeTabUid);
   const requestPaneTab = focusedTab?.requestPaneTab;
 
-  const selectTab = useCallback((tab) => {
-    dispatch(
-      updateRequestPaneTab({
-        uid: item.uid,
-        requestPaneTab: tab
-      })
-    );
-  }, [dispatch, item.uid]);
+  const selectTab = useCallback(
+    (tab) => {
+      dispatch(
+        updateRequestPaneTab({
+          uid: item.uid,
+          requestPaneTab: tab
+        })
+      );
+    },
+    [dispatch, item.uid]
+  );
 
   const tabPanel = useMemo(() => {
     switch (requestPaneTab) {
       case 'body': {
-        return <GrpcBody item={item} collection={collection} hideModeSelector={true} hidePrettifyButton={true} handleRun={handleRun} />;
+        return (
+          <GrpcBody
+            item={item}
+            collection={collection}
+            hideModeSelector={true}
+            hidePrettifyButton={true}
+            handleRun={handleRun}
+          />
+        );
       }
       case 'headers': {
         return <RequestHeaders item={item} collection={collection} addHeaderText="Add Metadata" />;
@@ -65,11 +76,7 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
   const allTabs = useMemo(() => {
     const getMessageIndicator = () => {
       if (grpcMessagesCount > 0) {
-        return isClientStreaming ? (
-          <sup className="ml-[.125rem] font-medium">{grpcMessagesCount}</sup>
-        ) : (
-          <StatusDot />
-        );
+        return isClientStreaming ? <sup className="ml-[.125rem] font-medium">{grpcMessagesCount}</sup> : <StatusDot />;
       }
       return null;
     };
@@ -83,7 +90,8 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
       {
         key: 'headers',
         label: 'Metadata',
-        indicator: activeHeadersLength > 0 ? <sup className="ml-[.125rem] font-medium">{activeHeadersLength}</sup> : null
+        indicator:
+          activeHeadersLength > 0 ? <sup className="ml-[.125rem] font-medium">{activeHeadersLength}</sup> : null
       },
       {
         key: 'auth',
@@ -115,11 +123,12 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
     return null;
   }
 
-  const rightContent = requestPaneTab === 'auth' ? (
-    <div ref={rightContentRef} className="flex flex-grow justify-start items-center">
-      <GrpcAuthMode item={item} collection={collection} />
-    </div>
-  ) : null;
+  const rightContent =
+    requestPaneTab === 'auth' ? (
+      <div ref={rightContentRef} className="flex flex-grow justify-start items-center">
+        <GrpcAuthMode item={item} collection={collection} />
+      </div>
+    ) : null;
 
   return (
     <StyledWrapper className="flex flex-col h-full relative">
@@ -131,12 +140,8 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
         rightContentRef={rightContent ? rightContentRef : null}
       />
 
-      <section
-        className="flex w-full flex-1 h-full mt-4"
-      >
-        <HeightBoundContainer>
-          {tabPanel}
-        </HeightBoundContainer>
+      <section className="flex w-full flex-1 h-full mt-4">
+        <HeightBoundContainer>{tabPanel}</HeightBoundContainer>
       </section>
     </StyledWrapper>
   );

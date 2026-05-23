@@ -8,9 +8,7 @@ import {
 } from '../../utils/page';
 
 test.describe('Global Environment process.env Resolution', () => {
-  test('should resolve process.env variables referenced in global environment', async ({
-    pageWithUserData: page
-  }) => {
+  test('should resolve process.env variables referenced in global environment', async ({ pageWithUserData: page }) => {
     await test.step('Open collection', async () => {
       await openCollection(page, 'process-env-global-test');
     });

@@ -3,7 +3,15 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { sanitizeName } = require('./filesystem');
-const { parseRequest, parseCollection, parseFolder, stringifyCollection, stringifyFolder, stringifyEnvironment, stringifyRequest } = require('@usebruno/filestore');
+const {
+  parseRequest,
+  parseCollection,
+  parseFolder,
+  stringifyCollection,
+  stringifyFolder,
+  stringifyEnvironment,
+  stringifyRequest
+} = require('@usebruno/filestore');
 const constants = require('../constants');
 const chalk = require('chalk');
 
@@ -341,11 +349,7 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
   // This allows each script to run separately with its own scope,
   // preventing variable re-declaration errors and allowing early returns
   // to only affect that specific script segment
-  const preReqScripts = [
-    collectionPreReqScript,
-    ...combinedPreReqScript,
-    request?.script?.req || ''
-  ];
+  const preReqScripts = [collectionPreReqScript, ...combinedPreReqScript, request?.script?.req || ''];
   const preReqSources = [collectionSource, ...combinedPreReqSources, null];
   const preReq = wrapAndJoinScripts(preReqScripts, preReqScripts.length - 1, preReqSources);
   request.script.req = preReq.code;
@@ -353,11 +357,7 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
 
   // Handle post-response scripts based on scriptFlow
   if (scriptFlow === 'sequential') {
-    const postResScripts = [
-      collectionPostResScript,
-      ...combinedPostResScript,
-      request?.script?.res || ''
-    ];
+    const postResScripts = [collectionPostResScript, ...combinedPostResScript, request?.script?.res || ''];
     const postResSources = [collectionSource, ...combinedPostResSources, null];
     const postRes = wrapAndJoinScripts(postResScripts, postResScripts.length - 1, postResSources);
     request.script.res = postRes.code;
@@ -377,22 +377,14 @@ const mergeScripts = (collection, request, requestTreePath, scriptFlow) => {
 
   // Handle tests based on scriptFlow
   if (scriptFlow === 'sequential') {
-    const testScripts = [
-      collectionTests,
-      ...combinedTests,
-      request?.tests || ''
-    ];
+    const testScripts = [collectionTests, ...combinedTests, request?.tests || ''];
     const testSources = [collectionSource, ...combinedTestsSources, null];
     const tests = wrapAndJoinScripts(testScripts, testScripts.length - 1, testSources);
     request.tests = tests.code;
     request.testsMetadata = tests.metadata;
   } else {
     // Reverse order for non-sequential flow
-    const testScripts = [
-      request?.tests || '',
-      ...[...combinedTests].reverse(),
-      collectionTests
-    ];
+    const testScripts = [request?.tests || '', ...[...combinedTests].reverse(), collectionTests];
     const testSources = [null, ...[...combinedTestsSources].reverse(), collectionSource];
     const tests = wrapAndJoinScripts(testScripts, 0, testSources);
     request.tests = tests.code;
@@ -555,13 +547,11 @@ const createCollectionFromBrunoObject = async (collection, dirPath, options = {}
   const collectionContent = await stringifyCollection(collection.root || {}, brunoConfig, {
     format
   });
-  const collectionRootFilePath = format == 'bru' ? path.join(dirPath, 'collection.bru') : path.join(dirPath, 'opencollection.yml');
+  const collectionRootFilePath =
+    format == 'bru' ? path.join(dirPath, 'collection.bru') : path.join(dirPath, 'opencollection.yml');
 
   if (format === 'bru') {
-    fs.writeFileSync(
-      path.join(dirPath, 'bruno.json'),
-      JSON.stringify(brunoConfig, null, 2)
-    );
+    fs.writeFileSync(path.join(dirPath, 'bruno.json'), JSON.stringify(brunoConfig, null, 2));
   }
 
   if (collection.root) {
@@ -691,9 +681,7 @@ const sortByNameThenSequence = (items) => {
 
     if (hasItemWithSameSeq) {
       // If there's a conflict, group items with same sequence together
-      const newGroup = Array.isArray(existingItem)
-        ? [...existingItem, item]
-        : [existingItem, item];
+      const newGroup = Array.isArray(existingItem) ? [...existingItem, item] : [existingItem, item];
 
       withoutSeq.splice(position, 1, newGroup);
     } else {

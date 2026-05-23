@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/grpc/metadata/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/grpc/metadata/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

@@ -4,8 +4,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 describe('OpenAPI with Examples', () => {
-  const openApiWithExamples = fs.readFileSync(path.resolve(__dirname, '../../../../tests/import/openapi/fixtures/openapi-with-examples.yaml'),
-    'utf8');
+  const openApiWithExamples = fs.readFileSync(
+    path.resolve(__dirname, '../../../../tests/import/openapi/fixtures/openapi-with-examples.yaml'),
+    'utf8'
+  );
 
   it('should import OpenAPI collection with response examples', () => {
     const brunoCollection = openApiToBruno(openApiWithExamples);

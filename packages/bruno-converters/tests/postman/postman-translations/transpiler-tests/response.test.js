@@ -59,8 +59,12 @@ describe('Response Translation', () => {
     const translatedCode = translateCode(code);
 
     // Check for the existence of all four assertions (two pairs)
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Cache-Control".toLowerCase(), "no-cache");');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");'
+    );
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property("Cache-Control".toLowerCase(), "no-cache");'
+    );
   });
 
   it('should transform pm.response.to.have.header inside control structures', () => {
@@ -73,7 +77,9 @@ describe('Response Translation', () => {
 
     // The assertions should be inside the if block
     expect(translatedCode).toContain('if (res.getStatus() === 200) {');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");'
+    );
   });
 
   it('should transform pm.response.to.have.header with variable parameters', () => {
@@ -86,7 +92,9 @@ describe('Response Translation', () => {
 
     expect(translatedCode).toContain('const headerName = "Content-Type";');
     expect(translatedCode).toContain('const expectedValue = "application/json";');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property(headerName.toLowerCase(), expectedValue);');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property(headerName.toLowerCase(), expectedValue);'
+    );
   });
 
   // Response aliases tests
@@ -158,7 +166,9 @@ describe('Response Translation', () => {
     const translatedCode = translateCode(code);
 
     // Check for both assertions when using an alias
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");'
+    );
   });
 
   it('should translate response.status', () => {
@@ -266,9 +276,9 @@ describe('Response Translation', () => {
     expect(translatedCode).toContain('const statusText = res.statusText;');
     expect(translatedCode).toContain('test("Response is valid", function() {');
     expect(translatedCode).toContain('expect(res.getStatus()).to.equal(200);');
-    expect(translatedCode).toContain('expect(responseBody).to.be.an(\'object\');');
+    expect(translatedCode).toContain("expect(responseBody).to.be.an('object');");
     expect(translatedCode).toContain('expect(responseTime).to.be.below(1000);');
-    expect(translatedCode).toContain('expect(statusText).to.equal(\'OK\');');
+    expect(translatedCode).toContain("expect(statusText).to.equal('OK');");
   });
 
   it('should handle pm objects with array access on response', () => {
@@ -318,14 +328,14 @@ describe('Response Translation', () => {
     const translatedCode = translateCode(code);
 
     // Check how header access is translated
-    expect(translatedCode).toContain('const contentType = res.getHeader(\'Content-Type\');');
-    expect(translatedCode).toContain('const contentLength = res.getHeader(\'Content-Length\');');
+    expect(translatedCode).toContain("const contentType = res.getHeader('Content-Type');");
+    expect(translatedCode).toContain("const contentLength = res.getHeader('Content-Length');");
     expect(translatedCode).toContain('console.log("contentType", contentType);');
     expect(translatedCode).toContain('console.log("contentLength", contentLength);');
     expect(translatedCode).not.toContain('pm.test');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property(\'Content-Type\'.toLowerCase())');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property(\'Content-Length\'.toLowerCase())');
-    expect(translatedCode).toContain('expect(contentType).to.include(\'application/json\')');
+    expect(translatedCode).toContain("expect(res.getHeaders()).to.have.property('Content-Type'.toLowerCase())");
+    expect(translatedCode).toContain("expect(res.getHeaders()).to.have.property('Content-Length'.toLowerCase())");
+    expect(translatedCode).toContain("expect(contentType).to.include('application/json')");
   });
 
   it('should transform response data with array destructuring', () => {
@@ -362,7 +372,7 @@ describe('Response Translation', () => {
     const translatedCode = translateCode(code);
 
     expect(translatedCode).toContain('if (res.getStatus() >= 200 && res.getStatus() < 300) {');
-    expect(translatedCode).toContain('if (res.getHeader(\'Content-Type\').includes(\'application/json\')) {');
+    expect(translatedCode).toContain("if (res.getHeader('Content-Type').includes('application/json')) {");
     expect(translatedCode).toContain('const data = res.getBody();');
     expect(translatedCode).toContain('bru.setEnvVar("authToken", data.token);');
     expect(translatedCode).toContain('} else if (res.getStatus() === 404) {');
@@ -474,7 +484,9 @@ describe('Response Translation', () => {
     expect(translatedCode).toContain('test("Response headers validation", function() {');
 
     // Check for header assertions inside the test callback
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase(), "application/json");'
+    );
     expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property("Cache-Control".toLowerCase())');
 
     // Check that other test assertions are preserved
@@ -502,7 +514,9 @@ describe('Response Translation', () => {
     expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property(headerName.toLowerCase())');
 
     expect(translatedCode).toContain('function validateHeader(headerName, expectedValue) {');
-    expect(translatedCode).toContain('expect(res.getHeaders()).to.have.property(headerName.toLowerCase(), expectedValue);');
+    expect(translatedCode).toContain(
+      'expect(res.getHeaders()).to.have.property(headerName.toLowerCase(), expectedValue);'
+    );
 
     // Check function calls
     expect(translatedCode).toContain('checkHeaderPresent("Authorization");');
@@ -528,7 +542,9 @@ describe('Response Translation', () => {
   it('should transform pm.response.to.have.body with JSON object', () => {
     const code = `pm.response.to.have.body({"status": "success", "message": "Operation completed"});`;
     const translatedCode = translateCode(code);
-    expect(translatedCode).toBe('expect(res.getBody()).to.equal({"status": "success", "message": "Operation completed"});');
+    expect(translatedCode).toBe(
+      'expect(res.getBody()).to.equal({"status": "success", "message": "Operation completed"});'
+    );
   });
 
   it('should transform pm.response.to.have.body inside test function', () => {
@@ -1147,7 +1163,9 @@ describe('Response Translation', () => {
   it('should translate pm.response.to.not.have.header with value', () => {
     const code = 'pm.response.to.not.have.header("Content-Type", "text/plain");';
     const translatedCode = translateCode(code);
-    expect(translatedCode).toBe('expect(res.getHeaders()).to.not.have.property("Content-Type".toLowerCase(), "text/plain");');
+    expect(translatedCode).toBe(
+      'expect(res.getHeaders()).to.not.have.property("Content-Type".toLowerCase(), "text/plain");'
+    );
   });
 
   it('should translate pm.response.to.not.have.body', () => {

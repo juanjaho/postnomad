@@ -15,7 +15,7 @@ const StyledSessionList = styled.div`
 
     &:hover {
       background: ${(props) => props.theme.sidebarHover || 'rgba(255, 255, 255, 0.05)'};
-      
+
       .session-close-btn {
         opacity: 1;
       }
@@ -42,7 +42,7 @@ const StyledSessionList = styled.div`
     padding: 4px;
     cursor: pointer;
     color: ${(props) => props.theme.textSecondary || '#888'};
-    
+
     &:hover {
       color: ${(props) => props.theme.text};
       background: ${(props) => props.theme.sidebarHover || 'rgba(255, 255, 255, 0.1)'};

@@ -24,17 +24,13 @@ const createMockResult = () => ({
   },
   error: null,
   status: 'pass',
-  assertionResults: [
-    { lhsExpr: 'res.status', rhsExpr: 'eq 200', status: 'pass' }
-  ],
-  testResults: [
-    { description: 'should return user data', status: 'pass' }
-  ],
+  assertionResults: [{ lhsExpr: 'res.status', rhsExpr: 'eq 200', status: 'pass' }],
+  testResults: [{ description: 'should return user data', status: 'pass' }],
   preRequestTestResults: [],
   postResponseTestResults: [],
   name: 'echo post',
   path: 'echo/echo-post.bru',
-  runDuration: 0.150
+  runDuration: 0.15
 });
 
 describe('reporter-skip-body', () => {
@@ -59,16 +55,31 @@ describe('reporter-skip-body', () => {
       return JSON.parse(new TextDecoder().decode(bytes));
     };
 
-    const generateHtml = (results) => generateHtmlReport({
-      runnerResults: [{
-        iterationIndex: 0,
-        results,
-        summary: { totalRequests: 1, passedRequests: 1, failedRequests: 0, errorRequests: 0, skippedRequests: 0, totalAssertions: 1, passedAssertions: 1, failedAssertions: 0, totalTests: 1, passedTests: 1, failedTests: 0 }
-      }],
-      version: 'usebruno v1.16.0',
-      environment: null,
-      runCompletionTime: '2024-01-15T14:30:45.123Z'
-    });
+    const generateHtml = (results) =>
+      generateHtmlReport({
+        runnerResults: [
+          {
+            iterationIndex: 0,
+            results,
+            summary: {
+              totalRequests: 1,
+              passedRequests: 1,
+              failedRequests: 0,
+              errorRequests: 0,
+              skippedRequests: 0,
+              totalAssertions: 1,
+              passedAssertions: 1,
+              failedAssertions: 0,
+              totalTests: 1,
+              passedTests: 1,
+              failedTests: 0
+            }
+          }
+        ],
+        version: 'usebruno v1.16.0',
+        environment: null,
+        runCompletionTime: '2024-01-15T14:30:45.123Z'
+      });
 
     it('should exclude both bodies from HTML report with --reporter-skip-body', () => {
       const results = [createMockResult()];
@@ -131,16 +142,31 @@ describe('reporter-skip-request-body and reporter-skip-response-body', () => {
       return JSON.parse(new TextDecoder().decode(bytes));
     };
 
-    const generateHtml = (results) => generateHtmlReport({
-      runnerResults: [{
-        iterationIndex: 0,
-        results,
-        summary: { totalRequests: 1, passedRequests: 1, failedRequests: 0, errorRequests: 0, skippedRequests: 0, totalAssertions: 1, passedAssertions: 1, failedAssertions: 0, totalTests: 1, passedTests: 1, failedTests: 0 }
-      }],
-      version: 'usebruno v1.16.0',
-      environment: null,
-      runCompletionTime: '2024-01-15T14:30:45.123Z'
-    });
+    const generateHtml = (results) =>
+      generateHtmlReport({
+        runnerResults: [
+          {
+            iterationIndex: 0,
+            results,
+            summary: {
+              totalRequests: 1,
+              passedRequests: 1,
+              failedRequests: 0,
+              errorRequests: 0,
+              skippedRequests: 0,
+              totalAssertions: 1,
+              passedAssertions: 1,
+              failedAssertions: 0,
+              totalTests: 1,
+              passedTests: 1,
+              failedTests: 0
+            }
+          }
+        ],
+        version: 'usebruno v1.16.0',
+        environment: null,
+        runCompletionTime: '2024-01-15T14:30:45.123Z'
+      });
 
     it('should include both bodies by default', () => {
       const results = [createMockResult()];

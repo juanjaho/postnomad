@@ -11,11 +11,11 @@ docker compose run bruno-cli
 
 the container writes three report files into this directory:
 
-| File | Format | Purpose |
-|------|--------|---------|
-| `results.json` | JSON | Machine-readable run summary (request/response, timings, assertion results) |
-| `results.xml` | JUnit XML | For CI test reporters (GitHub Actions, GitLab CI, Jenkins, etc.) |
-| `results.html` | HTML | Human-readable report you can open in a browser |
+| File           | Format    | Purpose                                                                     |
+| -------------- | --------- | --------------------------------------------------------------------------- |
+| `results.json` | JSON      | Machine-readable run summary (request/response, timings, assertion results) |
+| `results.xml`  | JUnit XML | For CI test reporters (GitHub Actions, GitLab CI, Jenkins, etc.)            |
+| `results.html` | HTML      | Human-readable report you can open in a browser                             |
 
 The files themselves are gitignored — only this `README.md` and the `.gitignore` are tracked, which keeps the folder present in the repo so the `./reports:/reports` bind mount has somewhere to land without needing manual `mkdir` first.
 

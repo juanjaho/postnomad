@@ -131,7 +131,7 @@ const StyledWrapper = styled.div`
   .terminal-container {
     flex: 1;
     position: relative;
-    
+
     .xterm {
       height: 100% !important;
       width: 100% !important;

@@ -1,10 +1,5 @@
 import { test, expect } from '../../../playwright';
-import {
-  closeAllCollections,
-  createCollection,
-  createRequest,
-  sendRequest
-} from '../../utils/page/actions';
+import { closeAllCollections, createCollection, createRequest, sendRequest } from '../../utils/page/actions';
 
 /**
  * Select a tab in the response pane, handling the overflow dropdown (>>) if the tab is hidden.
@@ -34,7 +29,10 @@ test.describe('Timeline URL Update', () => {
     await closeAllCollections(page);
   });
 
-  test('should show correct URL in timeline after changing request URL between sends', async ({ page, createTmpDir }) => {
+  test('should show correct URL in timeline after changing request URL between sends', async ({
+    page,
+    createTmpDir
+  }) => {
     const collectionName = 'timeline-url-test';
     const firstUrl = 'http://localhost:8081/ping';
     const secondUrl = 'http://localhost:8081/headers';

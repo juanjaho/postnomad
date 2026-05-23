@@ -9,9 +9,11 @@ const ExampleNotFound = ({ exampleUid }) => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const closeTab = () => {
-    dispatch(closeTabs({
-      tabUids: [exampleUid]
-    }));
+    dispatch(
+      closeTabs({
+        tabUids: [exampleUid]
+      })
+    );
   };
 
   useEffect(() => {

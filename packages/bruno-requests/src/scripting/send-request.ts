@@ -22,9 +22,8 @@ type SendRequestConfig = Omit<GetHttpHttpsAgentsParams, 'requestUrl'>;
 const createSendRequest = (config?: SendRequestConfig) => {
   return async (requestConfig: AxiosRequestConfig | string, callback?: T_SendRequestCallback) => {
     // Handle case where requestConfig is a URL string
-    const normalizedConfig: AxiosRequestConfig = typeof requestConfig === 'string'
-      ? { url: requestConfig }
-      : { ...requestConfig };
+    const normalizedConfig: AxiosRequestConfig =
+      typeof requestConfig === 'string' ? { url: requestConfig } : { ...requestConfig };
 
     // If config is provided, create agents with the request URL for proper proxy bypass
     if (config) {
@@ -62,10 +61,8 @@ const createSendRequest = (config?: SendRequestConfig) => {
       // Normalize axios error for callback: tests expect error.status (e.g. 404), but axios
       // puts the status on error.response.status. Setting status here ensures the same
       // behaviour in nodevm (--sandbox developer, used in CI) and in QuickJS (safe sandbox).
-      const errForCallback
-        = error && typeof error.response?.status === 'number'
-          ? { ...error, status: error.response.status }
-          : error;
+      const errForCallback =
+        error && typeof error.response?.status === 'number' ? { ...error, status: error.response.status } : error;
       try {
         await callback(errForCallback, null);
       } catch (err) {

@@ -32,13 +32,15 @@ const ToolHint = ({
     color: toolhintTextColor
   };
 
-  const toolhintProps_final = anchorSelect
-    ? { anchorSelect }
-    : { anchorId: toolhintId };
+  const toolhintProps_final = anchorSelect ? { anchorSelect } : { anchorId: toolhintId };
 
   return (
     <>
-      {!anchorSelect && <span id={toolhintId} className={className} data-testid={dataTestId}>{children}</span>}
+      {!anchorSelect && (
+        <span id={toolhintId} className={className} data-testid={dataTestId}>
+          {children}
+        </span>
+      )}
       {anchorSelect && children}
       <ReactToolHint
         {...toolhintProps_final}

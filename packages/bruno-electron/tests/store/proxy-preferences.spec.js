@@ -162,7 +162,13 @@ describe('Proxy Preferences Migration', () => {
       mockStoreData['preferences'] = {
         proxy: {
           inherit: false,
-          config: { protocol: 'http', hostname: 'proxy.example.com', port: 8080, auth: { username: 'user', password: 'pass' }, bypassProxy: '' }
+          config: {
+            protocol: 'http',
+            hostname: 'proxy.example.com',
+            port: 8080,
+            auth: { username: 'user', password: 'pass' },
+            bypassProxy: ''
+          }
         }
       };
 

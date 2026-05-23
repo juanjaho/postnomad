@@ -91,8 +91,7 @@ export const getContentType = (headers) => {
   }
 
   // Get content-type header value
-  const contentTypeHeader = Object.entries(headers)
-    .find(([key]) => key.toLowerCase() === 'content-type');
+  const contentTypeHeader = Object.entries(headers).find(([key]) => key.toLowerCase() === 'content-type');
 
   const contentType = contentTypeHeader && contentTypeHeader[1];
 
@@ -190,7 +189,7 @@ export const generateUidBasedOnHash = (str) => {
   return `${hash}`.padEnd(21, '0');
 };
 
-export const stringifyIfNot = (v) => typeof v === 'string' ? v : String(v);
+export const stringifyIfNot = (v) => (typeof v === 'string' ? v : String(v));
 
 export const getEncoding = (headers) => {
   // Parse the charset from content type: https://stackoverflow.com/a/33192813
@@ -247,9 +246,7 @@ export const sortByNameThenSequence = (items) => {
 
     if (hasItemWithSameSeq) {
       // If there's a conflict, group items with same sequence together
-      const newGroup = Array.isArray(existingItem)
-        ? [...existingItem, item]
-        : [existingItem, item];
+      const newGroup = Array.isArray(existingItem) ? [...existingItem, item] : [existingItem, item];
 
       withoutSeq.splice(position, 1, newGroup);
     } else {
@@ -279,7 +276,9 @@ export const formatResponse = (data, dataBufferString, mode, filter, bufferThres
     return '';
   }
 
-  let bufferSize = 0, rawData = '', isVeryLargeResponse = false;
+  let bufferSize = 0,
+    rawData = '',
+    isVeryLargeResponse = false;
   try {
     const dataBuffer = Buffer.from(dataBufferString, 'base64');
     bufferSize = dataBuffer.length;
@@ -484,7 +483,7 @@ export function prettifyHtmlString(htmlString) {
     // Fallback: return original string if formatting fails
     return htmlString;
   }
-};
+}
 
 // Simple JavaScript formatter that uses prettier
 export function prettifyJavaScriptString(jsString) {
@@ -504,7 +503,7 @@ export function prettifyJavaScriptString(jsString) {
     // If prettier fails, return the original string
     return jsString;
   }
-};
+}
 
 export function formatHexView(buffer) {
   const width = 16;

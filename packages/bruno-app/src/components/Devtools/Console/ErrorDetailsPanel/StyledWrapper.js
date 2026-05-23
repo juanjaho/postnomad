@@ -141,7 +141,8 @@ const StyledWrapper = styled.div`
     span {
       font-size: ${(props) => props.theme.font.size.sm};
       color: ${(props) => props.theme.console.messageColor};
-      font-family: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-family:
+        ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
       word-break: break-all;
       line-height: 1.4;
     }

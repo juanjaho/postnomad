@@ -47,11 +47,15 @@ const resolveGrpcProxyConfig = async (proxyMode, proxyConfig, requestUrl, interp
           return { proxyUrl: `http://${hostPort}` };
         }
         if (/^HTTPS\s+/i.test(directive)) {
-          console.warn('gRPC proxy: PAC returned an HTTPS proxy directive which is not supported for gRPC connections. Skipping.');
+          console.warn(
+            'gRPC proxy: PAC returned an HTTPS proxy directive which is not supported for gRPC connections. Skipping.'
+          );
           continue;
         }
         if (/^SOCKS/i.test(directive)) {
-          console.warn('gRPC proxy: PAC returned a SOCKS proxy directive which is not supported for gRPC connections. Skipping.');
+          console.warn(
+            'gRPC proxy: PAC returned a SOCKS proxy directive which is not supported for gRPC connections. Skipping.'
+          );
           continue;
         }
       }
@@ -67,7 +71,9 @@ const resolveGrpcProxyConfig = async (proxyMode, proxyConfig, requestUrl, interp
 
     const protocol = interpolateString(get(proxyConfig, 'protocol', ''), interpolationOptions) || '';
     if (protocol.includes('socks') || protocol === 'https') {
-      console.warn(`gRPC proxy: "${protocol}" protocol not supported. Only HTTP proxies are supported for gRPC connections.`);
+      console.warn(
+        `gRPC proxy: "${protocol}" protocol not supported. Only HTTP proxies are supported for gRPC connections.`
+      );
       return { proxyUrl: null };
     }
 
@@ -77,12 +83,8 @@ const resolveGrpcProxyConfig = async (proxyMode, proxyConfig, requestUrl, interp
     const portStr = port ? `:${port}` : '';
 
     if (authEnabled) {
-      const username = encodeURIComponent(
-        interpolateString(get(proxyConfig, 'auth.username'), interpolationOptions)
-      );
-      const password = encodeURIComponent(
-        interpolateString(get(proxyConfig, 'auth.password'), interpolationOptions)
-      );
+      const username = encodeURIComponent(interpolateString(get(proxyConfig, 'auth.username'), interpolationOptions));
+      const password = encodeURIComponent(interpolateString(get(proxyConfig, 'auth.password'), interpolationOptions));
       return { proxyUrl: `http://${username}:${password}@${hostname}${portStr}` };
     }
     return { proxyUrl: `http://${hostname}${portStr}` };
@@ -201,7 +203,12 @@ const registerGrpcEventHandlers = (window) => {
       const pfx = httpsAgentRequestFields.pfx;
 
       // Resolve proxy configuration for gRPC
-      const grpcProxyConfig = await resolveGrpcProxyConfig(proxyMode, proxyConfig, preparedRequest.url, interpolationOptions);
+      const grpcProxyConfig = await resolveGrpcProxyConfig(
+        proxyMode,
+        proxyConfig,
+        preparedRequest.url,
+        interpolationOptions
+      );
 
       const requestSent = {
         type: 'request',
@@ -242,7 +249,9 @@ const registerGrpcEventHandlers = (window) => {
           url: preparedRequest.oauth2Credentials?.url,
           collectionUid: collection.uid,
           credentialsId: preparedRequest.oauth2Credentials?.credentialsId,
-          ...(preparedRequest.oauth2Credentials?.folderUid ? { folderUid: preparedRequest.oauth2Credentials.folderUid } : { itemUid: preparedRequest.uid }),
+          ...(preparedRequest.oauth2Credentials?.folderUid
+            ? { folderUid: preparedRequest.oauth2Credentials.folderUid }
+            : { itemUid: preparedRequest.uid }),
           debugInfo: preparedRequest.oauth2Credentials.debugInfo
         });
       }
@@ -312,88 +321,98 @@ const registerGrpcEventHandlers = (window) => {
   });
 
   // Load methods from server reflection
-  ipcMain.handle('grpc:load-methods-reflection', async (event, { request, collection, environment, runtimeVariables }) => {
-    try {
-      const requestCopy = cloneDeep(request);
-      const preparedRequest = await prepareGrpcRequest(requestCopy, collection, environment, runtimeVariables);
+  ipcMain.handle(
+    'grpc:load-methods-reflection',
+    async (event, { request, collection, environment, runtimeVariables }) => {
+      try {
+        const requestCopy = cloneDeep(request);
+        const preparedRequest = await prepareGrpcRequest(requestCopy, collection, environment, runtimeVariables);
 
-      const protocolRegex = /^([-+\w]{1,25})(:?\/\/|:)/;
-      if (!protocolRegex.test(preparedRequest.url)) {
-        preparedRequest.url = `http://${preparedRequest.url}`;
-      }
+        const protocolRegex = /^([-+\w]{1,25})(:?\/\/|:)/;
+        if (!protocolRegex.test(preparedRequest.url)) {
+          preparedRequest.url = `http://${preparedRequest.url}`;
+        }
 
-      // Get certificates and proxy configuration
-      const certsAndProxyConfig = await getCertsAndProxyConfig({
-        collectionUid: collection.uid,
-        collection,
-        request: preparedRequest,
-        envVars: preparedRequest.envVars,
-        runtimeVariables,
-        processEnvVars: preparedRequest.processEnvVars,
-        collectionPath: collection.pathname,
-        globalEnvironmentVariables: collection.globalEnvironmentVariables
-      });
-
-      await configureRequest(
-        preparedRequest,
-        requestCopy,
-        collection,
-        preparedRequest.envVars,
-        runtimeVariables,
-        preparedRequest.processEnvVars,
-        preparedRequest.promptVariables,
-        certsAndProxyConfig
-      );
-
-      // Extract certificate and proxy information from the config
-      const { httpsAgentRequestFields, proxyMode, proxyConfig, interpolationOptions } = certsAndProxyConfig;
-
-      // Configure verify options
-      const verifyOptions = {
-        rejectUnauthorized: preferencesUtil.shouldVerifyTls()
-      };
-
-      // Extract certificate information
-      const rootCertificate = httpsAgentRequestFields.ca;
-      const privateKey = httpsAgentRequestFields.key;
-      const certificateChain = httpsAgentRequestFields.cert;
-      const passphrase = httpsAgentRequestFields.passphrase;
-      const pfx = httpsAgentRequestFields.pfx;
-
-      // Resolve proxy configuration for gRPC
-      const grpcProxyConfig = await resolveGrpcProxyConfig(proxyMode, proxyConfig, preparedRequest.url, interpolationOptions);
-
-      // Send OAuth credentials update if available
-      if (preparedRequest?.oauth2Credentials) {
-        window.webContents.send('main:credentials-update', {
-          credentials: preparedRequest.oauth2Credentials?.credentials,
-          url: preparedRequest.oauth2Credentials?.url,
+        // Get certificates and proxy configuration
+        const certsAndProxyConfig = await getCertsAndProxyConfig({
           collectionUid: collection.uid,
-          credentialsId: preparedRequest.oauth2Credentials?.credentialsId,
-          ...(preparedRequest.oauth2Credentials?.folderUid ? { folderUid: preparedRequest.oauth2Credentials.folderUid } : { itemUid: preparedRequest.uid }),
-          debugInfo: preparedRequest.oauth2Credentials.debugInfo
+          collection,
+          request: preparedRequest,
+          envVars: preparedRequest.envVars,
+          runtimeVariables,
+          processEnvVars: preparedRequest.processEnvVars,
+          collectionPath: collection.pathname,
+          globalEnvironmentVariables: collection.globalEnvironmentVariables
         });
+
+        await configureRequest(
+          preparedRequest,
+          requestCopy,
+          collection,
+          preparedRequest.envVars,
+          runtimeVariables,
+          preparedRequest.processEnvVars,
+          preparedRequest.promptVariables,
+          certsAndProxyConfig
+        );
+
+        // Extract certificate and proxy information from the config
+        const { httpsAgentRequestFields, proxyMode, proxyConfig, interpolationOptions } = certsAndProxyConfig;
+
+        // Configure verify options
+        const verifyOptions = {
+          rejectUnauthorized: preferencesUtil.shouldVerifyTls()
+        };
+
+        // Extract certificate information
+        const rootCertificate = httpsAgentRequestFields.ca;
+        const privateKey = httpsAgentRequestFields.key;
+        const certificateChain = httpsAgentRequestFields.cert;
+        const passphrase = httpsAgentRequestFields.passphrase;
+        const pfx = httpsAgentRequestFields.pfx;
+
+        // Resolve proxy configuration for gRPC
+        const grpcProxyConfig = await resolveGrpcProxyConfig(
+          proxyMode,
+          proxyConfig,
+          preparedRequest.url,
+          interpolationOptions
+        );
+
+        // Send OAuth credentials update if available
+        if (preparedRequest?.oauth2Credentials) {
+          window.webContents.send('main:credentials-update', {
+            credentials: preparedRequest.oauth2Credentials?.credentials,
+            url: preparedRequest.oauth2Credentials?.url,
+            collectionUid: collection.uid,
+            credentialsId: preparedRequest.oauth2Credentials?.credentialsId,
+            ...(preparedRequest.oauth2Credentials?.folderUid
+              ? { folderUid: preparedRequest.oauth2Credentials.folderUid }
+              : { itemUid: preparedRequest.uid }),
+            debugInfo: preparedRequest.oauth2Credentials.debugInfo
+          });
+        }
+
+        const methods = await grpcClient.loadMethodsFromReflection({
+          request: preparedRequest,
+          collectionUid: collection.uid,
+          rootCertificate,
+          privateKey,
+          certificateChain,
+          passphrase,
+          pfx,
+          verifyOptions,
+          sendEvent,
+          proxyConfig: grpcProxyConfig
+        });
+
+        return { success: true, methods: safeParseJSON(safeStringifyJSON(methods)) };
+      } catch (error) {
+        console.error('Error loading gRPC methods from reflection:', error);
+        return { success: false, error: error.message };
       }
-
-      const methods = await grpcClient.loadMethodsFromReflection({
-        request: preparedRequest,
-        collectionUid: collection.uid,
-        rootCertificate,
-        privateKey,
-        certificateChain,
-        passphrase,
-        pfx,
-        verifyOptions,
-        sendEvent,
-        proxyConfig: grpcProxyConfig
-      });
-
-      return { success: true, methods: safeParseJSON(safeStringifyJSON(methods)) };
-    } catch (error) {
-      console.error('Error loading gRPC methods from reflection:', error);
-      return { success: false, error: error.message };
     }
-  });
+  );
 
   // Load methods from proto file
   ipcMain.handle('grpc:load-methods-proto', async (event, { filePath, collection }) => {
@@ -461,18 +480,23 @@ const registerGrpcEventHandlers = (window) => {
         caCertFilePath = preferencesUtil.getCustomCaCertificateFilePath();
       }
 
-      const clientCertConfig = collection.draft?.brunoConfig ? get(collection, 'draft.brunoConfig.clientCertificates.certs', []) : get(collection, 'brunoConfig.clientCertificates.certs', []);
+      const clientCertConfig = collection.draft?.brunoConfig
+        ? get(collection, 'draft.brunoConfig.clientCertificates.certs', [])
+        : get(collection, 'brunoConfig.clientCertificates.certs', []);
 
       for (let clientCert of clientCertConfig) {
         const domain = interpolateString(clientCert?.domain, interpolationOptions);
         const type = clientCert?.type || 'cert';
         if (domain) {
-          const hostRegex = '^(https:\\/\\/|grpc:\\/\\/|grpcs:\\/\\/)' + domain.replaceAll('.', '\\.').replaceAll('*', '.*');
+          const hostRegex =
+            '^(https:\\/\\/|grpc:\\/\\/|grpcs:\\/\\/)' + domain.replaceAll('.', '\\.').replaceAll('*', '.*');
           const requestUrl = interpolateString(preparedRequest.url, interpolationOptions);
           if (requestUrl.match(hostRegex)) {
             if (type === 'cert') {
               certFilePath = interpolateString(clientCert?.certFilePath, interpolationOptions);
-              certFilePath = path.isAbsolute(certFilePath) ? certFilePath : path.join(collection.pathname, certFilePath);
+              certFilePath = path.isAbsolute(certFilePath)
+                ? certFilePath
+                : path.join(collection.pathname, certFilePath);
               keyFilePath = interpolateString(clientCert?.keyFilePath, interpolationOptions);
               keyFilePath = path.isAbsolute(keyFilePath) ? keyFilePath : path.join(collection.pathname, keyFilePath);
             }

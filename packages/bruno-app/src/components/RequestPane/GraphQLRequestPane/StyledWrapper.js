@@ -86,7 +86,6 @@ const StyledWrapper = styled.div`
       border-left: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.activeBorder};
     }
   }
-
 `;
 
 export default StyledWrapper;

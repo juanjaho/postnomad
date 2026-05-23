@@ -5,10 +5,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
-  reporter: [
-    ['list'],
-    ['json', { outputFile: 'benchmark-report/results.json' }]
-  ],
+  reporter: [['list'], ['json', { outputFile: 'benchmark-report/results.json' }]],
 
   use: {
     trace: 'off'

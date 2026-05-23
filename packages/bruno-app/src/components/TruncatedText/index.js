@@ -81,11 +81,7 @@ const TruncatedText = ({
 
   return (
     <div className={className} data-testid={dataTestId}>
-      <div
-        ref={textRef}
-        className={textClassName}
-        style={!isExpanded && shouldTruncate ? defaultTextStyles : {}}
-      >
+      <div ref={textRef} className={textClassName} style={!isExpanded && shouldTruncate ? defaultTextStyles : {}}>
         {children || text}
       </div>
 

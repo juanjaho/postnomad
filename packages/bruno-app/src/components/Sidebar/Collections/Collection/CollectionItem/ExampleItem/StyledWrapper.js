@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const StyledWrapper = styled.div`
   position: relative;
-  
+
   .menu-icon {
     color: ${(props) => props.theme.sidebar.dropdownIcon.color};
     visibility: hidden;
@@ -49,7 +49,6 @@ const StyledWrapper = styled.div`
   .example-icon {
     color: ${(props) => props.theme.sidebar.collection.item.example.iconColor};
   }
-
 `;
 
 export default StyledWrapper;

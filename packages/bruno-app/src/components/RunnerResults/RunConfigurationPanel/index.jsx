@@ -144,7 +144,9 @@ const RequestItem = ({ item, index, moveItem, isSelected, onSelect, onDrop, isDi
     isDisabled ? 'is-disabled' : '',
     isOver && canDrop && dropType === 'above' ? 'drop-target-above' : '',
     isOver && canDrop && dropType === 'below' ? 'drop-target-below' : ''
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div ref={ref} className={itemClasses} data-testid="runner-request-item">
@@ -158,15 +160,11 @@ const RequestItem = ({ item, index, moveItem, isSelected, onSelect, onDrop, isDi
         </div>
       </div>
 
-      <div className={`method ${methodInfo.methodClass}`}>
-        {methodInfo.methodText}
-      </div>
+      <div className={`method ${methodInfo.methodClass}`}>{methodInfo.methodText}</div>
 
       <div className="request-name">
         <span>{item.name}</span>
-        {item.folderPath && (
-          <span className="folder-path">{item.folderPath}</span>
-        )}
+        {item.folderPath && <span className="folder-path">{item.folderPath}</span>}
       </div>
     </div>
   );
@@ -249,9 +247,7 @@ const RunConfigurationPanel = ({ collection, selectedItems, setSelectedItems, ta
 
       if (!savedConfiguration || isInitialMountRef.current) {
         isInitialMountRef.current = false;
-        const enabledUids = finalRequests
-          .filter((item) => !isRequestDisabled(item, tags))
-          .map((item) => item.uid);
+        const enabledUids = finalRequests.filter((item) => !isRequestDisabled(item, tags)).map((item) => item.uid);
         setSelectedItems(enabledUids);
       }
     } catch (error) {
@@ -287,9 +283,7 @@ const RunConfigurationPanel = ({ collection, selectedItems, setSelectedItems, ta
     });
 
     if (changed) {
-      const ordered = flattenedRequests
-        .filter((r) => newSelected.includes(r.uid))
-        .map((r) => r.uid);
+      const ordered = flattenedRequests.filter((r) => newSelected.includes(r.uid)).map((r) => r.uid);
       setSelectedItems(ordered);
       const allRequestUidsOrder = flattenedRequests.map((item) => item.uid);
       dispatch(updateRunnerConfiguration(collection.uid, ordered, allRequestUidsOrder));
@@ -332,32 +326,35 @@ const RunConfigurationPanel = ({ collection, selectedItems, setSelectedItems, ta
     });
   }, [selectedItems, collection.uid, dispatch, setSelectedItems]);
 
-  const handleRequestSelect = useCallback((item) => {
-    if (isRequestDisabled(item, tags)) return;
+  const handleRequestSelect = useCallback(
+    (item) => {
+      if (isRequestDisabled(item, tags)) return;
 
-    try {
-      if (selectedItems.includes(item.uid)) {
-        const newSelectedUids = selectedItems.filter((uid) => uid !== item.uid);
-        setSelectedItems(newSelectedUids);
+      try {
+        if (selectedItems.includes(item.uid)) {
+          const newSelectedUids = selectedItems.filter((uid) => uid !== item.uid);
+          setSelectedItems(newSelectedUids);
 
-        const allRequestUidsOrder = flattenedRequests.map((item) => item.uid);
-        dispatch(updateRunnerConfiguration(collection.uid, newSelectedUids, allRequestUidsOrder));
-      } else {
-        const newSelectedUids = [...selectedItems, item.uid];
+          const allRequestUidsOrder = flattenedRequests.map((item) => item.uid);
+          dispatch(updateRunnerConfiguration(collection.uid, newSelectedUids, allRequestUidsOrder));
+        } else {
+          const newSelectedUids = [...selectedItems, item.uid];
 
-        const orderedSelectedUids = flattenedRequests
-          .filter((req) => newSelectedUids.includes(req.uid))
-          .map((req) => req.uid);
+          const orderedSelectedUids = flattenedRequests
+            .filter((req) => newSelectedUids.includes(req.uid))
+            .map((req) => req.uid);
 
-        setSelectedItems(orderedSelectedUids);
+          setSelectedItems(orderedSelectedUids);
 
-        const allRequestUidsOrder = flattenedRequests.map((item) => item.uid);
-        dispatch(updateRunnerConfiguration(collection.uid, orderedSelectedUids, allRequestUidsOrder));
+          const allRequestUidsOrder = flattenedRequests.map((item) => item.uid);
+          dispatch(updateRunnerConfiguration(collection.uid, orderedSelectedUids, allRequestUidsOrder));
+        }
+      } catch (error) {
+        console.error('Error selecting item:', error);
       }
-    } catch (error) {
-      console.error('Error selecting item:', error);
-    }
-  }, [selectedItems, setSelectedItems, flattenedRequests, dispatch, collection.uid, tags]);
+    },
+    [selectedItems, setSelectedItems, flattenedRequests, dispatch, collection.uid, tags]
+  );
 
   const handleSelectAll = useCallback(() => {
     try {
@@ -382,9 +379,7 @@ const RunConfigurationPanel = ({ collection, selectedItems, setSelectedItems, ta
       pendingReselectRef.current.clear();
       const resetRequests = cloneDeep(originalRequests);
       setFlattenedRequests(resetRequests);
-      const enabledUids = resetRequests
-        .filter((item) => !isRequestDisabled(item, tags))
-        .map((item) => item.uid);
+      const enabledUids = resetRequests.filter((item) => !isRequestDisabled(item, tags)).map((item) => item.uid);
       setSelectedItems(enabledUids);
       const allUidsOrder = resetRequests.map((item) => item.uid);
       dispatch(updateRunnerConfiguration(collection.uid, enabledUids, allUidsOrder));
@@ -400,11 +395,7 @@ const RunConfigurationPanel = ({ collection, selectedItems, setSelectedItems, ta
           {selectedItems.length} of {enabledCount} selected
         </div>
         <div className="actions">
-          <Button
-            variant="ghost"
-            onClick={handleSelectAll}
-            data-testid="runner-select-all"
-          >
+          <Button variant="ghost" onClick={handleSelectAll} data-testid="runner-select-all">
             {selectedItems.length === enabledCount ? 'Deselect All' : 'Select All'}
           </Button>
           <Button

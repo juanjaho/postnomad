@@ -10,18 +10,22 @@ const WSResponseSortOrder = ({ collection, item }) => {
   const order = item.response?.sortOrder ?? -1;
 
   const toggleSortOrder = () => {
-    dispatch(wsUpdateResponseSortOrder({
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      wsUpdateResponseSortOrder({
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   return (
     <StyledWrapper className="ml-2 flex items-center">
       <button onClick={toggleSortOrder} title={order === -1 ? 'Latest Last' : 'Latest First'}>
-        { order === -1
-          ? <IconSortDescending2 size={16} strokeWidth={1.5} />
-          : <IconSortAscending2 size={16} strokeWidth={1.5} />}
+        {order === -1 ? (
+          <IconSortDescending2 size={16} strokeWidth={1.5} />
+        ) : (
+          <IconSortAscending2 size={16} strokeWidth={1.5} />
+        )}
       </button>
     </StyledWrapper>
   );

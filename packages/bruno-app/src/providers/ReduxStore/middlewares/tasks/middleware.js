@@ -5,7 +5,12 @@ import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { removeTaskFromQueue } from 'providers/ReduxStore/slices/app';
 import { addTab } from 'providers/ReduxStore/slices/tabs';
 import { collectionAddFileEvent, collectionChangeFileEvent } from 'providers/ReduxStore/slices/collections';
-import { findCollectionByUid, findItemInCollectionByPathname, getDefaultRequestPaneTab, findItemInCollectionByItemUid } from 'utils/collections/index';
+import {
+  findCollectionByUid,
+  findItemInCollectionByPathname,
+  getDefaultRequestPaneTab,
+  findItemInCollectionByItemUid
+} from 'utils/collections/index';
 import { taskTypes } from './utils';
 
 const taskMiddleware = createListenerMiddleware();
@@ -76,22 +81,26 @@ taskMiddleware.startListening({
           if (item && item.examples && item.examples.length > task.exampleIndex) {
             const example = item.examples[task.exampleIndex];
             if (example) {
-              listenerApi.dispatch(addTab({
-                uid: example.uid,
-                collectionUid: collection.uid,
-                type: 'response-example',
-                itemUid: item.uid,
-                pathname: item.pathname,
-                exampleName: example.name,
-                exampleIndex: task.exampleIndex
-              }));
+              listenerApi.dispatch(
+                addTab({
+                  uid: example.uid,
+                  collectionUid: collection.uid,
+                  type: 'response-example',
+                  itemUid: item.uid,
+                  pathname: item.pathname,
+                  exampleName: example.name,
+                  exampleIndex: task.exampleIndex
+                })
+              );
             }
           }
         }
 
-        listenerApi.dispatch(removeTaskFromQueue({
-          taskUid: task.uid
-        }));
+        listenerApi.dispatch(
+          removeTaskFromQueue({
+            taskUid: task.uid
+          })
+        );
       }
     });
   }

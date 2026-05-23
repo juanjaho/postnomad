@@ -13,14 +13,7 @@ const CollectionOAuth1 = ({ collection }) => {
 
   const save = () => dispatch(saveCollectionSettings(collection.uid));
 
-  return (
-    <OAuth1
-      collection={collection}
-      request={request}
-      save={save}
-      updateAuth={updateCollectionAuth}
-    />
-  );
+  return <OAuth1 collection={collection} request={request} save={save} updateAuth={updateCollectionAuth} />;
 };
 
 export default CollectionOAuth1;

@@ -134,7 +134,10 @@ function createTimelineAgentClass<T extends ProxyAgentClass | typeof https.Agent
       const extraCerts = this.caCertificatesCount.extra || 0;
       const customCerts = this.caCertificatesCount.custom || 0;
 
-      log('tls', `CA Certificates: ${rootCerts} root, ${systemCerts} system, ${extraCerts} extra, ${customCerts} custom`);
+      log(
+        'tls',
+        `CA Certificates: ${rootCerts} root, ${systemCerts} system, ${extraCerts} extra, ${customCerts} custom`
+      );
 
       // Log "Trying host:port..."
       log('info', `Trying ${host}:${port}...`);
@@ -180,7 +183,12 @@ function createTimelineAgentClass<T extends ProxyAgentClass | typeof https.Agent
         if (cert) {
           log('tls', `Server certificate:`);
           if (cert.subject) {
-            log('tls', ` subject: ${Object.entries(cert.subject).map(([k, v]) => `${k}=${v}`).join(', ')}`);
+            log(
+              'tls',
+              ` subject: ${Object.entries(cert.subject)
+                .map(([k, v]) => `${k}=${v}`)
+                .join(', ')}`
+            );
           }
           if (cert.valid_from) {
             log('tls', ` start date: ${cert.valid_from}`);
@@ -192,7 +200,12 @@ function createTimelineAgentClass<T extends ProxyAgentClass | typeof https.Agent
             log('tls', ` subjectAltName: ${cert.subjectaltname}`);
           }
           if (cert.issuer) {
-            log('tls', ` issuer: ${Object.entries(cert.issuer).map(([k, v]) => `${k}=${v}`).join(', ')}`);
+            log(
+              'tls',
+              ` issuer: ${Object.entries(cert.issuer)
+                .map(([k, v]) => `${k}=${v}`)
+                .join(', ')}`
+            );
           }
 
           // SSL certificate verification status
@@ -223,7 +236,9 @@ function createTimelineAgentClass<T extends ProxyAgentClass | typeof https.Agent
  *
  * This is a simplified version of createTimelineAgentClass for HTTP (non-TLS) connections.
  */
-function createTimelineHttpAgentClass<T extends HttpProxyAgentClass | typeof http.Agent>(BaseAgentClass: T): HttpAgentClass {
+function createTimelineHttpAgentClass<T extends HttpProxyAgentClass | typeof http.Agent>(
+  BaseAgentClass: T
+): HttpAgentClass {
   return class TimelineHttpAgent extends (BaseAgentClass as any) {
     timeline: TimelineEntry[];
 
@@ -306,4 +321,15 @@ function createTimelineHttpAgentClass<T extends HttpProxyAgentClass | typeof htt
   } as unknown as HttpAgentClass;
 }
 
-export { createTimelineAgentClass, createTimelineHttpAgentClass, TimelineEntry, AgentOptions, HttpAgentOptions, CaCertificatesCount, AgentClass, HttpAgentClass, ProxyAgentClass, HttpProxyAgentClass };
+export {
+  createTimelineAgentClass,
+  createTimelineHttpAgentClass,
+  TimelineEntry,
+  AgentOptions,
+  HttpAgentOptions,
+  CaCertificatesCount,
+  AgentClass,
+  HttpAgentClass,
+  ProxyAgentClass,
+  HttpProxyAgentClass
+};

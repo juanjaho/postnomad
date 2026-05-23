@@ -147,7 +147,6 @@ const AssertionRow = ({
 
   return (
     <>
-
       <td>
         <AssertionOperator
           operator={operator}
@@ -160,7 +159,8 @@ const AssertionRow = ({
               },
               assertion,
               'value'
-            )}
+            )
+          }
         />
       </td>
       <td>

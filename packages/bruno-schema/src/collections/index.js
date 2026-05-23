@@ -4,7 +4,8 @@ const { uidSchema } = require('../common');
 const annotationSchema = Yup.object({
   name: Yup.string().min(1).required('annotation name is required'),
   value: Yup.string().nullable()
-}).noUnknown(true)
+})
+  .noUnknown(true)
   .strict();
 
 const environmentVariablesSchema = Yup.object({
@@ -12,11 +13,7 @@ const environmentVariablesSchema = Yup.object({
   name: Yup.string().nullable(),
   // Allow mixed types (string, number, boolean, object) to support setting non-string values via scripts.
   value: Yup.mixed().nullable(),
-  annotations: Yup.array()
-    .of(
-      annotationSchema
-    )
-    .nullable(),
+  annotations: Yup.array().of(annotationSchema).nullable(),
   type: Yup.string().oneOf(['text']).required('type is required'),
   enabled: Yup.boolean().defined(),
   secret: Yup.boolean()
@@ -41,11 +38,7 @@ const keyValueSchema = Yup.object({
   name: Yup.string().nullable(),
   value: Yup.string().nullable(),
   description: Yup.string().nullable(),
-  annotations: Yup.array()
-    .of(
-      annotationSchema
-    )
-    .nullable(),
+  annotations: Yup.array().of(annotationSchema).nullable(),
   enabled: Yup.boolean()
 })
   .noUnknown(true)
@@ -82,12 +75,10 @@ const assertionOperators = [
   'isArray'
 ];
 
-const assertionSchema = keyValueSchema.shape({
-  operator: Yup.string()
-    .oneOf(assertionOperators)
-    .nullable()
-    .optional()
-})
+const assertionSchema = keyValueSchema
+  .shape({
+    operator: Yup.string().oneOf(assertionOperators).nullable().optional()
+  })
   .noUnknown(true)
   .strict();
 
@@ -97,11 +88,7 @@ const varsSchema = Yup.object({
   value: Yup.string().nullable(),
   description: Yup.string().nullable(),
   // Optional annotations on variables
-  annotations: Yup.array()
-    .of(
-      annotationSchema
-    )
-    .nullable(),
+  annotations: Yup.array().of(annotationSchema).nullable(),
   enabled: Yup.boolean(),
 
   // todo
@@ -112,9 +99,7 @@ const varsSchema = Yup.object({
   .strict();
 
 const requestUrlSchema = Yup.string().min(0).defined();
-const requestMethodSchema = Yup.string()
-  .min(1, 'method is required')
-  .required('method is required');
+const requestMethodSchema = Yup.string().min(1, 'method is required').required('method is required');
 
 const graphqlBodySchema = Yup.object({
   query: Yup.string().nullable(),
@@ -150,8 +135,7 @@ const multipartFormSchema = Yup.object({
   .noUnknown(true)
   .strict();
 
-
-const fileSchema = Yup.object({ 
+const fileSchema = Yup.object({
   uid: uidSchema,
   filePath: Yup.string().nullable(),
   contentType: Yup.string().nullable(),
@@ -163,11 +147,7 @@ const fileSchema = Yup.object({
 // Add annotations to file entries (when parsed from body:file blocks they can have @contentType only currently,
 // but adding annotations ensures roundtrip validation doesn't fail if annotations are present in future)
 const fileSchemaWithAnnotations = fileSchema.shape({
-  annotations: Yup.array()
-    .of(
-      annotationSchema
-    )
-    .nullable()
+  annotations: Yup.array().of(annotationSchema).nullable()
 });
 
 const requestBodySchema = Yup.object({
@@ -224,16 +204,13 @@ const authDigestSchema = Yup.object({
   .noUnknown(true)
   .strict();
 
-
-
-  const authNTLMSchema = Yup.object({
-    username: Yup.string().nullable(),
-    password: Yup.string().nullable(),
-    domain: Yup.string().nullable()
-
-  })
-    .noUnknown(true)
-    .strict();  
+const authNTLMSchema = Yup.object({
+  username: Yup.string().nullable(),
+  password: Yup.string().nullable(),
+  domain: Yup.string().nullable()
+})
+  .noUnknown(true)
+  .strict();
 
 const authApiKeySchema = Yup.object({
   key: Yup.string().nullable(),
@@ -250,7 +227,9 @@ const authOAuth1Schema = Yup.object({
   accessTokenSecret: Yup.string().nullable(),
   callbackUrl: Yup.string().nullable(),
   verifier: Yup.string().nullable(),
-  signatureMethod: Yup.string().oneOf(['HMAC-SHA1', 'HMAC-SHA256', 'HMAC-SHA512', 'RSA-SHA1', 'RSA-SHA256', 'RSA-SHA512', 'PLAINTEXT']).nullable(),
+  signatureMethod: Yup.string()
+    .oneOf(['HMAC-SHA1', 'HMAC-SHA256', 'HMAC-SHA512', 'RSA-SHA1', 'RSA-SHA256', 'RSA-SHA512', 'PLAINTEXT'])
+    .nullable(),
   privateKey: Yup.string().nullable(),
   privateKeyType: Yup.string().oneOf(['file', 'text']).nullable(),
   timestamp: Yup.string().nullable(),
@@ -266,24 +245,20 @@ const authOAuth1Schema = Yup.object({
 const oauth2AuthorizationAdditionalParametersSchema = Yup.object({
   name: Yup.string().nullable(),
   value: Yup.string().nullable(),
-  sendIn: Yup.string()
-    .oneOf(['headers', 'queryparams'])
-    .required('send in property is required'),
+  sendIn: Yup.string().oneOf(['headers', 'queryparams']).required('send in property is required'),
   enabled: Yup.boolean()
 })
   .noUnknown(true)
   .strict();
 
 const oauth2AdditionalParametersSchema = Yup.object({
-    name: Yup.string().nullable(),
-    value: Yup.string().nullable(),
-    sendIn: Yup.string()
-      .oneOf(['headers', 'queryparams', 'body'])
-      .required('send in property is required'),
-    enabled: Yup.boolean()
-  })
-    .noUnknown(true)
-    .strict();
+  name: Yup.string().nullable(),
+  value: Yup.string().nullable(),
+  sendIn: Yup.string().oneOf(['headers', 'queryparams', 'body']).required('send in property is required'),
+  enabled: Yup.boolean()
+})
+  .noUnknown(true)
+  .strict();
 
 const oauth2Schema = Yup.object({
   grantType: Yup.string()
@@ -360,14 +335,16 @@ const oauth2Schema = Yup.object({
     otherwise: Yup.string().nullable().strip()
   }),
   tokenHeaderPrefix: Yup.string().when(['grantType', 'tokenPlacement'], {
-    is: (grantType, tokenPlacement) => 
-      ['client_credentials', 'password', 'authorization_code', 'implicit'].includes(grantType) && tokenPlacement === 'header',
+    is: (grantType, tokenPlacement) =>
+      ['client_credentials', 'password', 'authorization_code', 'implicit'].includes(grantType) &&
+      tokenPlacement === 'header',
     then: Yup.string().nullable(),
     otherwise: Yup.string().nullable().strip()
   }),
   tokenQueryKey: Yup.string().when(['grantType', 'tokenPlacement'], {
-    is: (grantType, tokenPlacement) => 
-      ['client_credentials', 'password', 'authorization_code', 'implicit'].includes(grantType) && tokenPlacement === 'url',
+    is: (grantType, tokenPlacement) =>
+      ['client_credentials', 'password', 'authorization_code', 'implicit'].includes(grantType) &&
+      tokenPlacement === 'url',
     then: Yup.string().nullable(),
     otherwise: Yup.string().nullable().strip()
   }),
@@ -423,11 +400,7 @@ const requestParamsSchema = Yup.object({
   value: Yup.string().nullable(),
   description: Yup.string().nullable(),
   // Optional annotations on params
-  annotations: Yup.array()
-    .of(
-      annotationSchema
-    )
-    .nullable(),
+  annotations: Yup.array().of(annotationSchema).nullable(),
   type: Yup.string().oneOf(['query', 'path']).required('type is required'),
   enabled: Yup.boolean()
 })
@@ -439,7 +412,7 @@ const exampleSchema = Yup.object({
   itemUid: uidSchema,
   name: Yup.string().min(1, 'name must be at least 1 character').required('name is required'),
   description: Yup.string().nullable(),
-  type: Yup.string().oneOf(['http-request', 'graphql-request', 'grpc-request',]).required('type is required'),
+  type: Yup.string().oneOf(['http-request', 'graphql-request', 'grpc-request']).required('type is required'),
   request: Yup.object({
     url: requestUrlSchema,
     method: requestMethodSchema,
@@ -505,10 +478,14 @@ const grpcRequestSchema = Yup.object({
   auth: authSchema,
   body: Yup.object({
     mode: Yup.string().oneOf(['grpc']).required('mode is required'),
-    grpc: Yup.array().of(Yup.object({
-      name: Yup.string().nullable(),
-      content: Yup.string().nullable()
-    })).nullable()
+    grpc: Yup.array()
+      .of(
+        Yup.object({
+          name: Yup.string().nullable(),
+          content: Yup.string().nullable()
+        })
+      )
+      .nullable()
   })
     .strict()
     .required('body is required'),
@@ -527,7 +504,7 @@ const grpcRequestSchema = Yup.object({
     .nullable(),
   assertions: Yup.array().of(assertionSchema).nullable(),
   tests: Yup.string().nullable(),
-  docs: Yup.string().nullable(),
+  docs: Yup.string().nullable()
 })
   .noUnknown(true)
   .strict();
@@ -572,11 +549,10 @@ const wsRequestSchema = Yup.object({
 
 const wsSettingsSchema = Yup.object({
   settings: Yup.object({
-    timeout: Yup.number()
-      .default(500),
-    keepAliveInterval: Yup.number()
-      .default(0)
-  }).noUnknown(true)
+    timeout: Yup.number().default(500),
+    keepAliveInterval: Yup.number().default(0)
+  })
+    .noUnknown(true)
     .strict()
     .nullable()
 });
@@ -618,10 +594,17 @@ const folderRootSchema = Yup.object({
 
 const itemSchema = Yup.object({
   uid: uidSchema,
-  type: Yup.string().oneOf(['http-request', 'graphql-request', 'folder', 'js', 'grpc-request', 'ws-request']).required('type is required'),
+  type: Yup.string()
+    .oneOf(['http-request', 'graphql-request', 'folder', 'js', 'grpc-request', 'ws-request'])
+    .required('type is required'),
   seq: Yup.number().min(1),
   name: Yup.string().min(1, 'name must be at least 1 character').required('name is required'),
-  tags: Yup.array().of(Yup.string().matches(/^[\p{L}\p{N}_-](?:[\p{L}\p{N}_\s-]*[\p{L}\p{N}_-])?$/u, 'tag must contain only letters, numbers, spaces, hyphens, or underscores')),
+  tags: Yup.array().of(
+    Yup.string().matches(
+      /^[\p{L}\p{N}_-](?:[\p{L}\p{N}_\s-]*[\p{L}\p{N}_-])?$/u,
+      'tag must contain only letters, numbers, spaces, hyphens, or underscores'
+    )
+  ),
   request: Yup.mixed().when('type', {
     is: (type) => type === 'grpc-request',
     then: grpcRequestSchema.required('request is required when item-type is grpc-request'),
@@ -634,19 +617,19 @@ const itemSchema = Yup.object({
       })
     })
   }),
-    settings: Yup.mixed()
-    .when('type', {
-      is: (type) => type === 'ws-request',
-      then: wsSettingsSchema,
-      otherwise: Yup.object({
-        encodeUrl: Yup.boolean().nullable(),
-        followRedirects: Yup.boolean().nullable(),
-        maxRedirects: Yup.number().min(0).max(50).nullable(),
-        timeout: Yup.mixed().nullable(),
-      }).noUnknown(true)
-    .strict()
-    .nullable()
-    }),
+  settings: Yup.mixed().when('type', {
+    is: (type) => type === 'ws-request',
+    then: wsSettingsSchema,
+    otherwise: Yup.object({
+      encodeUrl: Yup.boolean().nullable(),
+      followRedirects: Yup.boolean().nullable(),
+      maxRedirects: Yup.number().min(0).max(50).nullable(),
+      timeout: Yup.mixed().nullable()
+    })
+      .noUnknown(true)
+      .strict()
+      .nullable()
+  }),
   fileContent: Yup.string().when('type', {
     // If the type is 'js', the fileContent field is expected to be a string.
     // This can include an empty string, indicating that the JS file may not have any content.
@@ -661,11 +644,13 @@ const itemSchema = Yup.object({
     otherwise: Yup.mixed().nullable().notRequired()
   }),
   items: Yup.lazy(() => Yup.array().of(itemSchema)),
-  examples: Yup.array().of(exampleSchema).when('type', {
-    is: (type) => ['http-request', 'graphql-request', 'grpc-request'].includes(type),
-    then: (schema) => schema.nullable(),
-    otherwise: Yup.array().strip()
-  }),
+  examples: Yup.array()
+    .of(exampleSchema)
+    .when('type', {
+      is: (type) => ['http-request', 'graphql-request', 'grpc-request'].includes(type),
+      then: (schema) => schema.nullable(),
+      otherwise: Yup.array().strip()
+    }),
   filename: Yup.string().nullable(),
   pathname: Yup.string().nullable()
 })

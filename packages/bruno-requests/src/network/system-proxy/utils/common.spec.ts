@@ -59,6 +59,8 @@ describe('normalizeNoProxy', () => {
   });
 
   it('should handle complex patterns', () => {
-    expect(normalizeNoProxy('localhost;127.0.0.1;*.local;192.168.1.0/24;<local>')).toBe('localhost,127.0.0.1,*.local,192.168.1.0/24,<local>');
+    expect(normalizeNoProxy('localhost;127.0.0.1;*.local;192.168.1.0/24;<local>')).toBe(
+      'localhost,127.0.0.1,*.local,192.168.1.0/24,<local>'
+    );
   });
 });

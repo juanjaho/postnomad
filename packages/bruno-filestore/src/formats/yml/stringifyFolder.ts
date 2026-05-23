@@ -16,21 +16,21 @@ import { stringifyYml } from './utils';
 const hasRequestDefaults = (folderRoot: FolderRoot): boolean => {
   const requestDefaults = folderRoot?.request;
 
-  return Boolean((requestDefaults?.headers?.length)
-    || (requestDefaults?.vars?.req?.length)
-    || (requestDefaults?.vars?.res?.length)
-    || hasRequestScripts(folderRoot)
-    || hasRequestAuth(folderRoot));
+  return Boolean(
+    requestDefaults?.headers?.length ||
+    requestDefaults?.vars?.req?.length ||
+    requestDefaults?.vars?.res?.length ||
+    hasRequestScripts(folderRoot) ||
+    hasRequestAuth(folderRoot)
+  );
 };
 
 const hasRequestAuth = (folderRoot: FolderRoot): boolean => {
-  return Boolean((folderRoot.request?.auth?.mode !== 'none'));
+  return Boolean(folderRoot.request?.auth?.mode !== 'none');
 };
 
 const hasRequestScripts = (folderRoot: FolderRoot): boolean => {
-  return Boolean((folderRoot.request?.script?.req)
-    || (folderRoot.request?.script?.res)
-    || (folderRoot.request?.tests));
+  return Boolean(folderRoot.request?.script?.req || folderRoot.request?.script?.res || folderRoot.request?.tests);
 };
 
 const stringifyFolder = (folderRoot: FolderRoot): string => {

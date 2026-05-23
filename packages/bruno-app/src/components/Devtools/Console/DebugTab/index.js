@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconBug } from '@tabler/icons';
-import {
-  setSelectedError,
-  clearDebugErrors
-} from 'providers/ReduxStore/slices/logs';
+import { setSelectedError, clearDebugErrors } from 'providers/ReduxStore/slices/logs';
 import StyledWrapper from './StyledWrapper';
 
 const ErrorRow = ({ error, isSelected, onClick }) => {
@@ -38,10 +35,7 @@ const ErrorRow = ({ error, isSelected, onClick }) => {
   };
 
   return (
-    <div
-      className={`error-row ${isSelected ? 'selected' : ''}`}
-      onClick={onClick}
-    >
+    <div className={`error-row ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <div className="error-message" title={error.message}>
         {getShortMessage(error.message)}
       </div>
@@ -50,9 +44,7 @@ const ErrorRow = ({ error, isSelected, onClick }) => {
         {getLocation(error)}
       </div>
 
-      <div className="error-time">
-        {formatTime(error.timestamp)}
-      </div>
+      <div className="error-time">{formatTime(error.timestamp)}</div>
     </div>
   );
 };

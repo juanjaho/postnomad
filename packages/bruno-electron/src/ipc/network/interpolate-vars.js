@@ -20,7 +20,13 @@ const getRawQueryString = (url) => {
   return queryIndex !== -1 ? url.slice(queryIndex) : '';
 };
 
-const interpolateVars = (request, envVariables = {}, runtimeVariables = {}, processEnvVars = {}, promptVariables = {}) => {
+const interpolateVars = (
+  request,
+  envVariables = {},
+  runtimeVariables = {},
+  processEnvVars = {},
+  promptVariables = {}
+) => {
   const globalEnvironmentVariables = request?.globalEnvironmentVariables || {};
   const oauth2CredentialVariables = request?.oauth2CredentialVariables || {};
   const collectionVariables = request?.collectionVariables || {};
@@ -34,8 +40,7 @@ const interpolateVars = (request, envVariables = {}, runtimeVariables = {}, proc
   forOwn(envVariables, (value, key) => {
     envVariables[key] = interpolate(value, {
       process: {
-        env: {
-        }
+        env: {}
       }
     });
   });
@@ -375,7 +380,8 @@ const interpolateVars = (request, envVariables = {}, runtimeVariables = {}, proc
     request.oauth1config.accessTokenSecret = _interpolate(request.oauth1config.accessTokenSecret) || '';
     request.oauth1config.callbackUrl = _interpolate(request.oauth1config.callbackUrl) || '';
     request.oauth1config.verifier = _interpolate(request.oauth1config.verifier) || '';
-    request.oauth1config.signatureMethod = _interpolate(request.oauth1config.signatureMethod) || request.oauth1config.signatureMethod || 'HMAC-SHA1';
+    request.oauth1config.signatureMethod =
+      _interpolate(request.oauth1config.signatureMethod) || request.oauth1config.signatureMethod || 'HMAC-SHA1';
     request.oauth1config.privateKey = _interpolate(request.oauth1config.privateKey) || '';
     request.oauth1config.timestamp = _interpolate(request.oauth1config.timestamp) || '';
     request.oauth1config.nonce = _interpolate(request.oauth1config.nonce) || '';

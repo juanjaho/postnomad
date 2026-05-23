@@ -1,13 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  IconCheck,
-  IconX,
-  IconArrowRight,
-  IconArrowsDiff,
-  IconInfoCircle,
-  IconLoader2
-} from '@tabler/icons';
+import { IconCheck, IconX, IconArrowRight, IconArrowsDiff, IconInfoCircle, IconLoader2 } from '@tabler/icons';
 import Button from 'ui/Button';
 import StatusBadge from 'ui/StatusBadge';
 import EndpointChangeSection from '../EndpointChangeSection';
@@ -152,14 +145,16 @@ const SyncReviewPage = ({
 
   const setBulkDecision = (decision) => {
     const newDecisions = {};
-    decidableEndpoints.forEach((ep) => { newDecisions[ep.id] = decision; });
+    decidableEndpoints.forEach((ep) => {
+      newDecisions[ep.id] = decision;
+    });
     dispatch(setReviewDecisions({ collectionUid, decisions: newDecisions }));
   };
 
-  const allAccepted = decidableEndpoints.length > 0
-    && decidableEndpoints.every((ep) => decisions[ep.id] === 'accept-incoming');
-  const allSkipped = decidableEndpoints.length > 0
-    && decidableEndpoints.every((ep) => decisions[ep.id] === 'keep-mine');
+  const allAccepted =
+    decidableEndpoints.length > 0 && decidableEndpoints.every((ep) => decisions[ep.id] === 'accept-incoming');
+  const allSkipped =
+    decidableEndpoints.length > 0 && decidableEndpoints.every((ep) => decisions[ep.id] === 'keep-mine');
 
   const unresolvedConflicts = specUpdatedEndpoints.filter((ep) => ep.conflict && !decisions[ep.id]).length;
 
@@ -179,10 +174,18 @@ const SyncReviewPage = ({
     addGroup('Endpoints to delete', 'remove', specRemovedEndpoints.filter(isAccepted));
 
     // Skipped — changes that will be preserved as-is
-    addGroup('Keeping local version', 'keep', specUpdatedEndpoints.filter((ep) => ep.conflict && isSkipped(ep)));
+    addGroup(
+      'Keeping local version',
+      'keep',
+      specUpdatedEndpoints.filter((ep) => ep.conflict && isSkipped(ep))
+    );
     addGroup('Retaining removed endpoints', 'keep', specRemovedEndpoints.filter(isSkipped));
     addGroup('Skipped new endpoints', 'keep', specAddedEndpoints.filter(isSkipped));
-    addGroup('Keeping current version (skipped updates)', 'keep', specUpdatedEndpoints.filter((ep) => !ep.conflict && isSkipped(ep)));
+    addGroup(
+      'Keeping current version (skipped updates)',
+      'keep',
+      specUpdatedEndpoints.filter((ep) => !ep.conflict && isSkipped(ep))
+    );
 
     return groups;
   }, [specAddedEndpoints, specUpdatedEndpoints, specRemovedEndpoints, decisions]);
@@ -191,17 +194,13 @@ const SyncReviewPage = ({
     setShowConfirmation(false);
 
     // Filter based on decisions
-    const filteredAddedEndpoints = specAddedEndpoints.filter(
-      (ep) => decisions[ep.id] === 'accept-incoming'
-    );
+    const filteredAddedEndpoints = specAddedEndpoints.filter((ep) => decisions[ep.id] === 'accept-incoming');
     const filteredSpecChanges = specUpdatedEndpoints.filter(
       (ep) => !ep.conflict && decisions[ep.id] === 'accept-incoming'
     );
 
     // Collect "Not in Spec" endpoints where user chose to remove
-    const localOnlyIds = specRemovedEndpoints
-      .filter((ep) => decisions[ep.id] === 'accept-incoming')
-      .map((ep) => ep.id);
+    const localOnlyIds = specRemovedEndpoints.filter((ep) => decisions[ep.id] === 'accept-incoming').map((ep) => ep.id);
 
     onApplySync({
       endpointDecisions: decisions,
@@ -214,12 +213,17 @@ const SyncReviewPage = ({
     });
   };
 
-  const totalChanges = specAddedEndpoints.length + specUpdatedEndpoints.length + localUpdatedEndpoints.length + specRemovedEndpoints.length;
+  const totalChanges =
+    specAddedEndpoints.length +
+    specUpdatedEndpoints.length +
+    localUpdatedEndpoints.length +
+    specRemovedEndpoints.length;
   const hasRemoteUpdates = specAddedEndpoints.length + specUpdatedEndpoints.length + specRemovedEndpoints.length > 0;
 
-  const buttonLabel = unresolvedConflicts > 0
-    ? `Resolve ${unresolvedConflicts} conflict${unresolvedConflicts !== 1 ? 's and sync' : ' and sync'}`
-    : !hasRemoteUpdates && specDrift?.storedSpecMissing
+  const buttonLabel =
+    unresolvedConflicts > 0
+      ? `Resolve ${unresolvedConflicts} conflict${unresolvedConflicts !== 1 ? 's and sync' : ' and sync'}`
+      : !hasRemoteUpdates && specDrift?.storedSpecMissing
         ? 'Restore Spec File'
         : 'Sync Collection';
 
@@ -231,9 +235,7 @@ const SyncReviewPage = ({
             <div className="title-left">
               <h3 className="review-title">Review Changes</h3>
               {totalChanges > 0 && (
-                <p className="review-subtitle">
-                  Choose to keep the current version or accept the updated one.
-                </p>
+                <p className="review-subtitle">Choose to keep the current version or accept the updated one.</p>
               )}
             </div>
             {(specDrift?.unifiedDiff || decidableEndpoints.length > 0) && (
@@ -296,7 +298,6 @@ const SyncReviewPage = ({
             {/* === Updates from Spec === */}
             {decidableEndpoints.length > 0 && (
               <div className="review-group">
-
                 <EndpointChangeSection
                   title="Updated in Spec"
                   type="spec-modified"
@@ -304,18 +305,20 @@ const SyncReviewPage = ({
                   defaultExpanded={true}
                   expandableLayout
                   subtitle="The spec has updates for these endpoints"
-                  headerExtra={conflictCount > 0 ? (
-                    <StatusBadge
-                      status="danger"
-                      rightSection={(
-                        <Help icon="info" size={11} placement="top" width={250}>
-                          {`This section has ${conflictCount} endpoint${conflictCount === 1 ? '' : 's'} modified in both the spec and your collection. Expand to review and resolve.`}
-                        </Help>
-                      )}
-                    >
-                      {conflictCount} {conflictCount === 1 ? 'Conflict' : 'Conflicts'}
-                    </StatusBadge>
-                  ) : null}
+                  headerExtra={
+                    conflictCount > 0 ? (
+                      <StatusBadge
+                        status="danger"
+                        rightSection={
+                          <Help icon="info" size={11} placement="top" width={250}>
+                            {`This section has ${conflictCount} endpoint${conflictCount === 1 ? '' : 's'} modified in both the spec and your collection. Expand to review and resolve.`}
+                          </Help>
+                        }
+                      >
+                        {conflictCount} {conflictCount === 1 ? 'Conflict' : 'Conflicts'}
+                      </StatusBadge>
+                    ) : null
+                  }
                   collectionUid={collectionUid}
                   sectionKey="review-spec-modified"
                   renderItem={(endpoint, idx) => (
@@ -382,7 +385,6 @@ const SyncReviewPage = ({
                 />
               </div>
             )}
-
           </div>
         )}
       </div>
@@ -390,7 +392,10 @@ const SyncReviewPage = ({
       {hasRemoteUpdates && (
         <div className="sync-info-notice mt-4">
           <IconInfoCircle size={14} className="sync-info-icon" />
-          <span><span className="whats-updated-title">What gets updated:</span> Parameters, headers, body and auth will be updated. Tests, scripts, and assertions are always preserved.</span>
+          <span>
+            <span className="whats-updated-title">What gets updated:</span> Parameters, headers, body and auth will be
+            updated. Tests, scripts, and assertions are always preserved.
+          </span>
         </div>
       )}
 
@@ -425,12 +430,7 @@ const SyncReviewPage = ({
         />
       )}
 
-      {showSpecDiffModal && (
-        <SpecDiffModal
-          specDrift={specDrift}
-          onClose={() => setShowSpecDiffModal(false)}
-        />
-      )}
+      {showSpecDiffModal && <SpecDiffModal specDrift={specDrift} onClose={() => setShowSpecDiffModal(false)} />}
     </div>
   );
 };

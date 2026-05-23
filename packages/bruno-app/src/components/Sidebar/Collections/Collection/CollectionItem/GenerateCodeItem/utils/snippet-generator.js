@@ -121,6 +121,4 @@ const generateSnippet = ({ language, item, collection, shouldInterpolate = false
   }
 };
 
-export {
-  generateSnippet
-};
+export { generateSnippet };

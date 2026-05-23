@@ -27,9 +27,12 @@ const VarsTable = ({ collection, vars, varType, initialScroll = 0 }) => {
 
   const onSave = () => dispatch(saveCollectionSettings(collection.uid));
 
-  const handleVarsChange = useCallback((updatedVars) => {
-    dispatch(setCollectionVars({ collectionUid: collection.uid, vars: updatedVars, type: varType }));
-  }, [dispatch, collection.uid, varType]);
+  const handleVarsChange = useCallback(
+    (updatedVars) => {
+      dispatch(setCollectionVars({ collectionUid: collection.uid, vars: updatedVars, type: varType }));
+    },
+    [dispatch, collection.uid, varType]
+  );
 
   const getRowError = useCallback((row, index, key) => {
     if (key !== 'name') return null;
@@ -50,12 +53,18 @@ const VarsTable = ({ collection, vars, varType, initialScroll = 0 }) => {
     },
     {
       key: 'value',
-      name: varType === 'request' ? 'Value' : (
-        <div className="flex items-center">
-          <span>Expr</span>
-          <InfoTip content="You can write any valid JS Template Literal here" infotipId={`collection-${varType}-var`} />
-        </div>
-      ),
+      name:
+        varType === 'request' ? (
+          'Value'
+        ) : (
+          <div className="flex items-center">
+            <span>Expr</span>
+            <InfoTip
+              content="You can write any valid JS Template Literal here"
+              infotipId={`collection-${varType}-var`}
+            />
+          </div>
+        ),
       placeholder: varType === 'request' ? 'Value' : 'Expr',
       render: ({ value, onChange }) => (
         <MultiLineEditor

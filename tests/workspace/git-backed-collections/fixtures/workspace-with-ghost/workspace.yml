@@ -1,12 +1,12 @@
 opencollection: 1.0.0
 info:
-  name: "Ghost WS"
+  name: 'Ghost WS'
   type: workspace
 
 collections:
-  - name: "Missing Coll"
-    path: "collections/missing-coll"
-    remote: "https://github.com/usebruno/sample-collection.git"
+  - name: 'Missing Coll'
+    path: 'collections/missing-coll'
+    remote: 'https://github.com/usebruno/sample-collection.git'
 
 specs:
 

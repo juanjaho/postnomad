@@ -54,28 +54,25 @@ const Timeline = ({ collection, item }) => {
   const isGrpcRequest = item.type === 'grpc-request' || item.type === 'ws-request';
 
   // Filter timeline entries based on new rules
-  const combinedTimeline = ([...(collection?.timeline || [])]).filter((obj) => {
-    // Always show entries for this item
-    if (obj.itemUid === item.uid) return true;
+  const combinedTimeline = [...(collection?.timeline || [])]
+    .filter((obj) => {
+      // Always show entries for this item
+      if (obj.itemUid === item.uid) return true;
 
-    // For OAuth2 entries, also show if auth is inherited
-    if (obj.type === 'oauth2' && authSource) {
-      if (authSource.type === 'folder' && obj.folderUid === authSource.uid) return true;
-      if (authSource.type === 'collection' && !obj.folderUid) return true;
-    }
+      // For OAuth2 entries, also show if auth is inherited
+      if (obj.type === 'oauth2' && authSource) {
+        if (authSource.type === 'folder' && obj.folderUid === authSource.uid) return true;
+        if (authSource.type === 'collection' && !obj.folderUid) return true;
+      }
 
-    return false;
-  }).sort((a, b) => b.timestamp - a.timestamp);
+      return false;
+    })
+    .sort((a, b) => b.timestamp - a.timestamp);
 
   return (
-    <StyledWrapper
-      className="pb-4 w-full flex flex-grow flex-col"
-      ref={wrapperRef}
-    >
+    <StyledWrapper className="pb-4 w-full flex flex-grow flex-col" ref={wrapperRef}>
       {/* Timeline container with scrollbar */}
-      <div
-        className="timeline-container"
-      >
+      <div className="timeline-container">
         {combinedTimeline.map((event, index) => {
           // Handle regular requests
           if (event.type === 'request') {
@@ -110,7 +107,8 @@ const Timeline = ({ collection, item }) => {
                 />
               </div>
             );
-          } else if (event.type === 'oauth2') { // Handle OAuth2 events
+          } else if (event.type === 'oauth2') {
+            // Handle OAuth2 events
             const { data, timestamp } = event;
             const { debugInfo } = data;
             return (

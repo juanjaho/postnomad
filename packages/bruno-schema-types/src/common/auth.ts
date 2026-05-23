@@ -45,7 +45,15 @@ export interface AuthOauth1 {
   accessTokenSecret?: string | null;
   callbackUrl?: string | null;
   verifier?: string | null;
-  signatureMethod?: 'HMAC-SHA1' | 'HMAC-SHA256' | 'HMAC-SHA512' | 'RSA-SHA1' | 'RSA-SHA256' | 'RSA-SHA512' | 'PLAINTEXT' | null;
+  signatureMethod?:
+    | 'HMAC-SHA1'
+    | 'HMAC-SHA256'
+    | 'HMAC-SHA512'
+    | 'RSA-SHA1'
+    | 'RSA-SHA256'
+    | 'RSA-SHA512'
+    | 'PLAINTEXT'
+    | null;
   privateKey?: string | null;
   privateKeyType?: 'file' | 'text' | null;
   timestamp?: string | null;
@@ -56,11 +64,7 @@ export interface AuthOauth1 {
   includeBodyHash?: boolean | null;
 }
 
-export type OAuthGrantType
-  = | 'client_credentials'
-    | 'password'
-    | 'authorization_code'
-    | 'implicit';
+export type OAuthGrantType = 'client_credentials' | 'password' | 'authorization_code' | 'implicit';
 
 export interface OAuthAdditionalParameter {
   name?: string | null;
@@ -99,18 +103,18 @@ export interface OAuth2 {
   additionalParameters?: OAuthAdditionalParameters | null;
 }
 
-export type AuthMode
-  = | 'inherit'
-    | 'none'
-    | 'awsv4'
-    | 'basic'
-    | 'bearer'
-    | 'digest'
-    | 'ntlm'
-    | 'oauth1'
-    | 'oauth2'
-    | 'wsse'
-    | 'apikey';
+export type AuthMode =
+  | 'inherit'
+  | 'none'
+  | 'awsv4'
+  | 'basic'
+  | 'bearer'
+  | 'digest'
+  | 'ntlm'
+  | 'oauth1'
+  | 'oauth2'
+  | 'wsse'
+  | 'apikey';
 
 export interface Auth {
   mode: AuthMode;

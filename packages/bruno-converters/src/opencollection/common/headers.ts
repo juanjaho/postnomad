@@ -1,24 +1,25 @@
 import { uuid } from '../../common/index.js';
-import type {
-  HttpRequestHeader,
-  BrunoKeyValue
-} from '../types';
+import type { HttpRequestHeader, BrunoKeyValue } from '../types';
 
 export const fromOpenCollectionHeaders = (headers: HttpRequestHeader[] | undefined): BrunoKeyValue[] => {
   if (!headers?.length) {
     return [];
   }
 
-  return headers.map((header): BrunoKeyValue => ({
-    uid: uuid(),
-    name: header.name || '',
-    value: header.value || '',
-    description: typeof header.description === 'string' ? header.description : header.description?.content || null,
-    enabled: header.disabled !== true
-  }));
+  return headers.map(
+    (header): BrunoKeyValue => ({
+      uid: uuid(),
+      name: header.name || '',
+      value: header.value || '',
+      description: typeof header.description === 'string' ? header.description : header.description?.content || null,
+      enabled: header.disabled !== true
+    })
+  );
 };
 
-export const toOpenCollectionHeaders = (headers: BrunoKeyValue[] | null | undefined): HttpRequestHeader[] | undefined => {
+export const toOpenCollectionHeaders = (
+  headers: BrunoKeyValue[] | null | undefined
+): HttpRequestHeader[] | undefined => {
   if (!headers?.length) {
     return undefined;
   }

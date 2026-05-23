@@ -26,80 +26,80 @@ const makeJUnitOutput = async (results, outputPath) => {
       '@timestamp': new Date().toISOString().split('Z')[0],
       '@hostname': os.hostname(),
       '@time': result.runDuration.toFixed(3),
-      'testcase': []
+      testcase: []
     };
 
-    result.assertionResults
-    && result.assertionResults.forEach((assertion) => {
-      const testcase = {
-        '@name': `${assertion.lhsExpr} ${assertion.rhsExpr}`,
-        '@status': assertion.status,
-        '@classname': result.request.url,
-        '@time': (result.runDuration / totalTests).toFixed(3)
-      };
+    result.assertionResults &&
+      result.assertionResults.forEach((assertion) => {
+        const testcase = {
+          '@name': `${assertion.lhsExpr} ${assertion.rhsExpr}`,
+          '@status': assertion.status,
+          '@classname': result.request.url,
+          '@time': (result.runDuration / totalTests).toFixed(3)
+        };
 
-      if (assertion.status === 'fail') {
-        suite['@failures']++;
+        if (assertion.status === 'fail') {
+          suite['@failures']++;
 
-        testcase.failure = [{ '@type': 'failure', '@message': assertion.error }];
-      }
+          testcase.failure = [{ '@type': 'failure', '@message': assertion.error }];
+        }
 
-      suite.testcase.push(testcase);
-    });
+        suite.testcase.push(testcase);
+      });
 
-    result.preRequestTestResults
-    && result.preRequestTestResults.forEach((test) => {
-      const testcase = {
-        '@name': test.description,
-        '@status': test.status,
-        '@classname': result.request.url,
-        '@time': (result.runDuration / totalTests).toFixed(3)
-      };
+    result.preRequestTestResults &&
+      result.preRequestTestResults.forEach((test) => {
+        const testcase = {
+          '@name': test.description,
+          '@status': test.status,
+          '@classname': result.request.url,
+          '@time': (result.runDuration / totalTests).toFixed(3)
+        };
 
-      if (test.status === 'fail') {
-        suite['@failures']++;
+        if (test.status === 'fail') {
+          suite['@failures']++;
 
-        testcase.failure = [{ '@type': 'failure', '@message': test.error }];
-      }
+          testcase.failure = [{ '@type': 'failure', '@message': test.error }];
+        }
 
-      suite.testcase.push(testcase);
-    });
+        suite.testcase.push(testcase);
+      });
 
-    result.testResults
-    && result.testResults.forEach((test) => {
-      const testcase = {
-        '@name': test.description,
-        '@status': test.status,
-        '@classname': result.request.url,
-        '@time': (result.runDuration / totalTests).toFixed(3)
-      };
+    result.testResults &&
+      result.testResults.forEach((test) => {
+        const testcase = {
+          '@name': test.description,
+          '@status': test.status,
+          '@classname': result.request.url,
+          '@time': (result.runDuration / totalTests).toFixed(3)
+        };
 
-      if (test.status === 'fail') {
-        suite['@failures']++;
+        if (test.status === 'fail') {
+          suite['@failures']++;
 
-        testcase.failure = [{ '@type': 'failure', '@message': test.error }];
-      }
+          testcase.failure = [{ '@type': 'failure', '@message': test.error }];
+        }
 
-      suite.testcase.push(testcase);
-    });
+        suite.testcase.push(testcase);
+      });
 
-    result.postResponseTestResults
-    && result.postResponseTestResults.forEach((test) => {
-      const testcase = {
-        '@name': test.description,
-        '@status': test.status,
-        '@classname': result.request.url,
-        '@time': (result.runDuration / totalTests).toFixed(3)
-      };
+    result.postResponseTestResults &&
+      result.postResponseTestResults.forEach((test) => {
+        const testcase = {
+          '@name': test.description,
+          '@status': test.status,
+          '@classname': result.request.url,
+          '@time': (result.runDuration / totalTests).toFixed(3)
+        };
 
-      if (test.status === 'fail') {
-        suite['@failures']++;
+        if (test.status === 'fail') {
+          suite['@failures']++;
 
-        testcase.failure = [{ '@type': 'failure', '@message': test.error }];
-      }
+          testcase.failure = [{ '@type': 'failure', '@message': test.error }];
+        }
 
-      suite.testcase.push(testcase);
-    });
+        suite.testcase.push(testcase);
+      });
 
     if (result?.skipped) {
       suite['@skipped'] = 1;
@@ -112,7 +112,7 @@ const makeJUnitOutput = async (results, outputPath) => {
           '@status': 'fail',
           '@classname': result.request.url,
           '@time': result.runDuration.toFixed(3),
-          'error': [{ '@type': 'error', '@message': result.error }]
+          error: [{ '@type': 'error', '@message': result.error }]
         }
       ];
     }

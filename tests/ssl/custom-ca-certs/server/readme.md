@@ -5,6 +5,7 @@ A Node.js HTTPS test server with self-signed certificate generation for testing 
 ## Overview
 
 This server provides two main functionalities:
+
 1. **Certificate Generation** - Creates a complete CA certificate chain for testing
 2. **HTTPS Server** - Runs a secure server using the generated certificates
 
@@ -19,18 +20,21 @@ node scripts/generate-certs.js
 ```
 
 This will:
+
 - Create a `certs/` directory
 - Generate CA certificate, server certificate, and private keys
 - Verify the certificate chain
 - Add the CA certificate to your system's truststore (macOS/Linux/Windows)
 
 **Generated Files:**
+
 - `certs/ca-cert.pem` - Certificate Authority certificate
 - `certs/ca-key.pem` - CA private key
 - `certs/localhost-cert.pem` - Server certificate for localhost
 - `certs/localhost-key.pem` - Server private key
 
 **Windows-Specific Files (automatically generated on Windows):**
+
 - `certs/ca-cert.der` - CA certificate in DER format (for Windows certificate store)
 - `certs/localhost.p12` - PKCS#12 bundle containing server certificate and key
 - `certs/localhost-cert.der` - Server certificate in DER format
@@ -54,6 +58,7 @@ node index.js
 ```
 
 The server will:
+
 - Load certificates from the `certs/` directory
 - Start an HTTPS server on `https://localhost:8090`
 - Serve a simple "helloworld" response
@@ -64,6 +69,7 @@ The server will:
 Once the server is running, you can test SSL connections:
 
 ### Unix/Linux/macOS
+
 ```bash
 # Test with curl
 curl https://localhost:8090
@@ -73,6 +79,7 @@ openssl s_client -connect localhost:8090 -CAfile certs/ca-cert.pem
 ```
 
 ### Windows
+
 ```powershell
 # Test with curl (if available)
 curl https://localhost:8090

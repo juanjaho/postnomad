@@ -16,9 +16,11 @@ import useOpenAPISync from './hooks/useOpenAPISync';
 
 const OpenAPISyncTab = ({ collection }) => {
   const {
-    sourceUrl, setSourceUrl,
+    sourceUrl,
+    setSourceUrl,
     isLoading,
-    error, setError,
+    error,
+    setError,
     fileNotFound,
     specDrift,
     collectionDrift,
@@ -38,23 +40,30 @@ const OpenAPISyncTab = ({ collection }) => {
   const isConfigured = !!openApiSyncConfig?.sourceUrl;
 
   const handleViewSpec = () => {
-    dispatch(addTab({
-      uid: uuid(),
-      collectionUid: collection.uid,
-      type: 'openapi-spec'
-    }));
+    dispatch(
+      addTab({
+        uid: uuid(),
+        collectionUid: collection.uid,
+        type: 'openapi-spec'
+      })
+    );
   };
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const activeTab = useSelector((state) => state.openapiSync?.tabUiState?.[collection.uid]?.activeTab) || 'overview';
-  const setActiveTab = useCallback((tab) => {
-    dispatch(setTabUiState({ collectionUid: collection.uid, activeTab: tab }));
-  }, [dispatch, collection.uid]);
+  const setActiveTab = useCallback(
+    (tab) => {
+      dispatch(setTabUiState({ collectionUid: collection.uid, activeTab: tab }));
+    },
+    [dispatch, collection.uid]
+  );
 
   const hasDriftData = collectionDrift && !collectionDrift.noStoredSpec;
   const collectionChangesCount = hasDriftData
-    ? (collectionDrift.modified?.length || 0) + (collectionDrift.missing?.length || 0) + (collectionDrift.localOnly?.length || 0)
+    ? (collectionDrift.modified?.length || 0) +
+      (collectionDrift.missing?.length || 0) +
+      (collectionDrift.localOnly?.length || 0)
     : 0;
   const specUpdatesCount = hasDriftData
     ? (specDrift?.added?.length || 0) + (specDrift?.modified?.length || 0) + (specDrift?.removed?.length || 0)
@@ -68,24 +77,26 @@ const OpenAPISyncTab = ({ collection }) => {
     return 'in-sync';
   })();
 
-  const syncTabs = useMemo(() => [
-    { key: 'overview', label: 'Overview' },
-    {
-      key: 'collection-changes',
-      label: 'Collection Changes',
-      indicator: collectionChangesCount > 0 ? <span className="tab-count">{collectionChangesCount}</span> : null
-    },
-    {
-      key: 'spec-updates',
-      label: 'Spec Updates',
-      indicator: specUpdatesCount > 0 ? <span className="tab-count">{specUpdatesCount}</span> : null
-    }
-  ], [collectionChangesCount, specUpdatesCount]);
+  const syncTabs = useMemo(
+    () => [
+      { key: 'overview', label: 'Overview' },
+      {
+        key: 'collection-changes',
+        label: 'Collection Changes',
+        indicator: collectionChangesCount > 0 ? <span className="tab-count">{collectionChangesCount}</span> : null
+      },
+      {
+        key: 'spec-updates',
+        label: 'Spec Updates',
+        indicator: specUpdatesCount > 0 ? <span className="tab-count">{specUpdatesCount}</span> : null
+      }
+    ],
+    [collectionChangesCount, specUpdatesCount]
+  );
 
   return (
     <StyledWrapper className="flex flex-col h-full relative px-4 pt-4 overflow-auto">
       <div className="sync-page w-full">
-
         {/* Setup form when not configured */}
         {!isConfigured && (
           <ConnectSpecForm
@@ -113,11 +124,7 @@ const OpenAPISyncTab = ({ collection }) => {
               isLoading={isLoading}
             />
 
-            <ResponsiveTabs
-              tabs={syncTabs}
-              activeTab={activeTab}
-              onTabSelect={setActiveTab}
-            />
+            <ResponsiveTabs tabs={syncTabs} activeTab={activeTab} onTabSelect={setActiveTab} />
 
             {activeTab === 'overview' && (
               <div className="sync-tab-content">
@@ -136,7 +143,9 @@ const OpenAPISyncTab = ({ collection }) => {
                   <button
                     type="button"
                     className="beta-feedback-link"
-                    onClick={() => window?.ipcRenderer?.openExternal('https://github.com/usebruno/bruno/discussions/7401')}
+                    onClick={() =>
+                      window?.ipcRenderer?.openExternal('https://github.com/usebruno/bruno/discussions/7401')
+                    }
                   >
                     Share feedback
                   </button>
@@ -146,7 +155,6 @@ const OpenAPISyncTab = ({ collection }) => {
 
             {activeTab === 'collection-changes' && (
               <div className="sync-tab-content">
-
                 <CollectionStatusSection
                   collection={collection}
                   collectionDrift={collectionDrift}
@@ -181,7 +189,6 @@ const OpenAPISyncTab = ({ collection }) => {
             )}
           </>
         )}
-
       </div>
 
       {showSettingsModal && (

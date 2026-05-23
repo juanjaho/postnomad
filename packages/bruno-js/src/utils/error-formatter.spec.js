@@ -89,12 +89,12 @@ const MULTI_BLOCK_YML = [
   '  scripts:',
   '    - type: before-request',
   '      code: |-',
-  '        const token = bru.getEnvVar(\'token\');',
-  '        req.setHeader(\'Authorization\', token);',
+  "        const token = bru.getEnvVar('token');",
+  "        req.setHeader('Authorization', token);",
   '    - type: after-response',
   '      code: |-',
   '        const data = res.body;',
-  '        bru.setVar(\'userId\', data.id);',
+  "        bru.setVar('userId', data.id);",
   '    - type: tests',
   '      code: |-',
   '        test("status is 200", function() {',
@@ -112,7 +112,7 @@ const COLLECTION_YML = [
   '    - type: before-request',
   '      code: |-',
   '        const abc = fc()',
-  '        const x = bru.getVar(\'x\');',
+  "        const x = bru.getVar('x');",
   '    - type: tests',
   '      code: |-',
   '        test("example", function() {',
@@ -285,19 +285,37 @@ describe('Error Formatter', () => {
 
   describe('parseStackTrace', () => {
     it('should detect QuickJS stack frame formats', () => {
-      expect(parseStackTrace('Error: test\n    at (/path/file.bru:11)'))
-        .toMatchObject({ filePath: '/path/file.bru', line: 11, isQuickJS: true });
-      expect(parseStackTrace('Error: test\n    at <anonymous> (/path/file.bru:11)'))
-        .toMatchObject({ filePath: '/path/file.bru', line: 11, isQuickJS: true });
-      expect(parseStackTrace('Error: test\n    at <eval> (/path/file.bru:11:5)'))
-        .toMatchObject({ filePath: '/path/file.bru', line: 11, column: 5, isQuickJS: true });
+      expect(parseStackTrace('Error: test\n    at (/path/file.bru:11)')).toMatchObject({
+        filePath: '/path/file.bru',
+        line: 11,
+        isQuickJS: true
+      });
+      expect(parseStackTrace('Error: test\n    at <anonymous> (/path/file.bru:11)')).toMatchObject({
+        filePath: '/path/file.bru',
+        line: 11,
+        isQuickJS: true
+      });
+      expect(parseStackTrace('Error: test\n    at <eval> (/path/file.bru:11:5)')).toMatchObject({
+        filePath: '/path/file.bru',
+        line: 11,
+        column: 5,
+        isQuickJS: true
+      });
     });
 
     it('should detect NodeVM stack frame formats', () => {
-      expect(parseStackTrace('Error: test\n    at /path/file.js:10:5'))
-        .toMatchObject({ filePath: '/path/file.js', line: 10, column: 5, isQuickJS: false });
-      expect(parseStackTrace('Error: test\n    at Object.<anonymous> (/path/file.js:10:5)'))
-        .toMatchObject({ filePath: '/path/file.js', line: 10, column: 5, isQuickJS: false });
+      expect(parseStackTrace('Error: test\n    at /path/file.js:10:5')).toMatchObject({
+        filePath: '/path/file.js',
+        line: 10,
+        column: 5,
+        isQuickJS: false
+      });
+      expect(parseStackTrace('Error: test\n    at Object.<anonymous> (/path/file.js:10:5)')).toMatchObject({
+        filePath: '/path/file.js',
+        line: 10,
+        column: 5,
+        isQuickJS: false
+      });
     });
 
     it('should return null for unparseable or null input', () => {
@@ -362,7 +380,10 @@ describe('Error Formatter', () => {
 
     it('should show source context from collection.bru when segments are provided', () => {
       const collectionBruPath = path.join(testDir, 'collection.bru');
-      fs.writeFileSync(collectionBruPath, 'meta {\n  name: My Collection\n}\n\nscript:pre-request {\n  const x = undefined;\n  x.foo();\n}');
+      fs.writeFileSync(
+        collectionBruPath,
+        'meta {\n  name: My Collection\n}\n\nscript:pre-request {\n  const x = undefined;\n  x.foo();\n}'
+      );
 
       const error = new Error('Cannot read properties of undefined');
       error.name = 'TypeError';
@@ -373,9 +394,7 @@ describe('Error Formatter', () => {
       const metadata = {
         requestStartLine: 0,
         requestEndLine: 0,
-        segments: [
-          { startLine: 1, endLine: 4, filePath: collectionBruPath, displayPath: 'collection.bru' }
-        ]
+        segments: [{ startLine: 1, endLine: 4, filePath: collectionBruPath, displayPath: 'collection.bru' }]
       };
 
       const formatted = formatErrorWithContext(error, 'test.bru', 'pre-request', 5, metadata);
@@ -395,7 +414,10 @@ describe('Error Formatter', () => {
       const folder1Bru = path.join(folder1Dir, 'folder.bru');
       const folder2Bru = path.join(folder2Dir, 'folder.bru');
       fs.writeFileSync(folder1Bru, 'meta {\n  name: Folder1\n}\n\nscript:pre-request {\n  let a = 1;\n}');
-      fs.writeFileSync(folder2Bru, 'meta {\n  name: Folder2\n}\n\nscript:pre-request {\n  let b = undefined;\n  b.pop();\n}');
+      fs.writeFileSync(
+        folder2Bru,
+        'meta {\n  name: Folder2\n}\n\nscript:pre-request {\n  let b = undefined;\n  b.pop();\n}'
+      );
 
       const error = new Error('Cannot read properties of undefined');
       error.name = 'TypeError';
@@ -417,7 +439,7 @@ describe('Error Formatter', () => {
     });
 
     it('should resolve collection yml segment errors to opencollection.yml', () => {
-      const error = new Error('\'fc\' is not defined');
+      const error = new Error("'fc' is not defined");
       error.name = 'ReferenceError';
       error.__isQuickJS = true;
       // QuickJS offset=9, scriptRelativeLine = 11-9 = 2 → falls in collection segment [1,4]
@@ -426,14 +448,12 @@ describe('Error Formatter', () => {
       const metadata = {
         requestStartLine: 6,
         requestEndLine: 8,
-        segments: [
-          { startLine: 1, endLine: 4, filePath: collectionYmlPath, displayPath: 'opencollection.yml' }
-        ]
+        segments: [{ startLine: 1, endLine: 4, filePath: collectionYmlPath, displayPath: 'opencollection.yml' }]
       };
 
       const formatted = formatErrorWithContext(error, 'test.yml', 'pre-request', 5, metadata);
       expect(formatted).toContain('File: opencollection.yml');
-      expect(formatted).toContain('\'fc\' is not defined');
+      expect(formatted).toContain("'fc' is not defined");
       const arrowLine = formatted.split('\n').find((l) => l.startsWith('>'));
       expect(arrowLine).toContain('fc()');
     });
@@ -573,11 +593,13 @@ describe('Error Formatter', () => {
         const metadata = {
           requestStartLine: 5,
           requestEndLine: 8,
-          segments: [{
-            startLine: 1,
-            endLine: 4,
-            filePath: collectionYmlPath
-          }]
+          segments: [
+            {
+              startLine: 1,
+              endLine: 4,
+              filePath: collectionYmlPath
+            }
+          ]
         };
 
         const error = makeCallSiteError(bruFilePath, 4, 'x is not defined', 'ReferenceError');
@@ -813,7 +835,9 @@ get {
         const error = new Error('test');
         error.__callSites = [{ filePath: bruFilePath, line: 3, column: 1 }];
         Object.defineProperty(error, 'name', {
-          get() { throw new Error('property access bomb'); }
+          get() {
+            throw new Error('property access bomb');
+          }
         });
 
         const result = formatErrorWithContextV2(error, 'pre-request', null, testDir);
@@ -867,13 +891,15 @@ get {
         const metadata = {
           requestStartLine: 0,
           requestEndLine: 0,
-          segments: [{
-            startLine: 1,
-            endLine: 4,
-            filePath: collectionYmlPath,
-            displayPath: 'opencollection.yml',
-            scriptContent: draftCollectionScript
-          }]
+          segments: [
+            {
+              startLine: 1,
+              endLine: 4,
+              filePath: collectionYmlPath,
+              displayPath: 'opencollection.yml',
+              scriptContent: draftCollectionScript
+            }
+          ]
         };
 
         // NodeVM: line 4 - offset 2 = scriptRelativeLine 2, falls in segment [1,4]
@@ -907,13 +933,15 @@ get {
         const metadata = {
           requestStartLine: 0,
           requestEndLine: 0,
-          segments: [{
-            startLine: 1,
-            endLine: 4,
-            filePath: collectionYmlPath,
-            displayPath: 'opencollection.yml'
-            // no scriptContent
-          }]
+          segments: [
+            {
+              startLine: 1,
+              endLine: 4,
+              filePath: collectionYmlPath,
+              displayPath: 'opencollection.yml'
+              // no scriptContent
+            }
+          ]
         };
 
         const error = makeCallSiteError(bruFilePath, 4, 'error', 'ReferenceError');
@@ -932,13 +960,15 @@ get {
         const metadata = {
           requestStartLine: 0,
           requestEndLine: 0,
-          segments: [{
-            startLine: 1,
-            endLine: 4,
-            filePath: folderBruPath,
-            displayPath: 'folder/folder.bru',
-            scriptContent: draftFolderScript
-          }]
+          segments: [
+            {
+              startLine: 1,
+              endLine: 4,
+              filePath: folderBruPath,
+              displayPath: 'folder/folder.bru',
+              scriptContent: draftFolderScript
+            }
+          ]
         };
 
         // NodeVM: line 4 - offset 2 = scriptRelativeLine 2, falls in segment [1,4]
@@ -982,13 +1012,15 @@ get {
       const metadata = {
         requestStartLine: 0,
         requestEndLine: 0,
-        segments: [{
-          startLine: 1,
-          endLine: 4,
-          filePath: folderBruPath,
-          displayPath: 'folder/folder.bru',
-          scriptContent: 'const x = 1;\nx.boom();'
-        }]
+        segments: [
+          {
+            startLine: 1,
+            endLine: 4,
+            filePath: folderBruPath,
+            displayPath: 'folder/folder.bru',
+            scriptContent: 'const x = 1;\nx.boom();'
+          }
+        ]
       };
 
       // NodeVM callSite: line 4 - offset 2 = scriptRelativeLine 2, falls in segment [1,4]
@@ -1007,13 +1039,15 @@ get {
       const metadata = {
         requestStartLine: 0,
         requestEndLine: 0,
-        segments: [{
-          startLine: 1,
-          endLine: 4,
-          filePath: folderBruPath,
-          displayPath: 'folder/folder.bru',
-          scriptContent: 'const x = 1;\nx.boom();'
-        }]
+        segments: [
+          {
+            startLine: 1,
+            endLine: 4,
+            filePath: folderBruPath,
+            displayPath: 'folder/folder.bru',
+            scriptContent: 'const x = 1;\nx.boom();'
+          }
+        ]
       };
 
       const stack = `TypeError: x.boom is not a function\n    at ${bruFilePath}:4:5`;

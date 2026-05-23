@@ -105,9 +105,5 @@ export async function startServers(): Promise<TestServers> {
 }
 
 export async function stopServers(servers: TestServers): Promise<void> {
-  await Promise.all([
-    close(servers.pacServer),
-    close(servers.proxyServer),
-    close(servers.targetServer)
-  ]);
+  await Promise.all([close(servers.pacServer), close(servers.proxyServer), close(servers.targetServer)]);
 }

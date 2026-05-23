@@ -1,7 +1,11 @@
 import { test, expect } from '../../../playwright';
 import {
-  closeAllCollections, createCollection, createRequest, openRequest,
-  selectRequestPaneTab, saveRequest
+  closeAllCollections,
+  createCollection,
+  createRequest,
+  openRequest,
+  selectRequestPaneTab,
+  saveRequest
 } from '../../utils/page';
 
 const label = (page, text: string) => page.locator('label').filter({ hasText: new RegExp(`^${text}$`) });
@@ -68,7 +72,15 @@ test.describe('OAuth 1.0 Authentication', () => {
     await test.step('All 7 signature methods in dropdown', async () => {
       const sigDropdown = fieldRow(page, 'Signature Method').locator('.oauth1-dropdown-selector');
       await sigDropdown.click();
-      for (const method of ['HMAC-SHA1', 'HMAC-SHA256', 'HMAC-SHA512', 'RSA-SHA1', 'RSA-SHA256', 'RSA-SHA512', 'PLAINTEXT']) {
+      for (const method of [
+        'HMAC-SHA1',
+        'HMAC-SHA256',
+        'HMAC-SHA512',
+        'RSA-SHA1',
+        'RSA-SHA256',
+        'RSA-SHA512',
+        'PLAINTEXT'
+      ]) {
         await expect(dropdownItem(page, method)).toBeVisible();
       }
     });
@@ -139,7 +151,10 @@ test.describe('OAuth 1.0 Authentication', () => {
 
   test('Collection settings auth', async ({ page }) => {
     test.setTimeout(60_000);
-    const collectionRow = page.getByTestId('collections').locator('#sidebar-collection-name').filter({ hasText: 'oauth1-test' });
+    const collectionRow = page
+      .getByTestId('collections')
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: 'oauth1-test' });
     await collectionRow.click();
     await page.locator('.tab.auth').click();
     await selectAuthMode(page);

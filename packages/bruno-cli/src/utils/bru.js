@@ -1,8 +1,5 @@
 const _ = require('lodash');
-const {
-  parseRequest: _parseRequest,
-  parseCollection: _parseCollection
-} = require('@usebruno/filestore');
+const { parseRequest: _parseRequest, parseCollection: _parseCollection } = require('@usebruno/filestore');
 
 const collectionBruToJson = (bru) => {
   try {
@@ -103,10 +100,12 @@ const bruToJson = (bru) => {
       transformedJson.request.auth.mode = _.get(json, 'grpc.auth', 'none');
       transformedJson.request.body = _.get(json, 'body', {
         mode: 'grpc',
-        grpc: [{
-          name: 'message 1',
-          content: '{}'
-        }]
+        grpc: [
+          {
+            name: 'message 1',
+            content: '{}'
+          }
+        ]
       });
     } else if (requestType === 'ws-request') {
       transformedJson.request.auth.mode = _.get(json, 'ws.auth', 'none');

@@ -23,7 +23,8 @@ export class MacOSProxyResolver implements ProxyResolver {
       throw new Error('Invalid scutil --proxy output');
     }
 
-    const cleanLines = output.split('\n')
+    const cleanLines = output
+      .split('\n')
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
 

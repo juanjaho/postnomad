@@ -105,43 +105,42 @@ const CreateUntitledRequest = ({ collectionUid, itemUid = null, onRequestCreated
       .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
   }, [dispatch, collection, itemUid, onRequestCreated]);
 
-  const menuItems = useMemo(() => [
-    {
-      id: 'http',
-      label: 'HTTP',
-      leftSection: <IconApi size={16} strokeWidth={2} />,
-      onClick: handleCreateHttpRequest
-    },
-    {
-      id: 'graphql',
-      label: 'GraphQL',
-      leftSection: <IconBrandGraphql size={16} strokeWidth={2} />,
-      onClick: handleCreateGraphQLRequest
-    },
-    {
-      id: 'websocket',
-      label: 'WebSocket',
-      leftSection: <IconPlugConnected size={16} strokeWidth={2} />,
-      onClick: handleCreateWebSocketRequest
-    },
-    {
-      id: 'grpc',
-      label: 'gRPC',
-      leftSection: <IconCode size={16} strokeWidth={2} />,
-      onClick: handleCreateGrpcRequest
-    }
-  ], [handleCreateHttpRequest, handleCreateGraphQLRequest, handleCreateWebSocketRequest, handleCreateGrpcRequest]);
+  const menuItems = useMemo(
+    () => [
+      {
+        id: 'http',
+        label: 'HTTP',
+        leftSection: <IconApi size={16} strokeWidth={2} />,
+        onClick: handleCreateHttpRequest
+      },
+      {
+        id: 'graphql',
+        label: 'GraphQL',
+        leftSection: <IconBrandGraphql size={16} strokeWidth={2} />,
+        onClick: handleCreateGraphQLRequest
+      },
+      {
+        id: 'websocket',
+        label: 'WebSocket',
+        leftSection: <IconPlugConnected size={16} strokeWidth={2} />,
+        onClick: handleCreateWebSocketRequest
+      },
+      {
+        id: 'grpc',
+        label: 'gRPC',
+        leftSection: <IconCode size={16} strokeWidth={2} />,
+        onClick: handleCreateGrpcRequest
+      }
+    ],
+    [handleCreateHttpRequest, handleCreateGraphQLRequest, handleCreateWebSocketRequest, handleCreateGrpcRequest]
+  );
 
   if (!collection) {
     return null;
   }
 
   return (
-    <MenuDropdown
-      items={menuItems}
-      placement={placement}
-      autoFocusFirstOption={true}
-    >
+    <MenuDropdown items={menuItems} placement={placement} autoFocusFirstOption={true}>
       <ActionIcon size="sm">
         <IconPlus size={16} strokeWidth={2} />
       </ActionIcon>

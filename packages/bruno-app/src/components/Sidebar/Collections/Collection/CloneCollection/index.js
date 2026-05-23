@@ -28,7 +28,9 @@ const CloneCollection = ({ onClose, collectionUid }) => {
 
   const defaultLocation = isDefaultWorkspace
     ? get(preferences, 'general.defaultLocation', '')
-    : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
   const { name } = collection;
 
   const formik = useFormik({
@@ -139,10 +141,7 @@ const CloneCollection = ({ onClose, collectionUid }) => {
             <div className="text-red-500">{formik.errors.collectionLocation}</div>
           ) : null}
           <div className="mt-1">
-            <span
-              className="text-link cursor-pointer hover:underline"
-              onClick={browse}
-            >
+            <span className="text-link cursor-pointer hover:underline" onClick={browse}>
               Browse
             </span>
           </div>
@@ -152,11 +151,10 @@ const CloneCollection = ({ onClose, collectionUid }) => {
               <label htmlFor="filename" className="flex items-center font-medium">
                 Folder Name
                 <Help width="300">
-                  <p>
-                    The name of the folder used to store the collection.
-                  </p>
+                  <p>The name of the folder used to store the collection.</p>
                   <p className="mt-2">
-                    You can choose a folder name different from your collection's name or one compatible with filesystem rules.
+                    You can choose a folder name different from your collection's name or one compatible with filesystem
+                    rules.
                   </p>
                 </Help>
               </label>
@@ -191,9 +189,7 @@ const CloneCollection = ({ onClose, collectionUid }) => {
               />
             ) : (
               <div className="relative flex flex-row gap-1 items-center justify-between">
-                <PathDisplay
-                  baseName={formik.values.collectionFolderName}
-                />
+                <PathDisplay baseName={formik.values.collectionFolderName} />
               </div>
             )}
 

@@ -35,48 +35,63 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
   const queryParams = params.filter((param) => param.type === 'query');
   const pathParams = params.filter((param) => param.type === 'path');
 
-  const handleQueryParamsChange = useCallback((updatedQueryParams) => {
-    if (!editMode) {
-      return;
-    }
+  const handleQueryParamsChange = useCallback(
+    (updatedQueryParams) => {
+      if (!editMode) {
+        return;
+      }
 
-    // Merge updated query params with path params
-    const allParams = [...updatedQueryParams, ...pathParams];
-    dispatch(setResponseExampleParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: allParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid, pathParams]);
+      // Merge updated query params with path params
+      const allParams = [...updatedQueryParams, ...pathParams];
+      dispatch(
+        setResponseExampleParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: allParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid, pathParams]
+  );
 
-  const handleQueryParamDrag = useCallback(({ updateReorderedItem }) => {
-    if (!editMode) {
-      return;
-    }
+  const handleQueryParamDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      if (!editMode) {
+        return;
+      }
 
-    dispatch(moveResponseExampleParam({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      updateReorderedItem
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid]);
+      dispatch(
+        moveResponseExampleParam({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          updateReorderedItem
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid]
+  );
 
-  const handlePathParamsChange = useCallback((updatedPathParams) => {
-    if (!editMode) {
-      return;
-    }
+  const handlePathParamsChange = useCallback(
+    (updatedPathParams) => {
+      if (!editMode) {
+        return;
+      }
 
-    // Merge updated path params with query params
-    const allParams = [...queryParams, ...updatedPathParams];
-    dispatch(setResponseExampleParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: allParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid, queryParams]);
+      // Merge updated path params with query params
+      const allParams = [...queryParams, ...updatedPathParams];
+      dispatch(
+        setResponseExampleParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: allParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid, queryParams]
+  );
 
   const toggleBulkEditMode = () => {
     setIsBulkEditMode(!isBulkEditMode);
@@ -89,22 +104,20 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
 
     // Merge bulk edited query params with path params
     const allParams = [...newParams, ...pathParams];
-    dispatch(setResponseExampleParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: allParams
-    }));
+    dispatch(
+      setResponseExampleParams({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        params: allParams
+      })
+    );
   };
 
   if (isBulkEditMode && editMode) {
     return (
       <StyledWrapper className="w-full mt-3">
-        <BulkEditor
-          params={queryParams}
-          onChange={handleBulkParamsChange}
-          onToggle={toggleBulkEditMode}
-        />
+        <BulkEditor params={queryParams} onChange={handleBulkParamsChange} onToggle={toggleBulkEditMode} />
       </StyledWrapper>
     );
   }
@@ -212,10 +225,7 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
       />
       {editMode && (
         <div className="flex justify-end mt-2">
-          <button
-            className="btn-action text-link select-none"
-            onClick={toggleBulkEditMode}
-          >
+          <button className="btn-action text-link select-none" onClick={toggleBulkEditMode}>
             Bulk Edit
           </button>
         </div>
@@ -250,7 +260,6 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
           />
         </>
       )}
-
     </StyledWrapper>
   );
 };

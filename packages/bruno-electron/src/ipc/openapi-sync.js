@@ -166,7 +166,12 @@ const isValidOpenApiSpec = (spec) => {
  * Returns { content, spec } on success, or { error, errorCode? } on failure.
  */
 const fetchSpecFromSource = async ({ collectionUid, collectionPath, sourceUrl, environmentContext = {} }) => {
-  const { activeEnvironmentUid, environments = [], runtimeVariables = {}, globalEnvironmentVariables = {} } = environmentContext;
+  const {
+    activeEnvironmentUid,
+    environments = [],
+    runtimeVariables = {},
+    globalEnvironmentVariables = {}
+  } = environmentContext;
 
   if (!isValidHttpUrl(sourceUrl) && !isLocalFilePath(sourceUrl)) {
     return { error: 'Invalid source: only http/https URLs and local file paths are allowed' };
@@ -181,9 +186,7 @@ const fetchSpecFromSource = async ({ collectionUid, collectionPath, sourceUrl, e
     }
     content = fs.readFileSync(resolvedPath, 'utf8');
   } else {
-    const cacheBustUrl = sourceUrl.includes('?')
-      ? `${sourceUrl}&_=${Date.now()}`
-      : `${sourceUrl}?_=${Date.now()}`;
+    const cacheBustUrl = sourceUrl.includes('?') ? `${sourceUrl}&_=${Date.now()}` : `${sourceUrl}?_=${Date.now()}`;
 
     const environment = _.find(environments, (e) => e.uid === activeEnvironmentUid);
     const envVars = getEnvVars(environment);
@@ -204,7 +207,7 @@ const fetchSpecFromSource = async ({ collectionUid, collectionPath, sourceUrl, e
       const response = await axiosInstance.get(cacheBustUrl, {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
+          Pragma: 'no-cache'
         },
         timeout: 30000,
         transformResponse: [(data) => data]
@@ -285,9 +288,10 @@ const saveBrunoConfig = async (collectionPath, format, brunoConfig, collectionRo
   if (Array.isArray(configToSave?.openapi)) {
     configToSave.openapi = configToSave.openapi.map((entry) => ({
       ...entry,
-      sourceUrl: (entry.sourceUrl && !isValidHttpUrl(entry.sourceUrl))
-        ? posixifyPath(path.relative(collectionPath, entry.sourceUrl))
-        : entry.sourceUrl
+      sourceUrl:
+        entry.sourceUrl && !isValidHttpUrl(entry.sourceUrl)
+          ? posixifyPath(path.relative(collectionPath, entry.sourceUrl))
+          : entry.sourceUrl
     }));
   }
 
@@ -412,7 +416,7 @@ const saveSpecAndUpdateMetadata = async ({ collectionPath, specContent }) => {
   const lastSyncDate = new Date().toISOString();
   if (brunoConfig.openapi?.[0]) {
     brunoConfig.openapi[0] = { ...brunoConfig.openapi[0], lastSyncDate, specHash };
-  };
+  }
 
   await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
 };
@@ -440,9 +444,7 @@ const cleanupSpecFilesForCollection = (collectionPath) => {
  */
 const mergeWithUserValues = (specItems, existingItems) => {
   return (specItems || []).map((specItem) => {
-    const existing = (existingItems || []).find(
-      (e) => e.name === specItem.name && e.value === specItem.value
-    );
+    const existing = (existingItems || []).find((e) => e.name === specItem.name && e.value === specItem.value);
     return existing ? { ...specItem, enabled: existing.enabled } : specItem;
   });
 };
@@ -497,7 +499,9 @@ const RESERVED_FOLDER_NAMES = ['node_modules', '.git', 'environments'];
 const ensureTagFolder = async (collectionPath, folderName, format) => {
   const safeFolderName = sanitizeName(folderName);
   if (RESERVED_FOLDER_NAMES.some((r) => r.toLowerCase() === safeFolderName.toLowerCase())) {
-    console.warn(`[OpenAPI Sync] Tag "${folderName}" sanitizes to reserved folder name "${safeFolderName}", placing requests in collection root`);
+    console.warn(
+      `[OpenAPI Sync] Tag "${folderName}" sanitizes to reserved folder name "${safeFolderName}", placing requests in collection root`
+    );
     return collectionPath;
   }
   const targetFolder = path.join(collectionPath, safeFolderName);
@@ -612,7 +616,9 @@ const compareRequestFields = (specRequest, actualRequest) => {
   if (!bodyDiff && (specBodyMode === 'formUrlEncoded' || specBodyMode === 'multipartForm')) {
     if (specBodyMode === 'multipartForm') {
       specFormFieldNames = (specRequest.body?.multipartForm || []).map((f) => `${f.name}:${f.type || 'text'}`).sort();
-      actualFormFieldNames = (actualRequest.body?.multipartForm || []).map((f) => `${f.name}:${f.type || 'text'}`).sort();
+      actualFormFieldNames = (actualRequest.body?.multipartForm || [])
+        .map((f) => `${f.name}:${f.type || 'text'}`)
+        .sort();
     } else {
       specFormFieldNames = (specRequest.body?.formUrlEncoded || []).map((f) => f.name).sort();
       actualFormFieldNames = (actualRequest.body?.formUrlEncoded || []).map((f) => f.name).sort();
@@ -689,208 +695,210 @@ const loadStoredSpecCollection = (collectionPath, brunoConfig) => {
 };
 
 const registerOpenAPISyncIpc = (mainWindow) => {
-  ipcMain.handle('renderer:check-openapi-updates', async (event, {
-    collectionUid, collectionPath, sourceUrl, storedSpecHash, environmentContext
-  }) => {
-    try {
-      const result = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
-      if (result.error) {
-        return { hasUpdates: false, error: result.error, errorCode: result.errorCode };
-      }
-      const remoteSpecHash = generateSpecHash(result.spec);
-      return { hasUpdates: storedSpecHash !== remoteSpecHash, remoteSpecHash };
-    } catch (error) {
-      console.error('[OpenAPI Sync] Lightweight check error:', error.message);
-      return { hasUpdates: false, error: error.message };
-    }
-  });
-
-  ipcMain.handle('renderer:compare-openapi-specs', async (event, {
-    collectionUid, collectionPath, sourceUrl, environmentContext
-  }) => {
-    try {
-      // Compare two OpenAPI specs by converting both to Bruno format and using field-level comparison.
-      // This ensures specDrift uses the same comparison sensitivity as collectionDrift/remoteDrift.
-      const compareSpecs = (oldSpec, newSpec, groupBy) => {
-        // Convert both specs to Bruno collection format
-        const oldBruno = oldSpec ? openApiToBruno(oldSpec, { groupBy }) : { items: [] };
-        const newBruno = newSpec ? openApiToBruno(newSpec, { groupBy }) : { items: [] };
-
-        // Build endpoint maps keyed by METHOD:normalizedPath
-        const oldItems = buildSpecItemsMap(oldBruno.items || []);
-        const newItems = buildSpecItemsMap(newBruno.items || []);
-
-        const added = [];
-        const removed = [];
-        const modified = [];
-        const unchanged = [];
-
-        for (const [id, newItem] of newItems) {
-          const colonIndex = id.indexOf(':');
-          const method = id.substring(0, colonIndex);
-          const urlPath = id.substring(colonIndex + 1);
-
-          if (!oldItems.has(id)) {
-            added.push({ id, method, path: urlPath, name: newItem.name });
-          } else {
-            const oldItem = oldItems.get(id);
-            const { hasDiff, changes } = compareRequestFields(oldItem.request, newItem.request);
-            if (hasDiff) {
-              modified.push({ id, method, path: urlPath, name: newItem.name, changes: changes.join(', ') });
-            } else {
-              unchanged.push({ id, method, path: urlPath, name: newItem.name });
-            }
-          }
+  ipcMain.handle(
+    'renderer:check-openapi-updates',
+    async (event, { collectionUid, collectionPath, sourceUrl, storedSpecHash, environmentContext }) => {
+      try {
+        const result = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
+        if (result.error) {
+          return { hasUpdates: false, error: result.error, errorCode: result.errorCode };
         }
+        const remoteSpecHash = generateSpecHash(result.spec);
+        return { hasUpdates: storedSpecHash !== remoteSpecHash, remoteSpecHash };
+      } catch (error) {
+        console.error('[OpenAPI Sync] Lightweight check error:', error.message);
+        return { hasUpdates: false, error: error.message };
+      }
+    }
+  );
 
-        for (const [id] of oldItems) {
-          if (!newItems.has(id)) {
+  ipcMain.handle(
+    'renderer:compare-openapi-specs',
+    async (event, { collectionUid, collectionPath, sourceUrl, environmentContext }) => {
+      try {
+        // Compare two OpenAPI specs by converting both to Bruno format and using field-level comparison.
+        // This ensures specDrift uses the same comparison sensitivity as collectionDrift/remoteDrift.
+        const compareSpecs = (oldSpec, newSpec, groupBy) => {
+          // Convert both specs to Bruno collection format
+          const oldBruno = oldSpec ? openApiToBruno(oldSpec, { groupBy }) : { items: [] };
+          const newBruno = newSpec ? openApiToBruno(newSpec, { groupBy }) : { items: [] };
+
+          // Build endpoint maps keyed by METHOD:normalizedPath
+          const oldItems = buildSpecItemsMap(oldBruno.items || []);
+          const newItems = buildSpecItemsMap(newBruno.items || []);
+
+          const added = [];
+          const removed = [];
+          const modified = [];
+          const unchanged = [];
+
+          for (const [id, newItem] of newItems) {
             const colonIndex = id.indexOf(':');
             const method = id.substring(0, colonIndex);
             const urlPath = id.substring(colonIndex + 1);
-            const oldItem = oldItems.get(id);
-            removed.push({ id, method, path: urlPath, name: oldItem.name });
+
+            if (!oldItems.has(id)) {
+              added.push({ id, method, path: urlPath, name: newItem.name });
+            } else {
+              const oldItem = oldItems.get(id);
+              const { hasDiff, changes } = compareRequestFields(oldItem.request, newItem.request);
+              if (hasDiff) {
+                modified.push({ id, method, path: urlPath, name: newItem.name, changes: changes.join(', ') });
+              } else {
+                unchanged.push({ id, method, path: urlPath, name: newItem.name });
+              }
+            }
           }
+
+          for (const [id] of oldItems) {
+            if (!newItems.has(id)) {
+              const colonIndex = id.indexOf(':');
+              const method = id.substring(0, colonIndex);
+              const urlPath = id.substring(colonIndex + 1);
+              const oldItem = oldItems.get(id);
+              removed.push({ id, method, path: urlPath, name: oldItem.name });
+            }
+          }
+
+          // Compare metadata (title, version, description)
+          const oldTitle = oldSpec?.info?.title || null;
+          const newTitle = newSpec?.info?.title || null;
+          const titleChanged = oldTitle !== newTitle;
+
+          const oldVersion = oldSpec?.info?.version || null;
+          const newVersion = newSpec?.info?.version || null;
+          const versionChanged = oldVersion !== newVersion;
+
+          const oldDescription = oldSpec?.info?.description || null;
+          const newDescription = newSpec?.info?.description || null;
+          const descriptionChanged = oldDescription !== newDescription;
+
+          const metadataChanged = titleChanged || versionChanged || descriptionChanged;
+
+          return {
+            added,
+            removed,
+            modified,
+            unchanged,
+            // Metadata changes
+            titleChanged,
+            storedTitle: oldTitle,
+            newTitle,
+            versionChanged,
+            storedVersion: oldVersion,
+            newVersion,
+            descriptionChanged,
+            storedDescription: oldDescription,
+            newDescription,
+            metadataChanged,
+            hasChanges: added.length > 0 || removed.length > 0 || modified.length > 0 || metadataChanged
+          };
+        };
+
+        const specEntry = getSpecEntryForUrl(collectionPath);
+        const storedSpecPath = specEntry ? path.join(getSpecsDir(), specEntry.filename) : null;
+
+        let storedSpec = null;
+        let storedContent = '';
+        const storedSpecMissing = !storedSpecPath || !fs.existsSync(storedSpecPath);
+        if (!storedSpecMissing) {
+          storedContent = fs.readFileSync(storedSpecPath, 'utf8');
+          storedSpec = parseSpec(storedContent);
         }
 
-        // Compare metadata (title, version, description)
-        const oldTitle = oldSpec?.info?.title || null;
+        const fetchResult = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
+        if (fetchResult.error) {
+          return {
+            isValid: false,
+            error: fetchResult.error,
+            errorCode: fetchResult.errorCode,
+            storedSpec,
+            storedSpecMissing
+          };
+        }
+
+        const newSpecContent = fetchResult.content;
+        const newSpec = fetchResult.spec;
+
+        if (!isValidOpenApiSpec(newSpec)) {
+          const error = newSpec?.swagger
+            ? 'Swagger 2.0 is not supported. Please convert your spec to OpenAPI 3.x.'
+            : 'The source does not contain a valid OpenAPI 3.x specification';
+          return {
+            isValid: false,
+            error,
+            added: [],
+            removed: [],
+            unchanged: [],
+            hasChanges: false
+          };
+        }
+
+        // Check for title/name changes
+        const storedTitle = storedSpec?.info?.title || null;
         const newTitle = newSpec?.info?.title || null;
-        const titleChanged = oldTitle !== newTitle;
+        const titleChanged = storedSpec && storedTitle && newTitle && storedTitle !== newTitle;
 
-        const oldVersion = oldSpec?.info?.version || null;
-        const newVersion = newSpec?.info?.version || null;
-        const versionChanged = oldVersion !== newVersion;
+        // Generate hashes for quick change detection
+        const storedSpecHash = generateSpecHash(storedSpec);
+        const remoteSpecHash = generateSpecHash(newSpec);
+        const hasRemoteChanges = storedSpecHash !== remoteSpecHash;
 
-        const oldDescription = oldSpec?.info?.description || null;
-        const newDescription = newSpec?.info?.description || null;
-        const descriptionChanged = oldDescription !== newDescription;
+        // Read groupBy from brunoConfig for consistent spec conversion
+        let groupBy = 'tags';
+        try {
+          const { brunoConfig } = loadBrunoConfig(collectionPath);
+          groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
+        } catch (e) {
+          // Default to 'tags' if brunoConfig is not available
+        }
 
-        const metadataChanged = titleChanged || versionChanged || descriptionChanged;
+        const diff = compareSpecs(storedSpec, newSpec, groupBy);
+
+        // Detect remote spec format and determine correct filename
+        const remoteIsYaml = isYamlContent(newSpecContent);
+        const correctSpecFilename = remoteIsYaml ? 'openapi.yaml' : 'openapi.json';
+
+        // Generate unified diff for text diff view
+        const { createTwoFilesPatch } = require('diff');
+        const prettyStored = prettyPrintSpec(storedContent);
+        const prettyNew = prettyPrintSpec(newSpecContent);
+        const totalLines = Math.max(prettyStored.split('\n').length, prettyNew.split('\n').length);
+        const unifiedDiff = createTwoFilesPatch(
+          correctSpecFilename,
+          correctSpecFilename,
+          prettyStored,
+          prettyNew,
+          'Current Spec',
+          'New Spec',
+          { context: totalLines }
+        );
 
         return {
-          added,
-          removed,
-          modified,
-          unchanged,
-          // Metadata changes
-          titleChanged,
-          storedTitle: oldTitle,
-          newTitle,
-          versionChanged,
-          storedVersion: oldVersion,
-          newVersion,
-          descriptionChanged,
-          storedDescription: oldDescription,
-          newDescription,
-          metadataChanged,
-          hasChanges: added.length > 0 || removed.length > 0 || modified.length > 0 || metadataChanged
-        };
-      };
-
-      const specEntry = getSpecEntryForUrl(collectionPath);
-      const storedSpecPath = specEntry ? path.join(getSpecsDir(), specEntry.filename) : null;
-
-      let storedSpec = null;
-      let storedContent = '';
-      const storedSpecMissing = !storedSpecPath || !fs.existsSync(storedSpecPath);
-      if (!storedSpecMissing) {
-        storedContent = fs.readFileSync(storedSpecPath, 'utf8');
-        storedSpec = parseSpec(storedContent);
-      }
-
-      const fetchResult = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
-      if (fetchResult.error) {
-        return {
-          isValid: false,
-          error: fetchResult.error,
-          errorCode: fetchResult.errorCode,
+          ...diff,
+          isValid: true,
           storedSpec,
-          storedSpecMissing
+          newSpec,
+          newSpecContent,
+          specFilename: correctSpecFilename,
+          // Hash comparison for quick change detection
+          hasRemoteChanges,
+          storedSpecHash,
+          remoteSpecHash,
+          storedSpecMissing,
+          // Metadata
+          titleChanged,
+          storedTitle,
+          newTitle,
+          // Text diff
+          unifiedDiff
         };
+      } catch (error) {
+        console.error('Error comparing OpenAPI specs:', error);
+        throw error;
       }
-
-      const newSpecContent = fetchResult.content;
-      const newSpec = fetchResult.spec;
-
-      if (!isValidOpenApiSpec(newSpec)) {
-        const error = newSpec?.swagger
-          ? 'Swagger 2.0 is not supported. Please convert your spec to OpenAPI 3.x.'
-          : 'The source does not contain a valid OpenAPI 3.x specification';
-        return {
-          isValid: false,
-          error,
-          added: [],
-          removed: [],
-          unchanged: [],
-          hasChanges: false
-        };
-      }
-
-      // Check for title/name changes
-      const storedTitle = storedSpec?.info?.title || null;
-      const newTitle = newSpec?.info?.title || null;
-      const titleChanged = storedSpec && storedTitle && newTitle && storedTitle !== newTitle;
-
-      // Generate hashes for quick change detection
-      const storedSpecHash = generateSpecHash(storedSpec);
-      const remoteSpecHash = generateSpecHash(newSpec);
-      const hasRemoteChanges = storedSpecHash !== remoteSpecHash;
-
-      // Read groupBy from brunoConfig for consistent spec conversion
-      let groupBy = 'tags';
-      try {
-        const { brunoConfig } = loadBrunoConfig(collectionPath);
-        groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
-      } catch (e) {
-        // Default to 'tags' if brunoConfig is not available
-      }
-
-      const diff = compareSpecs(storedSpec, newSpec, groupBy);
-
-      // Detect remote spec format and determine correct filename
-      const remoteIsYaml = isYamlContent(newSpecContent);
-      const correctSpecFilename = remoteIsYaml ? 'openapi.yaml' : 'openapi.json';
-
-      // Generate unified diff for text diff view
-      const { createTwoFilesPatch } = require('diff');
-      const prettyStored = prettyPrintSpec(storedContent);
-      const prettyNew = prettyPrintSpec(newSpecContent);
-      const totalLines = Math.max(
-        prettyStored.split('\n').length,
-        prettyNew.split('\n').length
-      );
-      const unifiedDiff = createTwoFilesPatch(
-        correctSpecFilename, correctSpecFilename,
-        prettyStored, prettyNew,
-        'Current Spec', 'New Spec',
-        { context: totalLines }
-      );
-
-      return {
-        ...diff,
-        isValid: true,
-        storedSpec,
-        newSpec,
-        newSpecContent,
-        specFilename: correctSpecFilename,
-        // Hash comparison for quick change detection
-        hasRemoteChanges,
-        storedSpecHash,
-        remoteSpecHash,
-        storedSpecMissing,
-        // Metadata
-        titleChanged,
-        storedTitle,
-        newTitle,
-        // Text diff
-        unifiedDiff
-      };
-    } catch (error) {
-      console.error('Error comparing OpenAPI specs:', error);
-      throw error;
     }
-  });
+  );
 
   // Collection Drift Detection - compare stored spec (converted to bru) vs actual .bru files
   ipcMain.handle('renderer:get-collection-drift', async (event, { collectionPath, compareSpec }) => {
@@ -948,8 +956,12 @@ const registerOpenAPISyncIpc = (mainWindow) => {
           const stats = fs.statSync(fullPath);
           if (stats.isDirectory()) {
             files.push(...scanCollectionFiles(fullPath, relPath));
-          } else if ((entry.endsWith('.bru') || entry.endsWith('.yml') || entry.endsWith('.yaml'))
-            && !entry.startsWith('folder.') && !entry.startsWith('collection.') && !entry.startsWith('opencollection.')) {
+          } else if (
+            (entry.endsWith('.bru') || entry.endsWith('.yml') || entry.endsWith('.yaml')) &&
+            !entry.startsWith('folder.') &&
+            !entry.startsWith('collection.') &&
+            !entry.startsWith('opencollection.')
+          ) {
             files.push({ fullPath, relativePath: relPath });
           }
         }
@@ -1113,17 +1125,19 @@ const registerOpenAPISyncIpc = (mainWindow) => {
         // Normalize params/headers to only include fields relevant for comparison.
         // Different sources (openApiToBruno vs parseRequest) include different metadata
         // fields (uid, description) which cause false positives in isEqual comparisons.
-        const normalizeParams = (params) => (params || []).map((p) => ({
-          name: p.name,
-          value: p.value,
-          enabled: p.enabled !== false,
-          type: p.type
-        }));
-        const normalizeHeaders = (headers) => (headers || []).map((h) => ({
-          name: h.name,
-          value: h.value,
-          enabled: h.enabled !== false
-        }));
+        const normalizeParams = (params) =>
+          (params || []).map((p) => ({
+            name: p.name,
+            value: p.value,
+            enabled: p.enabled !== false,
+            type: p.type
+          }));
+        const normalizeHeaders = (headers) =>
+          (headers || []).map((h) => ({
+            name: h.name,
+            value: h.value,
+            enabled: h.enabled !== false
+          }));
 
         return {
           name: item.name || item.meta?.name,
@@ -1157,329 +1171,352 @@ const registerOpenAPISyncIpc = (mainWindow) => {
   });
 
   // Sync modes: 'spec-only' | 'reset' | 'sync' (default)
-  ipcMain.handle('renderer:apply-openapi-sync', async (event, { collectionPath, addNewRequests, removeDeletedRequests, diff, localOnlyToRemove = [], driftedToReset = [], mode = 'sync', endpointDecisions = {} }) => {
-    try {
-      const { format, brunoConfig, collectionRoot } = loadBrunoConfig(collectionPath);
-      const sourceUrl = brunoConfig?.openapi?.[0]?.sourceUrl;
-
-      // Mode: spec-only - Just save the spec, don't touch collection
-      if (mode === 'spec-only') {
-        if (diff.newSpec && typeof diff.newSpec === 'object') {
-          const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
-          await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
-        }
-
-        // Update sync metadata
-        if (brunoConfig.openapi?.[0]) {
-          brunoConfig.openapi[0] = {
-            ...brunoConfig.openapi[0],
-            lastSyncDate: new Date().toISOString(),
-            specHash: generateSpecHash(diff.newSpec)
-          };
-        }
-
-        await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
-
-        return { success: true, mode: 'spec-only' };
+  ipcMain.handle(
+    'renderer:apply-openapi-sync',
+    async (
+      event,
+      {
+        collectionPath,
+        addNewRequests,
+        removeDeletedRequests,
+        diff,
+        localOnlyToRemove = [],
+        driftedToReset = [],
+        mode = 'sync',
+        endpointDecisions = {}
       }
+    ) => {
+      try {
+        const { format, brunoConfig, collectionRoot } = loadBrunoConfig(collectionPath);
+        const sourceUrl = brunoConfig?.openapi?.[0]?.sourceUrl;
 
-      // Mode: reset - Save spec and reset all endpoints to spec (preserve tests/scripts)
-      if (mode === 'reset' && diff.newSpec) {
-        const groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
-        const newCollection = openApiToBruno(diff.newSpec, { groupBy });
+        // Mode: spec-only - Just save the spec, don't touch collection
+        if (mode === 'spec-only') {
+          if (diff.newSpec && typeof diff.newSpec === 'object') {
+            const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
+            await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
+          }
 
-        // Build map of spec items by endpoint ID
-        const specItemsMap = buildSpecItemsMap(newCollection.items || []);
+          // Update sync metadata
+          if (brunoConfig.openapi?.[0]) {
+            brunoConfig.openapi[0] = {
+              ...brunoConfig.openapi[0],
+              lastSyncDate: new Date().toISOString(),
+              specHash: generateSpecHash(diff.newSpec)
+            };
+          }
 
-        // Find and update existing .bru files
-        const findAndResetRequest = async (dirPath) => {
-          if (!fs.existsSync(dirPath)) return;
+          await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
 
-          const files = fs.readdirSync(dirPath);
-          for (const file of files) {
-            const filePath = path.join(dirPath, file);
-            const stats = fs.statSync(filePath);
+          return { success: true, mode: 'spec-only' };
+        }
 
-            if (stats.isDirectory() && !['node_modules', '.git', 'environments'].includes(file)) {
-              await findAndResetRequest(filePath);
-            } else if ((file.endsWith('.bru') || file.endsWith('.yml') || file.endsWith('.yaml'))
-              && !file.startsWith('folder.') && !file.startsWith('collection.')) {
-              try {
-                const content = fs.readFileSync(filePath, 'utf8');
-                const fileFormat = file.endsWith('.yml') || file.endsWith('.yaml') ? 'yml' : 'bru';
-                const existingRequest = parseRequest(content, { format: fileFormat });
+        // Mode: reset - Save spec and reset all endpoints to spec (preserve tests/scripts)
+        if (mode === 'reset' && diff.newSpec) {
+          const groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
+          const newCollection = openApiToBruno(diff.newSpec, { groupBy });
 
-                if (existingRequest?.request) {
-                  const method = existingRequest.request.method?.toUpperCase() || 'GET';
-                  const urlPath = normalizeUrlPath(existingRequest.request.url);
-                  const id = `${method}:${urlPath}`;
+          // Build map of spec items by endpoint ID
+          const specItemsMap = buildSpecItemsMap(newCollection.items || []);
 
-                  const specItem = specItemsMap.get(id);
-                  if (specItem) {
-                    const mergedRequest = mergeSpecIntoRequest(existingRequest, specItem, { fullReset: true });
-                    const newContent = await stringifyRequestViaWorker(mergedRequest, { format: fileFormat });
-                    await writeFile(filePath, newContent);
+          // Find and update existing .bru files
+          const findAndResetRequest = async (dirPath) => {
+            if (!fs.existsSync(dirPath)) return;
 
-                    // Mark as processed
-                    specItemsMap.delete(id);
+            const files = fs.readdirSync(dirPath);
+            for (const file of files) {
+              const filePath = path.join(dirPath, file);
+              const stats = fs.statSync(filePath);
+
+              if (stats.isDirectory() && !['node_modules', '.git', 'environments'].includes(file)) {
+                await findAndResetRequest(filePath);
+              } else if (
+                (file.endsWith('.bru') || file.endsWith('.yml') || file.endsWith('.yaml')) &&
+                !file.startsWith('folder.') &&
+                !file.startsWith('collection.')
+              ) {
+                try {
+                  const content = fs.readFileSync(filePath, 'utf8');
+                  const fileFormat = file.endsWith('.yml') || file.endsWith('.yaml') ? 'yml' : 'bru';
+                  const existingRequest = parseRequest(content, { format: fileFormat });
+
+                  if (existingRequest?.request) {
+                    const method = existingRequest.request.method?.toUpperCase() || 'GET';
+                    const urlPath = normalizeUrlPath(existingRequest.request.url);
+                    const id = `${method}:${urlPath}`;
+
+                    const specItem = specItemsMap.get(id);
+                    if (specItem) {
+                      const mergedRequest = mergeSpecIntoRequest(existingRequest, specItem, { fullReset: true });
+                      const newContent = await stringifyRequestViaWorker(mergedRequest, { format: fileFormat });
+                      await writeFile(filePath, newContent);
+
+                      // Mark as processed
+                      specItemsMap.delete(id);
+                    }
                   }
+                } catch (err) {
+                  console.error(`Error resetting file ${filePath}:`, err);
                 }
-              } catch (err) {
-                console.error(`Error resetting file ${filePath}:`, err);
               }
             }
-          }
-        };
-
-        await findAndResetRequest(collectionPath);
-
-        // Create missing endpoints from spec
-        for (const [, specItem] of specItemsMap) {
-          let targetFolder = collectionPath;
-          if (specItem.folderName && groupBy === 'tags') {
-            targetFolder = await ensureTagFolder(collectionPath, specItem.folderName, format);
-          }
-
-          const requestContent = await stringifyRequestViaWorker(specItem, { format });
-          const sanitizedFilename = `${sanitizeName(specItem.name || path.basename(specItem.filename || '', `.${format}`))}.${format}`;
-          await writeFile(path.join(targetFolder, sanitizedFilename), requestContent);
-        }
-
-        // Save spec in original format
-        const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
-        await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
-
-        // Update sync metadata
-        if (brunoConfig.openapi?.[0]) {
-          brunoConfig.openapi[0] = {
-            ...brunoConfig.openapi[0],
-            lastSyncDate: new Date().toISOString(),
-            specHash: generateSpecHash(diff.newSpec)
           };
+
+          await findAndResetRequest(collectionPath);
+
+          // Create missing endpoints from spec
+          for (const [, specItem] of specItemsMap) {
+            let targetFolder = collectionPath;
+            if (specItem.folderName && groupBy === 'tags') {
+              targetFolder = await ensureTagFolder(collectionPath, specItem.folderName, format);
+            }
+
+            const requestContent = await stringifyRequestViaWorker(specItem, { format });
+            const sanitizedFilename = `${sanitizeName(specItem.name || path.basename(specItem.filename || '', `.${format}`))}.${format}`;
+            await writeFile(path.join(targetFolder, sanitizedFilename), requestContent);
+          }
+
+          // Save spec in original format
+          const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
+          await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
+
+          // Update sync metadata
+          if (brunoConfig.openapi?.[0]) {
+            brunoConfig.openapi[0] = {
+              ...brunoConfig.openapi[0],
+              lastSyncDate: new Date().toISOString(),
+              specHash: generateSpecHash(diff.newSpec)
+            };
+          }
+
+          await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
+
+          return { success: true, mode: 'reset' };
         }
 
-        await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
-
-        return { success: true, mode: 'reset' };
-      }
-
-      // Mode: sync (default) — compute shared values once
-      const groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
-      let newCollection;
-      if (diff.newSpec) {
-        try {
-          newCollection = openApiToBruno(diff.newSpec, { groupBy });
-        } catch (err) {
-          console.error('[OpenAPI Sync] Error converting spec:', err);
+        // Mode: sync (default) — compute shared values once
+        const groupBy = brunoConfig?.openapi?.[0]?.groupBy || 'tags';
+        let newCollection;
+        if (diff.newSpec) {
+          try {
+            newCollection = openApiToBruno(diff.newSpec, { groupBy });
+          } catch (err) {
+            console.error('[OpenAPI Sync] Error converting spec:', err);
+          }
         }
-      }
 
-      // Remove endpoints before adding new ones to avoid filename collisions
-      // (e.g., when a path is renamed but the summary stays the same, both generate the same filename)
-      if (removeDeletedRequests && diff.removed?.length > 0) {
-        const findAndRemoveRequest = (dirPath) => {
-          if (!fs.existsSync(dirPath)) return;
+        // Remove endpoints before adding new ones to avoid filename collisions
+        // (e.g., when a path is renamed but the summary stays the same, both generate the same filename)
+        if (removeDeletedRequests && diff.removed?.length > 0) {
+          const findAndRemoveRequest = (dirPath) => {
+            if (!fs.existsSync(dirPath)) return;
 
-          const files = fs.readdirSync(dirPath);
-          for (const file of files) {
-            const filePath = path.join(dirPath, file);
-            const stats = fs.statSync(filePath);
+            const files = fs.readdirSync(dirPath);
+            for (const file of files) {
+              const filePath = path.join(dirPath, file);
+              const stats = fs.statSync(filePath);
 
-            if (stats.isDirectory() && !['node_modules', '.git', 'environments'].includes(file)) {
-              findAndRemoveRequest(filePath);
-            } else if ((file.endsWith('.bru') || file.endsWith('.yml') || file.endsWith('.yaml'))
-              && !file.startsWith('folder.') && !file.startsWith('collection.')) {
-              try {
-                const content = fs.readFileSync(filePath, 'utf8');
-                const request = parseRequest(content, { format: file.endsWith('.yml') || file.endsWith('.yaml') ? 'yml' : 'bru' });
+              if (stats.isDirectory() && !['node_modules', '.git', 'environments'].includes(file)) {
+                findAndRemoveRequest(filePath);
+              } else if (
+                (file.endsWith('.bru') || file.endsWith('.yml') || file.endsWith('.yaml')) &&
+                !file.startsWith('folder.') &&
+                !file.startsWith('collection.')
+              ) {
+                try {
+                  const content = fs.readFileSync(filePath, 'utf8');
+                  const request = parseRequest(content, {
+                    format: file.endsWith('.yml') || file.endsWith('.yaml') ? 'yml' : 'bru'
+                  });
 
-                if (request?.request) {
-                  const method = request.request.method?.toUpperCase();
-                  const url = normalizeUrlPath(request.request.url);
+                  if (request?.request) {
+                    const method = request.request.method?.toUpperCase();
+                    const url = normalizeUrlPath(request.request.url);
 
-                  if (!isPathInsideCollection(filePath, collectionPath)) {
-                    console.error(`[OpenAPI Sync] Path traversal blocked: ${filePath}`);
-                  } else {
-                    for (const removed of diff.removed) {
-                      const removedPath = normalizeUrlPath(removed.path);
-                      if (method === removed.method.toUpperCase() && url === removedPath) {
-                        fs.unlinkSync(filePath);
-                        break;
+                    if (!isPathInsideCollection(filePath, collectionPath)) {
+                      console.error(`[OpenAPI Sync] Path traversal blocked: ${filePath}`);
+                    } else {
+                      for (const removed of diff.removed) {
+                        const removedPath = normalizeUrlPath(removed.path);
+                        if (method === removed.method.toUpperCase() && url === removedPath) {
+                          fs.unlinkSync(filePath);
+                          break;
+                        }
                       }
                     }
                   }
+                } catch (err) {
+                  console.error(`Error parsing file ${filePath}:`, err);
                 }
-              } catch (err) {
-                console.error(`Error parsing file ${filePath}:`, err);
               }
             }
-          }
-        };
+          };
 
-        findAndRemoveRequest(collectionPath);
-      }
-
-      // Remove local-only endpoints (endpoints in collection but not in spec)
-      // Verify file content before deleting — the file may have been modified by the user
-      // between the drift scan and sync execution, making the pre-computed filePath stale.
-      if (localOnlyToRemove?.length > 0) {
-        for (const endpoint of localOnlyToRemove) {
-          if (endpoint.filePath) {
-            const fullPath = path.resolve(collectionPath, endpoint.filePath);
-            if (!isPathInsideCollection(fullPath, collectionPath)) {
-              console.error(`[OpenAPI Sync] Path traversal blocked in localOnlyToRemove: ${endpoint.filePath}`);
-              continue;
-            }
-            if (fs.existsSync(fullPath)) {
-              try {
-                const fileFormat = fullPath.endsWith('.yml') || fullPath.endsWith('.yaml') ? 'yml' : 'bru';
-                const content = fs.readFileSync(fullPath, 'utf8');
-                const parsed = parseRequest(content, { format: fileFormat });
-                if (parsed?.request) {
-                  const fileMethod = parsed.request.method?.toUpperCase();
-                  const fileUrlPath = normalizeUrlPath(parsed.request.url);
-                  if (fileMethod === endpoint.method && fileUrlPath === endpoint.path) {
-                    fs.unlinkSync(fullPath);
-                  }
-                }
-              } catch (err) {
-                console.error(`[OpenAPI Sync] Error verifying file before removal ${endpoint.filePath}:`, err);
-              }
-            }
-          }
-        }
-      }
-
-      if (addNewRequests && diff.added?.length > 0 && newCollection) {
-        for (const endpoint of diff.added) {
-          const normalizedPath = normalizeUrlPath(endpoint.path);
-          const result = findItemInCollection(newCollection.items, endpoint.method, endpoint.path);
-          const newItem = result?.item;
-
-          if (newItem) {
-            // Check if endpoint already exists in collection (prevents overwriting user customizations)
-            const existingFile = findRequestFileOnDisk(collectionPath, endpoint.method.toUpperCase(), normalizedPath);
-
-            if (existingFile) {
-              const mergedRequest = mergeSpecIntoRequest(existingFile.request, newItem);
-              const content = await stringifyRequestViaWorker(mergedRequest, { format: existingFile.fileFormat });
-              await writeFile(existingFile.filePath, content);
-            } else {
-              // Truly new — create file in the appropriate folder
-              let targetFolder = collectionPath;
-              if (result.folderName && groupBy === 'tags') {
-                targetFolder = await ensureTagFolder(collectionPath, result.folderName, format);
-              }
-
-              const requestContent = await stringifyRequestViaWorker(newItem, { format });
-              const sanitizedFilename = `${sanitizeName(newItem.name || path.basename(newItem.filename || '', `.${format}`))}.${format}`;
-              await writeFile(path.join(targetFolder, sanitizedFilename), requestContent);
-            }
-          }
-        }
-      }
-
-      // Handle modified endpoints with conflict resolutions
-      // endpointDecisions: { endpointId: 'keep-mine' | 'accept-incoming' }
-      // Only apply changes for endpoints marked as 'accept-incoming' or not in decisions (default: apply)
-      if (diff.modified?.length > 0 && newCollection) {
-        for (const endpoint of diff.modified) {
-          // Check if user chose to keep their version
-          const endpointId = endpoint.id || `${endpoint.method.toUpperCase()}:${normalizeUrlPath(endpoint.path)}`;
-          const decision = endpointDecisions[endpointId];
-          if (decision === 'keep-mine') {
-            continue;
-          }
-
-          // Apply incoming changes for this endpoint
-          const normalizedPath = normalizeUrlPath(endpoint.path);
-          const result = findItemInCollection(newCollection.items, endpoint.method, endpoint.path);
-          const newItem = result?.item;
-          const existingFile = findRequestFileOnDisk(collectionPath, endpoint.method.toUpperCase(), normalizedPath);
-
-          if (newItem && existingFile) {
-            const mergedRequest = mergeSpecIntoRequest(existingFile.request, newItem);
-            const content = await stringifyRequestViaWorker(mergedRequest, { format: existingFile.fileFormat });
-            await writeFile(existingFile.filePath, content);
-          }
-        }
-      }
-
-      // Handle drifted endpoints to reset (collection differs from stored spec)
-      // These are endpoints where user chose 'accept-incoming' to reset to spec
-      if (driftedToReset?.length > 0) {
-        // Reuse newCollection if available, otherwise fall back to stored spec
-        let driftCollection = newCollection;
-        if (!driftCollection) {
-          const applySpecEntry = getSpecEntryForUrl(collectionPath);
-          const storedSpecPath = applySpecEntry ? path.join(getSpecsDir(), applySpecEntry.filename) : null;
-          if (storedSpecPath && fs.existsSync(storedSpecPath)) {
-            try {
-              driftCollection = openApiToBruno(parseSpec(fs.readFileSync(storedSpecPath, 'utf8')), { groupBy });
-            } catch (err) {
-              console.error('[OpenAPI Sync] Error converting stored spec for drift reset:', err);
-            }
-          }
+          findAndRemoveRequest(collectionPath);
         }
 
-        if (driftCollection) {
-          const specItemsMap = buildSpecItemsMap(driftCollection.items || []);
-
-          for (const endpoint of driftedToReset) {
-            const specItem = specItemsMap.get(endpoint.id);
-            if (!specItem) {
-              continue;
-            }
-
+        // Remove local-only endpoints (endpoints in collection but not in spec)
+        // Verify file content before deleting — the file may have been modified by the user
+        // between the drift scan and sync execution, making the pre-computed filePath stale.
+        if (localOnlyToRemove?.length > 0) {
+          for (const endpoint of localOnlyToRemove) {
             if (endpoint.filePath) {
               const fullPath = path.resolve(collectionPath, endpoint.filePath);
               if (!isPathInsideCollection(fullPath, collectionPath)) {
-                console.error(`[OpenAPI Sync] Path traversal blocked in driftedToReset: ${endpoint.filePath}`);
+                console.error(`[OpenAPI Sync] Path traversal blocked in localOnlyToRemove: ${endpoint.filePath}`);
                 continue;
               }
               if (fs.existsSync(fullPath)) {
                 try {
                   const fileFormat = fullPath.endsWith('.yml') || fullPath.endsWith('.yaml') ? 'yml' : 'bru';
-                  const existingContent = fs.readFileSync(fullPath, 'utf8');
-                  const existingRequest = parseRequest(existingContent, { format: fileFormat });
-                  const mergedRequest = mergeSpecIntoRequest(existingRequest, specItem, { fullReset: true });
-                  const content = await stringifyRequestViaWorker(mergedRequest, { format: fileFormat });
-                  await writeFile(fullPath, content);
+                  const content = fs.readFileSync(fullPath, 'utf8');
+                  const parsed = parseRequest(content, { format: fileFormat });
+                  if (parsed?.request) {
+                    const fileMethod = parsed.request.method?.toUpperCase();
+                    const fileUrlPath = normalizeUrlPath(parsed.request.url);
+                    if (fileMethod === endpoint.method && fileUrlPath === endpoint.path) {
+                      fs.unlinkSync(fullPath);
+                    }
+                  }
                 } catch (err) {
-                  console.error(`[OpenAPI Sync] Error resetting drifted endpoint ${endpoint.id}:`, err);
+                  console.error(`[OpenAPI Sync] Error verifying file before removal ${endpoint.filePath}:`, err);
                 }
               }
             }
           }
         }
-      }
 
-      // Save spec only if we have a valid spec
-      if (diff.newSpec && typeof diff.newSpec === 'object') {
-        const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
-        await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
-      }
+        if (addNewRequests && diff.added?.length > 0 && newCollection) {
+          for (const endpoint of diff.added) {
+            const normalizedPath = normalizeUrlPath(endpoint.path);
+            const result = findItemInCollection(newCollection.items, endpoint.method, endpoint.path);
+            const newItem = result?.item;
 
-      if (brunoConfig.openapi?.[0]) {
-        const updated = {
-          ...brunoConfig.openapi[0],
-          lastSyncDate: new Date().toISOString()
-        };
-        // Only update specHash when we have a valid newSpec, otherwise preserve existing hash
-        if (diff.newSpec) {
-          updated.specHash = generateSpecHash(diff.newSpec);
+            if (newItem) {
+              // Check if endpoint already exists in collection (prevents overwriting user customizations)
+              const existingFile = findRequestFileOnDisk(collectionPath, endpoint.method.toUpperCase(), normalizedPath);
+
+              if (existingFile) {
+                const mergedRequest = mergeSpecIntoRequest(existingFile.request, newItem);
+                const content = await stringifyRequestViaWorker(mergedRequest, { format: existingFile.fileFormat });
+                await writeFile(existingFile.filePath, content);
+              } else {
+                // Truly new — create file in the appropriate folder
+                let targetFolder = collectionPath;
+                if (result.folderName && groupBy === 'tags') {
+                  targetFolder = await ensureTagFolder(collectionPath, result.folderName, format);
+                }
+
+                const requestContent = await stringifyRequestViaWorker(newItem, { format });
+                const sanitizedFilename = `${sanitizeName(newItem.name || path.basename(newItem.filename || '', `.${format}`))}.${format}`;
+                await writeFile(path.join(targetFolder, sanitizedFilename), requestContent);
+              }
+            }
+          }
         }
-        brunoConfig.openapi[0] = updated;
+
+        // Handle modified endpoints with conflict resolutions
+        // endpointDecisions: { endpointId: 'keep-mine' | 'accept-incoming' }
+        // Only apply changes for endpoints marked as 'accept-incoming' or not in decisions (default: apply)
+        if (diff.modified?.length > 0 && newCollection) {
+          for (const endpoint of diff.modified) {
+            // Check if user chose to keep their version
+            const endpointId = endpoint.id || `${endpoint.method.toUpperCase()}:${normalizeUrlPath(endpoint.path)}`;
+            const decision = endpointDecisions[endpointId];
+            if (decision === 'keep-mine') {
+              continue;
+            }
+
+            // Apply incoming changes for this endpoint
+            const normalizedPath = normalizeUrlPath(endpoint.path);
+            const result = findItemInCollection(newCollection.items, endpoint.method, endpoint.path);
+            const newItem = result?.item;
+            const existingFile = findRequestFileOnDisk(collectionPath, endpoint.method.toUpperCase(), normalizedPath);
+
+            if (newItem && existingFile) {
+              const mergedRequest = mergeSpecIntoRequest(existingFile.request, newItem);
+              const content = await stringifyRequestViaWorker(mergedRequest, { format: existingFile.fileFormat });
+              await writeFile(existingFile.filePath, content);
+            }
+          }
+        }
+
+        // Handle drifted endpoints to reset (collection differs from stored spec)
+        // These are endpoints where user chose 'accept-incoming' to reset to spec
+        if (driftedToReset?.length > 0) {
+          // Reuse newCollection if available, otherwise fall back to stored spec
+          let driftCollection = newCollection;
+          if (!driftCollection) {
+            const applySpecEntry = getSpecEntryForUrl(collectionPath);
+            const storedSpecPath = applySpecEntry ? path.join(getSpecsDir(), applySpecEntry.filename) : null;
+            if (storedSpecPath && fs.existsSync(storedSpecPath)) {
+              try {
+                driftCollection = openApiToBruno(parseSpec(fs.readFileSync(storedSpecPath, 'utf8')), { groupBy });
+              } catch (err) {
+                console.error('[OpenAPI Sync] Error converting stored spec for drift reset:', err);
+              }
+            }
+          }
+
+          if (driftCollection) {
+            const specItemsMap = buildSpecItemsMap(driftCollection.items || []);
+
+            for (const endpoint of driftedToReset) {
+              const specItem = specItemsMap.get(endpoint.id);
+              if (!specItem) {
+                continue;
+              }
+
+              if (endpoint.filePath) {
+                const fullPath = path.resolve(collectionPath, endpoint.filePath);
+                if (!isPathInsideCollection(fullPath, collectionPath)) {
+                  console.error(`[OpenAPI Sync] Path traversal blocked in driftedToReset: ${endpoint.filePath}`);
+                  continue;
+                }
+                if (fs.existsSync(fullPath)) {
+                  try {
+                    const fileFormat = fullPath.endsWith('.yml') || fullPath.endsWith('.yaml') ? 'yml' : 'bru';
+                    const existingContent = fs.readFileSync(fullPath, 'utf8');
+                    const existingRequest = parseRequest(existingContent, { format: fileFormat });
+                    const mergedRequest = mergeSpecIntoRequest(existingRequest, specItem, { fullReset: true });
+                    const content = await stringifyRequestViaWorker(mergedRequest, { format: fileFormat });
+                    await writeFile(fullPath, content);
+                  } catch (err) {
+                    console.error(`[OpenAPI Sync] Error resetting drifted endpoint ${endpoint.id}:`, err);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Save spec only if we have a valid spec
+        if (diff.newSpec && typeof diff.newSpec === 'object') {
+          const specContent = diff.newSpecContent || JSON.stringify(diff.newSpec, null, 2);
+          await saveOpenApiSpecFile({ collectionPath, content: specContent, sourceUrl });
+        }
+
+        if (brunoConfig.openapi?.[0]) {
+          const updated = {
+            ...brunoConfig.openapi[0],
+            lastSyncDate: new Date().toISOString()
+          };
+          // Only update specHash when we have a valid newSpec, otherwise preserve existing hash
+          if (diff.newSpec) {
+            updated.specHash = generateSpecHash(diff.newSpec);
+          }
+          brunoConfig.openapi[0] = updated;
+        }
+
+        await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
+
+        return { success: true };
+      } catch (error) {
+        console.error('Error applying OpenAPI sync:', error);
+        throw error;
       }
-
-      await saveBrunoConfig(collectionPath, format, brunoConfig, collectionRoot);
-
-      return { success: true };
-    } catch (error) {
-      console.error('Error applying OpenAPI sync:', error);
-      throw error;
     }
-  });
+  );
 
   // Update OpenAPI sync configuration (e.g., source URL)
   ipcMain.handle('renderer:update-openapi-sync-config', async (event, { collectionPath, config }) => {
@@ -1540,23 +1577,24 @@ const registerOpenAPISyncIpc = (mainWindow) => {
   });
 
   // Fetch OpenAPI spec content from a remote URL or local file path
-  ipcMain.handle('renderer:fetch-openapi-spec', async (event, {
-    collectionUid, collectionPath, sourceUrl, environmentContext
-  }) => {
-    try {
-      const result = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
-      if (result.error) return { error: result.error, errorCode: result.errorCode };
-      if (!isValidOpenApiSpec(result.spec)) {
-        const error = result.spec?.swagger
-          ? 'Swagger 2.0 is not supported. Please convert your spec to OpenAPI 3.x.'
-          : 'The source does not contain a valid OpenAPI 3.x specification';
-        return { error };
+  ipcMain.handle(
+    'renderer:fetch-openapi-spec',
+    async (event, { collectionUid, collectionPath, sourceUrl, environmentContext }) => {
+      try {
+        const result = await fetchSpecFromSource({ collectionUid, collectionPath, sourceUrl, environmentContext });
+        if (result.error) return { error: result.error, errorCode: result.errorCode };
+        if (!isValidOpenApiSpec(result.spec)) {
+          const error = result.spec?.swagger
+            ? 'Swagger 2.0 is not supported. Please convert your spec to OpenAPI 3.x.'
+            : 'The source does not contain a valid OpenAPI 3.x specification';
+          return { error };
+        }
+        return { content: result.content };
+      } catch (error) {
+        return { error: error.message || 'Failed to fetch spec' };
       }
-      return { content: result.content };
-    } catch (error) {
-      return { error: error.message || 'Failed to fetch spec' };
     }
-  });
+  );
 
   // Read stored OpenAPI spec file from AppData
   ipcMain.handle('renderer:read-openapi-spec', async (event, { collectionPath }) => {
@@ -1649,7 +1687,8 @@ const registerOpenAPISyncIpc = (mainWindow) => {
           }
 
           try {
-            const fileFormat = endpoint.pathname.endsWith('.yml') || endpoint.pathname.endsWith('.yaml') ? 'yml' : 'bru';
+            const fileFormat =
+              endpoint.pathname.endsWith('.yml') || endpoint.pathname.endsWith('.yaml') ? 'yml' : 'bru';
             const existingContent = fs.readFileSync(endpoint.pathname, 'utf8');
             const existingRequest = parseRequest(existingContent, { format: fileFormat });
             const mergedRequest = mergeSpecIntoRequest(existingRequest, specItem, { fullReset: true });

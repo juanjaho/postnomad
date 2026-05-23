@@ -34,20 +34,24 @@ const StyledWrapper = styled.button`
 
   ${(props) => variants[props.$variant] || variants.subtle}
 
-  ${(props) => props.$color && css`
-    color: ${props.$color};
-  `}
+  ${(props) =>
+    props.$color &&
+    css`
+      color: ${props.$color};
+    `}
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  ${(props) => props.$colorOnHover && css`
-    &:hover:not(:disabled) {
-      color: ${props.$colorOnHover};
-    }
-  `}
+  ${(props) =>
+    props.$colorOnHover &&
+    css`
+      &:hover:not(:disabled) {
+        color: ${props.$colorOnHover};
+      }
+    `}
 `;
 
 export default StyledWrapper;

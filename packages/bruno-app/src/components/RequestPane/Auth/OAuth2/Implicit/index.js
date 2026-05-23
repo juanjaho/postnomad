@@ -40,7 +40,9 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
     return interpolate(authorizationUrl, variables);
   }, [collection, item, authorizationUrl]);
 
-  const handleSave = () => { save(); };
+  const handleSave = () => {
+    save();
+  };
 
   const handleChange = (key, value) => {
     dispatch(
@@ -96,14 +98,18 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
 
   return (
     <Wrapper className="mt-2 flex w-full gap-4 flex-col">
-      <Oauth2TokenViewer handleRun={handleRun} collection={collection} item={item} url={authorizationUrl} credentialsId={credentialsId} />
+      <Oauth2TokenViewer
+        handleRun={handleRun}
+        collection={collection}
+        item={item}
+        url={authorizationUrl}
+        credentialsId={credentialsId}
+      />
       <div className="flex items-center gap-2.5 mt-2">
         <div className="flex items-center px-2.5 py-1.5 oauth2-icon-container rounded-md">
           <IconSettings size={14} className="oauth2-icon" />
         </div>
-        <span className="oauth2-section-label">
-          Configuration
-        </span>
+        <span className="oauth2-section-label">Configuration</span>
       </div>
       <div className="flex items-center gap-4 w-full" key="input-callbackUrl">
         <label className="block min-w-[140px]">Callback URL</label>
@@ -169,9 +175,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
         <div className="flex items-center px-2.5 py-1.5 oauth2-icon-container rounded-md">
           <IconKey size={14} className="oauth2-icon" />
         </div>
-        <span className="oauth2-section-label">
-          Token
-        </span>
+        <span className="oauth2-section-label">Token</span>
       </div>
 
       <div className="flex items-center gap-4 w-full" key="input-token-type">
@@ -266,9 +270,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
         <div className="flex items-center px-2.5 py-1.5 oauth2-icon-container rounded-md">
           <IconAdjustmentsHorizontal size={14} className="oauth2-icon" />
         </div>
-        <span className="oauth2-section-label">
-          Advanced Options
-        </span>
+        <span className="oauth2-section-label">Advanced Options</span>
       </div>
 
       <div className="flex items-center gap-4 w-full">
@@ -296,7 +298,13 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
         updateAuth={updateAuth}
         handleSave={handleSave}
       />
-      <Oauth2ActionButtons item={item} request={request} collection={collection} url={interpolatedAuthUrl} credentialsId={credentialsId} />
+      <Oauth2ActionButtons
+        item={item}
+        request={request}
+        collection={collection}
+        url={interpolatedAuthUrl}
+        credentialsId={credentialsId}
+      />
     </Wrapper>
   );
 };

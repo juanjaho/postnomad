@@ -176,9 +176,16 @@ describe('ReadOnlyPropertyList', () => {
     const list = new ReadOnlyPropertyList({ items: [] });
 
     test.each([
-      'add', 'prepend', 'insert', 'insertAfter',
-      'upsert', 'remove', 'clear',
-      'populate', 'repopulate', 'assimilate'
+      'add',
+      'prepend',
+      'insert',
+      'insertAfter',
+      'upsert',
+      'remove',
+      'clear',
+      'populate',
+      'repopulate',
+      'assimilate'
     ])('%s is not defined', (method) => {
       expect(list[method]).toBeUndefined();
     });

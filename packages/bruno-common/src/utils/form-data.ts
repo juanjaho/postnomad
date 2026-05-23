@@ -12,7 +12,9 @@
  * buildFormUrlEncodedPayload([{name: 'a', value: '1'}, {name: 'b', value: '2'}])
  * // Returns: 'a=1&b=2'
  */
-export const buildFormUrlEncodedPayload = (params: Array<{ name: string; value: string | number | boolean | undefined }>): string => {
+export const buildFormUrlEncodedPayload = (
+  params: Array<{ name: string; value: string | number | boolean | undefined }>
+): string => {
   // Ensure params is iterable (array)
   if (!Array.isArray(params)) {
     return '';
@@ -54,5 +56,5 @@ export const extractBoundaryFromContentType = (contentType: unknown): string | n
     return null;
   }
   const match = contentType.match(/boundary="([^"]+)"|boundary=([^;\s]+)/i);
-  return match ? (match[1] || match[2]) : null;
+  return match ? match[1] || match[2] : null;
 };

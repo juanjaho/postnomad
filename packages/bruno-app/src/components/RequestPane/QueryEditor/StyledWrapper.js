@@ -22,7 +22,8 @@ const StyledWrapper = styled.div`
     }
   }
 
-  .cm-s-default, .cm-s-monokai {
+  .cm-s-default,
+  .cm-s-monokai {
     span.cm-def {
       color: ${(props) => props.theme.codemirror.tokens.definition} !important;
     }
@@ -38,7 +39,8 @@ const StyledWrapper = styled.div`
     span.cm-atom {
       color: ${(props) => props.theme.codemirror.tokens.atom} !important;
     }
-    span.cm-variable, span.cm-variable-2 {
+    span.cm-variable,
+    span.cm-variable-2 {
       color: ${(props) => props.theme.codemirror.tokens.variable} !important;
     }
     span.cm-keyword {
@@ -65,7 +67,6 @@ const StyledWrapper = styled.div`
   .cm-variable-invalid {
     color: ${(props) => props.theme.codemirror.variable.invalid};
   }
-
 
   .CodeMirror-matchingbracket {
     background: ${(props) => props.theme.status.success.background} !important;

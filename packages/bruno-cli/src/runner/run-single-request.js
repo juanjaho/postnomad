@@ -6,7 +6,14 @@ const { forOwn, each, extend, get, compact } = require('lodash');
 const prepareRequest = require('./prepare-request');
 const interpolateVars = require('./interpolate-vars');
 const { interpolateString, interpolateObject } = require('./interpolate-string');
-const { ScriptRuntime, TestRuntime, VarsRuntime, AssertRuntime, formatErrorWithContext, SCRIPT_TYPES } = require('@usebruno/js');
+const {
+  ScriptRuntime,
+  TestRuntime,
+  VarsRuntime,
+  AssertRuntime,
+  formatErrorWithContext,
+  SCRIPT_TYPES
+} = require('@usebruno/js');
 const { stripExtension } = require('../utils/filesystem');
 const { getOptions } = require('../utils/bru');
 const { makeAxiosInstance } = require('../utils/axios-instance');
@@ -17,11 +24,23 @@ const { parseDataFromResponse } = require('../utils/common');
 const { getCookieStringForUrl, saveCookies } = require('../utils/cookies');
 const { createFormData } = require('../utils/form-data');
 const { NtlmClient } = require('axios-ntlm');
-const { addDigestInterceptor, getHttpHttpsAgents, makeAxiosInstance: makeAxiosInstanceForOauth2, applyOAuth1ToRequest } = require('@usebruno/requests');
+const {
+  addDigestInterceptor,
+  getHttpHttpsAgents,
+  makeAxiosInstance: makeAxiosInstanceForOauth2,
+  applyOAuth1ToRequest
+} = require('@usebruno/requests');
 const { getCACertificates, transformProxyConfig } = require('@usebruno/requests');
 const { getOAuth2Token, getFormattedOauth2Credentials } = require('../utils/oauth2');
 const tokenStore = require('../store/tokenStore');
-const { encodeUrl, buildFormUrlEncodedPayload, extractPromptVariables, isFormData, extractBoundaryFromContentType, hasExplicitScheme } = require('@usebruno/common').utils;
+const {
+  encodeUrl,
+  buildFormUrlEncodedPayload,
+  extractPromptVariables,
+  isFormData,
+  extractBoundaryFromContentType,
+  hasExplicitScheme
+} = require('@usebruno/common').utils;
 
 const onConsoleLog = (type, args) => {
   console[type](...args);
@@ -39,8 +58,16 @@ const getCACertHostRegex = (domain) => {
  * @param {*} request - request object built by prepareRequest
  * @returns {string[]} An array of extracted prompt variables
  */
-const extractPromptVariablesForRequest = ({ request, collection, envVariables, runtimeVariables, processEnvVars, brunoConfig }) => {
-  const { vars, collectionVariables, folderVariables, requestVariables, globalEnvironmentVariables, ...requestObj } = request;
+const extractPromptVariablesForRequest = ({
+  request,
+  collection,
+  envVariables,
+  runtimeVariables,
+  processEnvVars,
+  brunoConfig
+}) => {
+  const { vars, collectionVariables, folderVariables, requestVariables, globalEnvironmentVariables, ...requestObj } =
+    request;
 
   const allVariables = {
     ...globalEnvironmentVariables,
@@ -115,10 +142,14 @@ const runSingleRequest = async function (
               stack: r.stack,
               name: r.errorName || 'Error'
             };
-            const metadata = scriptType === SCRIPT_TYPES.PRE_REQUEST ? request?.script?.reqMetadata
-              : scriptType === SCRIPT_TYPES.POST_RESPONSE ? request?.script?.resMetadata
-                : scriptType === SCRIPT_TYPES.TEST ? request?.testsMetadata
-                  : null;
+            const metadata =
+              scriptType === SCRIPT_TYPES.PRE_REQUEST
+                ? request?.script?.reqMetadata
+                : scriptType === SCRIPT_TYPES.POST_RESPONSE
+                  ? request?.script?.resMetadata
+                  : scriptType === SCRIPT_TYPES.TEST
+                    ? request?.testsMetadata
+                    : null;
             console.log('\n' + formatErrorWithContext(errorObj, relativeItemPathname, scriptType, 5, metadata) + '\n');
           } else if (r.error) {
             console.log(chalk.red(`      ${r.error}`));
@@ -141,7 +172,14 @@ const runSingleRequest = async function (
     request.globalEnvironmentVariables = globalEnvVars;
 
     // Detect prompt variables before proceeding
-    const promptVars = extractPromptVariablesForRequest({ request, collection, envVariables, runtimeVariables, processEnvVars, brunoConfig });
+    const promptVars = extractPromptVariablesForRequest({
+      request,
+      collection,
+      envVariables,
+      runtimeVariables,
+      processEnvVars,
+      brunoConfig
+    });
 
     if (promptVars.length > 0) {
       const errorMsg = `Prompt variables detected in request. CLI execution is not supported for requests with prompt variables. \nPrompts: ${promptVars.join(', ')}`;
@@ -204,7 +242,9 @@ const runSingleRequest = async function (
         shouldKeepDefaultCaCertificates: !options['ignoreTruststore'],
         cacheSslSession: get(options, 'cacheSslSession', false)
       },
-      clientCertificates: rawClientCertificates ? interpolateObject(rawClientCertificates, sendRequestInterpolationOptions) : undefined,
+      clientCertificates: rawClientCertificates
+        ? interpolateObject(rawClientCertificates, sendRequestInterpolationOptions)
+        : undefined,
       collectionLevelProxy: transformProxyConfig(interpolateObject(rawProxyConfig, sendRequestInterpolationOptions)),
       systemProxyConfig
     };
@@ -218,7 +258,8 @@ const runSingleRequest = async function (
     if (requestScriptFile?.length) {
       const scriptRuntime = new ScriptRuntime({ runtime: scriptingConfig?.runtime });
       try {
-        const result = await scriptRuntime.runRequestScript(decomment(requestScriptFile, { space: true }),
+        const result = await scriptRuntime.runRequestScript(
+          decomment(requestScriptFile, { space: true }),
           request,
           envVariables,
           runtimeVariables,
@@ -227,7 +268,8 @@ const runSingleRequest = async function (
           processEnvVars,
           scriptingConfig,
           runSingleRequestByPathname,
-          collectionName);
+          collectionName
+        );
         if (result?.nextRequestName !== undefined) {
           nextRequestName = result.nextRequestName;
         }
@@ -276,7 +318,17 @@ const runSingleRequest = async function (
       } catch (error) {
         // Pre-request errors are treated as request errors (we return early with status: 'error'), not as failures. Unlike post-response and test script errors, we do not add a synthetic fail and continue.
         console.error(chalk.red(`[${relativeItemPathname}] Pre-request script error:`));
-        console.log('\n' + formatErrorWithContext(error, relativeItemPathname, SCRIPT_TYPES.PRE_REQUEST, 5, request.script?.reqMetadata) + '\n');
+        console.log(
+          '\n' +
+            formatErrorWithContext(
+              error,
+              relativeItemPathname,
+              SCRIPT_TYPES.PRE_REQUEST,
+              5,
+              request.script?.reqMetadata
+            ) +
+            '\n'
+        );
 
         // Extract partial results from the error (tests that passed before the error)
         preRequestTestResults = error?.partialResults?.results || [];
@@ -357,7 +409,10 @@ const runSingleRequest = async function (
       httpsAgentRequestFields['rejectUnauthorized'] = false;
     } else {
       const caCertFilePath = options['cacert'];
-      let caCertificatesData = getCACertificates({ caCertFilePath, shouldKeepDefaultCerts: !options['ignoreTruststore'] });
+      let caCertificatesData = getCACertificates({
+        caCertFilePath,
+        shouldKeepDefaultCerts: !options['ignoreTruststore']
+      });
       let caCertificates = caCertificatesData.caCertificates;
       httpsAgentRequestFields['ca'] = caCertificates || [];
     }
@@ -444,19 +499,18 @@ const runSingleRequest = async function (
     if (!options.disableCookies) {
       const cookieString = getCookieStringForUrl(request.url);
       if (cookieString && typeof cookieString === 'string' && cookieString.length) {
-        const existingCookieHeaderName = Object.keys(request.headers).find(
-          (name) => name.toLowerCase() === 'cookie'
-        );
+        const existingCookieHeaderName = Object.keys(request.headers).find((name) => name.toLowerCase() === 'cookie');
         const existingCookieString = existingCookieHeaderName ? request.headers[existingCookieHeaderName] : '';
 
         // Helper function to parse cookies into an object
-        const parseCookies = (str) => str.split(';').reduce((cookies, cookie) => {
-          const [name, ...rest] = cookie.split('=');
-          if (name && name.trim()) {
-            cookies[name.trim()] = rest.join('=').trim();
-          }
-          return cookies;
-        }, {});
+        const parseCookies = (str) =>
+          str.split(';').reduce((cookies, cookie) => {
+            const [name, ...rest] = cookie.split('=');
+            if (name && name.trim()) {
+              cookies[name.trim()] = rest.join('=').trim();
+            }
+            return cookies;
+          }, {});
 
         const mergedCookies = {
           ...parseCookies(existingCookieString),
@@ -472,9 +526,7 @@ const runSingleRequest = async function (
     }
 
     // stringify the request url encoded params
-    const contentTypeHeader = Object.keys(request.headers).find(
-      (name) => name.toLowerCase() === 'content-type'
-    );
+    const contentTypeHeader = Object.keys(request.headers).find((name) => name.toLowerCase() === 'content-type');
 
     if (contentTypeHeader && request.headers[contentTypeHeader] === 'application/x-www-form-urlencoded') {
       if (Array.isArray(request.data)) {
@@ -543,8 +595,12 @@ const runSingleRequest = async function (
           requestVariables: request.requestVariables || {}
         };
 
-        const accessTokenUrl = request.oauth2.accessTokenUrl ? interpolateString(request.oauth2.accessTokenUrl, oauth2InterpolationOptions) : undefined;
-        const refreshTokenUrl = request.oauth2.refreshTokenUrl ? interpolateString(request.oauth2.refreshTokenUrl, oauth2InterpolationOptions) : undefined;
+        const accessTokenUrl = request.oauth2.accessTokenUrl
+          ? interpolateString(request.oauth2.accessTokenUrl, oauth2InterpolationOptions)
+          : undefined;
+        const refreshTokenUrl = request.oauth2.refreshTokenUrl
+          ? interpolateString(request.oauth2.refreshTokenUrl, oauth2InterpolationOptions)
+          : undefined;
         const oauth2RequestUrl = accessTokenUrl || refreshTokenUrl;
 
         let token;
@@ -560,8 +616,12 @@ const runSingleRequest = async function (
 
           const clientCertificates = get(brunoConfig, 'clientCertificates');
           const proxyConfig = get(brunoConfig, 'proxy');
-          const interpolatedClientCertificates = clientCertificates ? interpolateObject(clientCertificates, oauth2InterpolationOptions) : undefined;
-          const interpolatedProxyConfig = proxyConfig ? interpolateObject(proxyConfig, oauth2InterpolationOptions) : undefined;
+          const interpolatedClientCertificates = clientCertificates
+            ? interpolateObject(clientCertificates, oauth2InterpolationOptions)
+            : undefined;
+          const interpolatedProxyConfig = proxyConfig
+            ? interpolateObject(proxyConfig, oauth2InterpolationOptions)
+            : undefined;
           const systemProxyConfig = cachedSystemProxy;
 
           const { httpAgent: oauth2HttpAgent, httpsAgent: oauth2HttpsAgent } = await getHttpHttpsAgents({
@@ -731,8 +791,8 @@ const runSingleRequest = async function (
     response.responseTime = responseTime;
 
     console.log(
-      chalk.green(stripExtension(relativeItemPathname))
-      + chalk.dim(` (${response.status} ${response.statusText}) - ${responseTime} ms`)
+      chalk.green(stripExtension(relativeItemPathname)) +
+        chalk.dim(` (${response.status} ${response.statusText}) - ${responseTime} ms`)
     );
 
     // Log pre-request test results
@@ -789,7 +849,17 @@ const runSingleRequest = async function (
         logResults(postResponseTestResults, 'Post-Response Tests', SCRIPT_TYPES.POST_RESPONSE, request);
       } catch (error) {
         console.error(chalk.red(`[${relativeItemPathname}] Post-response script error:`));
-        console.log('\n' + formatErrorWithContext(error, relativeItemPathname, SCRIPT_TYPES.POST_RESPONSE, 5, request.script?.resMetadata) + '\n');
+        console.log(
+          '\n' +
+            formatErrorWithContext(
+              error,
+              relativeItemPathname,
+              SCRIPT_TYPES.POST_RESPONSE,
+              5,
+              request.script?.resMetadata
+            ) +
+            '\n'
+        );
 
         const partialResults = error?.partialResults?.results || [];
         postResponseTestResults = [
@@ -866,7 +936,9 @@ const runSingleRequest = async function (
         logResults(testResults, 'Tests', SCRIPT_TYPES.TEST, request);
       } catch (error) {
         console.error(chalk.red(`[${relativeItemPathname}] Test script error:`));
-        console.log('\n' + formatErrorWithContext(error, relativeItemPathname, SCRIPT_TYPES.TEST, 5, request.testsMetadata) + '\n');
+        console.log(
+          '\n' + formatErrorWithContext(error, relativeItemPathname, SCRIPT_TYPES.TEST, 5, request.testsMetadata) + '\n'
+        );
 
         const partialResults = error?.partialResults?.results || [];
         testResults = [

@@ -2,10 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
-import {
-  moveFormUrlEncodedParam,
-  setFormUrlEncodedParams
-} from 'providers/ReduxStore/slices/collections';
+import { moveFormUrlEncodedParam, setFormUrlEncodedParams } from 'providers/ReduxStore/slices/collections';
 import MultiLineEditor from 'components/MultiLineEditor';
 import { sendRequest, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { updateTableColumnWidths } from 'providers/ReduxStore/slices/tabs';
@@ -35,21 +32,31 @@ const FormUrlEncodedParams = ({ item, collection }) => {
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
   const handleRun = () => dispatch(sendRequest(item, collection.uid));
 
-  const handleParamsChange = useCallback((updatedParams) => {
-    dispatch(setFormUrlEncodedParams({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      params: updatedParams
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleParamsChange = useCallback(
+    (updatedParams) => {
+      dispatch(
+        setFormUrlEncodedParams({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          params: updatedParams
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
-  const handleParamDrag = useCallback(({ updateReorderedItem }) => {
-    dispatch(moveFormUrlEncodedParam({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      updateReorderedItem
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleParamDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      dispatch(
+        moveFormUrlEncodedParam({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          updateReorderedItem
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
   const columns = [
     {

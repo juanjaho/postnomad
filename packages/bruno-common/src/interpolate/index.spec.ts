@@ -7,9 +7,9 @@ const calculateAgeFromBirthDate = (birthDate = BRUNO_BIRTH_DATE) => {
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
 
-  const hasBirthdayPassedThisYear
-    = today.getMonth() > birthDate.getMonth()
-      || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+  const hasBirthdayPassedThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
 
   if (!hasBirthdayPassedThisYear) {
     age--;
@@ -25,7 +25,7 @@ describe('interpolate', () => {
     const inputString = 'Hello, my name is {{user.name}} and I am {{user.age}} years old';
     const inputObject = {
       'user.name': 'Bruno',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -51,8 +51,8 @@ describe('interpolate', () => {
   it('should handle all valid keys', () => {
     const inputObject = {
       user: {
-        'full_name': 'Bruno',
-        'age': BRUNO_AGE,
+        full_name: 'Bruno',
+        age: BRUNO_AGE,
         'fav-food': ['egg', 'meat'],
         'want.attention': true
       }
@@ -77,7 +77,7 @@ describe('interpolate', () => {
     const inputString = 'Hello, my name is {{ user.name }} and I am {{user.age}} years old';
     const inputObject = {
       'user.name': 'Bruno',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -92,7 +92,7 @@ describe('interpolate', () => {
     const inputObject = {
       data: {
         'user.name': 'Bruno',
-        'user': {
+        user: {
           name: 'Not _Bruno_',
           age: BRUNO_AGE
         }
@@ -198,7 +198,7 @@ describe('interpolate - recursive', () => {
     const inputObject = {
       'user.message': 'Hello, my name is {{user.name}} and I am {{user.age}} years old',
       'user.name': 'Bruno',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -214,7 +214,7 @@ describe('interpolate - recursive', () => {
       'user.message': 'Hello, my name is {{user.name}} and I am {{user.age}} years old',
       'user.name': 'Bruno {{user.lastName}}',
       'user.lastName': 'Dog',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -231,7 +231,7 @@ describe('interpolate - recursive', () => {
       'user.full_name': '{{user.name}}',
       'user.name': 'Bruno {{user.lastName}}',
       'user.lastName': 'Dog',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -245,7 +245,7 @@ describe('interpolate - recursive', () => {
     const inputString = '{{user.message}}';
     const inputObject = {
       'user.message': 'Hello, my name is {{user.name}} and I am {{user.age}} years old',
-      'user': {
+      user: {
         age: BRUNO_AGE
       }
     };
@@ -265,8 +265,8 @@ describe('interpolate - recursive', () => {
     const inputObject = {
       user: {
         message,
-        'full_name': 'Bruno',
-        'age': BRUNO_AGE,
+        full_name: 'Bruno',
+        age: BRUNO_AGE,
         'fav-food': ['egg', 'meat'],
         'want.attention': true
       }
@@ -471,7 +471,9 @@ describe('interpolate - object handling', () => {
 
     const result = interpolate(inputString, inputObject);
 
-    expect(result).toBe(`User: {"name":"Bruno","age":${BRUNO_AGE},"preferences":{"food":["egg","meat"],"toys":{"favorite":"ball"}}}`);
+    expect(result).toBe(
+      `User: {"name":"Bruno","age":${BRUNO_AGE},"preferences":{"food":["egg","meat"],"toys":{"favorite":"ball"}}}`
+    );
   });
 
   it('should stringify arrays', () => {
@@ -499,7 +501,7 @@ describe('interpolate - object handling', () => {
   it('should handle objects with nested interpolation', () => {
     const inputString = 'User: {{user}}';
     const inputObject = {
-      'user': {
+      user: {
         name: 'Bruno',
         message: '{{user.greeting}}'
       },
@@ -523,7 +525,9 @@ describe('interpolate - object handling', () => {
 
     const result = interpolate(inputString, inputObject);
 
-    expect(result).toBe('Items: [{"id":1,"name":"Toy"},{"id":2,"name":"Bone"},{"id":3,"name":"Ball","colors":["red","blue"]}]');
+    expect(result).toBe(
+      'Items: [{"id":1,"name":"Toy"},{"id":2,"name":"Bone"},{"id":3,"name":"Ball","colors":["red","blue"]}]'
+    );
   });
 });
 

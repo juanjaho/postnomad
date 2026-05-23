@@ -75,21 +75,26 @@ const ResponseLayoutToggle = forwardRef(({ children }, ref) => {
   const { orientation, toggleOrientation } = useResponseLayoutToggle();
   const elementRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    click: () => elementRef.current?.click(),
-    isDisabled: false
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      click: () => elementRef.current?.click(),
+      isDisabled: false
+    }),
+    []
+  );
 
-  const title = !children ? (orientation === 'horizontal' ? 'Switch to vertical layout' : 'Switch to horizontal layout') : null;
+  const title = !children
+    ? orientation === 'horizontal'
+      ? 'Switch to vertical layout'
+      : 'Switch to horizontal layout'
+    : null;
 
   return (
-    <div
-      ref={elementRef}
-      onClick={toggleOrientation}
-      title={title}
-      data-testid="response-layout-toggle-btn"
-    >
-      {children ? children : (
+    <div ref={elementRef} onClick={toggleOrientation} title={title} data-testid="response-layout-toggle-btn">
+      {children ? (
+        children
+      ) : (
         <StyledWrapper className="flex items-center w-full">
           <ActionIcon size="lg" className="p-1">
             {orientation === 'vertical' ? (

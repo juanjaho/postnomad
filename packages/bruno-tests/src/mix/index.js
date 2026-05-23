@@ -18,9 +18,7 @@ router.get('/', function (req, res) {
 
   // Redirect to the specified URL, even if it's not on our domain
   if (redirectUrl) {
-    res.status(statusCode)
-      .set('Location', redirectUrl)
-      .send(`<!doctype html>
+    res.status(statusCode).set('Location', redirectUrl).send(`<!doctype html>
       <title>Redirecting...</title>
       <h1>Redirecting...</h1>
       <p>You should be redirected automatically to target URL: <a href="${redirectUrl}">${redirectUrl}</a>. If not click the link.</p>

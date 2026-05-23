@@ -10,17 +10,11 @@ const convertArrayToObject = (j, arrayValue) => {
   if (arrayValue.type === 'ArrayExpression') {
     arrayValue.elements.forEach((elem) => {
       if (elem.type === 'ObjectExpression') {
-        const keyProp = elem.properties.find((p) => (p.key.name === 'key' || p.key.value === 'key'));
-        const valueProp = elem.properties.find((p) => (p.key.name === 'value' || p.key.value === 'value'));
+        const keyProp = elem.properties.find((p) => p.key.name === 'key' || p.key.value === 'key');
+        const valueProp = elem.properties.find((p) => p.key.name === 'value' || p.key.value === 'value');
 
         if (keyProp && valueProp) {
-          obj.properties.push(
-            j.property(
-              'init',
-              j.literal(keyProp.value.value),
-              valueProp.value
-            )
-          );
+          obj.properties.push(j.property('init', j.literal(keyProp.value.value), valueProp.value));
         }
       }
     });
@@ -37,7 +31,7 @@ const convertArrayToObject = (j, arrayValue) => {
  * @param {string} headerValue - Header value
  */
 const addOrUpdateHeader = (j, requestOptions, headerName, headerValue) => {
-  let headersProp = requestOptions.properties.find((p) => (p.key.name === 'headers' || p.key.value === 'headers'));
+  let headersProp = requestOptions.properties.find((p) => p.key.name === 'headers' || p.key.value === 'headers');
 
   if (!headersProp) {
     headersProp = j.property('init', j.identifier('headers'), j.objectExpression([]));
@@ -47,18 +41,11 @@ const addOrUpdateHeader = (j, requestOptions, headerName, headerValue) => {
   }
 
   // filter out existing header with same name (case-insensitive)
-  headersProp.value.properties = headersProp.value.properties.filter((p) =>
-    p.key.type !== 'Literal'
-    || p.key.value.toLowerCase() !== headerName.toLowerCase()
+  headersProp.value.properties = headersProp.value.properties.filter(
+    (p) => p.key.type !== 'Literal' || p.key.value.toLowerCase() !== headerName.toLowerCase()
   );
 
-  headersProp.value.properties.push(
-    j.property(
-      'init',
-      j.literal(headerName),
-      j.literal(headerValue)
-    )
-  );
+  headersProp.value.properties.push(j.property('init', j.literal(headerName), j.literal(headerValue)));
 };
 
 /**
@@ -96,14 +83,14 @@ const transformBody = (j, requestOptions) => {
     if (prop.key.name === 'body' || prop.key.value === 'body') {
       if (prop.value.type === 'ObjectExpression') {
         const bodyProps = prop.value.properties;
-        const modeProp = bodyProps.find((p) => (p.key.name === 'mode' || p.key.value === 'mode'));
+        const modeProp = bodyProps.find((p) => p.key.name === 'mode' || p.key.value === 'mode');
 
         if (modeProp && modeProp.value.type === 'Literal') {
           const bodyMode = modeProp.value.value;
 
           // Handle raw mode (text, json, xml, etc.)
           if (bodyMode === 'raw') {
-            const rawProp = bodyProps.find((p) => (p.key.name === 'raw' || p.key.value === 'raw'));
+            const rawProp = bodyProps.find((p) => p.key.name === 'raw' || p.key.value === 'raw');
 
             if (rawProp) {
               // Replace body with data
@@ -113,7 +100,9 @@ const transformBody = (j, requestOptions) => {
             }
           } else if (bodyMode === 'urlencoded') {
             // Handle urlencoded mode
-            const urlencodedProp = bodyProps.find((p) => (p.key.name === 'urlencoded' || p.key.value === 'urlencoded') && p.value.type === 'ArrayExpression');
+            const urlencodedProp = bodyProps.find(
+              (p) => (p.key.name === 'urlencoded' || p.key.value === 'urlencoded') && p.value.type === 'ArrayExpression'
+            );
 
             if (urlencodedProp) {
               // Replace the body property with a 'data' property
@@ -128,7 +117,9 @@ const transformBody = (j, requestOptions) => {
             }
           } else if (bodyMode === 'formdata') {
             // Handle formdata mode
-            const formdataProp = bodyProps.find((p) => (p.key.name === 'formdata' || p.key.value === 'formdata') && p.value.type === 'ArrayExpression');
+            const formdataProp = bodyProps.find(
+              (p) => (p.key.name === 'formdata' || p.key.value === 'formdata') && p.value.type === 'ArrayExpression'
+            );
 
             if (formdataProp) {
               // Replace the body property with a 'data' property
@@ -180,40 +171,32 @@ const transformCallback = (j, callback) => {
   };
 
   // Process the callback body to transform response property references
-  j(callbackBody).find(j.MemberExpression, {
-    object: {
-      type: 'Identifier',
-      name: responseVarName
-    }
-  }).forEach((memberPath) => {
-    const property = memberPath.node.property;
+  j(callbackBody)
+    .find(j.MemberExpression, {
+      object: {
+        type: 'Identifier',
+        name: responseVarName
+      }
+    })
+    .forEach((memberPath) => {
+      const property = memberPath.node.property;
 
-    // Handle property access
-    if (property.type === 'Identifier' && responsePropertyMap[property.name]) {
-      const bruProperty = responsePropertyMap[property.name];
-      if (bruProperty) {
-        // Check if memberPath is part of a CallExpression
-        const parentPath = memberPath.parent;
-        if (parentPath && parentPath.node.type === 'CallExpression') {
-          // Replace the entire CallExpression with a property access
-          j(parentPath).replaceWith(
-            j.memberExpression(
-              j.identifier(responseVarName),
-              j.identifier(bruProperty)
-            )
-          );
-        } else {
-          // Regular property access replacement
-          j(memberPath).replaceWith(
-            j.memberExpression(
-              j.identifier(responseVarName),
-              j.identifier(bruProperty)
-            )
-          );
+      // Handle property access
+      if (property.type === 'Identifier' && responsePropertyMap[property.name]) {
+        const bruProperty = responsePropertyMap[property.name];
+        if (bruProperty) {
+          // Check if memberPath is part of a CallExpression
+          const parentPath = memberPath.parent;
+          if (parentPath && parentPath.node.type === 'CallExpression') {
+            // Replace the entire CallExpression with a property access
+            j(parentPath).replaceWith(j.memberExpression(j.identifier(responseVarName), j.identifier(bruProperty)));
+          } else {
+            // Regular property access replacement
+            j(memberPath).replaceWith(j.memberExpression(j.identifier(responseVarName), j.identifier(bruProperty)));
+          }
         }
       }
-    }
-  });
+    });
 
   // Create the callback block
   return j.functionExpression(
@@ -241,26 +224,28 @@ const findAndTransformVariableDeclaration = (j, root, variableName, visited = ne
   let transformedConfig = null;
 
   // Find the variable declaration
-  root.find(j.VariableDeclarator, {
-    id: { name: variableName }
-  }).forEach((declaratorPath) => {
-    const init = declaratorPath.value.init;
+  root
+    .find(j.VariableDeclarator, {
+      id: { name: variableName }
+    })
+    .forEach((declaratorPath) => {
+      const init = declaratorPath.value.init;
 
-    if (init && init.type === 'ObjectExpression') {
-      // Found the actual object expression - clone and transform it
-      const configClone = j(init).at(0).get().value;
+      if (init && init.type === 'ObjectExpression') {
+        // Found the actual object expression - clone and transform it
+        const configClone = j(init).at(0).get().value;
 
-      // Transform headers and body
-      transformHeaders(j, configClone);
-      transformBody(j, configClone);
+        // Transform headers and body
+        transformHeaders(j, configClone);
+        transformBody(j, configClone);
 
-      transformedConfig = configClone;
-    } else if (init && init.type === 'Identifier') {
-      // This variable references another variable - follow the chain
-      const referencedVariableName = init.name;
-      transformedConfig = findAndTransformVariableDeclaration(j, root, referencedVariableName, visited);
-    }
-  });
+        transformedConfig = configClone;
+      } else if (init && init.type === 'Identifier') {
+        // This variable references another variable - follow the chain
+        const referencedVariableName = init.name;
+        transformedConfig = findAndTransformVariableDeclaration(j, root, referencedVariableName, visited);
+      }
+    });
 
   return transformedConfig;
 };
@@ -301,7 +286,10 @@ const sendRequestTransformer = (path, j) => {
     const transformedCallback = transformCallback(j, callback);
 
     // Add async keyword to the callback function
-    if (transformedCallback && (transformedCallback.type === 'FunctionExpression' || transformedCallback.type === 'ArrowFunctionExpression')) {
+    if (
+      transformedCallback &&
+      (transformedCallback.type === 'FunctionExpression' || transformedCallback.type === 'ArrowFunctionExpression')
+    ) {
       transformedCallback.async = true;
     }
 
@@ -315,10 +303,7 @@ const sendRequestTransformer = (path, j) => {
   }
 
   // If there's no callback, just transform to await bru.sendRequest
-  const sendRequestCall = j.callExpression(
-    j.identifier('bru.sendRequest'),
-    [requestOptions]
-  );
+  const sendRequestCall = j.callExpression(j.identifier('bru.sendRequest'), [requestOptions]);
 
   return wasAwaited ? sendRequestCall : j.awaitExpression(sendRequestCall);
 };

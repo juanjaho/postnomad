@@ -24,9 +24,7 @@ const GrpcAuth = ({ item, collection }) => {
   const authMode = item.draft ? get(item, 'draft.request.auth.mode') : get(item, 'request.auth.mode');
   const requestTreePath = getTreePathFromCollectionToItem(collection, item);
 
-  const request = item.draft
-    ? get(item, 'draft.request', {})
-    : get(item, 'request', {});
+  const request = item.draft ? get(item, 'draft.request', {}) : get(item, 'request', {});
 
   const save = () => {
     return saveRequest(item.uid, collection.uid);
@@ -123,11 +121,7 @@ const GrpcAuth = ({ item, collection }) => {
     }
   };
 
-  return (
-    <StyledWrapper className="w-full overflow-y-scroll">
-      {getAuthView()}
-    </StyledWrapper>
-  );
+  return <StyledWrapper className="w-full overflow-y-scroll">{getAuthView()}</StyledWrapper>;
 };
 
 export default GrpcAuth;

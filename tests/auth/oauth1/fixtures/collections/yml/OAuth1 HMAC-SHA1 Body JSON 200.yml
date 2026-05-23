@@ -5,10 +5,10 @@ info:
 
 http:
   method: POST
-  url: "{{localhost}}/api/auth/oauth1/resource"
+  url: '{{localhost}}/api/auth/oauth1/resource'
   body:
     type: json
-    data: ""
+    data: ''
   auth:
     type: oauth1
     consumerKey: consumer_key_1
@@ -16,7 +16,7 @@ http:
     accessToken: access_token_1
     accessTokenSecret: token_secret_1
     signatureMethod: HMAC-SHA1
-    version: "1.0"
+    version: '1.0'
     placement: body
     includeBodyHash: false
 
@@ -24,7 +24,7 @@ runtime:
   assertions:
     - expression: res.status
       operator: eq
-      value: "200"
+      value: '200'
     - expression: res.body.resource.name
       operator: eq
       value: oauth1-test-resource

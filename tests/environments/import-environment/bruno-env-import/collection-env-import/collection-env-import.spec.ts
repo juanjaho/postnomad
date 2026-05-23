@@ -59,7 +59,10 @@ test.describe.serial('Collection Environment Import Tests', () => {
   });
 
   test('should import multiple collection environments', async ({ pageWithUserData: page }) => {
-    const multiEnvFile = path.join(__dirname, '../../../fixtures/environment-exports/bruno-collection-environments.json');
+    const multiEnvFile = path.join(
+      __dirname,
+      '../../../fixtures/environment-exports/bruno-collection-environments.json'
+    );
     const collectionPath = path.join(__dirname, 'fixtures/collection');
     const environmentsPath = path.join(collectionPath, 'environments');
 

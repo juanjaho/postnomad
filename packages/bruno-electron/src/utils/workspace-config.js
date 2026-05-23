@@ -90,24 +90,26 @@ const sanitizeCollections = (collections) => {
     return [];
   }
 
-  return collections.filter((collection) => {
-    if (!isValidCollectionEntry(collection)) {
-      console.error('Skipping invalid collection entry:', collection);
-      return false;
-    }
-    return true;
-  }).map((collection) => {
-    const sanitized = {
-      name: collection.name.trim(),
-      path: posixifyPath(collection.path.trim())
-    };
+  return collections
+    .filter((collection) => {
+      if (!isValidCollectionEntry(collection)) {
+        console.error('Skipping invalid collection entry:', collection);
+        return false;
+      }
+      return true;
+    })
+    .map((collection) => {
+      const sanitized = {
+        name: collection.name.trim(),
+        path: posixifyPath(collection.path.trim())
+      };
 
-    if (collection.remote && typeof collection.remote === 'string') {
-      sanitized.remote = collection.remote.trim();
-    }
+      if (collection.remote && typeof collection.remote === 'string') {
+        sanitized.remote = collection.remote.trim();
+      }
 
-    return sanitized;
-  });
+      return sanitized;
+    });
 };
 
 const sanitizeSpecs = (specs) => {
@@ -115,16 +117,18 @@ const sanitizeSpecs = (specs) => {
     return [];
   }
 
-  return specs.filter((spec) => {
-    if (!isValidSpecEntry(spec)) {
-      console.error('Skipping invalid spec entry:', spec);
-      return false;
-    }
-    return true;
-  }).map((spec) => ({
-    name: spec.name.trim(),
-    path: posixifyPath(spec.path.trim())
-  }));
+  return specs
+    .filter((spec) => {
+      if (!isValidSpecEntry(spec)) {
+        console.error('Skipping invalid spec entry:', spec);
+        return false;
+      }
+      return true;
+    })
+    .map((spec) => ({
+      name: spec.name.trim(),
+      path: posixifyPath(spec.path.trim())
+    }));
 };
 
 const makeRelativePath = (workspacePath, absolutePath) => {
@@ -266,12 +270,10 @@ const generateYamlContent = (config) => {
 
   const docs = config.docs || '';
   if (docs) {
-    const escapedDocs = docs.includes('\n')
-      ? `|-\n  ${docs.split('\n').join('\n  ')}`
-      : quoteYamlValue(docs);
+    const escapedDocs = docs.includes('\n') ? `|-\n  ${docs.split('\n').join('\n  ')}` : quoteYamlValue(docs);
     yamlLines.push(`docs: ${escapedDocs}`);
   } else {
-    yamlLines.push('docs: \'\'');
+    yamlLines.push("docs: ''");
   }
 
   yamlLines.push('');
@@ -348,7 +350,9 @@ const addCollectionToWorkspace = async (workspacePath, collection) => {
       normalizedCollection.remote = collection.remote.trim();
     }
 
-    const existingIndex = config.collections.findIndex((c) => c.path && posixifyPath(c.path) === normalizedCollection.path);
+    const existingIndex = config.collections.findIndex(
+      (c) => c.path && posixifyPath(c.path) === normalizedCollection.path
+    );
 
     if (existingIndex >= 0) {
       config.collections[existingIndex] = normalizedCollection;
@@ -363,9 +367,7 @@ const addCollectionToWorkspace = async (workspacePath, collection) => {
 };
 
 const getCollectionGitignoreEntry = (workspacePath, collectionPath) => {
-  const absolute = path.isAbsolute(collectionPath)
-    ? collectionPath
-    : path.resolve(workspacePath, collectionPath);
+  const absolute = path.isAbsolute(collectionPath) ? collectionPath : path.resolve(workspacePath, collectionPath);
   const relative = path.relative(workspacePath, absolute);
   if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) return null;
   return posixifyPath(relative).replace(/\/+$/, '') + '/';
@@ -400,7 +402,10 @@ const addCollectionToWorkspaceGitignore = async (workspacePath, collectionPath) 
   }
 
   const prefix = existing.length === 0 || existing.endsWith('\n') ? existing : existing + '\n';
-  await writeFile(gitignorePath, `${prefix}${GITIGNORE_MANAGED_BLOCK_START}\n${entry}\n${GITIGNORE_MANAGED_BLOCK_END}\n`);
+  await writeFile(
+    gitignorePath,
+    `${prefix}${GITIGNORE_MANAGED_BLOCK_START}\n${entry}\n${GITIGNORE_MANAGED_BLOCK_END}\n`
+  );
 };
 
 const removeCollectionFromWorkspaceGitignore = async (workspacePath, collectionPath) => {
@@ -420,15 +425,8 @@ const removeCollectionFromWorkspaceGitignore = async (workspacePath, collectionP
 
   const hasManagedEntries = filteredManagedLines.some((line) => line.trim() !== '');
   const filtered = hasManagedEntries
-    ? [
-        ...lines.slice(0, managedBlock.start + 1),
-        ...filteredManagedLines,
-        ...lines.slice(managedBlock.end)
-      ]
-    : [
-        ...lines.slice(0, managedBlock.start),
-        ...lines.slice(managedBlock.end + 1)
-      ];
+    ? [...lines.slice(0, managedBlock.start + 1), ...filteredManagedLines, ...lines.slice(managedBlock.end)]
+    : [...lines.slice(0, managedBlock.start), ...lines.slice(managedBlock.end + 1)];
 
   await writeFile(gitignorePath, filtered.join('\n'));
 };
@@ -563,9 +561,7 @@ const resolveAndFilterWorkspaceCollections = (workspacePath, rawCollections) => 
     .map((collection) => {
       if (!collection.path) return collection;
       const collectionPath = posixifyPath(collection.path);
-      const absolute = path.isAbsolute(collectionPath)
-        ? collectionPath
-        : path.resolve(workspacePath, collectionPath);
+      const absolute = path.isAbsolute(collectionPath) ? collectionPath : path.resolve(workspacePath, collectionPath);
       return { ...collection, path: absolute };
     })
     .map((collection) => {

@@ -18,16 +18,16 @@ const StyledWrapper = styled.div`
   }
 
   .diff-header-pane {
-     flex: 1;
-      padding: 0.5rem 0.75rem;
-      font-size: ${(props) => props.theme.font.size.xs};
-      font-weight: 600;
-      color: ${(props) => props.theme.colors.text.muted};
-      text-transform: uppercase;
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: ${(props) => props.theme.font.size.xs};
+    font-weight: 600;
+    color: ${(props) => props.theme.colors.text.muted};
+    text-transform: uppercase;
 
-      &.old {
-        border-right: 1px solid ${(props) => props.theme.border.border1};
-      }
+    &.old {
+      border-right: 1px solid ${(props) => props.theme.border.border1};
+    }
   }
 
   .diff-sections {
@@ -198,14 +198,13 @@ const StyledWrapper = styled.div`
     }
   }
 
-
-
   .diff-table {
     width: 100%;
     border-collapse: collapse;
     font-size: ${(props) => props.theme.font.size.xs};
 
-    th, td {
+    th,
+    td {
       padding: 0.375rem 0.5rem;
       text-align: left;
       border-bottom: 1px solid ${(props) => props.theme.border.border1};

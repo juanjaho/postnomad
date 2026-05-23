@@ -37,7 +37,7 @@ const parseDataFromResponse = (response, disableParsingResponseJson = false) => 
     if (!disableParsingResponseJson) {
       data = JSON.parse(data);
     }
-  } catch { }
+  } catch {}
 
   return { data, dataBuffer };
 };

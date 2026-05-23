@@ -170,15 +170,17 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
 
         // will need to handle import from grpcurl command when we support it, now it is just for creating new requests
       } else if (isWsRequest) {
-        dispatch(newWsRequest({
-          requestName: values.requestName,
-          requestMethod: values.requestMethod,
-          filename: filename,
-          requestType: values.requestType,
-          requestUrl: values.requestUrl,
-          collectionUid: collection.uid,
-          itemUid: item ? item.uid : null
-        }))
+        dispatch(
+          newWsRequest({
+            requestName: values.requestName,
+            requestMethod: values.requestMethod,
+            filename: filename,
+            requestType: values.requestType,
+            requestUrl: values.requestUrl,
+            collectionUid: collection.uid,
+            itemUid: item ? item.uid : null
+          })
+        )
           .then(() => {
             toast.success('New request created!');
             onClose();
@@ -313,10 +315,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
     <Portal>
       <StyledWrapper>
         <Modal size="md" title="New Request" hideFooter handleCancel={onClose}>
-          <form
-            className="bruno-form"
-            onSubmit={formik.handleSubmit}
-          >
+          <form className="bruno-form" onSubmit={formik.handleSubmit}>
             <div>
               <label htmlFor="requestName" className="block font-medium">
                 Type
@@ -475,7 +474,9 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                       value={formik.values.filename || ''}
                       data-testid="file-name"
                     />
-                    <span className="absolute right-2 top-4 flex justify-center items-center file-extension">.{collection.format}</span>
+                    <span className="absolute right-2 top-4 flex justify-center items-center file-extension">
+                      .{collection.format}
+                    </span>
                   </div>
                 ) : (
                   <div className="relative flex flex-row gap-1 items-center justify-between">
@@ -568,8 +569,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                   value={formik.values.curlCommand}
                   onChange={handleCurlCommandChange}
                   data-testid="curl-command"
-                >
-                </textarea>
+                ></textarea>
                 {formik.touched.curlCommand && formik.errors.curlCommand ? (
                   <div className="text-red-500">{formik.errors.curlCommand}</div>
                 ) : null}

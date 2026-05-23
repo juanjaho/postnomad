@@ -2,7 +2,10 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
 import get from 'lodash/get';
-import { moveResponseExampleRequestHeader, setResponseExampleRequestHeaders } from 'providers/ReduxStore/slices/collections';
+import {
+  moveResponseExampleRequestHeader,
+  setResponseExampleRequestHeaders
+} from 'providers/ReduxStore/slices/collections';
 import { updateTableColumnWidths } from 'providers/ReduxStore/slices/tabs';
 import EditableTable from 'components/EditableTable';
 import SingleLineEditor from 'components/SingleLineEditor';
@@ -34,27 +37,37 @@ const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
       : get(item, 'examples', []).find((e) => e.uid === exampleUid)?.request?.headers || [];
   }, [item, exampleUid]);
 
-  const handleHeadersChange = useCallback((updatedHeaders) => {
-    if (editMode) {
-      dispatch(setResponseExampleRequestHeaders({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        headers: updatedHeaders
-      }));
-    }
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid]);
+  const handleHeadersChange = useCallback(
+    (updatedHeaders) => {
+      if (editMode) {
+        dispatch(
+          setResponseExampleRequestHeaders({
+            itemUid: item.uid,
+            collectionUid: collection.uid,
+            exampleUid: exampleUid,
+            headers: updatedHeaders
+          })
+        );
+      }
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid]
+  );
 
-  const handleHeaderDrag = useCallback(({ updateReorderedItem }) => {
-    if (editMode) {
-      dispatch(moveResponseExampleRequestHeader({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        updateReorderedItem
-      }));
-    }
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid]);
+  const handleHeaderDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      if (editMode) {
+        dispatch(
+          moveResponseExampleRequestHeader({
+            itemUid: item.uid,
+            collectionUid: collection.uid,
+            exampleUid: exampleUid,
+            updateReorderedItem
+          })
+        );
+      }
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid]
+  );
 
   const toggleBulkEditMode = () => {
     setIsBulkEditMode(!isBulkEditMode);
@@ -62,12 +75,14 @@ const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
 
   const handleBulkHeadersChange = (newHeaders) => {
     if (editMode) {
-      dispatch(setResponseExampleRequestHeaders({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        headers: newHeaders
-      }));
+      dispatch(
+        setResponseExampleRequestHeaders({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          headers: newHeaders
+        })
+      );
     }
   };
 
@@ -126,11 +141,7 @@ const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
   if (isBulkEditMode && editMode) {
     return (
       <StyledWrapper className="w-full mt-3">
-        <BulkEditor
-          params={headers}
-          onChange={handleBulkHeadersChange}
-          onToggle={toggleBulkEditMode}
-        />
+        <BulkEditor params={headers} onChange={handleBulkHeadersChange} onToggle={toggleBulkEditMode} />
       </StyledWrapper>
     );
   }
@@ -158,10 +169,7 @@ const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
       />
       {editMode && (
         <div className="flex justify-end mt-2">
-          <button
-            className="btn-action text-link select-none"
-            onClick={toggleBulkEditMode}
-          >
+          <button className="btn-action text-link select-none" onClick={toggleBulkEditMode}>
             Bulk Edit
           </button>
         </div>

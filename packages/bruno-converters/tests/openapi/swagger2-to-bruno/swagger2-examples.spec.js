@@ -23,9 +23,7 @@ describe('swagger2-to-bruno response examples', () => {
             summary: 'Find pet by ID',
             operationId: 'getPetById',
             produces: ['application/json'],
-            parameters: [
-              { in: 'path', name: 'petId', type: 'integer', required: true }
-            ],
+            parameters: [{ in: 'path', name: 'petId', type: 'integer', required: true }],
             responses: {
               200: {
                 description: 'successful operation',

@@ -559,11 +559,13 @@ describe('prepare-request: prepareRequest', () => {
           url: 'https://example.com/upload',
           body: {
             mode: 'file',
-            file: [{
-              contentType: 'text/plain',
-              filePath: '/path/to/file.txt',
-              selected: true
-            }]
+            file: [
+              {
+                contentType: 'text/plain',
+                filePath: '/path/to/file.txt',
+                selected: true
+              }
+            ]
           }
         }
       };
@@ -590,11 +592,13 @@ describe('prepare-request: prepareRequest', () => {
           url: 'https://example.com/upload',
           body: {
             mode: 'file',
-            file: [{
-              contentType: 'application/octet-stream',
-              filePath: '/path/to/large-file.bin',
-              selected: true
-            }]
+            file: [
+              {
+                contentType: 'application/octet-stream',
+                filePath: '/path/to/large-file.bin',
+                selected: true
+              }
+            ]
           }
         }
       };

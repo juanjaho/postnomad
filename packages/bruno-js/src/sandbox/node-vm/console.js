@@ -17,7 +17,7 @@ function getTypeTag(value) {
  */
 function transformValue(value, seen = new WeakSet()) {
   // Return primitives as-is
-  if (value === null || value === undefined || typeof value !== 'object' && typeof value !== 'function') {
+  if (value === null || value === undefined || (typeof value !== 'object' && typeof value !== 'function')) {
     return value;
   }
 
@@ -41,10 +41,7 @@ function transformValue(value, seen = new WeakSet()) {
   if (typeTag === 'Map') {
     return {
       __brunoType: 'Map',
-      __brunoValue: Array.from(value.entries()).map(([k, v]) => [
-        transformValue(k, seen),
-        transformValue(v, seen)
-      ])
+      __brunoValue: Array.from(value.entries()).map(([k, v]) => [transformValue(k, seen), transformValue(v, seen)])
     };
   }
 

@@ -253,7 +253,9 @@ for (const mode of ['safe', 'developer'] as const) {
       });
     });
 
-    test('11. Request file-path navigation opens Script tab for pre-request error', async ({ pageWithUserData: page }) => {
+    test('11. Request file-path navigation opens Script tab for pre-request error', async ({
+      pageWithUserData: page
+    }) => {
       await test.step('Open request and trigger error', async () => {
         await openRequest(page, 'script-errors-test', 'pre-request-ref-error');
         await sendAndWaitForErrorCard(page);
@@ -326,7 +328,9 @@ for (const mode of ['safe', 'developer'] as const) {
       });
     });
 
-    test('14. Post-response file-path navigation opens Script tab with Post Response sub-tab', async ({ pageWithUserData: page }) => {
+    test('14. Post-response file-path navigation opens Script tab with Post Response sub-tab', async ({
+      pageWithUserData: page
+    }) => {
       await test.step('Open request and trigger post-response error', async () => {
         await openRequest(page, 'script-errors-test', 'post-response-type-error');
         await sendAndWaitForResponse(page);

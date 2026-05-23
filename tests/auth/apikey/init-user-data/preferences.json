@@ -1,7 +1,5 @@
 {
-  "lastOpenedCollections": [
-    "{{collectionPath}}/apikey-auth-mode-test"
-  ],
+  "lastOpenedCollections": ["{{collectionPath}}/apikey-auth-mode-test"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

@@ -95,7 +95,9 @@ const Wrapper = styled.div`
       color: ${(props) => props.theme.modal.title.color};
       border-radius: ${(props) => props.theme.border.radius.sm};
       opacity: 0.7;
-      transition: opacity 0.2s ease, background-color 0.2s ease;
+      transition:
+        opacity 0.2s ease,
+        background-color 0.2s ease;
 
       &:hover {
         opacity: 1;
@@ -185,7 +187,6 @@ const Wrapper = styled.div`
   input[type='checkbox'] {
     cursor: pointer;
     accent-color: ${(props) => props.theme.primary.solid};
-
   }
 
   .checkbox {

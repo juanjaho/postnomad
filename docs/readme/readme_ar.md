@@ -41,7 +41,6 @@
 
 ![bruno](/assets/images/landing-2.png) <br /><br />
 
-
 ### التثبيت
 
 برونو متاح كتنزيل ثنائي [على موقعنا على الويب](https://www.usebruno.com/downloads) لأنظمة التشغيل Mac و Windows و Linux.

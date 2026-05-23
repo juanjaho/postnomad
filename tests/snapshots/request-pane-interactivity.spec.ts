@@ -1,12 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { test, expect, closeElectronApp } from '../../playwright';
-import {
-  createCollection,
-  openRequest,
-  selectRequestPaneTab,
-  waitForReadyPage
-} from '../utils/page';
+import { createCollection, openRequest, selectRequestPaneTab, waitForReadyPage } from '../utils/page';
 import { buildCommonLocators } from '../utils/page/locators';
 
 const readSnapshot = (userDataPath: string) => {
@@ -23,11 +18,12 @@ const findSnapshotRequestTab = (snapshot: any, requestName: string) => {
   for (const collection of snapshot.collections) {
     if (!Array.isArray(collection?.tabs)) continue;
 
-    const tab = collection.tabs.find((candidate) => (
-      candidate?.accessor === 'pathname'
-      && typeof candidate?.pathname === 'string'
-      && candidate.pathname.includes(requestName)
-    ));
+    const tab = collection.tabs.find(
+      (candidate) =>
+        candidate?.accessor === 'pathname' &&
+        typeof candidate?.pathname === 'string' &&
+        candidate.pathname.includes(requestName)
+    );
 
     if (tab) {
       return tab;
@@ -85,7 +81,10 @@ test.describe('Snapshot: Request Pane Interactivity', () => {
     });
   });
 
-  test('websocket request pane tab interactivity is restored after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('websocket request pane tab interactivity is restored after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-ws-interactivity');
     const colPath = await createTmpDir('col');
 

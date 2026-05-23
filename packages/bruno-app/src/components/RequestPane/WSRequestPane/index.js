@@ -26,10 +26,12 @@ const WSRequestPane = ({ item, collection, handleRun }) => {
 
   const selectTab = useCallback(
     (tab) => {
-      dispatch(updateRequestPaneTab({
-        uid: item.uid,
-        requestPaneTab: tab
-      }));
+      dispatch(
+        updateRequestPaneTab({
+          uid: item.uid,
+          requestPaneTab: tab
+        })
+      );
     },
     [dispatch, item.uid]
   );
@@ -50,7 +52,8 @@ const WSRequestPane = ({ item, collection, handleRun }) => {
       {
         key: 'headers',
         label: 'Headers',
-        indicator: activeHeadersLength > 0 ? <sup className="ml-[.125rem] font-medium">{activeHeadersLength}</sup> : null
+        indicator:
+          activeHeadersLength > 0 ? <sup className="ml-[.125rem] font-medium">{activeHeadersLength}</sup> : null
       },
       {
         key: 'auth',
@@ -105,11 +108,12 @@ const WSRequestPane = ({ item, collection, handleRun }) => {
     return <div className="pb-4 px-4">An error occurred!</div>;
   }
 
-  const rightContent = requestPaneTab === 'auth' ? (
-    <div ref={rightContentRef} className="flex flex-grow justify-start items-center">
-      <WSAuthMode item={item} collection={collection} />
-    </div>
-  ) : null;
+  const rightContent =
+    requestPaneTab === 'auth' ? (
+      <div ref={rightContentRef} className="flex flex-grow justify-start items-center">
+        <WSAuthMode item={item} collection={collection} />
+      </div>
+    ) : null;
 
   return (
     <StyledWrapper className="flex flex-col h-full relative">

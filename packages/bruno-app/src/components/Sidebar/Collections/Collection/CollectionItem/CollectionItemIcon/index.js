@@ -4,7 +4,11 @@ import StyledWrapper from './StyledWrapper';
 
 const CollectionItemIcon = ({ item }) => {
   if (item?.error) {
-    return <StyledWrapper><IconAlertCircle className="w-fit mr-2 error" size={18} strokeWidth={1.5} /></StyledWrapper>;
+    return (
+      <StyledWrapper>
+        <IconAlertCircle className="w-fit mr-2 error" size={18} strokeWidth={1.5} />
+      </StyledWrapper>
+    );
   }
 
   if (item?.loading) {
@@ -12,7 +16,11 @@ const CollectionItemIcon = ({ item }) => {
   }
 
   if (item?.partial) {
-    return <StyledWrapper><IconAlertTriangle size={18} className="w-fit mr-2 partial" strokeWidth={1.5} /></StyledWrapper>;
+    return (
+      <StyledWrapper>
+        <IconAlertTriangle size={18} className="w-fit mr-2 partial" strokeWidth={1.5} />
+      </StyledWrapper>
+    );
   }
 
   return <RequestMethod item={item} />;

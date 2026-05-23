@@ -26,7 +26,7 @@ const SubMenuItem = ({
   });
 
   const itemProps = getMenuItemProps(item, {
-    'className': 'has-submenu',
+    className: 'has-submenu',
     'aria-haspopup': 'true',
     'aria-expanded': submenuOpen,
     'aria-current': undefined // submenu triggers don't need aria-current
@@ -54,9 +54,7 @@ const SubMenuItem = ({
         appendTo={() => document.body}
         offset={[0, 0]}
       >
-        <div {...itemProps}>
-          {renderMenuItemContent(item, arrowElement)}
-        </div>
+        <div {...itemProps}>{renderMenuItemContent(item, arrowElement)}</div>
       </MenuDropdownComponent>
     </div>
   );

@@ -104,15 +104,11 @@ const Themes = () => {
         <div className="section-divider" />
 
         {storedTheme === 'light' && (
-          <>
-            {renderThemeVariants(lightThemes, themeVariantLight, setThemeVariantLight, 'Light Theme')}
-          </>
+          <>{renderThemeVariants(lightThemes, themeVariantLight, setThemeVariantLight, 'Light Theme')}</>
         )}
 
         {storedTheme === 'dark' && (
-          <>
-            {renderThemeVariants(darkThemes, themeVariantDark, setThemeVariantDark, 'Dark Theme')}
-          </>
+          <>{renderThemeVariants(darkThemes, themeVariantDark, setThemeVariantDark, 'Dark Theme')}</>
         )}
 
         {storedTheme === 'system' && (

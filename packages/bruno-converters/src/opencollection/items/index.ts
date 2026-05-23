@@ -3,9 +3,7 @@ import { fromOpenCollectionHttpItem, toOpenCollectionHttpItem } from './http';
 import { fromOpenCollectionGraphqlItem, toOpenCollectionGraphqlItem } from './graphql';
 import { fromOpenCollectionGrpcItem, toOpenCollectionGrpcItem } from './grpc';
 import { fromOpenCollectionWebsocketItem, toOpenCollectionWebsocketItem } from './websocket';
-import type {
-  BrunoItem
-} from '../types';
+import type { BrunoItem } from '../types';
 
 interface OCItem {
   info?: {
@@ -53,7 +51,10 @@ const getItemType = (item: OCItem): string => {
   return 'unknown';
 };
 
-export const fromOpenCollectionItem = (item: unknown, parseFolder: (folder: unknown) => BrunoItem): BrunoItem | null => {
+export const fromOpenCollectionItem = (
+  item: unknown,
+  parseFolder: (folder: unknown) => BrunoItem
+): BrunoItem | null => {
   const ocItem = item as OCItem;
   const itemType = getItemType(ocItem);
 
@@ -82,7 +83,10 @@ export const fromOpenCollectionItem = (item: unknown, parseFolder: (folder: unkn
   }
 };
 
-export const toOpenCollectionItem = (item: BrunoItem, stringifyFolder: (folder: BrunoItem) => unknown): unknown | null => {
+export const toOpenCollectionItem = (
+  item: BrunoItem,
+  stringifyFolder: (folder: BrunoItem) => unknown
+): unknown | null => {
   switch (item.type) {
     case 'http-request':
       return toOpenCollectionHttpItem(item);
@@ -107,13 +111,19 @@ export const toOpenCollectionItem = (item: BrunoItem, stringifyFolder: (folder: 
   }
 };
 
-export const fromOpenCollectionItems = (items: unknown[] | undefined, parseFolder: (folder: unknown) => BrunoItem): BrunoItem[] => {
+export const fromOpenCollectionItems = (
+  items: unknown[] | undefined,
+  parseFolder: (folder: unknown) => BrunoItem
+): BrunoItem[] => {
   return (items || [])
     .map((item) => fromOpenCollectionItem(item, parseFolder))
     .filter((item): item is BrunoItem => item !== null);
 };
 
-export const toOpenCollectionItems = (items: BrunoItem[] | undefined | null, stringifyFolder: (folder: BrunoItem) => unknown): unknown[] => {
+export const toOpenCollectionItems = (
+  items: BrunoItem[] | undefined | null,
+  stringifyFolder: (folder: BrunoItem) => unknown
+): unknown[] => {
   return (items || [])
     .map((item) => toOpenCollectionItem(item, stringifyFolder))
     .filter((item): item is unknown => item !== null);

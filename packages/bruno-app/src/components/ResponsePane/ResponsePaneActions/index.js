@@ -1,6 +1,14 @@
 import React, { forwardRef, useRef } from 'react';
 import styled from 'styled-components';
-import { IconDots, IconDownload, IconEraser, IconBookmark, IconCopy, IconLayoutColumns, IconLayoutRows } from '@tabler/icons';
+import {
+  IconDots,
+  IconDownload,
+  IconEraser,
+  IconBookmark,
+  IconCopy,
+  IconLayoutColumns,
+  IconLayoutRows
+} from '@tabler/icons';
 import MenuDropdown from 'ui/MenuDropdown';
 import ResponseDownload from '../ResponseDownload';
 import ResponseBookmark from '../ResponseBookmark';
@@ -26,11 +34,7 @@ const StyledMenuIcon = styled.button`
 `;
 
 const MenuIcon = forwardRef((props, ref) => (
-  <StyledMenuIcon
-    ref={ref}
-    title="More actions"
-    {...props}
-  >
+  <StyledMenuIcon ref={ref} title="More actions" {...props}>
     <IconDots size={16} strokeWidth={1.5} />
   </StyledMenuIcon>
 ));
@@ -162,7 +166,9 @@ const ResponsePaneActions = ({ item, collection, responseSize, selectedFormat, s
           data={data}
           dataBuffer={dataBuffer}
         />
-        {item.type !== 'graphql-request' && <ResponseBookmark ref={bookmarkButtonRef} item={item} collection={collection} responseSize={responseSize} />}
+        {item.type !== 'graphql-request' && (
+          <ResponseBookmark ref={bookmarkButtonRef} item={item} collection={collection} responseSize={responseSize} />
+        )}
         <ResponseDownload ref={downloadButtonRef} item={item} />
         <ResponseClear ref={clearButtonRef} item={item} collection={collection} />
         <ResponseLayoutToggle ref={layoutToggleButtonRef} />

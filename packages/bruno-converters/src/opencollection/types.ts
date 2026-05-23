@@ -77,10 +77,7 @@ export type { RequestDefaults, RequestSettings } from '@opencollection/types/com
 export type { Documentation } from '@opencollection/types/common/documentation';
 export type { Description } from '@opencollection/types/common/description';
 export type { Info, Author } from '@opencollection/types/common/info';
-export type {
-  Variable,
-  VariableValueVariant
-} from '@opencollection/types/common/variables';
+export type { Variable, VariableValueVariant } from '@opencollection/types/common/variables';
 export type { Scripts } from '@opencollection/types/common/scripts';
 export type { Assertion } from '@opencollection/types/common/assertions';
 export type { Tag } from '@opencollection/types/common/tags';
@@ -144,7 +141,10 @@ export type {
   AuthOauth1 as BrunoAuthOauth1,
   OAuth2 as BrunoOAuth2
 } from '@usebruno/schema-types/common/auth';
-export type { MultipartFormEntry as BrunoMultipartFormEntry, MultipartForm as BrunoMultipartForm } from '@usebruno/schema-types/common/multipart-form';
+export type {
+  MultipartFormEntry as BrunoMultipartFormEntry,
+  MultipartForm as BrunoMultipartForm
+} from '@usebruno/schema-types/common/multipart-form';
 export type { FileEntry as BrunoFileEntry, FileList as BrunoFileList } from '@usebruno/schema-types/common/file';
 export type { GraphqlBody as BrunoGraphqlBody } from '@usebruno/schema-types/common/graphql';
 

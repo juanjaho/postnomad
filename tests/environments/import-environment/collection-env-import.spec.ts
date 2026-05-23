@@ -30,7 +30,8 @@ test.describe('Collection Environment Import Tests', () => {
     await locationModal.waitFor({ state: 'hidden' });
 
     await expect(
-      page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' })).toBeVisible({ timeout: 10000 });
+      page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' })
+    ).toBeVisible({ timeout: 10000 });
 
     // Configure collection
     await page.locator('#sidebar-collection-name').filter({ hasText: 'Environment Test Collection' }).click();
@@ -63,7 +64,7 @@ test.describe('Collection Environment Import Tests', () => {
     await expect(envNameInputs.nth(2)).toHaveValue('apiKey');
 
     // Scroll the virtualized table to reveal remaining rows
-    await page.locator('.table-container').evaluate((el) => el.scrollTop = el.scrollHeight);
+    await page.locator('.table-container').evaluate((el) => (el.scrollTop = el.scrollHeight));
     await page.waitForTimeout(500);
 
     await expect(page.locator('input[name$=".name"][value="postTitle"]')).toBeVisible();

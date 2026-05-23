@@ -53,16 +53,13 @@ const VisualDiffContent = ({
   if (!oldData && !newData) {
     return (
       <StyledWrapper>
-        <div className="empty-state">
-          No content to display
-        </div>
+        <div className="empty-state">No content to display</div>
       </StyledWrapper>
     );
   }
 
   return (
     <StyledWrapper>
-
       <div className="visual-diff-content">
         <div className="diff-header-row">
           <div className="diff-header-pane old">{oldLabel}</div>
@@ -91,12 +88,8 @@ const VisualDiffContent = ({
                 onToggle={() => toggleSection(key)}
                 hasOldContent={hasOld}
                 hasNewContent={hasNew}
-                oldContent={
-                  <Component oldData={oldData} newData={newData} showSide="old" />
-                }
-                newContent={
-                  <Component oldData={oldData} newData={newData} showSide="new" />
-                }
+                oldContent={<Component oldData={oldData} newData={newData} showSide="old" />}
+                newContent={<Component oldData={oldData} newData={newData} showSide="new" />}
               />
             );
           })}

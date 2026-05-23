@@ -205,8 +205,8 @@ const EnvironmentSelector = ({ collection }) => {
   const hideDropdown = () => dropdownTippyRef.current?.hide();
 
   const handleEnvironmentSelect = (environment) => {
-    const action
-      = activeTab === 'collection'
+    const action =
+      activeTab === 'collection'
         ? selectEnvironment(environment?.uid || null, collection.uid)
         : selectGlobalEnvironment({ environmentUid: environment?.uid || null });
 

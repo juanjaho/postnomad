@@ -15,7 +15,7 @@ import ActionIcon from 'ui/ActionIcon/index';
 
 const getTitleText = ({ isResponseTooLarge, isStreamingResponse }) => {
   if (isStreamingResponse) {
-    return 'Response Examples aren\'t supported in streaming responses yet.';
+    return "Response Examples aren't supported in streaming responses yet.";
   }
 
   if (isResponseTooLarge) {
@@ -35,10 +35,14 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
   const isStreamingResponse = response.stream;
   const isDisabled = isResponseTooLarge || isStreamingResponse ? true : false;
 
-  useImperativeHandle(ref, () => ({
-    click: () => elementRef.current?.click(),
-    isDisabled
-  }), [isDisabled]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      click: () => elementRef.current?.click(),
+      isDisabled
+    }),
+    [isDisabled]
+  );
 
   // Only show for HTTP requests
   if (item.type !== 'http-request') {
@@ -71,13 +75,14 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
 
   const saveAsExample = async (name, description = '') => {
     // Convert headers object to array format expected by schema
-    const headersArray = response.headers && typeof response.headers === 'object'
-      ? Object.entries(response.headers).map(([name, value]) => ({
-          name,
-          value,
-          enabled: true
-        }))
-      : [];
+    const headersArray =
+      response.headers && typeof response.headers === 'object'
+        ? Object.entries(response.headers).map(([name, value]) => ({
+            name,
+            value,
+            enabled: true
+          }))
+        : [];
 
     const contentTypeHeader = headersArray.find((h) => h.name?.toLowerCase() === 'content-type');
     const contentType = contentTypeHeader?.value?.toLowerCase() || '';
@@ -102,26 +107,30 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
     const exampleIndex = existingExamples.length;
     const exampleUid = uuid();
 
-    dispatch(addResponseExample({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      example: {
-        ...exampleData,
-        uid: exampleUid
-      }
-    }));
+    dispatch(
+      addResponseExample({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        example: {
+          ...exampleData,
+          uid: exampleUid
+        }
+      })
+    );
 
     // Save the request
     await dispatch(saveRequest(item.uid, collection.uid, true));
 
     // Task middleware will track this and open the example in a new tab once the file is reloaded
-    dispatch(insertTaskIntoQueue({
-      uid: exampleUid,
-      type: 'OPEN_EXAMPLE',
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      exampleIndex: exampleIndex
-    }));
+    dispatch(
+      insertTaskIntoQueue({
+        uid: exampleUid,
+        type: 'OPEN_EXAMPLE',
+        collectionUid: collection.uid,
+        itemUid: item.uid,
+        exampleIndex: exampleIndex
+      })
+    );
 
     setShowSaveResponseExampleModal(false);
     toast.success(`Example "${name}" created successfully`);
@@ -137,9 +146,7 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
       <div
         ref={elementRef}
         onClick={handleSaveClick}
-        title={
-          !children ? disabledMessage : (isDisabled ? disabledMessage : null)
-        }
+        title={!children ? disabledMessage : isDisabled ? disabledMessage : null}
         className={classnames({
           'opacity-50 cursor-not-allowed': isDisabled && !children
         })}

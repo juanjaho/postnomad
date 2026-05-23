@@ -30,7 +30,9 @@ test.describe('Draft values are used in requests', () => {
     await headerRow.locator('textarea').nth(1).fill('draft-value-123');
 
     // Verify draft indicator appears (header is not saved yet)
-    const collectionTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
+    const collectionTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Collection' }) });
     await expect(collectionTab.locator('.has-changes-icon')).toBeVisible();
 
     // Create a folder in the collection

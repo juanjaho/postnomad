@@ -27,9 +27,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
   it('should override global environment variables with environment variables', async () => {
     const endpoint = 'https://example.com/';
     const environment = {
-      variables: [
-        { name: 'SHARED_VAR', value: 'env-value', enabled: true }
-      ]
+      variables: [{ name: 'SHARED_VAR', value: 'env-value', enabled: true }]
     };
     const request = {
       uid: 'test-request',
@@ -79,9 +77,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
   it('should override environment variables with folder-level variables', async () => {
     const endpoint = 'https://example.com/';
     const environment = {
-      variables: [
-        { name: 'SHARED_VAR', value: 'env-value', enabled: true }
-      ]
+      variables: [{ name: 'SHARED_VAR', value: 'env-value', enabled: true }]
     };
     const request = {
       uid: 'test-request',
@@ -101,9 +97,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
           root: {
             request: {
               vars: {
-                req: [
-                  { name: 'SHARED_VAR', value: 'folder-value', enabled: true }
-                ]
+                req: [{ name: 'SHARED_VAR', value: 'folder-value', enabled: true }]
               }
             }
           },
@@ -149,9 +143,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
     const request = {
       uid: 'test-request',
       vars: {
-        req: [
-          { name: 'SHARED_VAR', value: 'request-value', enabled: true }
-        ]
+        req: [{ name: 'SHARED_VAR', value: 'request-value', enabled: true }]
       }
     };
     const collection = {
@@ -166,9 +158,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
           root: {
             request: {
               vars: {
-                req: [
-                  { name: 'SHARED_VAR', value: 'folder-value', enabled: true }
-                ]
+                req: [{ name: 'SHARED_VAR', value: 'folder-value', enabled: true }]
               }
             }
           },
@@ -177,9 +167,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
               uid: 'test-request',
               request: {
                 vars: {
-                  req: [
-                    { name: 'SHARED_VAR', value: 'request-value', enabled: true }
-                  ]
+                  req: [{ name: 'SHARED_VAR', value: 'request-value', enabled: true }]
                 }
               }
             }
@@ -240,9 +228,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
         request: {
           headers: [],
           vars: {
-            req: [
-              { name: 'SHARED_VAR', value: 'collection-value', enabled: true }
-            ]
+            req: [{ name: 'SHARED_VAR', value: 'collection-value', enabled: true }]
           }
         }
       }
@@ -263,9 +249,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
   it('should override collection variables with environment variables', async () => {
     const endpoint = 'https://example.com/';
     const environment = {
-      variables: [
-        { name: 'SHARED_VAR', value: 'env-value', enabled: true }
-      ]
+      variables: [{ name: 'SHARED_VAR', value: 'env-value', enabled: true }]
     };
     const request = {
       uid: 'test-request',
@@ -292,9 +276,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
         request: {
           headers: [],
           vars: {
-            req: [
-              { name: 'SHARED_VAR', value: 'collection-value', enabled: true }
-            ]
+            req: [{ name: 'SHARED_VAR', value: 'collection-value', enabled: true }]
           }
         }
       }
@@ -321,9 +303,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
     const request = {
       uid: 'test-request',
       vars: {
-        req: [
-          { name: 'SHARED_VAR', value: 'request-value', enabled: true }
-        ]
+        req: [{ name: 'SHARED_VAR', value: 'request-value', enabled: true }]
       }
     };
 
@@ -338,9 +318,7 @@ describe('fetchGqlSchemaHandler - variable precedence', () => {
           uid: 'test-request',
           request: {
             vars: {
-              req: [
-                { name: 'SHARED_VAR', value: 'request-value', enabled: true }
-              ]
+              req: [{ name: 'SHARED_VAR', value: 'request-value', enabled: true }]
             }
           }
         }

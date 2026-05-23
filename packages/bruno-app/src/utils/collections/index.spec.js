@@ -6,9 +6,7 @@ describe('mergeHeaders', () => {
     const collection = {
       root: {
         request: {
-          headers: [
-            { name: 'X-Collection', value: 'c', enabled: true }
-          ]
+          headers: [{ name: 'X-Collection', value: 'c', enabled: true }]
         }
       }
     };
@@ -17,17 +15,13 @@ describe('mergeHeaders', () => {
       type: 'folder',
       root: {
         request: {
-          headers: [
-            { name: 'X-Folder', value: 'f', enabled: true }
-          ]
+          headers: [{ name: 'X-Folder', value: 'f', enabled: true }]
         }
       }
     };
 
     const request = {
-      headers: [
-        { name: 'X-Request', value: 'r', enabled: true }
-      ]
+      headers: [{ name: 'X-Request', value: 'r', enabled: true }]
     };
 
     const headers = mergeHeaders(collection, request, [folder]);

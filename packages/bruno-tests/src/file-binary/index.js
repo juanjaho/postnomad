@@ -16,9 +16,7 @@ const detectSerializedNodeStream = (firstBytesUtf8) => {
     const trimmed = firstBytesUtf8.trim();
     if (!trimmed.startsWith('{')) return false;
     const parsed = JSON.parse(trimmed);
-    return Boolean(
-      parsed && typeof parsed === 'object' && '_readableState' in parsed && 'flags' in parsed
-    );
+    return Boolean(parsed && typeof parsed === 'object' && '_readableState' in parsed && 'flags' in parsed);
   } catch (e) {
     return false;
   }

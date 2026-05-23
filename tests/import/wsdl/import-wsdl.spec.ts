@@ -53,12 +53,18 @@ test.describe('Import WSDL Collection', () => {
     });
 
     await test.step('Verify that folders and requests were imported correctly', async () => {
-      await expect(page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('UserService')).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('UserService')
+      ).toBeVisible();
       // open the user service folder
       await page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('UserService').click();
 
-      await expect(page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('GetUser')).toBeVisible();
-      await expect(page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('CreateUser')).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('GetUser')
+      ).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicexml .collection-item-name').getByText('CreateUser')
+      ).toBeVisible();
     });
 
     await test.step('Verify the GetUser request is imported correctly', async () => {
@@ -114,12 +120,18 @@ test.describe('Import WSDL Collection', () => {
     });
 
     await test.step('Verify that folders and requests were imported correctly', async () => {
-      await expect(page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('UserService')).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('UserService')
+      ).toBeVisible();
       // open the user service folder
       await page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('UserService').click();
 
-      await expect(page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('GetUser')).toBeVisible();
-      await expect(page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('CreateUser')).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('GetUser')
+      ).toBeVisible();
+      await expect(
+        page.locator('#collection-testwsdlservicejson .collection-item-name').getByText('CreateUser')
+      ).toBeVisible();
     });
 
     await test.step('Verify the CreateUser request is imported correctly', async () => {

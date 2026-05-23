@@ -5,8 +5,7 @@ services:
     volumes:
       - ./collection:/bruno
       - ./reports:/reports
-    command:
-      run echo
+    command: run echo
       -r
       --env Prod
       --reporter-json /reports/results.json

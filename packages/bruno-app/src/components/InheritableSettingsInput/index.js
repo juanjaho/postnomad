@@ -22,16 +22,12 @@ const InheritableSettingsInput = ({
         <label className="text-xs font-medium text-gray-900 dark:text-gray-100" htmlFor={id}>
           {label}
         </label>
-        {description && (
-          <p className="text-xs text-gray-700 dark:text-gray-400">
-            {description}
-          </p>
-        )}
+        {description && <p className="text-xs text-gray-700 dark:text-gray-400">{description}</p>}
       </div>
       <div className="flex items-center justify-end">
         {isInherited ? (
           <Dropdown
-            icon={(
+            icon={
               <button
                 type="button"
                 className="px-2 py-1 text-xs rounded-sm outline-none transition-colors duration-100 w-24 h-8 flex items-center justify-between"
@@ -44,7 +40,7 @@ const InheritableSettingsInput = ({
                 <span>Inherit</span>
                 <IconChevronDown size={12} />
               </button>
-            )}
+            }
           >
             <div className="dropdown-item" onClick={() => onDropdownSelect('inherit')}>
               Inherit

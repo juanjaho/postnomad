@@ -10,7 +10,17 @@ import EnvironmentVariables from './EnvironmentVariables';
 import ColorPicker from 'components/ColorPicker';
 import StyledWrapper from './StyledWrapper';
 
-const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuery, setSearchQuery, isSearchExpanded, setIsSearchExpanded, debouncedSearchQuery, searchInputRef }) => {
+const EnvironmentDetails = ({
+  environment,
+  setIsModified,
+  collection,
+  searchQuery,
+  setSearchQuery,
+  isSearchExpanded,
+  setIsSearchExpanded,
+  debouncedSearchQuery,
+  searchInputRef
+}) => {
   const dispatch = useDispatch();
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
 
@@ -39,8 +49,9 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
     }
 
     const trimmedName = name.toLowerCase().trim();
-    const isDuplicate = (globalEnvs || []).some((env) =>
-      env?.uid !== environment.uid && env?.name?.toLowerCase().trim() === trimmedName);
+    const isDuplicate = (globalEnvs || []).some(
+      (env) => env?.uid !== environment.uid && env?.name?.toLowerCase().trim() === trimmedName
+    );
     if (isDuplicate) {
       return 'Environment already exists';
     }
@@ -134,15 +145,8 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
 
   return (
     <StyledWrapper>
-      {openDeleteModal && (
-        <DeleteEnvironment
-          onClose={() => setOpenDeleteModal(false)}
-          environment={environment}
-        />
-      )}
-      {openCopyModal && (
-        <CopyEnvironment onClose={() => setOpenCopyModal(false)} environment={environment} />
-      )}
+      {openDeleteModal && <DeleteEnvironment onClose={() => setOpenDeleteModal(false)} environment={environment} />}
+      {openCopyModal && <CopyEnvironment onClose={() => setOpenCopyModal(false)} environment={environment} />}
 
       <div className="header">
         <div className={`title-container ${isRenaming ? 'renaming' : ''}`}>

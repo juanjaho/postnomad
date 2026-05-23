@@ -4,13 +4,31 @@ import filter from 'lodash/filter';
 import groupBy from 'lodash/groupBy';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { findCollectionByUid, flattenItems, isItemARequest, hasRequestChanges, findEnvironmentInCollection } from 'utils/collections';
+import {
+  findCollectionByUid,
+  flattenItems,
+  isItemARequest,
+  hasRequestChanges,
+  findEnvironmentInCollection
+} from 'utils/collections';
 import { pluralizeWord } from 'utils/common';
 import { getInvalidVariableNames } from 'utils/common/variables';
 import { completeQuitFlow } from 'providers/ReduxStore/slices/app';
-import { saveRequest, saveMultipleRequests, saveMultipleCollections, saveMultipleFolders, saveEnvironment, closeTabs } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  saveRequest,
+  saveMultipleRequests,
+  saveMultipleCollections,
+  saveMultipleFolders,
+  saveEnvironment,
+  closeTabs
+} from 'providers/ReduxStore/slices/collections/actions';
 import { saveGlobalEnvironment, clearGlobalEnvironmentDraft } from 'providers/ReduxStore/slices/global-environments';
-import { deleteRequestDraft, deleteCollectionDraft, deleteFolderDraft, clearEnvironmentsDraft } from 'providers/ReduxStore/slices/collections';
+import {
+  deleteRequestDraft,
+  deleteCollectionDraft,
+  deleteFolderDraft,
+  clearEnvironmentsDraft
+} from 'providers/ReduxStore/slices/collections';
 import { IconAlertTriangle } from '@tabler/icons';
 import Modal from 'components/Modal';
 import Button from 'ui/Button';
@@ -284,9 +302,7 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
           <Button color="secondary" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={closeWithSave}>
-            {totalDraftsCount > 1 ? 'Save All' : 'Save'}
-          </Button>
+          <Button onClick={closeWithSave}>{totalDraftsCount > 1 ? 'Save All' : 'Save'}</Button>
         </div>
       </div>
     </Modal>

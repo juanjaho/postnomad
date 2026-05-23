@@ -16,10 +16,18 @@ import { buildCommonLocators } from '../../utils/page/locators';
 // Content generators - produce enough content to make each area scrollable
 // ---------------------------------------------------------------------------
 
-const generateLargeJson = () => JSON.stringify(
-  { users: Array.from({ length: 50 }, (_, i) => ({ id: i + 1, name: `User ${i + 1}`, email: `user${i + 1}@example.com` })) },
-  null, 2
-);
+const generateLargeJson = () =>
+  JSON.stringify(
+    {
+      users: Array.from({ length: 50 }, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        email: `user${i + 1}@example.com`
+      }))
+    },
+    null,
+    2
+  );
 
 // ---------------------------------------------------------------------------
 // CodeMirror helpers - interact with CM5 instances by CSS selector
@@ -233,7 +241,9 @@ test.describe('Scroll Position Persistence', () => {
       });
     });
 
-    test('Script - pre-request and post-response scroll persists across sub-tab switches', async ({ pageWithUserData: page }) => {
+    test('Script - pre-request and post-response scroll persists across sub-tab switches', async ({
+      pageWithUserData: page
+    }) => {
       await page.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
       const PRE_SELECTOR = '[data-testid="pre-request-script-editor"] .CodeMirror';
       const POST_SELECTOR = '[data-testid="post-response-script-editor"] .CodeMirror';
@@ -419,10 +429,13 @@ test.describe('Scroll Position Persistence', () => {
       });
     });
 
-    test('Request Headers - scroll persists with many headers across tab switches', async ({ pageWithUserData: page }) => {
+    test('Request Headers - scroll persists with many headers across tab switches', async ({
+      pageWithUserData: page
+    }) => {
       await page.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
       const scrollContainer = '.flex-boundary';
-      const firstVisibleRowLocator = () => page.getByTestId('editable-table').locator('table > tbody > tr:nth-child(2)');
+      const firstVisibleRowLocator = () =>
+        page.getByTestId('editable-table').locator('table > tbody > tr:nth-child(2)');
 
       await test.step('Setup request and navigate to Headers tab', async () => {
         await openCollection(page, 'scroll-fixtures');
@@ -439,7 +452,9 @@ test.describe('Scroll Position Persistence', () => {
       await test.step('Scroll to ~middle of table (~row 50)', async () => {
         const container = page.locator(scrollContainer).first();
         // Scroll halfway through the virtualised list so ~row 50 becomes the first visible row
-        await container.evaluate((el) => { el.scrollTop = el.scrollHeight / 2; });
+        await container.evaluate((el) => {
+          el.scrollTop = el.scrollHeight / 2;
+        });
 
         // Auto-retry: wait for TableVirtuoso to land on a row in [45, 55]
         // (matches the ~row 50 ± 5 range that expectRowNear asserts)
@@ -456,12 +471,14 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Verify scroll restored to ~row 50', async () => {
         const element = firstVisibleRowLocator();
-        const current = parseInt(await element.getAttribute('data-index') as string);
+        const current = parseInt((await element.getAttribute('data-index')) as string);
         expectRowNear(current, 50);
       });
     });
 
-    test('Assertions - scroll persists with many assertions across tab switches', async ({ pageWithUserData: page }) => {
+    test('Assertions - scroll persists with many assertions across tab switches', async ({
+      pageWithUserData: page
+    }) => {
       await page.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
       const scrollContainer = '.flex-boundary';
       // Match the first row that actually has a data-index attribute. This skips
@@ -478,7 +495,9 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Verify initial scroll is 0', async () => {
         const container = page.locator(scrollContainer).first();
-        await container.evaluate((el) => { el.scrollTop = 0; });
+        await container.evaluate((el) => {
+          el.scrollTop = 0;
+        });
         await expect(firstVisibleRowLocator()).toHaveAttribute('data-index', '0', { timeout: 2000 });
         const initial = await container.evaluate((el) => el.scrollTop);
         expect(initial).toBe(0);
@@ -486,7 +505,9 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Scroll to ~middle of table (~row 30)', async () => {
         const container = page.locator(scrollContainer).first();
-        await container.evaluate((el) => { el.scrollTop = el.scrollHeight / 2; });
+        await container.evaluate((el) => {
+          el.scrollTop = el.scrollHeight / 2;
+        });
 
         const element = firstVisibleRowLocator();
         await expect(element).toHaveAttribute('data-index', /^(2[5-9]|3[0-5])$/, { timeout: 2000 });
@@ -502,7 +523,7 @@ test.describe('Scroll Position Persistence', () => {
       await test.step('Verify scroll restored to ~row 30', async () => {
         const element = firstVisibleRowLocator();
         await expect(element).toHaveAttribute('data-index', /^(2[5-9]|3[0-5])$/, { timeout: 2000 });
-        const current = parseInt(await element.getAttribute('data-index') as string);
+        const current = parseInt((await element.getAttribute('data-index')) as string);
         expectRowNear(current, 30);
       });
     });
@@ -571,7 +592,9 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Create collection, request and send to get response headers', async () => {
         await createCollection(page, 'scroll-response-headers', tmpDir);
-        await createRequest(page, 'req-resp-headers', 'scroll-response-headers', { url: 'https://jsonplaceholder.typicode.com/todos' });
+        await createRequest(page, 'req-resp-headers', 'scroll-response-headers', {
+          url: 'https://jsonplaceholder.typicode.com/todos'
+        });
         await sendRequest(page, 200);
       });
 
@@ -593,7 +616,9 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Scroll response headers and capture position', async () => {
         const container = page.locator(headersContainer).first();
-        await container.evaluate((el) => { el.scrollTop = 200; });
+        await container.evaluate((el) => {
+          el.scrollTop = 200;
+        });
 
         saved = await container.evaluate((el) => el.scrollTop);
         expectScrollRestored(saved, 200);
@@ -652,7 +677,9 @@ test.describe('Scroll Position Persistence', () => {
         // Timeline StyledWrapper is the parent of .timeline-container
         const container = page.locator(timelineScroller).first();
         const scrollParent = container.locator('..');
-        await scrollParent.evaluate((el) => { el.scrollTop = 500; });
+        await scrollParent.evaluate((el) => {
+          el.scrollTop = 500;
+        });
 
         saved = await scrollParent.evaluate((el) => el.scrollTop);
         expectScrollRestored(saved, 500);
@@ -1096,11 +1123,14 @@ test.describe('Scroll Position Persistence', () => {
       });
     });
 
-    test('Collection Headers - scroll persists with many headers across tab switches', async ({ pageWithUserData: page }) => {
+    test('Collection Headers - scroll persists with many headers across tab switches', async ({
+      pageWithUserData: page
+    }) => {
       await page.locator('[data-app-state="loaded"]').waitFor({ timeout: 30000 });
       const locators = buildCommonLocators(page);
       const scrollContainer = '.collection-settings-content';
-      const firstVisibleRowLocator = () => page.getByTestId('editable-table').locator('table > tbody > tr:nth-child(2)');
+      const firstVisibleRowLocator = () =>
+        page.getByTestId('editable-table').locator('table > tbody > tr:nth-child(2)');
 
       await test.step('Open collection settings and navigate to Headers tab', async () => {
         await openCollection(page, 'scroll-fixtures');
@@ -1117,7 +1147,9 @@ test.describe('Scroll Position Persistence', () => {
       await test.step('Scroll to ~middle of table (~row 50)', async () => {
         const container = page.locator(scrollContainer).first();
         // Scroll halfway through the virtualised list so ~row 50 becomes the first visible row
-        await container.evaluate((el) => { el.scrollTop = el.scrollHeight / 2; });
+        await container.evaluate((el) => {
+          el.scrollTop = el.scrollHeight / 2;
+        });
 
         // Auto-retry: wait for TableVirtuoso to land on a row in [45, 55]
         // (matches the ~row 50 ± 5 range that expectRowNear asserts)
@@ -1134,7 +1166,7 @@ test.describe('Scroll Position Persistence', () => {
 
       await test.step('Verify scroll restored to ~row 50', async () => {
         const element = firstVisibleRowLocator();
-        const current = parseInt(await element.getAttribute('data-index') as string);
+        const current = parseInt((await element.getAttribute('data-index')) as string);
         expectRowNear(current, 50);
       });
     });

@@ -30,7 +30,9 @@ test.describe('Autosave', () => {
       await page.keyboard.press(saveShortcut);
 
       // Verify no draft indicator
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).not.toBeVisible();
     });
 
@@ -68,7 +70,9 @@ test.describe('Autosave', () => {
       await page.keyboard.type('/users');
 
       // Wait for draft indicator to appear (change registered)
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).toBeVisible();
 
       // Wait for autosave to complete (draft indicator disappears)
@@ -77,7 +81,9 @@ test.describe('Autosave', () => {
 
     await test.step('Verify changes persisted', async () => {
       // Close and reopen the request tab to verify persistence
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
       await requestTab.hover();
       await requestTab.getByTestId('request-tab-close-icon').click({ force: true });
 
@@ -127,7 +133,9 @@ test.describe('Autosave', () => {
       await page.mouse.move(0, 0);
 
       // Verify draft indicator appears
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Test Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).toBeVisible();
 
       await expect(requestTab.locator('.has-changes-icon')).toBeVisible({ timeout: 2000 });
@@ -155,7 +163,9 @@ test.describe('Autosave', () => {
       await page.keyboard.press(saveShortcut);
 
       // Verify no draft indicator
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).not.toBeVisible();
     });
 
@@ -170,7 +180,9 @@ test.describe('Autosave', () => {
       await page.mouse.move(0, 0);
 
       // Verify draft indicator appears
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).toBeVisible();
     });
 
@@ -201,13 +213,17 @@ test.describe('Autosave', () => {
 
       await page.waitForTimeout(1000);
 
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
       await expect(requestTab.locator('.has-changes-icon')).not.toBeVisible({ timeout: 10000 });
     });
 
     await test.step('Verify changes persisted', async () => {
       // Close and reopen the request tab to verify persistence
-      const requestTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
+      const requestTab = page
+        .locator('.request-tab')
+        .filter({ has: page.locator('.tab-label', { hasText: 'Draft Request' }) });
       await requestTab.hover();
       await requestTab.getByTestId('request-tab-close-icon').click({ force: true });
 

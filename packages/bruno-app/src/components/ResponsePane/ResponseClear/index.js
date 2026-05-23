@@ -26,14 +26,25 @@ const ResponseClear = forwardRef(({ collection, item, children }, ref) => {
   const { clearResponse } = useResponseClear(item, collection);
   const elementRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    click: () => elementRef.current?.click(),
-    isDisabled: false
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      click: () => elementRef.current?.click(),
+      isDisabled: false
+    }),
+    []
+  );
 
   return (
-    <div ref={elementRef} onClick={clearResponse} title={!children ? 'Clear response' : null} data-testid="response-clear-btn">
-      {children ? children : (
+    <div
+      ref={elementRef}
+      onClick={clearResponse}
+      title={!children ? 'Clear response' : null}
+      data-testid="response-clear-btn"
+    >
+      {children ? (
+        children
+      ) : (
         <StyledWrapper className="flex items-center">
           <ActionIcon className="p-1">
             <IconEraser size={16} strokeWidth={2} />

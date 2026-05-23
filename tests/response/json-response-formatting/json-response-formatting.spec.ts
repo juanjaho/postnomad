@@ -7,7 +7,9 @@ test.describe.serial('JSON Response Formatting', () => {
     await closeAllCollections(page);
   });
 
-  test('should handle BigInt values and unicode chars in JSON response formatting', async ({ pageWithUserData: page }) => {
+  test('should handle BigInt values and unicode chars in JSON response formatting', async ({
+    pageWithUserData: page
+  }) => {
     await test.step('Navigate to collection and request', async () => {
       // Navigate to the test collection
       await expect(page.locator('#sidebar-collection-name').getByText('collection')).toBeVisible();

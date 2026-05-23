@@ -45,10 +45,7 @@ const prepareMock = (str: string, escapeJSONStrings: boolean): string => {
   });
 };
 
-const prepareMockObj = (
-  obj: Record<string, any>,
-  escapeJSONStrings: boolean
-): Record<string, any> => {
+const prepareMockObj = (obj: Record<string, any>, escapeJSONStrings: boolean): Record<string, any> => {
   const processed: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(obj)) {

@@ -18,8 +18,12 @@ const Script = ({ collection, folder }) => {
   const dispatch = useDispatch();
   const preRequestEditorRef = useRef(null);
   const postResponseEditorRef = useRef(null);
-  const requestScript = folder.draft ? get(folder, 'draft.request.script.req', '') : get(folder, 'root.request.script.req', '');
-  const responseScript = folder.draft ? get(folder, 'draft.request.script.res', '') : get(folder, 'root.request.script.res', '');
+  const requestScript = folder.draft
+    ? get(folder, 'draft.request.script.req', '')
+    : get(folder, 'root.request.script.req', '');
+  const responseScript = folder.draft
+    ? get(folder, 'draft.request.script.res', '')
+    : get(folder, 'root.request.script.res', '');
 
   const tabs = useSelector((state) => state.tabs.tabs);
   const focusedTab = find(tabs, (t) => t.uid === folder.uid);
@@ -41,7 +45,10 @@ const Script = ({ collection, folder }) => {
   const preferences = useSelector((state) => state.app.preferences);
 
   const [preReqScroll, setPreReqScroll] = usePersistedState({ key: `folder-pre-req-scroll-${folder.uid}`, default: 0 });
-  const [postResScroll, setPostResScroll] = usePersistedState({ key: `folder-post-res-scroll-${folder.uid}`, default: 0 });
+  const [postResScroll, setPostResScroll] = usePersistedState({
+    key: `folder-post-res-scroll-${folder.uid}`,
+    default: 0
+  });
 
   // Refresh CodeMirror when tab becomes visible and restore scroll position.
   // CodeMirror's scrollTo() is silently ignored when the editor is inside a display:none container

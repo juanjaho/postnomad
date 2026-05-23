@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  IconX,
-  IconFileText,
-  IconArrowRight,
-  IconNetwork
-} from '@tabler/icons';
+import { IconX, IconFileText, IconArrowRight, IconNetwork } from '@tabler/icons';
 import { clearSelectedRequest } from 'providers/ReduxStore/slices/logs';
 import QueryResponse from 'components/ResponsePane/QueryResponse/index';
 import Network from 'components/ResponsePane/Timeline/TimelineItem/Network';
@@ -197,11 +192,7 @@ const RequestDetailsPanel = () => {
           <span className="request-time">({formatTime(selectedRequest.timestamp)})</span>
         </div>
 
-        <button
-          className="close-button"
-          onClick={handleClose}
-          title="Close details panel"
-        >
+        <button className="close-button" onClick={handleClose} title="Close details panel">
           <IconX size={16} strokeWidth={1.5} />
         </button>
       </div>
@@ -232,9 +223,7 @@ const RequestDetailsPanel = () => {
         </button>
       </div>
 
-      <div className="panel-content">
-        {getTabContent()}
-      </div>
+      <div className="panel-content">{getTabContent()}</div>
     </StyledWrapper>
   );
 };

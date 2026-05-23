@@ -19,7 +19,7 @@ collection:
           modified: 1743683090190
           sortKey: -1743683090140
         children:
-          - url: "{{ _.base_url }}/api/auth/login"
+          - url: '{{ _.base_url }}/api/auth/login'
             name: Login User
             meta:
               id: req_d48ab8553cff4eb486b816e064cf99a4
@@ -48,7 +48,7 @@ collection:
                 send: true
                 store: true
               rebuildPath: true
-      - url: "{{ _.base_url }}/api/users"
+      - url: '{{ _.base_url }}/api/users'
         name: Get Users
         meta:
           id: req_0393b8ff4ee1454daddacdda33fd33ea
@@ -78,7 +78,7 @@ collection:
       modified: 1743683403969
       sortKey: -1743683403969
     children:
-      - url: "{{ _.base_url }}/api/posts"
+      - url: '{{ _.base_url }}/api/posts'
         name: Create Post
         meta:
           id: req_10db7ec1332d4444aa551e70a1bfae33

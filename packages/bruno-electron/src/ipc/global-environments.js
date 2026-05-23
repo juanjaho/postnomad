@@ -2,7 +2,9 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { ipcMain } = require('electron');
-const { utils: { jsonToDotenv } } = require('@usebruno/common');
+const {
+  utils: { jsonToDotenv }
+} = require('@usebruno/common');
 const { globalEnvironmentsStore } = require('../store/global-environments');
 const { generateUniqueName, sanitizeName, writeFile, isValidDotEnvFilename } = require('../utils/filesystem');
 const { readWorkspaceConfig, writeWorkspaceConfig } = require('../utils/workspace-config');
@@ -50,77 +52,101 @@ const migrateActiveGlobalEnvironmentUid = async (workspacePath) => {
 };
 
 const registerGlobalEnvironmentsIpc = (mainWindow, workspaceEnvironmentsManager) => {
-  ipcMain.handle('renderer:create-global-environment', async (event, { uid, name, variables, color, workspaceUid, workspacePath }) => {
-    try {
-      // If workspace path provided, use workspace environments manager
-      if (workspacePath && workspaceEnvironmentsManager) {
-        const { globalEnvironments } = await workspaceEnvironmentsManager.getGlobalEnvironmentsByPath(workspacePath);
-        const existingNames = globalEnvironments?.map((env) => env.name) || [];
+  ipcMain.handle(
+    'renderer:create-global-environment',
+    async (event, { uid, name, variables, color, workspaceUid, workspacePath }) => {
+      try {
+        // If workspace path provided, use workspace environments manager
+        if (workspacePath && workspaceEnvironmentsManager) {
+          const { globalEnvironments } = await workspaceEnvironmentsManager.getGlobalEnvironmentsByPath(workspacePath);
+          const existingNames = globalEnvironments?.map((env) => env.name) || [];
+
+          const sanitizedName = sanitizeName(name);
+          const uniqueName = generateUniqueName(sanitizedName, (name) => existingNames.includes(name));
+
+          return await workspaceEnvironmentsManager.addGlobalEnvironmentByPath(workspacePath, {
+            uid,
+            name: uniqueName,
+            variables,
+            color
+          });
+        }
+
+        const existingGlobalEnvironments = globalEnvironmentsStore.getGlobalEnvironments();
+        const existingNames = existingGlobalEnvironments?.map((env) => env.name) || [];
 
         const sanitizedName = sanitizeName(name);
         const uniqueName = generateUniqueName(sanitizedName, (name) => existingNames.includes(name));
 
-        return await workspaceEnvironmentsManager.addGlobalEnvironmentByPath(workspacePath, { uid, name: uniqueName, variables, color });
+        globalEnvironmentsStore.addGlobalEnvironment({ uid, name: uniqueName, variables, color });
+
+        return { name: uniqueName, color };
+      } catch (error) {
+        console.error('Error in renderer:create-global-environment:', error);
+        return Promise.reject(error);
       }
-
-      const existingGlobalEnvironments = globalEnvironmentsStore.getGlobalEnvironments();
-      const existingNames = existingGlobalEnvironments?.map((env) => env.name) || [];
-
-      const sanitizedName = sanitizeName(name);
-      const uniqueName = generateUniqueName(sanitizedName, (name) => existingNames.includes(name));
-
-      globalEnvironmentsStore.addGlobalEnvironment({ uid, name: uniqueName, variables, color });
-
-      return { name: uniqueName, color };
-    } catch (error) {
-      console.error('Error in renderer:create-global-environment:', error);
-      return Promise.reject(error);
     }
-  });
+  );
 
-  ipcMain.handle('renderer:save-global-environment', async (event, { environmentUid, variables, color, workspaceUid, workspacePath }) => {
-    try {
-      if (workspacePath && workspaceEnvironmentsManager) {
-        return await workspaceEnvironmentsManager.saveGlobalEnvironmentByPath(workspacePath, { environmentUid, variables, color });
-      }
-
-      globalEnvironmentsStore.saveGlobalEnvironment({ environmentUid, variables, color });
-    } catch (error) {
-      console.error('Error in renderer:save-global-environment:', error);
-      return Promise.reject(error);
-    }
-  });
-
-  ipcMain.handle('renderer:rename-global-environment', async (event, { environmentUid, name, workspaceUid, workspacePath }) => {
-    try {
-      if (workspacePath && workspaceEnvironmentsManager) {
-        return await workspaceEnvironmentsManager.renameGlobalEnvironmentByPath(workspacePath, { environmentUid, name });
-      }
-
-      globalEnvironmentsStore.renameGlobalEnvironment({ environmentUid, name });
-    } catch (error) {
-      console.error('Error in renderer:rename-global-environment:', error);
-      return Promise.reject(error);
-    }
-  });
-
-  ipcMain.handle('renderer:delete-global-environment', async (event, { environmentUid, workspaceUid, workspacePath }) => {
-    try {
-      if (workspacePath && workspaceEnvironmentsManager) {
-        await workspaceEnvironmentsManager.deleteGlobalEnvironmentByPath(workspacePath, { environmentUid });
-        // Clear active environment for this workspace if the deleted one was active
-        const activeUid = globalEnvironmentsStore.getActiveGlobalEnvironmentUidForWorkspace(workspacePath);
-        if (activeUid === environmentUid) {
-          globalEnvironmentsStore.setActiveGlobalEnvironmentUidForWorkspace(workspacePath, null);
+  ipcMain.handle(
+    'renderer:save-global-environment',
+    async (event, { environmentUid, variables, color, workspaceUid, workspacePath }) => {
+      try {
+        if (workspacePath && workspaceEnvironmentsManager) {
+          return await workspaceEnvironmentsManager.saveGlobalEnvironmentByPath(workspacePath, {
+            environmentUid,
+            variables,
+            color
+          });
         }
-      } else {
-        globalEnvironmentsStore.deleteGlobalEnvironment({ environmentUid });
+
+        globalEnvironmentsStore.saveGlobalEnvironment({ environmentUid, variables, color });
+      } catch (error) {
+        console.error('Error in renderer:save-global-environment:', error);
+        return Promise.reject(error);
       }
-    } catch (error) {
-      console.error('Error in renderer:delete-global-environment:', error);
-      return Promise.reject(error);
     }
-  });
+  );
+
+  ipcMain.handle(
+    'renderer:rename-global-environment',
+    async (event, { environmentUid, name, workspaceUid, workspacePath }) => {
+      try {
+        if (workspacePath && workspaceEnvironmentsManager) {
+          return await workspaceEnvironmentsManager.renameGlobalEnvironmentByPath(workspacePath, {
+            environmentUid,
+            name
+          });
+        }
+
+        globalEnvironmentsStore.renameGlobalEnvironment({ environmentUid, name });
+      } catch (error) {
+        console.error('Error in renderer:rename-global-environment:', error);
+        return Promise.reject(error);
+      }
+    }
+  );
+
+  ipcMain.handle(
+    'renderer:delete-global-environment',
+    async (event, { environmentUid, workspaceUid, workspacePath }) => {
+      try {
+        if (workspacePath && workspaceEnvironmentsManager) {
+          await workspaceEnvironmentsManager.deleteGlobalEnvironmentByPath(workspacePath, { environmentUid });
+          // Clear active environment for this workspace if the deleted one was active
+          const activeUid = globalEnvironmentsStore.getActiveGlobalEnvironmentUidForWorkspace(workspacePath);
+          if (activeUid === environmentUid) {
+            globalEnvironmentsStore.setActiveGlobalEnvironmentUidForWorkspace(workspacePath, null);
+          }
+        } else {
+          globalEnvironmentsStore.deleteGlobalEnvironment({ environmentUid });
+        }
+      } catch (error) {
+        console.error('Error in renderer:delete-global-environment:', error);
+        return Promise.reject(error);
+      }
+    }
+  );
 
   ipcMain.handle('renderer:select-global-environment', async (event, { environmentUid, workspacePath }) => {
     try {
@@ -161,26 +187,29 @@ const registerGlobalEnvironmentsIpc = (mainWindow, workspaceEnvironmentsManager)
   });
 
   // Save workspace .env file variables
-  ipcMain.handle('renderer:save-workspace-dotenv-variables', async (event, { workspacePath, variables, filename = '.env' }) => {
-    try {
-      if (!workspacePath) {
-        throw new Error('Workspace path is required');
+  ipcMain.handle(
+    'renderer:save-workspace-dotenv-variables',
+    async (event, { workspacePath, variables, filename = '.env' }) => {
+      try {
+        if (!workspacePath) {
+          throw new Error('Workspace path is required');
+        }
+
+        if (!isValidDotEnvFilename(filename)) {
+          throw new Error('Invalid .env filename');
+        }
+
+        const dotEnvPath = path.join(workspacePath, filename);
+        const content = jsonToDotenv(variables);
+        await writeFile(dotEnvPath, content);
+
+        return { success: true };
+      } catch (error) {
+        console.error('Error saving workspace .env file:', error);
+        return Promise.reject(error);
       }
-
-      if (!isValidDotEnvFilename(filename)) {
-        throw new Error('Invalid .env filename');
-      }
-
-      const dotEnvPath = path.join(workspacePath, filename);
-      const content = jsonToDotenv(variables);
-      await writeFile(dotEnvPath, content);
-
-      return { success: true };
-    } catch (error) {
-      console.error('Error saving workspace .env file:', error);
-      return Promise.reject(error);
     }
-  });
+  );
 
   // Save workspace .env file raw content
   ipcMain.handle('renderer:save-workspace-dotenv-raw', async (event, { workspacePath, content, filename = '.env' }) => {
@@ -255,18 +284,24 @@ const registerGlobalEnvironmentsIpc = (mainWindow, workspaceEnvironmentsManager)
     }
   });
 
-  ipcMain.handle('renderer:update-global-environment-color', async (event, { environmentUid, color, workspacePath }) => {
-    try {
-      if (workspacePath && workspaceEnvironmentsManager) {
-        return await workspaceEnvironmentsManager.updateGlobalEnvironmentColorByPath(workspacePath, { environmentUid, color });
-      }
+  ipcMain.handle(
+    'renderer:update-global-environment-color',
+    async (event, { environmentUid, color, workspacePath }) => {
+      try {
+        if (workspacePath && workspaceEnvironmentsManager) {
+          return await workspaceEnvironmentsManager.updateGlobalEnvironmentColorByPath(workspacePath, {
+            environmentUid,
+            color
+          });
+        }
 
-      globalEnvironmentsStore.updateGlobalEnvironmentColor({ environmentUid, color });
-    } catch (error) {
-      console.error('Error in renderer:update-global-environment-color:', error);
-      return Promise.reject(error);
+        globalEnvironmentsStore.updateGlobalEnvironmentColor({ environmentUid, color });
+      } catch (error) {
+        console.error('Error in renderer:update-global-environment-color:', error);
+        return Promise.reject(error);
+      }
     }
-  });
+  );
 };
 
 module.exports = registerGlobalEnvironmentsIpc;

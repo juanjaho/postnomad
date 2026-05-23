@@ -9,7 +9,9 @@ import { buildCommonLocators } from '../../utils/page/locators';
 /**
  * Helper function to restart app and get fresh state with locators
  */
-const restartAppAndGetLocators = async (restartApp: (options?: { initUserDataPath?: string }) => Promise<ElectronApplication>): Promise<{ app: ElectronApplication; page: Page; locators: ReturnType<typeof buildCommonLocators> }> => {
+const restartAppAndGetLocators = async (
+  restartApp: (options?: { initUserDataPath?: string }) => Promise<ElectronApplication>
+): Promise<{ app: ElectronApplication; page: Page; locators: ReturnType<typeof buildCommonLocators> }> => {
   const app = await restartApp();
   const page = await waitForReadyPage(app);
   const locators = buildCommonLocators(page);
@@ -22,7 +24,9 @@ const restartAppAndGetLocators = async (restartApp: (options?: { initUserDataPat
 test.describe.skip('Close All Collections', () => {
   test.afterAll(async () => {
     // Reset the request file to the original state after saving changes
-    execSync(`git checkout -- "${path.join(__dirname, 'fixtures', 'collections', 'collection 1', 'test-request.bru')}"`);
+    execSync(
+      `git checkout -- "${path.join(__dirname, 'fixtures', 'collections', 'collection 1', 'test-request.bru')}"`
+    );
   });
 
   test('should show/hide close all icon based on hover state', async ({ pageWithUserData: page }) => {

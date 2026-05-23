@@ -30,19 +30,25 @@ wss.on('connection', function connection(ws, request) {
     }
     if (isJSON) {
       if ('func' in obj && obj.func === 'headers') {
-        return ws.send(JSON.stringify({
-          headers: request.headers
-        }));
+        return ws.send(
+          JSON.stringify({
+            headers: request.headers
+          })
+        );
       } else if ('func' in obj && obj.func === 'query') {
         const url = new URL(request.url, `http://${request.headers.host}`);
         const query = Object.fromEntries(url.searchParams.entries());
-        return ws.send(JSON.stringify({
-          query: query
-        }));
+        return ws.send(
+          JSON.stringify({
+            query: query
+          })
+        );
       } else {
-        return ws.send(JSON.stringify({
-          data: JSON.parse(Buffer.from(data).toString())
-        }));
+        return ws.send(
+          JSON.stringify({
+            data: JSON.parse(Buffer.from(data).toString())
+          })
+        );
       }
     }
     return ws.send(Buffer.from(data).toString());
@@ -67,12 +73,14 @@ const wsRouter = (request, socket, head) => {
     const hasAcceptedProtocols = subproto.split(',').some((d) => ACCEPTED_SUB_PROTOS.includes(d));
     if (!hasAcceptedProtocols) {
       const message = 'Unsupported WebSocket subprotocol';
-      socket.write('HTTP/1.1 400 Bad Request\r\n'
-        + 'Content-Type: text/plain\r\n'
-        + `Content-Length: ${Buffer.byteLength(message)}\r\n`
-        + 'Connection: close\r\n'
-        + '\r\n'
-        + message);
+      socket.write(
+        'HTTP/1.1 400 Bad Request\r\n' +
+          'Content-Type: text/plain\r\n' +
+          `Content-Length: ${Buffer.byteLength(message)}\r\n` +
+          'Connection: close\r\n' +
+          '\r\n' +
+          message
+      );
       socket.destroy();
       socket.removeListener('error', onSocketError);
       return;

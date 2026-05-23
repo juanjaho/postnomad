@@ -7,7 +7,9 @@ test.describe.serial('Dynamic Variable Interpolation', () => {
     await closeAllCollections(page);
   });
 
-  test('Verifying if the bru.setVar method interpolates random generator functions properly', async ({ pageWithUserData: page }) => {
+  test('Verifying if the bru.setVar method interpolates random generator functions properly', async ({
+    pageWithUserData: page
+  }) => {
     const locators = buildCommonLocators(page);
 
     // Open collection and accept sandbox mode

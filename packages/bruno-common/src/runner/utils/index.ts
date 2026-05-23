@@ -14,8 +14,7 @@ export const getContentType = (headers: Record<string, string | number | undefin
   if (!headers || typeof headers !== 'object') {
     return '';
   }
-  const contentType = Object.entries(headers)
-    .find(([key]) => key.toLowerCase() === 'content-type')?.[1];
+  const contentType = Object.entries(headers).find(([key]) => key.toLowerCase() === 'content-type')?.[1];
   return typeof contentType === 'string' ? contentType : '';
 };
 

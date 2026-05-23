@@ -58,13 +58,7 @@ const CreateEnvironment = ({ collection, onClose, onEnvironmentCreated }) => {
 
   return (
     <Portal>
-      <Modal
-        size="md"
-        title="Create Environment"
-        confirmText="Create"
-        handleConfirm={onSubmit}
-        handleCancel={onClose}
-      >
+      <Modal size="md" title="Create Environment" confirmText="Create" handleConfirm={onSubmit} handleCancel={onClose}>
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="name" className="block font-medium">

@@ -15,23 +15,15 @@ const StyledWrapper = styled.div.attrs((props) => ({
   right: 0;
   top: 0;
   padding-right: 4px;
-  
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--gradient-color) 40%
-  );
-  
+
+  background-image: linear-gradient(90deg, transparent 0%, var(--gradient-color) 40%);
+
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
 
   li.active & {
-    background-image: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--gradient-color-active) 40%
-    );
+    background-image: linear-gradient(90deg, transparent 0%, var(--gradient-color-active) 40%);
   }
 
   li:hover &,
@@ -71,33 +63,33 @@ const StyledWrapper = styled.div.attrs((props) => ({
     height: 8px;
   }
 
-  .draft-icon-wrapper { 
-    display: none; 
+  .draft-icon-wrapper {
+    display: none;
   }
-  
-  .close-icon-wrapper { 
+
+  .close-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   &.has-changes:not(li:hover &) {
-    .draft-icon-wrapper { 
+    .draft-icon-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .close-icon-wrapper { 
-      display: none; 
+    .close-icon-wrapper {
+      display: none;
     }
   }
 
   li:hover &.has-changes {
-    .draft-icon-wrapper { 
-      display: none; 
+    .draft-icon-wrapper {
+      display: none;
     }
-    .close-icon-wrapper { 
-      display: flex; 
+    .close-icon-wrapper {
+      display: flex;
     }
   }
 `;

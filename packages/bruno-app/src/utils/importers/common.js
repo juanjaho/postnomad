@@ -215,7 +215,13 @@ export const hydrateSeqInCollection = (collection) => {
  * @returns {'openapi' | 'postman' | 'insomnia' | 'unknown'} - The type of the CollectionJSON data
  */
 const getCollectionSpecType = (data) => {
-  return isOpenApiSpec(data) ? 'openapi' : isPostmanCollection(data) ? 'postman' : isInsomniaCollection(data) ? 'insomnia' : 'unknown';
+  return isOpenApiSpec(data)
+    ? 'openapi'
+    : isPostmanCollection(data)
+      ? 'postman'
+      : isInsomniaCollection(data)
+        ? 'insomnia'
+        : 'unknown';
 };
 
 export const fetchAndValidateApiSpecFromUrl = ({ url }) => {

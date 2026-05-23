@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  IconChevronRight,
-  IconChevronDown,
-  IconCheck,
-  IconX,
-  IconLoader2
-} from '@tabler/icons';
+import { IconChevronRight, IconChevronDown, IconCheck, IconX, IconLoader2 } from '@tabler/icons';
 import { toggleRowExpanded } from 'providers/ReduxStore/slices/openapi-sync';
 import MethodBadge from 'ui/MethodBadge';
 import { formatIpcError } from 'utils/common/error';
@@ -15,7 +9,20 @@ import Help from 'components/Help';
 import EndpointVisualDiff from './EndpointVisualDiff';
 
 // Expandable row - can be used with or without decision buttons
-const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectionPath, newSpec, showDecisions = true, decisionLabels, diffLeftLabel, diffRightLabel, swapDiffSides, collectionUid, actions }) => {
+const ExpandableEndpointRow = ({
+  endpoint,
+  decision,
+  onDecisionChange,
+  collectionPath,
+  newSpec,
+  showDecisions = true,
+  decisionLabels,
+  diffLeftLabel,
+  diffRightLabel,
+  swapDiffSides,
+  collectionUid,
+  actions
+}) => {
   const dispatch = useDispatch();
   const rowKey = endpoint.id || `${endpoint.method}-${endpoint.path}`;
   const isExpanded = useSelector((state) => {
@@ -78,7 +85,8 @@ const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectio
         onClick={handleToggle}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault(); handleToggle();
+            e.preventDefault();
+            handleToggle();
           }
         }}
       >
@@ -92,17 +100,21 @@ const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectio
         {endpoint.conflict && (
           <StatusBadge
             status="danger"
-            rightSection={(
+            rightSection={
               <Help icon="info" size={11} placement="top" width={250}>
                 This endpoint was modified in both the spec and your collection. Choose which version to keep.
               </Help>
-            )}
+            }
           >
             Conflict
           </StatusBadge>
         )}
 
-        {actions && <div className="endpoint-actions" onClick={(e) => e.stopPropagation()}>{actions}</div>}
+        {actions && (
+          <div className="endpoint-actions" onClick={(e) => e.stopPropagation()}>
+            {actions}
+          </div>
+        )}
 
         {showDecisions && onDecisionChange && (
           <div className="decision-buttons" onClick={(e) => e.stopPropagation()}>
@@ -132,11 +144,7 @@ const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectio
               <span>Loading diff...</span>
             </div>
           )}
-          {error && (
-            <div className="diff-error">
-              Error: {error}
-            </div>
-          )}
+          {error && <div className="diff-error">Error: {error}</div>}
           {diffData && !isLoading && !error && (
             <EndpointVisualDiff
               oldData={diffData.oldData}

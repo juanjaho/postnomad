@@ -73,7 +73,6 @@ const Wrapper = styled.div`
         background: ${(props) => props.theme.requestTabs.bg};
         border-color: transparent;
         border-radius: ${(props) => props.theme.border.radius.base};
-
       }
 
       &:nth-last-child(1) {
@@ -168,7 +167,9 @@ const Wrapper = styled.div`
           align-items: center;
           justify-content: center;
           border-radius: ${(props) => props.theme.border.radius.sm};
-          transition: background-color 0.12s ease, color 0.12s ease;
+          transition:
+            background-color 0.12s ease,
+            color 0.12s ease;
         }
 
         > div.home-icon-container {

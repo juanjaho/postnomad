@@ -263,7 +263,8 @@ export const fromOpenCollectionAuth = (auth: Auth | undefined): BrunoAuth => {
         apikey: {
           key: apiKeyAuth.key || null,
           value: apiKeyAuth.value || null,
-          placement: apiKeyAuth.placement === 'query' ? 'queryparams' : (apiKeyAuth.placement === 'header' ? 'header' : null)
+          placement:
+            apiKeyAuth.placement === 'query' ? 'queryparams' : apiKeyAuth.placement === 'header' ? 'header' : null
         }
       };
     }
@@ -293,8 +294,13 @@ export const fromOpenCollectionAuth = (auth: Auth | undefined): BrunoAuth => {
           callbackUrl: oauth1Auth.callbackUrl || null,
           verifier: oauth1Auth.verifier || null,
           signatureMethod: (oauth1Auth.signatureMethod as BrunoAuthOauth1['signatureMethod']) || 'HMAC-SHA1',
-          privateKey: (typeof oauth1Auth.privateKey === 'object' && oauth1Auth.privateKey ? oauth1Auth.privateKey.value : oauth1Auth.privateKey) || null,
-          privateKeyType: (typeof oauth1Auth.privateKey === 'object' && oauth1Auth.privateKey ? oauth1Auth.privateKey.type : 'text') as BrunoAuthOauth1['privateKeyType'],
+          privateKey:
+            (typeof oauth1Auth.privateKey === 'object' && oauth1Auth.privateKey
+              ? oauth1Auth.privateKey.value
+              : oauth1Auth.privateKey) || null,
+          privateKeyType: (typeof oauth1Auth.privateKey === 'object' && oauth1Auth.privateKey
+            ? oauth1Auth.privateKey.type
+            : 'text') as BrunoAuthOauth1['privateKeyType'],
           timestamp: oauth1Auth.timestamp || null,
           nonce: oauth1Auth.nonce || null,
           version: oauth1Auth.version || '1.0',
@@ -335,9 +341,10 @@ const toOpenCollectionOAuth2 = (oauth2: BrunoOAuth2 | null | undefined): AuthOAu
         scope: oauth2.scope || '',
         tokenConfig: {
           id: oauth2.credentialsId || 'credentials',
-          placement: oauth2.tokenPlacement === 'query'
-            ? { query: oauth2.tokenQueryKey || 'access_token' }
-            : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
+          placement:
+            oauth2.tokenPlacement === 'query'
+              ? { query: oauth2.tokenQueryKey || 'access_token' }
+              : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
         },
         settings: {
           autoFetchToken: oauth2.autoFetchToken !== false,
@@ -363,9 +370,10 @@ const toOpenCollectionOAuth2 = (oauth2: BrunoOAuth2 | null | undefined): AuthOAu
         scope: oauth2.scope || '',
         tokenConfig: {
           id: oauth2.credentialsId || 'credentials',
-          placement: oauth2.tokenPlacement === 'query'
-            ? { query: oauth2.tokenQueryKey || 'access_token' }
-            : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
+          placement:
+            oauth2.tokenPlacement === 'query'
+              ? { query: oauth2.tokenQueryKey || 'access_token' }
+              : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
         },
         settings: {
           autoFetchToken: oauth2.autoFetchToken !== false,
@@ -390,9 +398,10 @@ const toOpenCollectionOAuth2 = (oauth2: BrunoOAuth2 | null | undefined): AuthOAu
         pkce: oauth2.pkce ? { method: 'S256' } : undefined,
         tokenConfig: {
           id: oauth2.credentialsId || 'credentials',
-          placement: oauth2.tokenPlacement === 'query'
-            ? { query: oauth2.tokenQueryKey || 'access_token' }
-            : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
+          placement:
+            oauth2.tokenPlacement === 'query'
+              ? { query: oauth2.tokenQueryKey || 'access_token' }
+              : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
         },
         settings: {
           autoFetchToken: oauth2.autoFetchToken !== false,
@@ -413,9 +422,10 @@ const toOpenCollectionOAuth2 = (oauth2: BrunoOAuth2 | null | undefined): AuthOAu
         state: oauth2.state || '',
         tokenConfig: {
           id: oauth2.credentialsId || 'credentials',
-          placement: oauth2.tokenPlacement === 'query'
-            ? { query: oauth2.tokenQueryKey || 'access_token' }
-            : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
+          placement:
+            oauth2.tokenPlacement === 'query'
+              ? { query: oauth2.tokenQueryKey || 'access_token' }
+              : { header: oauth2.tokenHeaderPrefix || 'Bearer' }
         },
         settings: {
           autoFetchToken: oauth2.autoFetchToken !== false
@@ -501,9 +511,10 @@ export const toOpenCollectionAuth = (auth: BrunoAuth | null | undefined): Auth |
         callbackUrl: auth.oauth1?.callbackUrl || '',
         verifier: auth.oauth1?.verifier || '',
         signatureMethod: auth.oauth1?.signatureMethod || 'HMAC-SHA1',
-        privateKey: auth.oauth1?.privateKeyType === 'file'
-          ? { type: 'file' as const, value: auth.oauth1?.privateKey || '' }
-          : { type: 'text' as const, value: auth.oauth1?.privateKey || '' },
+        privateKey:
+          auth.oauth1?.privateKeyType === 'file'
+            ? { type: 'file' as const, value: auth.oauth1?.privateKey || '' }
+            : { type: 'text' as const, value: auth.oauth1?.privateKey || '' },
         timestamp: auth.oauth1?.timestamp || '',
         nonce: auth.oauth1?.nonce || '',
         version: auth.oauth1?.version || '1.0',

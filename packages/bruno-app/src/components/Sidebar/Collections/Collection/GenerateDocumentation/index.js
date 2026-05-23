@@ -63,14 +63,9 @@ const CollectionNotFound = ({ onClose }) => (
 
 const GenerateDocumentation = ({ onClose, collectionUid }) => {
   const { version } = useApp();
-  const collection = useSelector((state) =>
-    findCollectionByUid(state.collections.collections, collectionUid)
-  );
+  const collection = useSelector((state) => findCollectionByUid(state.collections.collections, collectionUid));
 
-  const isLoading = useMemo(
-    () => (collection ? areItemsLoading(collection) : false),
-    [collection]
-  );
+  const isLoading = useMemo(() => (collection ? areItemsLoading(collection) : false), [collection]);
 
   const handleGenerate = useCallback(() => {
     try {
@@ -100,10 +95,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
       // Escape closing tags to prevent HTML parser from breaking out of the script block
       escapedYaml = escapedYaml.replace(/<\//g, '<\\/');
 
-      const htmlContent = buildHtmlDocument(
-        escapeHtml(collection.name),
-        escapedYaml
-      );
+      const htmlContent = buildHtmlDocument(escapeHtml(collection.name), escapedYaml);
 
       const fileName = `${sanitizeName(collection.name)}-documentation.html`;
       FileSaver.saveAs(new Blob([htmlContent], { type: 'text/html' }), fileName);
@@ -161,7 +153,8 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
             </ul>
 
             <p className="note m-0">
-              The generated file loads OpenCollection's JavaScript and CSS files from a CDN, which requires an internet connection.
+              The generated file loads OpenCollection's JavaScript and CSS files from a CDN, which requires an internet
+              connection.
             </p>
           </div>
         )}

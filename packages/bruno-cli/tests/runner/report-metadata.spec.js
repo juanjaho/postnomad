@@ -108,6 +108,6 @@ describe('HTML Report Generation', () => {
 
     expect(htmlString).toContain('Request Skipped');
     expect(htmlString).toContain('summarySkippedRequests');
-    expect(htmlString).toContain('result.response.status === \'skipped\'');
+    expect(htmlString).toContain("result.response.status === 'skipped'");
   });
 });

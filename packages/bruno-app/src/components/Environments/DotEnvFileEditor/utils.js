@@ -28,7 +28,7 @@ export const rawToVariables = (rawContent) => {
     const name = trimmedLine.substring(0, equalIndex).trim();
     let value = trimmedLine.substring(equalIndex + 1);
 
-    if (value.startsWith('\'') && value.endsWith('\'')) {
+    if (value.startsWith("'") && value.endsWith("'")) {
       // Single-quoted values are fully literal in dotenv — no unescaping
       value = value.slice(1, -1);
     } else if (value.startsWith('`') && value.endsWith('`')) {

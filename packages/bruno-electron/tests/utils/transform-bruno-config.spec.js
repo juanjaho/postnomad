@@ -1,4 +1,7 @@
-const { transformBrunoConfigBeforeSave, transformBrunoConfigAfterRead } = require('../../src/utils/transformBrunoConfig');
+const {
+  transformBrunoConfigBeforeSave,
+  transformBrunoConfigAfterRead
+} = require('../../src/utils/transformBrunoConfig');
 
 describe('BrunoConfig Proxy Transform', () => {
   describe('transformBrunoConfigAfterRead - Migration from old to new format', () => {

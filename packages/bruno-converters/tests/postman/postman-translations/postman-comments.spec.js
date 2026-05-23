@@ -8,26 +8,26 @@ describe('postmanTranslations - comment handling', () => {
       pm.collectionVariables.set('key', data);
     `;
     const result = postmanTranslation(inputScript);
-    expect(result).toContain('console.log(\'This script does not contain pm commands.\');');
-    expect(result).toContain('const data = bru.getEnvVar(\'key\');');
+    expect(result).toContain("console.log('This script does not contain pm commands.');");
+    expect(result).toContain("const data = bru.getEnvVar('key');");
   });
 
   // TODO: Restore once UI update fixes are live for setCollectionVar
   test.skip('should translate pm.collectionVariables.set to bru.setCollectionVar', () => {
-    const inputScript = 'pm.collectionVariables.set(\'key\', data);';
-    const expectedOutput = 'bru.setCollectionVar(\'key\', data);';
+    const inputScript = "pm.collectionVariables.set('key', data);";
+    const expectedOutput = "bru.setCollectionVar('key', data);";
     expect(postmanTranslation(inputScript)).toBe(expectedOutput);
   });
 
   test('should leave non-translated pm commands as-is', () => {
-    const inputScript = 'pm.test(\'random test\', () => pm.vault.get(secretPath));';
-    const expectedOutput = 'test(\'random test\', () => pm.vault.get(secretPath));';
+    const inputScript = "pm.test('random test', () => pm.vault.get(secretPath));";
+    const expectedOutput = "test('random test', () => pm.vault.get(secretPath));";
     expect(postmanTranslation(inputScript)).toBe(expectedOutput);
   });
 
   test('should handle multiple pm commands on the same line', () => {
-    const inputScript = 'pm.environment.get(\'key\'); pm.environment.set(\'key\', \'value\');';
-    const expectedOutput = 'bru.getEnvVar(\'key\'); bru.setEnvVar(\'key\', \'value\');';
+    const inputScript = "pm.environment.get('key'); pm.environment.set('key', 'value');";
+    const expectedOutput = "bru.getEnvVar('key'); bru.setEnvVar('key', 'value');";
     expect(postmanTranslation(inputScript)).toBe(expectedOutput);
   });
 

@@ -5,7 +5,10 @@ import { waitForReadyPage } from '../../utils/page';
 
 test.describe('Default Workspace', () => {
   test.describe('First Launch', () => {
-    test('should create default workspace with "My Workspace" name on first launch', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create default workspace with "My Workspace" name on first launch', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-first-launch');
       const app = await launchElectronApp({ userDataPath });
       const page = await waitForReadyPage(app);
@@ -39,7 +42,10 @@ test.describe('Default Workspace', () => {
   });
 
   test.describe('Recovery - Creates NEW workspace (never modifies existing)', () => {
-    test('should create NEW workspace when existing workspace.yml is deleted', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create NEW workspace when existing workspace.yml is deleted', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-recovery-deleted');
 
       // Create a corrupted default workspace BEFORE launching app
@@ -76,7 +82,10 @@ test.describe('Default Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should create NEW workspace when workspace.yml has invalid YAML', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create NEW workspace when workspace.yml has invalid YAML', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-recovery-invalid');
 
       // Create workspace with invalid YAML BEFORE launching app
@@ -111,20 +120,26 @@ test.describe('Default Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should create NEW workspace when workspace.yml has wrong type', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create NEW workspace when workspace.yml has wrong type', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-recovery-wrong-type');
 
       // Create workspace with wrong type BEFORE launching app
       const defaultWorkspacePath = path.join(userDataPath, 'default-workspace');
       fs.mkdirSync(defaultWorkspacePath, { recursive: true });
-      fs.writeFileSync(path.join(defaultWorkspacePath, 'workspace.yml'), `opencollection: 1.0.0
+      fs.writeFileSync(
+        path.join(defaultWorkspacePath, 'workspace.yml'),
+        `opencollection: 1.0.0
 info:
   name: My Workspace
   type: collection
 collections:
 specs:
 docs: ''
-`);
+`
+      );
 
       // Create preferences pointing to the invalid workspace
       fs.writeFileSync(

@@ -227,7 +227,15 @@ auth:oauth1 {
   });
 
   it('should parse all signature methods correctly', () => {
-    const signatureMethods = ['HMAC-SHA1', 'HMAC-SHA256', 'HMAC-SHA512', 'RSA-SHA1', 'RSA-SHA256', 'RSA-SHA512', 'PLAINTEXT'];
+    const signatureMethods = [
+      'HMAC-SHA1',
+      'HMAC-SHA256',
+      'HMAC-SHA512',
+      'RSA-SHA1',
+      'RSA-SHA256',
+      'RSA-SHA512',
+      'PLAINTEXT'
+    ];
 
     for (const method of signatureMethods) {
       const input = `
@@ -301,7 +309,8 @@ auth:oauth1 {
   });
 
   it('should parse include_body_hash true and false', () => {
-    const makeInput = (val) => `
+    const makeInput = (val) =>
+      `
 meta {
   name: OAuth1 Body Hash
   type: http
@@ -536,7 +545,8 @@ describe('OAuth1 jsonToBru (request-level)', () => {
   });
 
   it('should serialize multiline private key with triple quotes', () => {
-    const pem = '-----BEGIN FAKE TEST KEY-----\nTESTREPLACEMENTdGhpcyBpcyBub3QgYQ==\nRkFLRUtFWXJlYWxrZXlkYXRhZm9ydGVz\n-----END FAKE TEST KEY-----';
+    const pem =
+      '-----BEGIN FAKE TEST KEY-----\nTESTREPLACEMENTdGhpcyBpcyBub3QgYQ==\nRkFLRUtFWXJlYWxrZXlkYXRhZm9ydGVz\n-----END FAKE TEST KEY-----';
 
     const json = {
       meta: { name: 'OAuth1 PEM', type: 'http', seq: 1 },
@@ -564,7 +574,7 @@ describe('OAuth1 jsonToBru (request-level)', () => {
 
     const bru = jsonToBru(json);
 
-    expect(bru).toContain('private_key: \'\'\'');
+    expect(bru).toContain("private_key: '''");
     expect(bru).toContain('-----BEGIN FAKE TEST KEY-----');
     expect(bru).toContain('-----END FAKE TEST KEY-----');
   });
@@ -750,7 +760,8 @@ describe('OAuth1 round-trip (request-level)', () => {
   });
 
   it('should survive round-trip with multiline PEM private key', () => {
-    const pem = '-----BEGIN FAKE TEST KEY-----\nTESTREPLACEMENTdGhpcyBpcyBub3QgYQ==\nRkFLRUtFWXJlYWxrZXlkYXRhZm9ydGVz\n-----END FAKE TEST KEY-----';
+    const pem =
+      '-----BEGIN FAKE TEST KEY-----\nTESTREPLACEMENTdGhpcyBpcyBub3QgYQ==\nRkFLRUtFWXJlYWxrZXlkYXRhZm9ydGVz\n-----END FAKE TEST KEY-----';
 
     const json = {
       meta: { name: 'OAuth1 PEM RT', type: 'http', seq: '1' },

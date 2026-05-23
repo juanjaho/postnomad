@@ -6,8 +6,8 @@ const BrunoResponse = require('../src/bruno-response');
 describe('HeaderList (req.headerList)', () => {
   const defaultHeaders = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer token123',
-    'Accept': '*/*'
+    Authorization: 'Bearer token123',
+    Accept: '*/*'
   };
 
   function createReqHeaders(headers = defaultHeaders) {
@@ -203,7 +203,7 @@ describe('HeaderList (req.headerList)', () => {
     });
 
     test('toObject(_, false) lowercases keys', () => {
-      const { list } = createReqHeaders({ 'Content-Type': 'json', 'Accept': '*/*' });
+      const { list } = createReqHeaders({ 'Content-Type': 'json', Accept: '*/*' });
       const obj = list.toObject(false, false);
       expect(obj['content-type']).toBe('json');
       expect(obj['accept']).toBe('*/*');
@@ -226,7 +226,7 @@ describe('HeaderList (req.headerList)', () => {
       const rawReq = {
         url: 'https://example.com',
         method: 'GET',
-        headers: { 'A': '1', '': 'empty-key' },
+        headers: { A: '1', '': 'empty-key' },
         disabledHeaders: []
       };
       const brunoReq = new BrunoRequest(rawReq);
@@ -734,14 +734,18 @@ describe('HeaderList (req.headerList)', () => {
     test('each(fn, context) binds this', () => {
       const { list } = createReqHeaders({ A: '1' });
       const ctx = { collected: [] };
-      list.each(function (h) { this.collected.push(h.key); }, ctx);
+      list.each(function (h) {
+        this.collected.push(h.key);
+      }, ctx);
       expect(ctx.collected).toContain('A');
     });
 
     test('filter(fn, context) binds this', () => {
       const { list } = createReqHeaders({ A: '1', B: '2' });
       const ctx = { target: 'A' };
-      const result = list.filter(function (h) { return h.key === this.target; }, ctx);
+      const result = list.filter(function (h) {
+        return h.key === this.target;
+      }, ctx);
       expect(result).toHaveLength(1);
       expect(result[0].key).toBe('A');
     });
@@ -749,30 +753,40 @@ describe('HeaderList (req.headerList)', () => {
     test('find(fn, context) binds this', () => {
       const { list } = createReqHeaders({ A: '1' });
       const ctx = { target: 'A' };
-      const result = list.find(function (h) { return h.key === this.target; }, ctx);
+      const result = list.find(function (h) {
+        return h.key === this.target;
+      }, ctx);
       expect(result.key).toBe('A');
     });
 
     test('map(fn, context) binds this', () => {
       const { list } = createReqHeaders({ A: '1' });
       const ctx = { prefix: 'X-' };
-      const result = list.map(function (h) { return this.prefix + h.key; }, ctx);
+      const result = list.map(function (h) {
+        return this.prefix + h.key;
+      }, ctx);
       expect(result).toContain('X-A');
     });
 
     test('reduce(fn, accumulator, context) binds this', () => {
       const { list } = createReqHeaders({ A: '1', B: '2' });
       const ctx = { separator: '|' };
-      const result = list.reduce(function (acc, h) {
-        return acc + this.separator + h.key;
-      }, '', ctx);
+      const result = list.reduce(
+        function (acc, h) {
+          return acc + this.separator + h.key;
+        },
+        '',
+        ctx
+      );
       expect(result).toBe('|A|B');
     });
 
     test('remove(fn, context) binds this', () => {
       const { list, rawReq } = createReqHeaders({ A: '1', B: '2' });
       const ctx = { target: 'A' };
-      list.remove(function (h) { return h.key === this.target; }, ctx);
+      list.remove(function (h) {
+        return h.key === this.target;
+      }, ctx);
       expect(rawReq.headers['A']).toBeUndefined();
       expect(rawReq.headers['B']).toBe('2');
     });
@@ -814,7 +828,13 @@ describe('HeaderList (req.headerList)', () => {
       const { list, rawReq } = createReqHeaders({ A: '1', B: '2', C: '3' });
       // Source has A and D. After assimilate with prune:
       // A should be kept (in both), B and C removed (not in source), D added
-      list.assimilate([{ key: 'A', value: 'updated' }, { key: 'D', value: '4' }], true);
+      list.assimilate(
+        [
+          { key: 'A', value: 'updated' },
+          { key: 'D', value: '4' }
+        ],
+        true
+      );
       expect(rawReq.headers['A']).toBe('updated');
       expect(rawReq.headers['D']).toBe('4');
       expect(rawReq.headers['B']).toBeUndefined();

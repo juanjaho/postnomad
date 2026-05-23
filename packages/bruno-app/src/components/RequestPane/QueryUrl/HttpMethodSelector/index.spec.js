@@ -10,9 +10,7 @@ import { ThemeContext } from 'providers/Theme';
 const renderWithTheme = (component) => {
   return render(
     <ThemeContext.Provider value={{ theme: themes.dark }}>
-      <ThemeProvider theme={themes.dark}>
-        {component}
-      </ThemeProvider>
+      <ThemeProvider theme={themes.dark}>{component}</ThemeProvider>
     </ThemeContext.Provider>
   );
 };
@@ -137,12 +135,7 @@ describe('HttpMethodSelector', () => {
           setMethod(newMethod);
         };
 
-        return (
-          <HttpMethodSelector
-            method={method}
-            onMethodSelect={handleMethodSelect}
-          />
-        );
+        return <HttpMethodSelector method={method} onMethodSelect={handleMethodSelect} />;
       };
 
       renderWithTheme(<TestWrapper />);

@@ -32,10 +32,12 @@ const WSResponsePane = ({ item, collection }) => {
   });
 
   const selectTab = (tab) => {
-    dispatch(updateResponsePaneTab({
-      uid: item.uid,
-      responsePaneTab: tab
-    }));
+    dispatch(
+      updateResponsePaneTab({
+        uid: item.uid,
+        responsePaneTab: tab
+      })
+    );
   };
 
   const response = item.response || {};
@@ -116,11 +118,7 @@ const WSResponsePane = ({ item, collection }) => {
         <>
           <ResponseLayoutToggle />
           <ResponseClear item={item} collection={collection} />
-          <WSStatusCode
-            status={response.statusCode}
-            text={response.statusText}
-            details={response.statusDescription}
-          />
+          <WSStatusCode status={response.statusCode} text={response.statusText} details={response.statusDescription} />
           <ResponseTime duration={response.duration} />
         </>
       ) : null}

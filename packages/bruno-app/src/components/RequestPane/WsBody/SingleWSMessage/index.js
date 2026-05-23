@@ -51,11 +51,13 @@ export const SingleWSMessage = ({
       type: DECODER_BY_TYPE[type]
     };
 
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   const onEdit = (value) => {
@@ -67,11 +69,13 @@ export const SingleWSMessage = ({
       content: value
     };
 
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
@@ -81,11 +85,13 @@ export const SingleWSMessage = ({
 
     currentMessages.splice(index, 1);
 
-    dispatch(updateRequestBody({
-      content: currentMessages,
-      itemUid: item.uid,
-      collectionUid: collection.uid
-    }));
+    dispatch(
+      updateRequestBody({
+        content: currentMessages,
+        itemUid: item.uid,
+        collectionUid: collection.uid
+      })
+    );
   };
 
   let codeType = messageFormat;
@@ -109,11 +115,13 @@ export const SingleWSMessage = ({
           name: name ? name : `message ${index + 1}`,
           content: prettyBodyJson
         };
-        dispatch(updateRequestBody({
-          content: currentMessages,
-          itemUid: item.uid,
-          collectionUid: collection.uid
-        }));
+        dispatch(
+          updateRequestBody({
+            content: currentMessages,
+            itemUid: item.uid,
+            collectionUid: collection.uid
+          })
+        );
       } catch (e) {
         toastError(new Error('Unable to prettify. Invalid JSON format.'));
       }
@@ -130,11 +138,13 @@ export const SingleWSMessage = ({
           content: prettyBodyXML
         };
 
-        dispatch(updateRequestBody({
-          content: currentMessages,
-          itemUid: item.uid,
-          collectionUid: collection.uid
-        }));
+        dispatch(
+          updateRequestBody({
+            content: currentMessages,
+            itemUid: item.uid,
+            collectionUid: collection.uid
+          })
+        );
       } catch (e) {
         toastError(new Error('Unable to prettify. Invalid XML format.'));
       }

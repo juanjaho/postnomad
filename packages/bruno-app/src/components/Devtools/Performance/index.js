@@ -1,14 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import StyledWrapper from './StyledWrapper';
-import {
-  IconCpu,
-  IconDatabase,
-  IconClock,
-  IconServer,
-  IconChevronDown,
-  IconChartLine
-} from '@tabler/icons';
+import { IconCpu, IconDatabase, IconClock, IconServer, IconChevronDown, IconChartLine } from '@tabler/icons';
 
 const getProcessOptions = (processes) => {
   return [
@@ -86,8 +79,7 @@ const Performance = () => {
           <IconChartLine size={12} strokeWidth={1.5} />
           <span>
             {trend > 0 ? '+' : ''}
-            {trend.toFixed(1)}
-            %
+            {trend.toFixed(1)}%
           </span>
         </div>
       )}
@@ -130,7 +122,7 @@ const Performance = () => {
           title="Memory Usage"
           value={formatBytes(systemResources.memory)}
           subtitle="Total memory usage"
-          color={systemResources.memory > (500 * 1024 * 1024) ? 'danger' : 'default'}
+          color={systemResources.memory > 500 * 1024 * 1024 ? 'danger' : 'default'}
         />
 
         <SystemResourceCard
@@ -156,9 +148,7 @@ const Performance = () => {
     if (!process) return null;
 
     // Calculate uptime for individual process
-    const processUptime = process.creationTime
-      ? (new Date() - new Date(process.creationTime)) / 1000
-      : 0;
+    const processUptime = process.creationTime ? (new Date() - new Date(process.creationTime)) / 1000 : 0;
 
     return (
       <div className="system-resources">
@@ -177,7 +167,7 @@ const Performance = () => {
             title="Memory Usage"
             value={formatBytes(process.memory)}
             subtitle="Current memory usage"
-            color={process.memory > (500 * 1024 * 1024) ? 'danger' : 'default'}
+            color={process.memory > 500 * 1024 * 1024 ? 'danger' : 'default'}
           />
 
           <SystemResourceCard

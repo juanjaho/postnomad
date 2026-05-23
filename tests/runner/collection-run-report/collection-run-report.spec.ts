@@ -4,17 +4,19 @@ import fs from 'fs';
 import path from 'path';
 
 function normalizeJunitReport(xmlContent: string): string {
-  return xmlContent
-    // Replace timestamps with fixed value
-    .replace(/timestamp="[^"]*"/g, 'timestamp="2024-01-01T00:00:00.000"')
-    // Replace hostnames with fixed value
-    .replace(/hostname="[^"]*"/g, 'hostname="test-host"')
-    // Replace execution times with fixed value
-    .replace(/time="[^"]*"/g, 'time="0.100"')
-    // Replace file paths with normalized path
-    .replace(/file="[^"]*[\\/][^"]*"/g, 'file="/mock/path/to/file.bru"')
-    // Replace test paths with normalized path
-    .replace(/classname="[^"]*[\\/][^"]*"/g, 'classname="/test/path/collection"');
+  return (
+    xmlContent
+      // Replace timestamps with fixed value
+      .replace(/timestamp="[^"]*"/g, 'timestamp="2024-01-01T00:00:00.000"')
+      // Replace hostnames with fixed value
+      .replace(/hostname="[^"]*"/g, 'hostname="test-host"')
+      // Replace execution times with fixed value
+      .replace(/time="[^"]*"/g, 'time="0.100"')
+      // Replace file paths with normalized path
+      .replace(/file="[^"]*[\\/][^"]*"/g, 'file="/mock/path/to/file.bru"')
+      // Replace test paths with normalized path
+      .replace(/classname="[^"]*[\\/][^"]*"/g, 'classname="/test/path/collection"')
+  );
 }
 
 test.describe('Collection Run Report Tests', () => {

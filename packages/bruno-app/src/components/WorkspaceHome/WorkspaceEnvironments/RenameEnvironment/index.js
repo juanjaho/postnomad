@@ -16,8 +16,9 @@ const RenameEnvironment = ({ onClose, environment }) => {
 
   const validateEnvironmentName = (name) => {
     const trimmedName = name?.toLowerCase().trim();
-    return (globalEnvs || []).every((env) =>
-      env.uid === environment.uid || env?.name?.toLowerCase().trim() !== trimmedName);
+    return (globalEnvs || []).every(
+      (env) => env.uid === environment.uid || env?.name?.toLowerCase().trim() !== trimmedName
+    );
   };
 
   const formik = useFormik({
@@ -64,13 +65,7 @@ const RenameEnvironment = ({ onClose, environment }) => {
 
   return (
     <Portal>
-      <Modal
-        size="sm"
-        title="Rename Environment"
-        confirmText="Rename"
-        handleConfirm={onSubmit}
-        handleCancel={onClose}
-      >
+      <Modal size="sm" title="Rename Environment" confirmText="Rename" handleConfirm={onSubmit} handleCancel={onClose}>
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="environment-name" className="block font-semibold">

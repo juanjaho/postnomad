@@ -1,16 +1,7 @@
 import React from 'react';
 import CodeEditor from 'components/CodeEditor';
 
-const DotEnvRawView = ({
-  collection,
-  item,
-  theme,
-  value,
-  onChange,
-  onSave,
-  onReset,
-  isSaving
-}) => {
+const DotEnvRawView = ({ collection, item, theme, value, onChange, onSave, onReset, isSaving }) => {
   return (
     <>
       <div className="raw-editor-container" data-testid="dotenv-raw-editor">
@@ -31,7 +22,13 @@ const DotEnvRawView = ({
           <button type="button" className="submit" onClick={onSave} disabled={isSaving} data-testid="save-dotenv-raw">
             {isSaving ? 'Saving...' : 'Save'}
           </button>
-          <button type="button" className="submit reset ml-2" onClick={onReset} disabled={isSaving} data-testid="reset-dotenv-raw">
+          <button
+            type="button"
+            className="submit reset ml-2"
+            onClick={onReset}
+            disabled={isSaving}
+            data-testid="reset-dotenv-raw"
+          >
             Reset
           </button>
         </div>

@@ -43,7 +43,8 @@ const builder = (yargs) => {
       type: 'string'
     })
     .option('collection-format', {
-      describe: 'Format of the imported collection (bru or opencollection). If not specified, the default is `opencollection`',
+      describe:
+        'Format of the imported collection (bru or opencollection). If not specified, the default is `opencollection`',
       type: 'string',
       choices: COLLECTION_FORMATS,
       default: 'opencollection'
@@ -55,14 +56,17 @@ const builder = (yargs) => {
     })
     .option('group-by', {
       alias: 'g',
-      describe: 'How to group the imported requests: "tags" groups by OpenAPI tags, "path" groups by URL path structure',
+      describe:
+        'How to group the imported requests: "tags" groups by OpenAPI tags, "path" groups by URL path structure',
       type: 'string',
       choices: ['tags', 'path'],
       default: 'tags'
     })
     .example('$0 import openapi --source api.yml --output ~/Desktop/my-collection --collection-name "My API"')
     .example('$0 import openapi -s api.yml -o ~/Desktop/my-collection -n "My API"')
-    .example('$0 import openapi --source https://example.com/api-spec.json --output ~/Desktop --collection-name "Remote API"')
+    .example(
+      '$0 import openapi --source https://example.com/api-spec.json --output ~/Desktop --collection-name "Remote API"'
+    )
     .example('$0 import openapi --source https://self-signed.example.com/api.json --insecure --output ~/Desktop')
     .example('$0 import openapi --source api.yml --output-file ~/Desktop/my-collection.json --collection-name "My API"')
     .example('$0 import openapi -s api.yml -f ~/Desktop/my-collection.json -n "My API"')
@@ -98,7 +102,7 @@ const readOpenApiFile = async (source, options = {}) => {
         // Skip SSL certificate validation if insecure flag is set
         if (options.insecure) {
           console.log(chalk.yellow('Warning: SSL certificate verification is disabled. Use with caution.'));
-          axiosOptions.httpsAgent = new (require('https')).Agent({ rejectUnauthorized: false });
+          axiosOptions.httpsAgent = new (require('https').Agent)({ rejectUnauthorized: false });
         }
 
         const response = await axios.get(source, axiosOptions);
@@ -106,8 +110,11 @@ const readOpenApiFile = async (source, options = {}) => {
       } catch (error) {
         if (error.code === 'ECONNABORTED') {
           throw new Error('Request timed out. The server took too long to respond.');
-        } else if (error.code === 'CERT_HAS_EXPIRED' || error.code === 'DEPTH_ZERO_SELF_SIGNED_CERT'
-          || error.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+        } else if (
+          error.code === 'CERT_HAS_EXPIRED' ||
+          error.code === 'DEPTH_ZERO_SELF_SIGNED_CERT' ||
+          error.code === 'ERR_TLS_CERT_ALTNAME_INVALID'
+        ) {
           throw new Error(`SSL Certificate error: ${error.code}. Try using --insecure if you trust this source.`);
         } else if (error.response) {
           throw new Error(`Failed to fetch from URL: ${error.response.status} ${error.response.statusText}`);
@@ -124,7 +131,7 @@ const readOpenApiFile = async (source, options = {}) => {
       }
     } else {
       // Handle file input
-      if (!await exists(source)) {
+      if (!(await exists(source))) {
         throw new Error(`File does not exist: ${source}`);
       }
       content = fs.readFileSync(source, 'utf8');
@@ -167,7 +174,7 @@ const readWSDLFile = async (source, options = {}) => {
         // Skip SSL certificate validation if insecure flag is set
         if (options.insecure) {
           console.log(chalk.yellow('Warning: SSL certificate verification is disabled. Use with caution.'));
-          axiosOptions.httpsAgent = new (require('https')).Agent({ rejectUnauthorized: false });
+          axiosOptions.httpsAgent = new (require('https').Agent)({ rejectUnauthorized: false });
         }
 
         const response = await axios.get(source, axiosOptions);
@@ -175,8 +182,11 @@ const readWSDLFile = async (source, options = {}) => {
       } catch (error) {
         if (error.code === 'ECONNABORTED') {
           throw new Error('Request timed out. The server took too long to respond.');
-        } else if (error.code === 'CERT_HAS_EXPIRED' || error.code === 'DEPTH_ZERO_SELF_SIGNED_CERT'
-          || error.code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+        } else if (
+          error.code === 'CERT_HAS_EXPIRED' ||
+          error.code === 'DEPTH_ZERO_SELF_SIGNED_CERT' ||
+          error.code === 'ERR_TLS_CERT_ALTNAME_INVALID'
+        ) {
           throw new Error(`SSL Certificate error: ${error.code}. Try using --insecure if you trust this source.`);
         } else if (error.response) {
           throw new Error(`Failed to fetch from URL: ${error.response.status} ${error.response.statusText}`);
@@ -188,7 +198,7 @@ const readWSDLFile = async (source, options = {}) => {
       }
     } else {
       // Handle file input
-      if (!await exists(source)) {
+      if (!(await exists(source))) {
         throw new Error(`File does not exist: ${source}`);
       }
       content = fs.readFileSync(source, 'utf8');
@@ -271,7 +281,7 @@ const handler = async (argv) => {
       const resolvedOutput = path.resolve(output);
 
       // Check if output is an existing directory
-      const isOutputDirectory = await exists(resolvedOutput) && isDirectory(resolvedOutput);
+      const isOutputDirectory = (await exists(resolvedOutput)) && isDirectory(resolvedOutput);
 
       // Determine the final output directory
       let outputDir;
@@ -297,7 +307,7 @@ const handler = async (argv) => {
 
         // Check if parent directory exists
         const parentDir = path.dirname(outputDir);
-        if (!await exists(parentDir)) {
+        if (!(await exists(parentDir))) {
           console.error(chalk.red(`Parent directory does not exist: ${parentDir}`));
           process.exit(1);
         }

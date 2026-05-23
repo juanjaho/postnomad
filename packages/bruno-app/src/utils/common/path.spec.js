@@ -120,17 +120,26 @@ describe('Path Utilities - Unix Platform', () => {
 
   describe('getRelativePathWithinBasePath', () => {
     it('should store in-collection files as relative paths', () => {
-      const result = getRelativePathWithinBasePath('/users/john/collections/api', '/users/john/collections/api/files/payload.txt');
+      const result = getRelativePathWithinBasePath(
+        '/users/john/collections/api',
+        '/users/john/collections/api/files/payload.txt'
+      );
       expect(result).toBe('files/payload.txt');
     });
 
     it('should handle collection paths with trailing separators', () => {
-      const result = getRelativePathWithinBasePath('/users/john/collections/api/', '/users/john/collections/api/files/payload.txt');
+      const result = getRelativePathWithinBasePath(
+        '/users/john/collections/api/',
+        '/users/john/collections/api/files/payload.txt'
+      );
       expect(result).toBe('files/payload.txt');
     });
 
     it('should resolve dot segments before deciding whether a file is inside the collection', () => {
-      const result = getRelativePathWithinBasePath('/users/john/collections/api', '/users/john/collections/api/files/../payload.txt');
+      const result = getRelativePathWithinBasePath(
+        '/users/john/collections/api',
+        '/users/john/collections/api/files/../payload.txt'
+      );
       expect(result).toBe('payload.txt');
     });
 
@@ -159,12 +168,17 @@ describe('Path Utilities - Unix Platform', () => {
     });
 
     it('should store in-collection paths whose names begin with two dots as relative paths', () => {
-      const result = getRelativePathWithinBasePath('/users/john/collections/api', '/users/john/collections/api/..payload.txt');
+      const result = getRelativePathWithinBasePath(
+        '/users/john/collections/api',
+        '/users/john/collections/api/..payload.txt'
+      );
       expect(result).toBe('..payload.txt');
     });
 
     it('should keep the original file path when inputs are missing', () => {
-      expect(getRelativePathWithinBasePath('', '/users/john/downloads/payload.txt')).toBe('/users/john/downloads/payload.txt');
+      expect(getRelativePathWithinBasePath('', '/users/john/downloads/payload.txt')).toBe(
+        '/users/john/downloads/payload.txt'
+      );
       expect(getRelativePathWithinBasePath('/users/john/collections/api', '')).toBe('');
     });
 

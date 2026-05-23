@@ -37,12 +37,16 @@ const generateHtmlReport = ({
       summary
     };
   });
-  const htmlString = htmlTemplateString(encodeBase64(JSON.stringify({
-    results: resultsWithSummaryAndCleanData,
-    version,
-    environment,
-    runCompletionTime
-  })));
+  const htmlString = htmlTemplateString(
+    encodeBase64(
+      JSON.stringify({
+        results: resultsWithSummaryAndCleanData,
+        version,
+        environment,
+        runCompletionTime
+      })
+    )
+  );
   return htmlString;
 };
 

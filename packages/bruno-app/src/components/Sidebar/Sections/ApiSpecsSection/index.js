@@ -42,14 +42,8 @@ const ApiSpecsSection = () => {
 
   const sectionActions = (
     <>
-      <MenuDropdown
-        data-testid="api-specs-header-add-menu"
-        items={addDropdownItems}
-        placement="bottom-end"
-      >
-        <ActionIcon
-          label="Add new API Spec"
-        >
+      <MenuDropdown data-testid="api-specs-header-add-menu" items={addDropdownItems} placement="bottom-end">
+        <ActionIcon label="Add new API Spec">
           <IconPlus size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
       </MenuDropdown>
@@ -58,11 +52,7 @@ const ApiSpecsSection = () => {
 
   return (
     <>
-      {createApiSpecModalOpen && (
-        <CreateApiSpec
-          onClose={() => setCreateApiSpecModalOpen(false)}
-        />
-      )}
+      {createApiSpecModalOpen && <CreateApiSpec onClose={() => setCreateApiSpecModalOpen(false)} />}
       <SidebarSection
         id="api-specs"
         title="API Specs"

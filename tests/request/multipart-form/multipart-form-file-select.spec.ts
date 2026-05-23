@@ -1,5 +1,13 @@
 import { test, expect } from '../../../playwright';
-import { closeAllCollections, createCollection, createRequest, openCollection, openRequest, saveRequest, selectRequestPaneTab } from '../../utils/page';
+import {
+  closeAllCollections,
+  createCollection,
+  createRequest,
+  openCollection,
+  openRequest,
+  saveRequest,
+  selectRequestPaneTab
+} from '../../utils/page';
 import { buildCommonLocators } from '../../utils/page/locators';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -72,7 +80,7 @@ test.describe.serial('Multipart Form - File Select Without Key', () => {
       const inlineChip = fileCell.getByTestId('multipart-file-chip');
       const summary = fileCell.getByTestId('multipart-file-summary');
 
-      if (await inlineChip.count() > 0) {
+      if ((await inlineChip.count()) > 0) {
         await expect(inlineChip.first()).toContainText('test-file.txt');
       } else {
         await expect(summary).toBeVisible();

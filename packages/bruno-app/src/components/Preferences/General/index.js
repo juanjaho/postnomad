@@ -96,48 +96,51 @@ const General = () => {
     }
   });
 
-  const handleSave = useCallback((newPreferences) => {
-    dispatch(
-      savePreferences({
-        ...preferences,
-        request: {
-          sslVerification: newPreferences.sslVerification,
-          customCaCertificate: {
-            enabled: newPreferences.customCaCertificate.enabled,
-            filePath: newPreferences.customCaCertificate.filePath
+  const handleSave = useCallback(
+    (newPreferences) => {
+      dispatch(
+        savePreferences({
+          ...preferences,
+          request: {
+            sslVerification: newPreferences.sslVerification,
+            customCaCertificate: {
+              enabled: newPreferences.customCaCertificate.enabled,
+              filePath: newPreferences.customCaCertificate.filePath
+            },
+            keepDefaultCaCertificates: {
+              enabled: newPreferences.keepDefaultCaCertificates.enabled
+            },
+            timeout: newPreferences.timeout,
+            storeCookies: newPreferences.storeCookies,
+            sendCookies: newPreferences.sendCookies,
+            oauth2: {
+              useSystemBrowser: newPreferences.oauth2.useSystemBrowser
+            }
           },
-          keepDefaultCaCertificates: {
-            enabled: newPreferences.keepDefaultCaCertificates.enabled
+          autoSave: {
+            enabled: newPreferences.autoSave.enabled,
+            interval: newPreferences.autoSave.interval
           },
-          timeout: newPreferences.timeout,
-          storeCookies: newPreferences.storeCookies,
-          sendCookies: newPreferences.sendCookies,
-          oauth2: {
-            useSystemBrowser: newPreferences.oauth2.useSystemBrowser
+          general: {
+            defaultLocation: newPreferences.defaultLocation
           }
-        },
-        autoSave: {
-          enabled: newPreferences.autoSave.enabled,
-          interval: newPreferences.autoSave.interval
-        },
-        general: {
-          defaultLocation: newPreferences.defaultLocation
-        }
-      }))
-      .catch((err) => console.log(err) && toast.error('Failed to update preferences'));
-  }, [dispatch, preferences]);
+        })
+      ).catch((err) => console.log(err) && toast.error('Failed to update preferences'));
+    },
+    [dispatch, preferences]
+  );
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;
 
   const debouncedSave = useCallback(
     debounce((values) => {
-      preferencesSchema.validate(values, { abortEarly: true })
+      preferencesSchema
+        .validate(values, { abortEarly: true })
         .then((validatedValues) => {
           handleSaveRef.current(validatedValues);
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     }, 500),
     []
   );
@@ -254,7 +257,9 @@ const General = () => {
             checked={formik.values.keepDefaultCaCertificates.enabled}
             onChange={formik.handleChange}
             className={`mousetrap mr-0 ${formik.values.customCaCertificate.enabled && formik.values.customCaCertificate.filePath ? '' : 'opacity-25'}`}
-            disabled={formik.values.customCaCertificate.enabled && formik.values.customCaCertificate.filePath ? false : true}
+            disabled={
+              formik.values.customCaCertificate.enabled && formik.values.customCaCertificate.filePath ? false : true
+            }
           />
           <label
             className={`block ml-2 select-none ${formik.values.customCaCertificate.enabled && formik.values.customCaCertificate.filePath ? '' : 'opacity-25'}`}
@@ -362,9 +367,7 @@ const General = () => {
           <label className="block select-none default-location-label" htmlFor="defaultLocation">
             Default Location
           </label>
-          <p className="text-muted mt-1 text-xs">
-            Used as the default location for new workspaces and collections
-          </p>
+          <p className="text-muted mt-1 text-xs">Used as the default location for new workspaces and collections</p>
           <input
             type="text"
             name="defaultLocation"

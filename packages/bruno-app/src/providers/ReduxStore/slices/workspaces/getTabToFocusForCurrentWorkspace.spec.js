@@ -91,10 +91,7 @@ describe('getTabToFocusForCurrentWorkspace', () => {
     const state = buildState({
       tabs: {
         activeTabUid: 'malformed',
-        tabs: [
-          { uid: 'malformed' },
-          { uid: 'req-b', collectionUid: 'col-b' }
-        ]
+        tabs: [{ uid: 'malformed' }, { uid: 'req-b', collectionUid: 'col-b' }]
       }
     });
     const result = getTabToFocusForCurrentWorkspace(state);
@@ -106,9 +103,7 @@ describe('getTabToFocusForCurrentWorkspace', () => {
     const state = buildState({
       tabs: {
         activeTabUid: 'req-a',
-        tabs: [
-          { uid: 'req-a', collectionUid: 'col-a' }
-        ]
+        tabs: [{ uid: 'req-a', collectionUid: 'col-a' }]
       }
     });
     const result = getTabToFocusForCurrentWorkspace(state);

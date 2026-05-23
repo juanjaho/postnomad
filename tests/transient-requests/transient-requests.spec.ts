@@ -1,5 +1,13 @@
 import { test, expect } from '../../playwright';
-import { createTransientRequest, fillRequestUrl, closeAllCollections, createCollection, sendRequest, clickResponseAction, selectRequestPaneTab } from '../utils/page';
+import {
+  createTransientRequest,
+  fillRequestUrl,
+  closeAllCollections,
+  createCollection,
+  sendRequest,
+  clickResponseAction,
+  selectRequestPaneTab
+} from '../utils/page';
 import { buildCommonLocators, buildWebsocketCommonLocators } from '../utils/page/locators';
 
 const saveShortcut = process.platform === 'darwin' ? 'Meta+s' : 'Control+s';
@@ -218,9 +226,13 @@ test.describe.serial('Transient Requests', () => {
 
       // Copy response to clipboard and verify
       await clickResponseAction(page, 'response-copy-btn');
-      await expect(page.getByText('Response copied to clipboard')).toBeVisible({ timeout: 10000 }).catch(() => {});
+      await expect(page.getByText('Response copied to clipboard'))
+        .toBeVisible({ timeout: 10000 })
+        .catch(() => {});
 
-      await expect.poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => ''))).toBeTruthy();
+      await expect
+        .poll(async () => await page.evaluate(() => navigator.clipboard.readText().catch(() => '')))
+        .toBeTruthy();
       const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
       expect(clipboardText).toBe('pong');
     });

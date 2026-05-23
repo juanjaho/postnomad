@@ -5,7 +5,7 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  
+
   color: ${(props) => props.theme.text};
 
   .text-link {

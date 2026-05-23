@@ -1,12 +1,30 @@
 import React from 'react';
-import { IconCheck, IconChevronDown, IconFolder, IconHome, IconPin, IconPinned, IconPlus, IconDownload, IconSettings, IconMinus, IconSquare, IconX, IconCopy } from '@tabler/icons';
+import {
+  IconCheck,
+  IconChevronDown,
+  IconFolder,
+  IconHome,
+  IconPin,
+  IconPinned,
+  IconPlus,
+  IconDownload,
+  IconSettings,
+  IconMinus,
+  IconSquare,
+  IconX,
+  IconCopy
+} from '@tabler/icons';
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { savePreferences, showManageWorkspacePage, toggleSidebarCollapse } from 'providers/ReduxStore/slices/app';
 import { closeConsole, openConsole } from 'providers/ReduxStore/slices/logs';
-import { createWorkspaceWithUniqueName, openWorkspaceDialog, switchWorkspace } from 'providers/ReduxStore/slices/workspaces/actions';
+import {
+  createWorkspaceWithUniqueName,
+  openWorkspaceDialog,
+  switchWorkspace
+} from 'providers/ReduxStore/slices/workspaces/actions';
 import { sortWorkspaces, toggleWorkspacePin } from 'utils/workspaces';
 import { focusTab } from 'providers/ReduxStore/slices/tabs';
 import get from 'lodash/get';
@@ -52,7 +70,8 @@ const AppTitleBar = () => {
     const { ipcRenderer } = window;
     if (!ipcRenderer) return;
 
-    ipcRenderer.invoke('renderer:window-is-fullscreen')
+    ipcRenderer
+      .invoke('renderer:window-is-fullscreen')
       .then((fullscreen) => {
         setIsFullScreen(fullscreen);
       })
@@ -79,7 +98,8 @@ const AppTitleBar = () => {
     const { ipcRenderer } = window;
     if (!ipcRenderer) return;
 
-    ipcRenderer.invoke('renderer:window-is-maximized')
+    ipcRenderer
+      .invoke('renderer:window-is-maximized')
       .then((maximized) => {
         setIsMaximized(maximized);
       })
@@ -132,7 +152,12 @@ const AppTitleBar = () => {
   const WorkspaceName = forwardRef((props, ref) => {
     return (
       <div ref={ref} className="workspace-name-container" {...props}>
-        <span data-testid="workspace-name" className={classNames('workspace-name', { 'italic text-muted': !activeWorkspace?.name })}>{getWorkspaceDisplayName(activeWorkspace?.name)}</span>
+        <span
+          data-testid="workspace-name"
+          className={classNames('workspace-name', { 'italic text-muted': !activeWorkspace?.name })}
+        >
+          {getWorkspaceDisplayName(activeWorkspace?.name)}
+        </span>
         <IconChevronDown size={14} stroke={1.5} className="chevron-icon" />
       </div>
     );
@@ -181,12 +206,15 @@ const AppTitleBar = () => {
     setImportWorkspaceModalOpen(true);
   };
 
-  const handlePinWorkspace = useCallback((workspaceUid, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const newPreferences = toggleWorkspacePin(workspaceUid, preferences);
-    dispatch(savePreferences(newPreferences));
-  }, [dispatch, preferences]);
+  const handlePinWorkspace = useCallback(
+    (workspaceUid, e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const newPreferences = toggleWorkspacePin(workspaceUid, preferences);
+      dispatch(savePreferences(newPreferences));
+    },
+    [dispatch, preferences]
+  );
 
   const handleToggleSidebar = () => {
     dispatch(toggleSidebarCollapse());
@@ -263,12 +291,8 @@ const AppTitleBar = () => {
 
   return (
     <StyledWrapper className={`app-titlebar ${osClass} ${isFullScreen ? 'fullscreen' : ''}`}>
-      {createWorkspaceModalOpen && (
-        <CreateWorkspace onClose={() => setCreateWorkspaceModalOpen(false)} />
-      )}
-      {importWorkspaceModalOpen && (
-        <ImportWorkspace onClose={() => setImportWorkspaceModalOpen(false)} />
-      )}
+      {createWorkspaceModalOpen && <CreateWorkspace onClose={() => setCreateWorkspaceModalOpen(false)} />}
+      {importWorkspaceModalOpen && <ImportWorkspace onClose={() => setImportWorkspaceModalOpen(false)} />}
 
       <div className="titlebar-content">
         <div className="titlebar-left">
@@ -323,11 +347,7 @@ const AppTitleBar = () => {
 
           {showWindowControls && (
             <div className="window-controls">
-              <button
-                className="window-control-btn minimize"
-                onClick={handleMinimize}
-                aria-label="Minimize"
-              >
+              <button className="window-control-btn minimize" onClick={handleMinimize} aria-label="Minimize">
                 <IconMinus size={16} stroke={1} />
               </button>
               <button
@@ -337,11 +357,7 @@ const AppTitleBar = () => {
               >
                 {isMaximized ? <IconCopy size={14} stroke={1} /> : <IconSquare size={14} stroke={1} />}
               </button>
-              <button
-                className="window-control-btn close"
-                onClick={handleClose}
-                aria-label="Close"
-              >
+              <button className="window-control-btn close" onClick={handleClose} aria-label="Close">
                 <IconX size={16} stroke={1} />
               </button>
             </div>

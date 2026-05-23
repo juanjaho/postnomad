@@ -30,7 +30,10 @@ const jsonToCollectionBru = (json) => {
     if (enabled(query).length) {
       bru += `\n${indentString(
         enabled(query)
-          .map((item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -38,7 +41,10 @@ const jsonToCollectionBru = (json) => {
     if (disabled(query).length) {
       bru += `\n${indentString(
         disabled(query)
-          .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -51,7 +57,10 @@ const jsonToCollectionBru = (json) => {
     if (enabled(headers).length) {
       bru += `\n${indentString(
         enabled(headers)
-          .map((item) => `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -59,7 +68,10 @@ const jsonToCollectionBru = (json) => {
     if (disabled(headers).length) {
       bru += `\n${indentString(
         disabled(headers)
-          .map((item) => `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`)
+          .map(
+            (item) =>
+              `${serializeAnnotations(item.annotations)}~${getKeyString(item.name)}: ${getValueString(item.value)}`
+          )
           .join('\n')
       )}`;
     }
@@ -180,10 +192,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -206,10 +222,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -227,10 +247,14 @@ ${indentString(`state: ${auth?.oauth2?.state || ''}`)}
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 }
 
@@ -248,10 +272,14 @@ ${indentString(`credentials_placement: ${auth?.oauth2?.credentialsPlacement || '
 ${indentString(`credentials_id: ${auth?.oauth2?.credentialsId || ''}`)}
 ${indentString(`token_source: ${auth?.oauth2?.tokenSource || 'access_token'}`)}
 ${indentString(`token_placement: ${auth?.oauth2?.tokenPlacement || ''}`)}${
-  auth?.oauth2?.tokenPlacement == 'header' ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`) : ''
-}${
-  auth?.oauth2?.tokenPlacement !== 'header' ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`) : ''
-}
+          auth?.oauth2?.tokenPlacement == 'header'
+            ? '\n' + indentString(`token_header_prefix: ${auth?.oauth2?.tokenHeaderPrefix || ''}`)
+            : ''
+        }${
+          auth?.oauth2?.tokenPlacement !== 'header'
+            ? '\n' + indentString(`token_query_key: ${auth?.oauth2?.tokenQueryKey || ''}`)
+            : ''
+        }
 ${indentString(`auto_fetch_token: ${(auth?.oauth2?.autoFetchToken ?? true).toString()}`)}
 ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).toString()}`)}
 }
@@ -261,7 +289,11 @@ ${indentString(`auto_refresh_token: ${(auth?.oauth2?.autoRefreshToken ?? false).
     }
 
     if (auth?.oauth2?.additionalParameters) {
-      const { authorization: authorizationParams, token: tokenParams, refresh: refreshParams } = auth?.oauth2?.additionalParameters;
+      const {
+        authorization: authorizationParams,
+        token: tokenParams,
+        refresh: refreshParams
+      } = auth?.oauth2?.additionalParameters;
       const authorizationHeaders = authorizationParams?.filter((p) => p?.sendIn == 'headers');
       if (authorizationHeaders?.length) {
         bru += `auth:oauth2:additional_params:auth_req:headers {
@@ -308,7 +340,8 @@ ${indentString(
   tokenQueryParams
     .filter((item) => item?.name?.length)
     .map((item) => `${item.enabled ? '' : '~'}${getKeyString(item.name)}: ${getValueString(item.value)}`)
-    .join('\n'))}
+    .join('\n')
+)}
 }
 
 `;

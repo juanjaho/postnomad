@@ -24,14 +24,10 @@ test.describe('Delete collection', () => {
     await deleteCollectionFromOverview(page, collectionName);
 
     // Verify collection is removed from overview
-    await expect(
-      page.locator('.collection-card').filter({ hasText: collectionName })
-    ).not.toBeVisible();
+    await expect(page.locator('.collection-card').filter({ hasText: collectionName })).not.toBeVisible();
 
     // Verify collection is removed from sidebar
-    await expect(
-      page.locator('#sidebar-collection-name').filter({ hasText: collectionName })
-    ).not.toBeVisible();
+    await expect(page.locator('#sidebar-collection-name').filter({ hasText: collectionName })).not.toBeVisible();
 
     // Verify collection directory is deleted from disk
     expect(fs.existsSync(collectionPath)).toBe(false);

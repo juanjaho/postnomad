@@ -309,14 +309,16 @@ const mapPairListToKeyValPair = (pairList = []) => {
  * @param {Record<unknown,unknown>} obj
  * @returns {(key:string, opts?:{fallback: number })=>number|undefined}
  */
-const createGetNumFromRecord = (obj) => (key, { fallback } = {}) => {
-  if (!(key in obj)) return fallback;
-  const asNumber = typeof obj[key] === 'number' ? obj[key] : Number(obj[key]);
-  if (isNaN(asNumber)) {
-    return fallback;
-  }
-  return asNumber;
-};
+const createGetNumFromRecord =
+  (obj) =>
+  (key, { fallback } = {}) => {
+    if (!(key in obj)) return fallback;
+    const asNumber = typeof obj[key] === 'number' ? obj[key] : Number(obj[key]);
+    if (isNaN(asNumber)) {
+      return fallback;
+    }
+    return asNumber;
+  };
 
 // Parse example content using dedicated example parser
 const parseExampleContent = (content) => {
@@ -528,7 +530,8 @@ const sem = grammar.createSemantics().addAttribute('ast', {
 
     const parsedSettings = {};
     if (settings.followRedirects !== undefined) {
-      parsedSettings.followRedirects = typeof settings.followRedirects === 'boolean' ? settings.followRedirects : settings.followRedirects === 'true';
+      parsedSettings.followRedirects =
+        typeof settings.followRedirects === 'boolean' ? settings.followRedirects : settings.followRedirects === 'true';
     }
 
     // Parse maxRedirects as number
@@ -855,8 +858,8 @@ const sem = grammar.createSemantics().addAttribute('ast', {
                 tokenPlacement: tokenPlacementKey?.value ? tokenPlacementKey.value : 'header',
                 tokenHeaderPrefix: tokenHeaderPrefixKey?.value ? tokenHeaderPrefixKey.value : '',
                 tokenQueryKey: tokenQueryKeyKey?.value ? tokenQueryKeyKey.value : 'access_token',
-                autoFetchToken: autoFetchTokenKey ? safeParseJson(autoFetchTokenKey?.value) ?? true : true,
-                autoRefreshToken: autoRefreshTokenKey ? safeParseJson(autoRefreshTokenKey?.value) ?? false : false
+                autoFetchToken: autoFetchTokenKey ? (safeParseJson(autoFetchTokenKey?.value) ?? true) : true,
+                autoRefreshToken: autoRefreshTokenKey ? (safeParseJson(autoRefreshTokenKey?.value) ?? false) : false
               }
             : grantTypeKey?.value && grantTypeKey?.value == 'authorization_code'
               ? {
@@ -869,15 +872,15 @@ const sem = grammar.createSemantics().addAttribute('ast', {
                   clientSecret: clientSecretKey ? clientSecretKey.value : '',
                   scope: scopeKey ? scopeKey.value : '',
                   state: stateKey ? stateKey.value : '',
-                  pkce: pkceKey ? safeParseJson(pkceKey?.value) ?? false : false,
+                  pkce: pkceKey ? (safeParseJson(pkceKey?.value) ?? false) : false,
                   credentialsPlacement: credentialsPlacementKey?.value ? credentialsPlacementKey.value : 'body',
                   credentialsId: credentialsIdKey?.value ? credentialsIdKey.value : 'credentials',
                   tokenSource: tokenSourceKey?.value ? tokenSourceKey.value : 'access_token',
                   tokenPlacement: tokenPlacementKey?.value ? tokenPlacementKey.value : 'header',
                   tokenHeaderPrefix: tokenHeaderPrefixKey?.value ? tokenHeaderPrefixKey.value : '',
                   tokenQueryKey: tokenQueryKeyKey?.value ? tokenQueryKeyKey.value : 'access_token',
-                  autoFetchToken: autoFetchTokenKey ? safeParseJson(autoFetchTokenKey?.value) ?? true : true,
-                  autoRefreshToken: autoRefreshTokenKey ? safeParseJson(autoRefreshTokenKey?.value) ?? false : false
+                  autoFetchToken: autoFetchTokenKey ? (safeParseJson(autoFetchTokenKey?.value) ?? true) : true,
+                  autoRefreshToken: autoRefreshTokenKey ? (safeParseJson(autoRefreshTokenKey?.value) ?? false) : false
                 }
               : grantTypeKey?.value && grantTypeKey?.value == 'client_credentials'
                 ? {
@@ -893,8 +896,8 @@ const sem = grammar.createSemantics().addAttribute('ast', {
                     tokenPlacement: tokenPlacementKey?.value ? tokenPlacementKey.value : 'header',
                     tokenHeaderPrefix: tokenHeaderPrefixKey?.value ? tokenHeaderPrefixKey.value : '',
                     tokenQueryKey: tokenQueryKeyKey?.value ? tokenQueryKeyKey.value : 'access_token',
-                    autoFetchToken: autoFetchTokenKey ? safeParseJson(autoFetchTokenKey?.value) ?? true : true,
-                    autoRefreshToken: autoRefreshTokenKey ? safeParseJson(autoRefreshTokenKey?.value) ?? false : false
+                    autoFetchToken: autoFetchTokenKey ? (safeParseJson(autoFetchTokenKey?.value) ?? true) : true,
+                    autoRefreshToken: autoRefreshTokenKey ? (safeParseJson(autoRefreshTokenKey?.value) ?? false) : false
                   }
                 : grantTypeKey?.value && grantTypeKey?.value == 'implicit'
                   ? {
@@ -909,7 +912,7 @@ const sem = grammar.createSemantics().addAttribute('ast', {
                       tokenPlacement: tokenPlacementKey?.value ? tokenPlacementKey.value : 'header',
                       tokenHeaderPrefix: tokenHeaderPrefixKey?.value ? tokenHeaderPrefixKey.value : '',
                       tokenQueryKey: tokenQueryKeyKey?.value ? tokenQueryKeyKey.value : 'access_token',
-                      autoFetchToken: autoFetchTokenKey ? safeParseJson(autoFetchTokenKey?.value) ?? true : true
+                      autoFetchToken: autoFetchTokenKey ? (safeParseJson(autoFetchTokenKey?.value) ?? true) : true
                     }
                   : {}
       }
@@ -1147,10 +1150,12 @@ const sem = grammar.createSemantics().addAttribute('ast', {
     return {
       body: {
         mode: 'grpc',
-        grpc: [{
-          name: messageName,
-          content: messageContent
-        }]
+        grpc: [
+          {
+            name: messageName,
+            content: messageContent
+          }
+        ]
       }
     };
   },

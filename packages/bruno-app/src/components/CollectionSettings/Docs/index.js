@@ -46,11 +46,11 @@ const Docs = ({ collection }) => {
   };
 
   const handleDiscardChanges = () => {
-    dispatch((
+    dispatch(
       updateCollectionDocs({
         collectionUid: collection.uid,
         docs: docs
-      }))
+      })
     );
     toggleViewMode();
   };
@@ -100,11 +100,15 @@ const Docs = ({ collection }) => {
       ) : (
         <div className="pl-1">
           <div className="h-[1px] min-h-[500px]">
-            {
-              docs?.length > 0
-                ? <Markdown collectionPath={collection.pathname} onDoubleClick={toggleViewMode} content={docs} />
-                : <Markdown collectionPath={collection.pathname} onDoubleClick={toggleViewMode} content={documentationPlaceholder} />
-            }
+            {docs?.length > 0 ? (
+              <Markdown collectionPath={collection.pathname} onDoubleClick={toggleViewMode} content={docs} />
+            ) : (
+              <Markdown
+                collectionPath={collection.pathname}
+                onDoubleClick={toggleViewMode}
+                content={documentationPlaceholder}
+              />
+            )}
           </div>
         </div>
       )}

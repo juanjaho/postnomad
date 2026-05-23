@@ -19,7 +19,7 @@ function getContentType(headers = {}) {
 }
 
 function repr(value, isKey) {
-  return isKey ? '\'' + jsesc(value, { quotes: 'single' }) + '\'' : value;
+  return isKey ? "'" + jsesc(value, { quotes: 'single' }) + "'" : value;
 }
 
 /**
@@ -173,7 +173,7 @@ const curlToJson = (curlCommand) => {
       requestJson.headers = {};
     }
     requestJson.headers['Content-Type'] = 'multipart/form-data';
-  } else if (request.isDataBinary && (typeof request.data === 'string' && request.data.startsWith('@'))) {
+  } else if (request.isDataBinary && typeof request.data === 'string' && request.data.startsWith('@')) {
     Object.assign(requestJson, getFilesString(request)); // file case
   } else if (typeof request.data === 'string' || typeof request.data === 'number') {
     Object.assign(requestJson, getDataString(request));

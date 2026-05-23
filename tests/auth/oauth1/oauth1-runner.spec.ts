@@ -2,8 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { test, expect } from '../../../playwright';
 import {
-  sendRequestAndWaitForResponse, closeAllCollections, selectEnvironment,
-  openCollection, openRequest, selectResponsePaneTab
+  sendRequestAndWaitForResponse,
+  closeAllCollections,
+  selectEnvironment,
+  openCollection,
+  openRequest,
+  selectResponsePaneTab
 } from '../../utils/page';
 import { runCollection, validateRunnerResults } from '../../utils/page/runner';
 
@@ -84,7 +88,12 @@ const openTimelineRequest = async (page) => {
   return timelineItem;
 };
 
-const verifyPlacement = async (page, collectionName: string, requestName: string, placement: 'header' | 'query' | 'body') => {
+const verifyPlacement = async (
+  page,
+  collectionName: string,
+  requestName: string,
+  placement: 'header' | 'query' | 'body'
+) => {
   await openRequest(page, collectionName, requestName);
   await sendRequestAndWaitForResponse(page, 200);
 
@@ -102,7 +111,9 @@ const verifyPlacement = async (page, collectionName: string, requestName: string
     const urlPre = content.locator('pre').first();
     await expect(urlPre).not.toContainText('oauth_consumer_key');
     // Body section is expanded by default — verify oauth params are in the body
-    await expect(content.locator('.collapsible-section').filter({ hasText: 'Body' })).toContainText('oauth_consumer_key');
+    await expect(content.locator('.collapsible-section').filter({ hasText: 'Body' })).toContainText(
+      'oauth_consumer_key'
+    );
   }
 };
 

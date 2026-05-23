@@ -1,7 +1,13 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { format } from 'prettier/standalone';
 import prettierPluginGraphql from 'prettier/parser-graphql';
-import { generateQueryString, getAvailableRootTypes, parseQueryToState, validateQueryForSync, PLACEHOLDER } from 'utils/graphql/queryBuilder';
+import {
+  generateQueryString,
+  getAvailableRootTypes,
+  parseQueryToState,
+  validateQueryForSync,
+  PLACEHOLDER
+} from 'utils/graphql/queryBuilder';
 
 const DEBOUNCE_MS = 150;
 const SYNC_DEBOUNCE_MS = 400;
@@ -101,7 +107,11 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
     let existing = {};
     const currentVarsValue = variablesValueRef.current;
     if (currentVarsValue) {
-      try { existing = JSON.parse(currentVarsValue); } catch { return; }
+      try {
+        existing = JSON.parse(currentVarsValue);
+      } catch {
+        return;
+      }
     }
 
     for (const name of lastGeneratedVarNames.current) {
@@ -113,8 +123,7 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
     Object.assign(existing, newVariables);
     lastGeneratedVarNames.current = newVarNames;
 
-    const varsString = Object.keys(existing).length > 0
-      ? JSON.stringify(existing, null, 2) : '';
+    const varsString = Object.keys(existing).length > 0 ? JSON.stringify(existing, null, 2) : '';
     lastGeneratedVarsValue.current = varsString;
     onVarsChange(varsString);
   };
@@ -273,7 +282,14 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
         const queryParts = [];
         let allVariables = {};
         for (const rootType of availableRootTypes) {
-          const result = generateQueryString(selections, argValues, schema, rootType, enabledArgs, existingNames[rootType]);
+          const result = generateQueryString(
+            selections,
+            argValues,
+            schema,
+            rootType,
+            enabledArgs,
+            existingNames[rootType]
+          );
           if (result.query) {
             queryParts.push(result.query);
             Object.assign(allVariables, result.variables);
@@ -423,8 +439,7 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
     shouldGenerate.current = true;
     setArgValues((prev) => {
       const next = new Map(prev);
-      const isEmpty = value === '' || value === undefined
-        || (Array.isArray(value) && value.length === 0);
+      const isEmpty = value === '' || value === undefined || (Array.isArray(value) && value.length === 0);
       if (isEmpty) {
         next.delete(key);
       } else {
@@ -434,9 +449,12 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
     });
   }, []);
 
-  const setArgValue = useCallback((fieldPath, argName, value) => {
-    updateArgValue(`${fieldPath}.${argName}`, value);
-  }, [updateArgValue]);
+  const setArgValue = useCallback(
+    (fieldPath, argName, value) => {
+      updateArgValue(`${fieldPath}.${argName}`, value);
+    },
+    [updateArgValue]
+  );
 
   // Enable/disable a nested input object field, ensuring parent input fields are also enabled
   const toggleInputField = useCallback((fullKey, fieldPath) => {
@@ -476,9 +494,12 @@ export default function useQueryBuilder(schema, onQueryChange, editorValue, onVa
     }
   }, []);
 
-  const setInputFieldValue = useCallback((fullKey, value) => {
-    updateArgValue(fullKey, value);
-  }, [updateArgValue]);
+  const setInputFieldValue = useCallback(
+    (fullKey, value) => {
+      updateArgValue(fullKey, value);
+    },
+    [updateArgValue]
+  );
 
   return {
     selections,

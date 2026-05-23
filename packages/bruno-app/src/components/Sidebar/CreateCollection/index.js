@@ -33,7 +33,11 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
   const activeWorkspace = workspaces.find((w) => w.uid === workspaceUid);
   const isDefaultWorkspace = activeWorkspace?.type === 'default';
 
-  const defaultLocation = isDefaultWorkspace ? get(preferences, 'general.defaultLocation', '') : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+  const defaultLocation = isDefaultWorkspace
+    ? get(preferences, 'general.defaultLocation', '')
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -46,7 +50,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
     validationSchema: Yup.object({
       collectionName: Yup.string()
         .trim()
-        .min(1, 'Collection name can\'t be empty')
+        .min(1, "Collection name can't be empty")
         .max(255, 'Must be 255 characters or less')
         .required('Collection name is required'),
       collectionFolderName: Yup.string()
@@ -62,10 +66,11 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
     }),
     onSubmit: async (values) => {
       try {
-        await dispatch(createCollection(values.collectionName.trim(),
-          values.collectionFolderName,
-          values.collectionLocation,
-          { format: values.format }));
+        await dispatch(
+          createCollection(values.collectionName.trim(), values.collectionFolderName, values.collectionLocation, {
+            format: values.format
+          })
+        );
 
         toast.success('Collection created!');
         onClose();
@@ -100,10 +105,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
   const AdvancedOptions = forwardRef((props, ref) => {
     return (
       <div ref={ref} className="flex mr-2 text-link cursor-pointer items-center">
-        <button
-          className="btn-advanced"
-          type="button"
-        >
+        <button className="btn-advanced" type="button">
           Options
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
@@ -152,12 +154,8 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
               <label htmlFor="collection-location" className="font-medium mt-3 flex items-center">
                 Location
                 <Help>
-                  <p>
-                    Bruno stores your collections on your computer's filesystem.
-                  </p>
-                  <p className="mt-2">
-                    Choose the location where you want to store this collection.
-                  </p>
+                  <p>Bruno stores your collections on your computer's filesystem.</p>
+                  <p className="mt-2">Choose the location where you want to store this collection.</p>
                 </Help>
               </label>
               <input
@@ -180,10 +178,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
                 <div className="text-red-500">{formik.errors.collectionLocation}</div>
               ) : null}
               <div className="mt-1">
-                <span
-                  className="text-link cursor-pointer hover:underline"
-                  onClick={browse}
-                >
+                <span className="text-link cursor-pointer hover:underline" onClick={browse}>
                   Browse
                 </span>
               </div>
@@ -193,11 +188,10 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
                     <label htmlFor="filename" className="flex items-center font-medium">
                       Folder Name
                       <Help width="300">
-                        <p>
-                          The name of the folder used to store the collection.
-                        </p>
+                        <p>The name of the folder used to store the collection.</p>
                         <p className="mt-2">
-                          You can choose a folder name different from your collection's name or one compatible with filesystem rules.
+                          You can choose a folder name different from your collection's name or one compatible with
+                          filesystem rules.
                         </p>
                       </Help>
                     </label>
@@ -232,9 +226,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
                     />
                   ) : (
                     <div className="relative flex flex-row gap-1 items-center justify-between">
-                      <PathDisplay
-                        baseName={formik.values.collectionFolderName}
-                      />
+                      <PathDisplay baseName={formik.values.collectionFolderName} />
                     </div>
                   )}
                   {formik.touched.collectionFolderName && formik.errors.collectionFolderName ? (
@@ -248,9 +240,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
                   <label htmlFor="format" className="flex items-center font-medium">
                     File Format
                     <Help width="300">
-                      <p>
-                        Choose the file format for storing requests in this collection.
-                      </p>
+                      <p>Choose the file format for storing requests in this collection.</p>
                       <p className="mt-2">
                         <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
                       </p>
@@ -294,9 +284,7 @@ const CreateCollection = ({ onClose, defaultLocation: propDefaultLocation, initi
                 <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-2">
                   Cancel
                 </Button>
-                <Button type="submit">
-                  Create
-                </Button>
+                <Button type="submit">Create</Button>
               </div>
             </div>
           </form>

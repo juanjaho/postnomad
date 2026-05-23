@@ -15,23 +15,17 @@ const RequestIsLoading = ({ item }) => {
 
             <div className="flex items-center mt-2">
               <span className="w-12 mr-2 text-muted">Name:</span>
-              <div>
-                {item?.name}
-              </div>
+              <div>{item?.name}</div>
             </div>
 
             <div className="flex items-center mt-1">
               <span className="w-12 mr-2 text-muted">Path:</span>
-              <div className="break-all">
-                {item?.pathname}
-              </div>
+              <div className="break-all">{item?.pathname}</div>
             </div>
 
             <div className="flex items-center mt-1 pb-4">
               <span className="w-12 mr-2 text-muted">Size:</span>
-              <div>
-                {item?.size?.toFixed?.(2)} MB
-              </div>
+              <div>{item?.size?.toFixed?.(2)} MB</div>
             </div>
 
             <div className="hr" />

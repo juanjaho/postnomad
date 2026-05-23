@@ -194,8 +194,7 @@ const transformSwaggerRequestItem = (request, usedNames = new Set(), options = {
       formDataParams.push(param);
     } else if (param.in === 'query' || param.in === 'path' || param.in === 'header') {
       // Check if parameter is an object type with properties — expand into individual params
-      const isObjectSchema = (param.type === 'object' && param.properties)
-        || (param.schema && param.schema.properties);
+      const isObjectSchema = (param.type === 'object' && param.properties) || (param.schema && param.schema.properties);
 
       if (isObjectSchema) {
         const properties = param.properties || (param.schema && param.schema.properties) || {};
@@ -206,9 +205,10 @@ const transformSwaggerRequestItem = (request, usedNames = new Set(), options = {
           const isRequired = Array.isArray(requiredFields) && requiredFields.includes(propName);
 
           // Build a temporary param from the property for getParameterEntries
-          const propWithExample = (prop.example === undefined && schemaExample[propName] !== undefined)
-            ? { ...prop, example: schemaExample[propName] }
-            : prop;
+          const propWithExample =
+            prop.example === undefined && schemaExample[propName] !== undefined
+              ? { ...prop, example: schemaExample[propName] }
+              : prop;
           const tempParam = { ...propWithExample, name: propName, in: param.in, required: isRequired };
           const entries = getParameterEntries(tempParam);
 
@@ -219,7 +219,14 @@ const transformSwaggerRequestItem = (request, usedNames = new Set(), options = {
       } else {
         const entries = getParameterEntries(param);
         entries.forEach((entry) => {
-          addParamToRequest(brunoRequestItem, param.in, param.name, entry.value, param.description || '', entry.enabled);
+          addParamToRequest(
+            brunoRequestItem,
+            param.in,
+            param.name,
+            entry.value,
+            param.description || '',
+            entry.enabled
+          );
         });
       }
     }
@@ -288,7 +295,7 @@ const transformSwaggerRequestItem = (request, usedNames = new Set(), options = {
 
     // Extract request body data for populating examples
     const requestBodySchema = bodyParam && bodyParam.schema ? bodyParam.schema : null;
-    const requestBodyContentType = bodyParam ? (consumes[0] || 'application/json') : null;
+    const requestBodyContentType = bodyParam ? consumes[0] || 'application/json' : null;
 
     Object.entries(op.responses).forEach(([statusCode, response]) => {
       if (statusCode === 'default') return;
@@ -298,42 +305,48 @@ const transformSwaggerRequestItem = (request, usedNames = new Set(), options = {
       // Priority 1: response.examples (MIME-keyed examples — Swagger 2.0 specific)
       if (response.examples) {
         Object.entries(response.examples).forEach(([mimeType, exampleValue]) => {
-          examples.push(createBrunoExample({
+          examples.push(
+            createBrunoExample({
+              brunoRequestItem,
+              exampleValue,
+              exampleName: `${statusCode} Response`,
+              exampleDescription: response.description || '',
+              statusCode,
+              contentType: mimeType,
+              requestBodySchema,
+              requestBodyContentType
+            })
+          );
+        });
+      } else if (response.schema) {
+        // Priority 2: response.schema — generate example from schema
+        const exampleValue = getExampleFromSchema(response.schema);
+        examples.push(
+          createBrunoExample({
             brunoRequestItem,
             exampleValue,
             exampleName: `${statusCode} Response`,
             exampleDescription: response.description || '',
             statusCode,
-            contentType: mimeType,
+            contentType: responseContentType,
             requestBodySchema,
             requestBodyContentType
-          }));
-        });
-      } else if (response.schema) {
-        // Priority 2: response.schema — generate example from schema
-        const exampleValue = getExampleFromSchema(response.schema);
-        examples.push(createBrunoExample({
-          brunoRequestItem,
-          exampleValue,
-          exampleName: `${statusCode} Response`,
-          exampleDescription: response.description || '',
-          statusCode,
-          contentType: responseContentType,
-          requestBodySchema,
-          requestBodyContentType
-        }));
+          })
+        );
       } else if (response.description) {
         // description only (e.g., 204 No Content) — create example without body
-        examples.push(createBrunoExample({
-          brunoRequestItem,
-          exampleValue: '',
-          exampleName: `${statusCode} Response`,
-          exampleDescription: response.description,
-          statusCode,
-          contentType: null,
-          requestBodySchema,
-          requestBodyContentType
-        }));
+        examples.push(
+          createBrunoExample({
+            brunoRequestItem,
+            exampleValue: '',
+            exampleName: `${statusCode} Response`,
+            exampleDescription: response.description,
+            statusCode,
+            contentType: null,
+            requestBodySchema,
+            requestBodyContentType
+          })
+        );
       }
     });
 
@@ -404,7 +417,7 @@ const buildServerUrls = (swagger) => {
   const basePath = swagger.basePath || '';
   if (!host && !basePath) return [];
   if (!host) return [basePath.replace(/\/+$/, '')];
-  const schemes = (swagger.schemes && swagger.schemes.length) ? swagger.schemes : ['https'];
+  const schemes = swagger.schemes && swagger.schemes.length ? swagger.schemes : ['https'];
   return schemes.map((scheme) => `${scheme}://${host}${basePath}`.replace(/\/+$/, ''));
 };
 
@@ -419,9 +432,7 @@ const getSecurityConfig = (swagger) => {
   const hasDefinitions = Object.keys(definitions).length > 0;
 
   return {
-    supported: hasDefinitions
-      ? defaultSchemes.map((s) => definitions[Object.keys(s)[0]]).filter(Boolean)
-      : [],
+    supported: hasDefinitions ? defaultSchemes.map((s) => definitions[Object.keys(s)[0]]).filter(Boolean) : [],
     definitions,
     getDefinition: (name) => definitions[name]
   };
@@ -448,7 +459,8 @@ const buildOAuth2Config = (def, requestedScopes) => ({
   callbackUrl: '{{oauth_callback_url}}',
   clientId: '{{oauth_client_id}}',
   clientSecret: '{{oauth_client_secret}}',
-  scope: requestedScopes && requestedScopes.length > 0 ? requestedScopes.join(' ') : Object.keys(def.scopes || {}).join(' '),
+  scope:
+    requestedScopes && requestedScopes.length > 0 ? requestedScopes.join(' ') : Object.keys(def.scopes || {}).join(' '),
   state: '{{oauth_state}}',
   credentialsPlacement: 'header',
   tokenPlacement: 'header',
@@ -560,14 +572,16 @@ export const parseSwagger2Collection = (data, options = {}) => {
       brunoCollection.environments.push({
         uid: uuid(),
         name: serverUrls.length > 1 ? `Environment ${idx + 1}` : 'Environment',
-        variables: [{
-          uid: uuid(),
-          name: 'baseUrl',
-          value: serverUrl,
-          type: 'text',
-          enabled: true,
-          secret: false
-        }]
+        variables: [
+          {
+            uid: uuid(),
+            name: 'baseUrl',
+            value: serverUrl,
+            type: 'text',
+            enabled: true,
+            secret: false
+          }
+        ]
       });
     });
 
@@ -585,7 +599,9 @@ export const parseSwagger2Collection = (data, options = {}) => {
       .map(([path, pathItemObject]) => {
         const pathItemParams = pathItemObject.parameters || [];
         return Object.entries(pathItemObject)
-          .filter(([method]) => ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'].includes(method.toLowerCase()))
+          .filter(([method]) =>
+            ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'].includes(method.toLowerCase())
+          )
           .map(([method, operationObject]) => {
             const mergedParams = mergeParams(pathItemParams, operationObject.parameters || []);
             return {

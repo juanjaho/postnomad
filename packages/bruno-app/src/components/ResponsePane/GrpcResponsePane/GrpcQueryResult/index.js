@@ -49,7 +49,10 @@ const GrpcQueryResult = ({ item, collection }) => {
     <StyledWrapper className="w-full h-full relative flex flex-col mt-2" data-testid="grpc-response-content">
       {hasError && showErrorMessage && <GrpcError error={errorMessage} onClose={() => setShowErrorMessage(false)} />}
       {hasResponses && (
-        <div className={`responses-container ${responsesList.length === 1 ? 'single' : 'multi'}`} data-testid="grpc-responses-container">
+        <div
+          className={`responses-container ${responsesList.length === 1 ? 'single' : 'multi'}`}
+          data-testid="grpc-responses-container"
+        >
           {responsesList.length === 1 ? (
             <div className="h-full" data-testid="grpc-single-response">
               <CodeEditor
@@ -74,10 +77,7 @@ const GrpcQueryResult = ({ item, collection }) => {
                     className={`message-item ${isExpanded ? 'expanded' : 'collapsed'} ${index === reversedResponsesList.length - 1 ? 'last' : ''}`}
                     data-testid={`grpc-response-item-${originalIndex}`}
                   >
-                    <div
-                      className="message-header"
-                      onClick={() => setExpandedIndex(isExpanded ? -1 : index)}
-                    >
+                    <div className="message-header" onClick={() => setExpandedIndex(isExpanded ? -1 : index)}>
                       <span className="message-label">
                         Response {originalIndex + 1}
                         {index === 0 && <span className="latest-badge">Latest</span>}
@@ -111,9 +111,7 @@ const GrpcQueryResult = ({ item, collection }) => {
         </div>
       )}
       {hasError && !hasResponses && !showErrorMessage && (
-        <div className="empty-state">
-          No messages received. A server error occurred but has been dismissed.
-        </div>
+        <div className="empty-state">No messages received. A server error occurred but has been dismissed.</div>
       )}
     </StyledWrapper>
   );

@@ -22,11 +22,11 @@ const StyledWrapper = styled.div`
     outline: none;
     box-shadow: none;
     margin: 0;
-    
+
     &:checked {
       border-color: ${(props) => props.theme.colors.text.yellow};
       background-color: transparent;
-      
+
       &::after {
         content: '';
         position: absolute;
@@ -39,22 +39,22 @@ const StyledWrapper = styled.div`
         background-color: ${(props) => props.theme.colors.text.yellow};
       }
     }
-    
+
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
       border-color: ${(props) => props.theme.colors.text.muted};
       background-color: transparent;
-      
+
       &:checked {
         border-color: ${(props) => props.theme.colors.text.muted};
-        
+
         &::after {
           background-color: ${(props) => props.theme.colors.text.muted};
         }
       }
     }
-    
+
     &:hover:not(:disabled) {
       opacity: 0.8;
     }

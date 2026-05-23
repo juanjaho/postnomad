@@ -23,7 +23,9 @@ const ResponseExampleTopBar = ({
   const dispatch = useDispatch();
 
   const example = useMemo(() => {
-    return item.draft ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid) : get(item, 'examples', []).find((e) => e.uid === exampleUid);
+    return item.draft
+      ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)
+      : get(item, 'examples', []).find((e) => e.uid === exampleUid);
   }, [item.draft, item.examples, item, exampleUid]);
 
   const handleGenerateCode = () => {
@@ -51,12 +53,14 @@ const ResponseExampleTopBar = ({
       return;
     }
 
-    dispatch(updateResponseExampleName({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      name: e.target.value
-    }));
+    dispatch(
+      updateResponseExampleName({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        name: e.target.value
+      })
+    );
   };
 
   const handleDescriptionChange = (e) => {
@@ -74,12 +78,14 @@ const ResponseExampleTopBar = ({
       return;
     }
 
-    dispatch(updateResponseExampleDescription({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      description: e.target.value
-    }));
+    dispatch(
+      updateResponseExampleDescription({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        description: e.target.value
+      })
+    );
   };
 
   const handleSave = () => {
@@ -131,11 +137,7 @@ const ResponseExampleTopBar = ({
             </div>
 
             <div className="flex items-center gap-3 flex-shrink-0 md:w-auto w-full md:justify-end">
-              <Button
-                color="secondary"
-                onClick={handleCancel}
-                data-testid="response-example-cancel-btn"
-              >
+              <Button color="secondary" onClick={handleCancel} data-testid="response-example-cancel-btn">
                 Cancel
               </Button>
               <Button

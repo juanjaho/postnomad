@@ -15,8 +15,7 @@ import SingleLineEditor from 'components/SingleLineEditor';
 import MultipartFileChipsCell from 'components/MultipartFileChipsCell';
 import StyledWrapper from './StyledWrapper';
 
-const fileBasename = (filePath) =>
-  filePath ? path.basename(normalizePath(String(filePath))) : '';
+const fileBasename = (filePath) => (filePath ? path.basename(normalizePath(String(filePath))) : '');
 
 const ResponseExampleMultipartFormParams = ({ item, collection, exampleUid, editMode = false }) => {
   const dispatch = useDispatch();
@@ -38,134 +37,152 @@ const ResponseExampleMultipartFormParams = ({ item, collection, exampleUid, edit
       : get(item, 'examples', []).find((e) => e.uid === exampleUid)?.request?.body?.multipartForm || [];
   }, [item, exampleUid]);
 
-  const handleParamsChange = useCallback((updatedParams) => {
-    if (!editMode) return;
+  const handleParamsChange = useCallback(
+    (updatedParams) => {
+      if (!editMode) return;
 
-    dispatch(updateResponseExampleMultipartFormParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: updatedParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid]);
+      dispatch(
+        updateResponseExampleMultipartFormParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: updatedParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid]
+  );
 
-  const handleBrowseFiles = useCallback((row, onChange) => {
-    if (!editMode) return;
+  const handleBrowseFiles = useCallback(
+    (row, onChange) => {
+      if (!editMode) return;
 
-    dispatch(browseFiles([], ['multiSelections']))
-      .then((filePaths) => {
-        if (!Array.isArray(filePaths) || filePaths.length === 0) return;
+      dispatch(browseFiles([], ['multiSelections']))
+        .then((filePaths) => {
+          if (!Array.isArray(filePaths) || filePaths.length === 0) return;
 
-        const processedPaths = filePaths.map((filePath) => {
-          return getRelativePathWithinBasePath(collection.pathname, filePath);
-        });
-
-        const currentParams = params || [];
-        const existingParam = currentParams.find((p) => p.uid === row.uid);
-        const existingValue = existingParam && existingParam.type === 'file' && Array.isArray(existingParam.value)
-          ? existingParam.value
-          : [];
-        const seen = new Set(existingValue);
-        const merged = [...existingValue];
-        const skipped = [];
-        for (const p of processedPaths) {
-          if (!seen.has(p)) {
-            seen.add(p);
-            merged.push(p);
-          } else {
-            skipped.push(p);
-          }
-        }
-
-        if (skipped.length === 1) {
-          toast(`"${fileBasename(skipped[0])}" is already added`);
-        } else if (skipped.length > 1) {
-          toast(`${skipped.length} files are already added — skipped`);
-        }
-
-        const autoContentType = getMultipartAutoContentType(merged);
-
-        let updatedParams;
-        if (existingParam) {
-          updatedParams = currentParams.map((p) => {
-            if (p.uid === row.uid) {
-              return { ...p, type: 'file', value: merged, contentType: autoContentType };
-            }
-            return p;
+          const processedPaths = filePaths.map((filePath) => {
+            return getRelativePathWithinBasePath(collection.pathname, filePath);
           });
-        } else {
-          updatedParams = [
-            ...currentParams,
-            {
-              uid: row.uid,
-              name: row.name || '',
-              type: 'file',
-              value: merged,
-              contentType: autoContentType,
-              enabled: true
+
+          const currentParams = params || [];
+          const existingParam = currentParams.find((p) => p.uid === row.uid);
+          const existingValue =
+            existingParam && existingParam.type === 'file' && Array.isArray(existingParam.value)
+              ? existingParam.value
+              : [];
+          const seen = new Set(existingValue);
+          const merged = [...existingValue];
+          const skipped = [];
+          for (const p of processedPaths) {
+            if (!seen.has(p)) {
+              seen.add(p);
+              merged.push(p);
+            } else {
+              skipped.push(p);
             }
-          ];
-        }
+          }
 
-        handleParamsChange(updatedParams);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [editMode, dispatch, collection.pathname, params, handleParamsChange]);
+          if (skipped.length === 1) {
+            toast(`"${fileBasename(skipped[0])}" is already added`);
+          } else if (skipped.length > 1) {
+            toast(`${skipped.length} files are already added — skipped`);
+          }
 
-  const handleRemoveFile = useCallback((row, filePathToRemove) => {
-    if (!editMode) return;
-    const currentParams = params || [];
-    const target = currentParams.find((p) => p.uid === row.uid);
-    if (!target || target.type !== 'file') return;
-    const currentValue = Array.isArray(target.value)
-      ? target.value
-      : (target.value ? [target.value] : []);
-    const nextValue = currentValue.filter((p) => p !== filePathToRemove);
+          const autoContentType = getMultipartAutoContentType(merged);
 
-    const updatedParams = currentParams.map((p) => {
-      if (p.uid !== row.uid) return p;
-      if (nextValue.length === 0) {
-        return { ...p, type: 'text', value: '', contentType: '' };
-      }
-      return { ...p, type: 'file', value: nextValue, contentType: getMultipartAutoContentType(nextValue) };
-    });
-    handleParamsChange(updatedParams);
-  }, [editMode, params, handleParamsChange]);
+          let updatedParams;
+          if (existingParam) {
+            updatedParams = currentParams.map((p) => {
+              if (p.uid === row.uid) {
+                return { ...p, type: 'file', value: merged, contentType: autoContentType };
+              }
+              return p;
+            });
+          } else {
+            updatedParams = [
+              ...currentParams,
+              {
+                uid: row.uid,
+                name: row.name || '',
+                type: 'file',
+                value: merged,
+                contentType: autoContentType,
+                enabled: true
+              }
+            ];
+          }
 
-  const handleValueChange = useCallback((row, newValue, onChange) => {
-    if (!editMode) return;
+          handleParamsChange(updatedParams);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    [editMode, dispatch, collection.pathname, params, handleParamsChange]
+  );
 
-    const currentParams = params || [];
-    const existingParam = currentParams.find((p) => p.uid === row.uid);
-    if (existingParam) {
+  const handleRemoveFile = useCallback(
+    (row, filePathToRemove) => {
+      if (!editMode) return;
+      const currentParams = params || [];
+      const target = currentParams.find((p) => p.uid === row.uid);
+      if (!target || target.type !== 'file') return;
+      const currentValue = Array.isArray(target.value) ? target.value : target.value ? [target.value] : [];
+      const nextValue = currentValue.filter((p) => p !== filePathToRemove);
+
       const updatedParams = currentParams.map((p) => {
-        if (p.uid === row.uid) {
-          return { ...p, type: 'text', value: newValue };
+        if (p.uid !== row.uid) return p;
+        if (nextValue.length === 0) {
+          return { ...p, type: 'text', value: '', contentType: '' };
         }
-        return p;
+        return { ...p, type: 'file', value: nextValue, contentType: getMultipartAutoContentType(nextValue) };
       });
       handleParamsChange(updatedParams);
-    } else {
-      onChange(newValue);
-    }
-  }, [editMode, params, handleParamsChange]);
+    },
+    [editMode, params, handleParamsChange]
+  );
 
-  const handleParamDrag = useCallback(({ updateReorderedItem }) => {
-    if (!editMode) return;
+  const handleValueChange = useCallback(
+    (row, newValue, onChange) => {
+      if (!editMode) return;
 
-    const reorderedParams = updateReorderedItem.map((uid) => {
-      return params.find((p) => p.uid === uid);
-    });
+      const currentParams = params || [];
+      const existingParam = currentParams.find((p) => p.uid === row.uid);
+      if (existingParam) {
+        const updatedParams = currentParams.map((p) => {
+          if (p.uid === row.uid) {
+            return { ...p, type: 'text', value: newValue };
+          }
+          return p;
+        });
+        handleParamsChange(updatedParams);
+      } else {
+        onChange(newValue);
+      }
+    },
+    [editMode, params, handleParamsChange]
+  );
 
-    dispatch(updateResponseExampleMultipartFormParams({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      params: reorderedParams
-    }));
-  }, [editMode, dispatch, item.uid, collection.uid, exampleUid, params]);
+  const handleParamDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      if (!editMode) return;
+
+      const reorderedParams = updateReorderedItem.map((uid) => {
+        return params.find((p) => p.uid === uid);
+      });
+
+      dispatch(
+        updateResponseExampleMultipartFormParams({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          params: reorderedParams
+        })
+      );
+    },
+    [editMode, dispatch, item.uid, collection.uid, exampleUid, params]
+  );
 
   const getFileList = (filePaths) => {
     if (!filePaths || (Array.isArray(filePaths) && filePaths.length === 0)) {
@@ -219,11 +236,7 @@ const ResponseExampleMultipartFormParams = ({ item, collection, exampleUid, edit
                 placeholder={!value ? 'Value' : ''}
               />
             </div>
-            <button
-              className="upload-btn ml-1"
-              onClick={() => handleBrowseFiles(row, onChange)}
-              title="Select File"
-            >
+            <button className="upload-btn ml-1" onClick={() => handleBrowseFiles(row, onChange)} title="Select File">
               <IconUpload size={16} />
             </button>
           </div>

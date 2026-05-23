@@ -33,21 +33,25 @@ app.use(bodyParser.urlencoded({ extended: true, verify: saveRawBody }));
 app.use(bodyParser.text({ verify: saveRawBody }));
 app.use(xmlParser());
 // Only parse raw body for content types not already handled by other parsers
-app.use(express.raw({
-  type: (req) => {
-    const contentType = req.headers['content-type'] || '';
-    // Skip if already handled by json, urlencoded, text, or xml parsers
-    if (contentType.includes('application/json')
-      || contentType.includes('application/x-www-form-urlencoded')
-      || contentType.includes('text/')
-      || contentType.includes('application/xml')) {
-      return false;
-    }
-    return true;
-  },
-  limit: '100mb',
-  verify: saveRawBody
-}));
+app.use(
+  express.raw({
+    type: (req) => {
+      const contentType = req.headers['content-type'] || '';
+      // Skip if already handled by json, urlencoded, text, or xml parsers
+      if (
+        contentType.includes('application/json') ||
+        contentType.includes('application/x-www-form-urlencoded') ||
+        contentType.includes('text/') ||
+        contentType.includes('application/xml')
+      ) {
+        return false;
+      }
+      return true;
+    },
+    limit: '100mb',
+    verify: saveRawBody
+  })
+);
 
 formDataParser.init(app, express);
 
@@ -78,11 +82,12 @@ const server = require('http').createServer(app);
 
 server.on('upgrade', wsRouter);
 
-setupGraphQL(app).then(() => {
-  server.listen(port, function () {
-    console.log(`Testbench started on port: ${port}`);
-  });
-})
+setupGraphQL(app)
+  .then(() => {
+    server.listen(port, function () {
+      console.log(`Testbench started on port: ${port}`);
+    });
+  })
   .catch((error) => {
     console.error('Failed to initialize GraphQL', error);
     process.exit(1);

@@ -70,9 +70,7 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
       dataTestId="multipart-file-chip"
     >
       <IconFile size={14} stroke={1.5} className="file-chip-icon" />
-      <span className="file-chip-name">
-        {basename(filePath)}
-      </span>
+      <span className="file-chip-name">{basename(filePath)}</span>
       {editMode && (
         <button
           type="button"
@@ -104,9 +102,7 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
           dataTestId="multipart-file-overflow-row"
         >
           <IconFile size={14} stroke={1.5} className="overflow-row-icon" />
-          <span className="overflow-row-name">
-            {basename(p)}
-          </span>
+          <span className="overflow-row-name">{basename(p)}</span>
           {editMode && (
             <button
               type="button"
@@ -133,7 +129,7 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
           <Dropdown
             placement="bottom-start"
             appendTo={() => document.body}
-            icon={(
+            icon={
               <button
                 type="button"
                 data-testid="multipart-file-summary"
@@ -142,25 +138,24 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
                 title={`${files.length} file${files.length > 1 ? 's' : ''}`}
               >
                 <IconFile size={14} stroke={1.5} className="file-chip-icon" />
-                <span>{files.length} file{files.length > 1 ? 's' : ''}</span>
+                <span>
+                  {files.length} file{files.length > 1 ? 's' : ''}
+                </span>
                 <IconChevronDown size={14} stroke={1.5} />
               </button>
-            )}
+            }
           >
             {renderOverflowList(files)}
           </Dropdown>
-
         </>
       ) : (
         <>
-          <div className="file-chips-row">
-            {visible.map((p, i) => renderChip(p, i))}
-          </div>
+          <div className="file-chips-row">{visible.map((p, i) => renderChip(p, i))}</div>
           {overflow.length > 0 && (
             <Dropdown
               placement="bottom-end"
               appendTo={() => document.body}
-              icon={(
+              icon={
                 <button
                   type="button"
                   data-testid="multipart-file-more"
@@ -170,7 +165,7 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
                 >
                   +{overflow.length} more
                 </button>
-              )}
+              }
             >
               {renderOverflowList(overflow)}
             </Dropdown>

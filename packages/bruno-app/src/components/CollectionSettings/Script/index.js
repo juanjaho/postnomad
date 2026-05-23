@@ -18,8 +18,12 @@ const Script = ({ collection }) => {
   const dispatch = useDispatch();
   const preRequestEditorRef = useRef(null);
   const postResponseEditorRef = useRef(null);
-  const requestScript = collection.draft?.root ? get(collection, 'draft.root.request.script.req', '') : get(collection, 'root.request.script.req', '');
-  const responseScript = collection.draft?.root ? get(collection, 'draft.root.request.script.res', '') : get(collection, 'root.request.script.res', '');
+  const requestScript = collection.draft?.root
+    ? get(collection, 'draft.root.request.script.req', '')
+    : get(collection, 'root.request.script.req', '');
+  const responseScript = collection.draft?.root
+    ? get(collection, 'draft.root.request.script.res', '')
+    : get(collection, 'root.request.script.res', '');
 
   const tabs = useSelector((state) => state.tabs.tabs);
   const focusedTab = find(tabs, (t) => t.uid === collection.uid);
@@ -39,8 +43,14 @@ const Script = ({ collection }) => {
   const { displayedTheme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
 
-  const [preReqScroll, setPreReqScroll] = usePersistedState({ key: `collection-pre-req-scroll-${collection.uid}`, default: 0 });
-  const [postResScroll, setPostResScroll] = usePersistedState({ key: `collection-post-res-scroll-${collection.uid}`, default: 0 });
+  const [preReqScroll, setPreReqScroll] = usePersistedState({
+    key: `collection-pre-req-scroll-${collection.uid}`,
+    default: 0
+  });
+  const [postResScroll, setPostResScroll] = usePersistedState({
+    key: `collection-post-res-scroll-${collection.uid}`,
+    default: 0
+  });
 
   // Refresh CodeMirror when tab becomes visible and restore scroll position.
   // CodeMirror's scrollTo() is silently ignored when the editor is inside a display:none container

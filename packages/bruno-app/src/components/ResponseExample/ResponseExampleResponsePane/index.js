@@ -22,14 +22,18 @@ const ResponseExampleResponsePane = ({ item, collection, editMode, exampleUid, o
   const activeTab = focusedTab?.responsePaneTab || 'response';
 
   const selectTab = (tab) => {
-    dispatch(updateResponsePaneTab({
-      uid: exampleUid,
-      responsePaneTab: tab
-    }));
+    dispatch(
+      updateResponsePaneTab({
+        uid: exampleUid,
+        responsePaneTab: tab
+      })
+    );
   };
 
   const exampleData = useMemo(() => {
-    return item.draft ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid) || {} : get(item, 'examples', []).find((e) => e.uid === exampleUid) || {};
+    return item.draft
+      ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid) || {}
+      : get(item, 'examples', []).find((e) => e.uid === exampleUid) || {};
   }, [item, exampleUid]);
 
   const getTabPanel = (tab) => {
@@ -107,9 +111,7 @@ const ResponseExampleResponsePane = ({ item, collection, editMode, exampleUid, o
       </div>
 
       <section className="flex w-full flex-1 relative">
-        <HeightBoundContainer>
-          {getTabPanel(activeTab)}
-        </HeightBoundContainer>
+        <HeightBoundContainer>{getTabPanel(activeTab)}</HeightBoundContainer>
       </section>
     </StyledWrapper>
   );

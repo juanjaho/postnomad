@@ -29,7 +29,14 @@ function readPrivateKeyFile(filePath: string): string {
   return content;
 }
 
-export type SignatureMethod = 'HMAC-SHA1' | 'HMAC-SHA256' | 'HMAC-SHA512' | 'RSA-SHA1' | 'RSA-SHA256' | 'RSA-SHA512' | 'PLAINTEXT';
+export type SignatureMethod =
+  | 'HMAC-SHA1'
+  | 'HMAC-SHA256'
+  | 'HMAC-SHA512'
+  | 'RSA-SHA1'
+  | 'RSA-SHA256'
+  | 'RSA-SHA512'
+  | 'PLAINTEXT';
 
 export interface OAuth1Config {
   consumer: { key: string; secret: string };
@@ -122,8 +129,7 @@ export function getBaseUrl(url: string): string {
     const port = parsed.port;
 
     // Omit default ports (80 for http, 443 for https)
-    const includePort
-      = port && !((scheme === 'http:' && port === '80') || (scheme === 'https:' && port === '443'));
+    const includePort = port && !((scheme === 'http:' && port === '80') || (scheme === 'https:' && port === '443'));
 
     return `${scheme}//${host}${includePort ? ':' + port : ''}${parsed.pathname}`;
   } catch {
@@ -169,12 +175,7 @@ export function buildSigningKey(consumerSecret: string, tokenSecret: string): st
 }
 
 // Default hash function
-function defaultHashFunction(
-  baseString: string,
-  key: string,
-  method: SignatureMethod,
-  privateKey?: string
-): string {
+function defaultHashFunction(baseString: string, key: string, method: SignatureMethod, privateKey?: string): string {
   switch (method) {
     case 'PLAINTEXT':
       return key;
@@ -285,10 +286,7 @@ export function createOAuth1Authorizer(config: OAuth1Config) {
       }
     }
 
-    const extraParams: Array<[string, string]> = [
-      ...parseQueryParams(requestData.url),
-      ...bodyParams
-    ];
+    const extraParams: Array<[string, string]> = [...parseQueryParams(requestData.url), ...bodyParams];
 
     const parameterString = buildParameterString(oauthParams, extraParams);
     const baseString = buildBaseString(requestData.method, getBaseUrl(requestData.url), parameterString);
@@ -336,33 +334,48 @@ export function createOAuth1Authorizer(config: OAuth1Config) {
  *
  * Shared by bruno-electron and bruno-cli to avoid duplication.
  */
-export function applyOAuth1ToRequest(request: {
-  url: string;
-  method: string;
-  headers: Record<string, string>;
-  data?: any;
-  oauth1config: {
-    consumerKey: string;
-    consumerSecret: string;
-    accessToken?: string;
-    accessTokenSecret?: string;
-    callbackUrl?: string;
-    verifier?: string;
-    signatureMethod?: string;
-    privateKey?: string;
-    privateKeyType?: string;
-    timestamp?: string;
-    nonce?: string;
-    version?: string;
-    realm?: string;
-    placement?: string;
-    includeBodyHash?: boolean;
-  };
-}, collectionPath?: string): void {
+export function applyOAuth1ToRequest(
+  request: {
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    data?: any;
+    oauth1config: {
+      consumerKey: string;
+      consumerSecret: string;
+      accessToken?: string;
+      accessTokenSecret?: string;
+      callbackUrl?: string;
+      verifier?: string;
+      signatureMethod?: string;
+      privateKey?: string;
+      privateKeyType?: string;
+      timestamp?: string;
+      nonce?: string;
+      version?: string;
+      realm?: string;
+      placement?: string;
+      includeBodyHash?: boolean;
+    };
+  },
+  collectionPath?: string
+): void {
   const {
-    consumerKey, consumerSecret, accessToken, accessTokenSecret,
-    callbackUrl, verifier, signatureMethod, privateKey, privateKeyType, timestamp, nonce,
-    version, realm, placement, includeBodyHash
+    consumerKey,
+    consumerSecret,
+    accessToken,
+    accessTokenSecret,
+    callbackUrl,
+    verifier,
+    signatureMethod,
+    privateKey,
+    privateKeyType,
+    timestamp,
+    nonce,
+    version,
+    realm,
+    placement,
+    includeBodyHash
   } = request.oauth1config;
 
   // Clear credentials from the request object before any operation that could throw
@@ -420,7 +433,9 @@ export function applyOAuth1ToRequest(request: {
   // if no entity body, hash over the empty string
   if (includeBodyHash && !isFormUrlEncoded) {
     const bodyStr = request.data
-      ? (typeof request.data === 'string' ? request.data : JSON.stringify(request.data))
+      ? typeof request.data === 'string'
+        ? request.data
+        : JSON.stringify(request.data)
       : '';
     const bodyHash = computeBodyHash(bodyStr, (signatureMethod || 'HMAC-SHA1') as SignatureMethod);
     dataPairs.push(['oauth_body_hash', bodyHash]);
@@ -434,7 +449,13 @@ export function applyOAuth1ToRequest(request: {
   const overrides: { timestamp?: string; nonce?: string } = {};
   if (timestamp) overrides.timestamp = timestamp;
   if (nonce) overrides.nonce = nonce;
-  const oauthData = authorizer.authorize(requestData, token, callbackUrl || undefined, verifier || undefined, overrides);
+  const oauthData = authorizer.authorize(
+    requestData,
+    token,
+    callbackUrl || undefined,
+    verifier || undefined,
+    overrides
+  );
 
   switch (placement || 'header') {
     case 'header':

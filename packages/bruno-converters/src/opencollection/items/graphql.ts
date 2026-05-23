@@ -117,8 +117,8 @@ export const toOpenCollectionGraphqlItem = (item: BrunoItem): GraphQLRequest => 
   }
 
   const graphql: GraphQLRequestDetails = {
-    url: request.url as string || '',
-    method: request.method as string || 'POST'
+    url: (request.url as string) || '',
+    method: (request.method as string) || 'POST'
   };
 
   const headers = toOpenCollectionHeaders(request.headers as BrunoKeyValue[]);

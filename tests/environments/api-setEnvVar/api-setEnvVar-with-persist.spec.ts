@@ -26,7 +26,9 @@ test.describe.serial('bru.setEnvVar(name, value, { persist: true })', () => {
     await page.locator('#configure-env').waitFor({ state: 'visible' });
     await page.locator('#configure-env').dispatchEvent('click');
 
-    const envTab = page.locator('.request-tab').filter({ has: page.locator('.tab-label', { hasText: 'Environments' }) });
+    const envTab = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-label', { hasText: 'Environments' }) });
     await expect(envTab).toBeVisible();
 
     await expect(page.getByRole('row', { name: 'token' }).getByRole('cell').nth(1)).toBeVisible();

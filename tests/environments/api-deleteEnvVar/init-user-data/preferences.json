@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/environments/api-deleteEnvVar/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/environments/api-deleteEnvVar/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

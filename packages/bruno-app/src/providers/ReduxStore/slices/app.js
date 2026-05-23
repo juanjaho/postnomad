@@ -97,11 +97,9 @@ export const appSlice = createSlice({
         pendingCollectionPathnames = [],
         activeCollectionPathname = null
       } = action.payload || {};
-      const normalizedPathnames = [...new Set(
-        pendingCollectionPathnames
-          .filter(Boolean)
-          .map((pathname) => normalizePath(pathname))
-      )];
+      const normalizedPathnames = [
+        ...new Set(pendingCollectionPathnames.filter(Boolean).map((pathname) => normalizePath(pathname)))
+      ];
 
       state.snapshotHydration = {
         workspaceUid,
@@ -117,8 +115,9 @@ export const appSlice = createSlice({
       }
 
       const normalizedPathname = normalizePath(pathname);
-      state.snapshotHydration.pendingCollectionPathnames = state.snapshotHydration.pendingCollectionPathnames
-        .filter((pendingPathname) => normalizePath(pendingPathname) !== normalizedPathname);
+      state.snapshotHydration.pendingCollectionPathnames = state.snapshotHydration.pendingCollectionPathnames.filter(
+        (pendingPathname) => normalizePath(pendingPathname) !== normalizedPathname
+      );
     },
     clearSnapshotHydrationSession: (state) => {
       state.snapshotHydration = {
@@ -350,24 +349,28 @@ export const copyRequest = (item) => (dispatch, getState) => {
 export const getSystemProxyVariables = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('renderer:get-system-proxy-variables')
+    ipcRenderer
+      .invoke('renderer:get-system-proxy-variables')
       .then((variables) => {
         dispatch(updateSystemProxyVariables(variables));
         return variables;
       })
-      .then(resolve).catch(reject);
+      .then(resolve)
+      .catch(reject);
   });
 };
 
 export const refreshSystemProxy = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-    ipcRenderer.invoke('renderer:refresh-system-proxy')
+    ipcRenderer
+      .invoke('renderer:refresh-system-proxy')
       .then((variables) => {
         dispatch(updateSystemProxyVariables(variables));
         return variables;
       })
-      .then(resolve).catch(reject);
+      .then(resolve)
+      .catch(reject);
   });
 };
 

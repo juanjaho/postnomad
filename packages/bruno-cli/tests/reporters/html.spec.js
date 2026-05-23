@@ -41,9 +41,11 @@ describe('makeHtmlOutput', () => {
 
     await makeHtmlOutput(mockResults, '/tmp/test.html', '2024-01-15T14:30:45.123Z', 'production');
 
-    expect(mockGenerateHtmlReport).toHaveBeenCalledWith(expect.objectContaining({
-      environment: 'production'
-    }));
+    expect(mockGenerateHtmlReport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        environment: 'production'
+      })
+    );
   });
 
   it('should pass null environment when not provided', async () => {
@@ -66,8 +68,10 @@ describe('makeHtmlOutput', () => {
 
     await makeHtmlOutput(mockResults, '/tmp/test.html', '2024-01-15T14:30:45.123Z');
 
-    expect(mockGenerateHtmlReport).toHaveBeenCalledWith(expect.objectContaining({
-      environment: null
-    }));
+    expect(mockGenerateHtmlReport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        environment: null
+      })
+    );
   });
 });

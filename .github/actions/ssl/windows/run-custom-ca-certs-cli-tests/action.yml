@@ -8,7 +8,7 @@ runs:
       run: |
         Set-StrictMode -Version Latest
         $ErrorActionPreference = "Stop"
-        
+
         # navigate to CA certificates test collection directory
         Set-Location tests\ssl\custom-ca-certs\collection
 

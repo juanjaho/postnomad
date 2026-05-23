@@ -66,14 +66,10 @@ const serializeSnapshot = async (state) => {
 
   // Build a set of scratch collection UIDs to exclude
   const scratchCollectionUids = new Set(
-    (workspaces.workspaces || [])
-      .map((w) => w.scratchCollectionUid)
-      .filter(Boolean)
+    (workspaces.workspaces || []).map((w) => w.scratchCollectionUid).filter(Boolean)
   );
 
-  const activeWorkspace = workspaces.workspaces.find(
-    (w) => w.uid === workspaces.activeWorkspaceUid
-  );
+  const activeWorkspace = workspaces.workspaces.find((w) => w.uid === workspaces.activeWorkspaceUid);
 
   const activeWorkspaceCollectionPaths = new Set(
     (activeWorkspace?.collections || [])
@@ -120,9 +116,8 @@ const serializeSnapshot = async (state) => {
         : null;
       const normalizedPathname = activeCollection?.pathname ? normalizePath(activeCollection.pathname) : null;
 
-      lastActiveCollectionPathname = normalizedPathname && normalizedWorkspacePaths.includes(normalizedPathname)
-        ? normalizedPathname
-        : null;
+      lastActiveCollectionPathname =
+        normalizedPathname && normalizedWorkspacePaths.includes(normalizedPathname) ? normalizedPathname : null;
     } else {
       // For non-active workspaces, preserve from existing snapshot
       lastActiveCollectionPathname = existingWorkspace?.lastActiveCollectionPathname || null;
@@ -157,9 +152,10 @@ const serializeSnapshot = async (state) => {
 
     const workspacePathname = activeWorkspace?.pathname || '';
     const collectionSnapshotKey = getWorkspaceCollectionSnapshotKey(workspacePathname, collection.pathname);
-    const existingCollection = (collectionSnapshotKey && existingSnapshotLookups.collectionsByWorkspaceAndPath?.[collectionSnapshotKey])
-      || existingSnapshotLookups.collectionsByPath?.[normalizedPath]
-      || null;
+    const existingCollection =
+      (collectionSnapshotKey && existingSnapshotLookups.collectionsByWorkspaceAndPath?.[collectionSnapshotKey]) ||
+      existingSnapshotLookups.collectionsByPath?.[normalizedPath] ||
+      null;
     if (collectionSnapshotKey) {
       serializedCollectionKeys.add(collectionSnapshotKey);
     }
@@ -173,17 +169,20 @@ const serializeSnapshot = async (state) => {
       .map((t) => serializeTab(t, collection));
 
     const activeTabInCollection = (tabs.tabs || []).find(
-      (t) => t.collectionUid === collection.uid && t.uid === tabs.activeTabUid && !shouldExcludeTab(t, transientDirectory)
+      (t) =>
+        t.collectionUid === collection.uid && t.uid === tabs.activeTabUid && !shouldExcludeTab(t, transientDirectory)
     );
 
-    const selectedEnvironment = (collection.environments || []).find((env) => env.uid === collection.activeEnvironmentUid);
+    const selectedEnvironment = (collection.environments || []).find(
+      (env) => env.uid === collection.activeEnvironmentUid
+    );
     const environmentPathFromRedux = getCollectionEnvironmentPath(collection, selectedEnvironment, '');
     const selectedEnvironmentFromRedux = selectedEnvironment?.name || '';
-    const existingEnvironmentPath = existingCollection?.environment?.collection || existingCollection?.environmentPath || '';
+    const existingEnvironmentPath =
+      existingCollection?.environment?.collection || existingCollection?.environmentPath || '';
     const existingSelectedEnvironment = existingCollection?.selectedEnvironment || '';
-    const shouldPreserveExistingEnvironment = collection.mountStatus !== 'mounted'
-      && !environmentPathFromRedux
-      && !selectedEnvironmentFromRedux;
+    const shouldPreserveExistingEnvironment =
+      collection.mountStatus !== 'mounted' && !environmentPathFromRedux && !selectedEnvironmentFromRedux;
     const environmentPath = shouldPreserveExistingEnvironment ? existingEnvironmentPath : environmentPathFromRedux;
     const selectedEnvironmentName = shouldPreserveExistingEnvironment
       ? existingSelectedEnvironment
@@ -219,16 +218,18 @@ const serializeSnapshot = async (state) => {
     const workspacePathname = existingCollection.workspacePathname || '';
     const collectionSnapshotKey = getWorkspaceCollectionSnapshotKey(workspacePathname, existingCollection.pathname);
     const isSerializedCollection = collectionSnapshotKey && serializedCollectionKeys.has(collectionSnapshotKey);
-    const shouldPreservePendingHydration = pendingHydrationPaths.has(normalizedPath)
-      && activeWorkspace?.pathname
-      && normalizePath(workspacePathname) === normalizePath(activeWorkspace.pathname);
+    const shouldPreservePendingHydration =
+      pendingHydrationPaths.has(normalizedPath) &&
+      activeWorkspace?.pathname &&
+      normalizePath(workspacePathname) === normalizePath(activeWorkspace.pathname);
 
     if (!normalizedPath || (isSerializedCollection && !shouldPreservePendingHydration)) {
       return;
     }
 
-    const existingTabs = (collectionSnapshotKey && existingSnapshotLookups.tabsByWorkspaceAndCollectionPath?.[collectionSnapshotKey])
-      || existingSnapshotLookups.tabsByCollectionPath?.[normalizedPath];
+    const existingTabs =
+      (collectionSnapshotKey && existingSnapshotLookups.tabsByWorkspaceAndCollectionPath?.[collectionSnapshotKey]) ||
+      existingSnapshotLookups.tabsByCollectionPath?.[normalizedPath];
 
     snapshot.collections.push({
       pathname: existingCollection.pathname,
@@ -244,7 +245,9 @@ const serializeSnapshot = async (state) => {
       activeTab: existingTabs?.activeTab || existingCollection.activeTab || null,
       tabs: Array.isArray(existingTabs?.tabs)
         ? existingTabs.tabs
-        : (Array.isArray(existingCollection.tabs) ? existingCollection.tabs : [])
+        : Array.isArray(existingCollection.tabs)
+          ? existingCollection.tabs
+          : []
     });
   });
 
@@ -291,27 +294,30 @@ const flushSnapshotNow = async (getState) => {
  * Snapshot middleware
  * Only saves after app signals it's ready (snapshotReady = true)
  */
-export const snapshotMiddleware = ({ getState }) => (next) => (action) => {
-  const wasSnapshotReady = getState().app.snapshotReady;
-  const result = next(action);
+export const snapshotMiddleware =
+  ({ getState }) =>
+  (next) =>
+  (action) => {
+    const wasSnapshotReady = getState().app.snapshotReady;
+    const result = next(action);
 
-  if (action.type === 'app/setSnapshotReady' && action.payload === false && wasSnapshotReady) {
-    if (saveTimer) {
-      clearTimeout(saveTimer);
-      saveTimer = null;
+    if (action.type === 'app/setSnapshotReady' && action.payload === false && wasSnapshotReady) {
+      if (saveTimer) {
+        clearTimeout(saveTimer);
+        saveTimer = null;
+      }
+
+      void flushSnapshotNow(getState);
+      return result;
     }
 
-    void flushSnapshotNow(getState);
+    // Only save if snapshot is ready (app has finished initial loading)
+    const state = getState();
+    if (state.app.snapshotReady && SAVE_TRIGGERS.has(action.type)) {
+      scheduleSave(getState);
+    }
+
     return result;
-  }
-
-  // Only save if snapshot is ready (app has finished initial loading)
-  const state = getState();
-  if (state.app.snapshotReady && SAVE_TRIGGERS.has(action.type)) {
-    scheduleSave(getState);
-  }
-
-  return result;
-};
+  };
 
 export default snapshotMiddleware;

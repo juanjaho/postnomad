@@ -26,7 +26,7 @@ function buildCommentBody(results, baseline, title) {
     const base = baselineEntries[key];
     if (!base) continue;
 
-    const changePercent = (data.mean - base.mean) / base.mean * 100;
+    const changePercent = ((data.mean - base.mean) / base.mean) * 100;
     const changeStr = changePercent.toFixed(1);
     const status = changePercent > threshold ? '🔴 REGRESSION' : changePercent < -threshold ? '🟢 IMPROVED' : '✅ OK';
     if (changePercent > threshold) hasRegression = true;

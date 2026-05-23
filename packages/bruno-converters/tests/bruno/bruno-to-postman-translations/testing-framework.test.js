@@ -5,7 +5,9 @@ describe('Bruno to Postman Testing Framework Translation', () => {
   it('should translate test() to pm.test()', () => {
     const code = 'test("Status code is 200", function() { expect(res.getStatus()).to.equal(200); });';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toBe('pm.test("Status code is 200", function() { pm.expect(pm.response.code).to.equal(200); });');
+    expect(translatedCode).toBe(
+      'pm.test("Status code is 200", function() { pm.expect(pm.response.code).to.equal(200); });'
+    );
   });
 
   it('should translate expect() to pm.expect()', () => {
@@ -61,8 +63,8 @@ test("The response has all properties", () => {
 
     expect(translatedCode).toContain('pm.test("The response has all properties", () => {');
     expect(translatedCode).toContain('const responseJson = pm.response.json();');
-    expect(translatedCode).toContain('pm.expect(responseJson.type).to.eql(\'vip\');');
-    expect(translatedCode).toContain('pm.expect(responseJson.name).to.be.a(\'string\');');
+    expect(translatedCode).toContain("pm.expect(responseJson.type).to.eql('vip');");
+    expect(translatedCode).toContain("pm.expect(responseJson.name).to.be.a('string');");
     expect(translatedCode).toContain('pm.expect(responseJson.id).to.have.lengthOf(1);');
   });
 
@@ -106,9 +108,9 @@ test("Main test group", function() {
     expect(translatedCode).toContain('pm.test("Main test group", function() {');
     expect(translatedCode).toContain('const responseJson = pm.response.json();');
     expect(translatedCode).toContain('pm.test("User data validation", function() {');
-    expect(translatedCode).toContain('pm.expect(responseJson.user).to.be.an(\'object\');');
+    expect(translatedCode).toContain("pm.expect(responseJson.user).to.be.an('object');");
     expect(translatedCode).toContain('pm.test("Settings validation", function() {');
-    expect(translatedCode).toContain('pm.expect(responseJson.settings.notifications).to.be.a(\'boolean\');');
+    expect(translatedCode).toContain("pm.expect(responseJson.settings.notifications).to.be.a('boolean');");
   });
 
   it('should handle test with dynamic test names', () => {
@@ -125,7 +127,7 @@ test(\`\${endpoint} returns correct data\`, function() {
     expect(translatedCode).toContain('const endpoint = pm.variables.get("currentEndpoint");');
     expect(translatedCode).toContain('pm.test(`${endpoint} returns correct data`, function() {');
     expect(translatedCode).toContain('const responseJson = pm.response.json();');
-    expect(translatedCode).toContain('pm.expect(responseJson).to.be.an(\'object\');');
+    expect(translatedCode).toContain("pm.expect(responseJson).to.be.an('object');");
   });
 
   it('should handle test with conditional execution', () => {
@@ -147,10 +149,10 @@ if (responseJson.type === 'user') {
     const translatedCode = translateBruToPostman(code);
 
     expect(translatedCode).toContain('const responseJson = pm.response.json();');
-    expect(translatedCode).toContain('if (responseJson.type === \'user\') {');
+    expect(translatedCode).toContain("if (responseJson.type === 'user') {");
     expect(translatedCode).toContain('pm.test("User validation", function() {');
-    expect(translatedCode).toContain('pm.expect(responseJson.name).to.be.a(\'string\');');
-    expect(translatedCode).toContain('} else if (responseJson.type === \'admin\') {');
+    expect(translatedCode).toContain("pm.expect(responseJson.name).to.be.a('string');");
+    expect(translatedCode).toContain("} else if (responseJson.type === 'admin') {");
     expect(translatedCode).toContain('pm.test("Admin validation", function() {');
     expect(translatedCode).toContain('pm.expect(responseJson.accessLevel).to.be.above(5);');
   });
@@ -194,11 +196,11 @@ test("Array and object validations", function() {
 
     expect(translatedCode).toContain('pm.test("Array and object validations", function() {');
     expect(translatedCode).toContain('const data = pm.response.json();');
-    expect(translatedCode).toContain('pm.expect(data.items).to.be.an(\'array\');');
+    expect(translatedCode).toContain("pm.expect(data.items).to.be.an('array');");
     expect(translatedCode).toContain('pm.expect(data.items).to.have.lengthOf.at.least(1);');
-    expect(translatedCode).toContain('pm.expect(data.items[0]).to.have.property(\'id\');');
-    expect(translatedCode).toContain('pm.expect(data.user).to.be.an(\'object\');');
-    expect(translatedCode).toContain('pm.expect(data.user).to.have.all.keys(\'id\', \'name\', \'email\');');
+    expect(translatedCode).toContain("pm.expect(data.items[0]).to.have.property('id');");
+    expect(translatedCode).toContain("pm.expect(data.user).to.be.an('object');");
+    expect(translatedCode).toContain("pm.expect(data.user).to.have.all.keys('id', 'name', 'email');");
     expect(translatedCode).toContain('pm.expect(data.user).to.include({active: true});');
   });
 
@@ -225,8 +227,8 @@ test("Validate critical fields", function() {
     expect(translatedCode).toContain('const data = pm.response.json();');
     expect(translatedCode).toContain('if (!data.id) {');
     expect(translatedCode).toContain('pm.expect.fail("Missing ID field");');
-    expect(translatedCode).toContain('if (data.status !== \'active\' && data.status !== \'pending\') {');
+    expect(translatedCode).toContain("if (data.status !== 'active' && data.status !== 'pending') {");
     expect(translatedCode).toContain('pm.expect.fail("Invalid status: " + data.status);');
-    expect(translatedCode).toContain('pm.expect(data.name).to.be.a(\'string\');');
+    expect(translatedCode).toContain("pm.expect(data.name).to.be.a('string');");
   });
 });

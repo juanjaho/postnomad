@@ -44,7 +44,9 @@ const StyledWrapper = styled.div`
     background: transparent;
     border: none;
     cursor: pointer;
-    transition: background 0.12s, color 0.12s;
+    transition:
+      background 0.12s,
+      color 0.12s;
     white-space: nowrap;
 
     &.active {

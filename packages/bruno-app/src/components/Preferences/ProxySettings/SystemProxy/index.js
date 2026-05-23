@@ -36,7 +36,8 @@ const SystemProxy = () => {
           <div className="flex flex-row items-center gap-2">
             <div>
               <h2 className="text-xs system-proxy-title flex flex-row">
-                System Proxy {isFetching ? <IconLoader2 className="animate-spin ml-1" size={16} strokeWidth={1.5} /> : null}
+                System Proxy{' '}
+                {isFetching ? <IconLoader2 className="animate-spin ml-1" size={16} strokeWidth={1.5} /> : null}
               </h2>
               <small className="system-proxy-description">
                 Below values are sourced from your system proxy settings.
@@ -46,20 +47,14 @@ const SystemProxy = () => {
         </div>
         {error && (
           <div className="mb-2 p-3 system-proxy-error-container rounded">
-            <small className="system-proxy-error-text">
-              Error loading system proxy settings: {error}
-            </small>
+            <small className="system-proxy-error-text">Error loading system proxy settings: {error}</small>
           </div>
         )}
         {source && (
           <div className="mb-2">
             <small className="font-medium flex flex-row gap-2">
-              <div className="system-proxy-source-label text-xs">
-                Proxy source:
-              </div>
-              <div className="system-proxy-source-value">
-                {source}
-              </div>
+              <div className="system-proxy-source-label text-xs">Proxy source:</div>
+              <div className="system-proxy-source-value">{source}</div>
             </small>
           </div>
         )}
@@ -68,21 +63,15 @@ const SystemProxy = () => {
         </small>
         <div className="flex flex-col justify-start items-start pt-2">
           <div className="mb-1 flex items-center">
-            <label className="settings-label">
-              http_proxy
-            </label>
+            <label className="settings-label">http_proxy</label>
             <div className="system-proxy-value">{http_proxy || '-'}</div>
           </div>
           <div className="mb-1 flex items-center">
-            <label className="settings-label">
-              https_proxy
-            </label>
+            <label className="settings-label">https_proxy</label>
             <div className="system-proxy-value">{https_proxy || '-'}</div>
           </div>
           <div className="mb-1 flex items-center">
-            <label className="settings-label">
-              no_proxy
-            </label>
+            <label className="settings-label">no_proxy</label>
             <div className="system-proxy-value">{no_proxy || '-'}</div>
           </div>
         </div>

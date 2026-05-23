@@ -12,10 +12,14 @@ const ResponseDownload = forwardRef(({ item, children }, ref) => {
   const isDisabled = !response.dataBuffer || response.stream?.running;
   const elementRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    click: () => elementRef.current?.click(),
-    isDisabled
-  }), [isDisabled]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      click: () => elementRef.current?.click(),
+      isDisabled
+    }),
+    [isDisabled]
+  );
 
   const saveResponseToFile = () => {
     if (isDisabled) {
@@ -48,7 +52,9 @@ const ResponseDownload = forwardRef(({ item, children }, ref) => {
       })}
       data-testid="response-download-btn"
     >
-      {children ? children : (
+      {children ? (
+        children
+      ) : (
         <StyledWrapper className="flex items-center">
           <ActionIcon className="p-1" disabled={isDisabled}>
             <IconDownload size={16} strokeWidth={2} />

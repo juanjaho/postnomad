@@ -36,11 +36,7 @@ export const sortWorkspaces = (workspaces, preferences) => {
   });
 
   // Combine: default -> pinned -> unpinned
-  return [
-    ...(defaultWs ? [defaultWs] : []),
-    ...sortedPinned,
-    ...sortedUnpinned
-  ];
+  return [...(defaultWs ? [defaultWs] : []), ...sortedPinned, ...sortedUnpinned];
 };
 
 export const toggleWorkspacePin = (workspaceUid, preferences) => {

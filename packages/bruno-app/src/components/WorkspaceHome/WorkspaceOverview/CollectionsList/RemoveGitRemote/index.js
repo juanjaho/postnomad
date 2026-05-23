@@ -41,9 +41,7 @@ const RemoveGitRemote = ({ collectionPath, collectionName, remoteUrl, onClose })
           </span>{' '}
           from its Git remote?
         </p>
-        {remoteUrl ? (
-          <p className="mt-2 mb-0 font-mono text-xs text-muted break-all">{remoteUrl}</p>
-        ) : null}
+        {remoteUrl ? <p className="mt-2 mb-0 font-mono text-xs text-muted break-all">{remoteUrl}</p> : null}
         <p className="mt-3 mb-0 text-xs text-muted">
           This only removes the remote URL from <span className="font-mono">workspace.yml</span>. Local collection files
           and any <span className="font-mono">.git</span> folder are left untouched.

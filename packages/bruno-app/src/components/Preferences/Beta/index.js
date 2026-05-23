@@ -18,7 +18,8 @@ const BETA_FEATURES = [
   {
     id: BETA_FEATURE_IDS.OPENAPI_SYNC,
     label: 'OpenAPI Sync',
-    description: 'Synchronize your Bruno collection with an OpenAPI specification. Detect drift, review changes, and sync with a single click.'
+    description:
+      'Synchronize your Bruno collection with an OpenAPI specification. Detect drift, review changes, and sync with a single click.'
   }
 ];
 
@@ -60,30 +61,32 @@ const Beta = ({ close }) => {
     }
   });
 
-  const handleSave = useCallback((newBetaPreferences) => {
-    dispatch(
-      savePreferences({
-        ...preferences,
-        beta: {
-          ...preferences.beta,
-          ...newBetaPreferences
-        }
-      })
-    )
-      .catch((err) => console.log(err) && toast.error('Failed to update beta preferences'));
-  }, [dispatch, preferences]);
+  const handleSave = useCallback(
+    (newBetaPreferences) => {
+      dispatch(
+        savePreferences({
+          ...preferences,
+          beta: {
+            ...preferences.beta,
+            ...newBetaPreferences
+          }
+        })
+      ).catch((err) => console.log(err) && toast.error('Failed to update beta preferences'));
+    },
+    [dispatch, preferences]
+  );
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;
 
   const debouncedSave = useCallback(
     debounce((values) => {
-      betaSchema.validate(values, { abortEarly: true })
+      betaSchema
+        .validate(values, { abortEarly: true })
         .then((validatedValues) => {
           handleSaveRef.current(validatedValues);
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     }, 500),
     [betaSchema]
   );

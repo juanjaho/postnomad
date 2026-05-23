@@ -24,8 +24,8 @@ const RenameWorkspace = ({ onClose, workspace }) => {
         .required('name is required')
         .test('unique-name', 'A workspace with this name already exists', function (value) {
           if (!value) return true;
-          return !workspaces.some((w) =>
-            w.uid !== workspace.uid && w.name && w.name.toLowerCase() === value.toLowerCase()
+          return !workspaces.some(
+            (w) => w.uid !== workspace.uid && w.name && w.name.toLowerCase() === value.toLowerCase()
           );
         })
     }),
@@ -57,13 +57,7 @@ const RenameWorkspace = ({ onClose, workspace }) => {
 
   return (
     <Portal>
-      <Modal
-        size="md"
-        title="Rename Workspace"
-        confirmText="Rename"
-        handleConfirm={onSubmit}
-        handleCancel={onClose}
-      >
+      <Modal size="md" title="Rename Workspace" confirmText="Rename" handleConfirm={onSubmit} handleCancel={onClose}>
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="workspace-name" className="block font-semibold">

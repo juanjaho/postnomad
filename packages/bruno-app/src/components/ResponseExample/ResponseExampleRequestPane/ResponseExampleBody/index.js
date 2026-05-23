@@ -35,14 +35,16 @@ const ResponseExampleBody = ({ editMode, item, collection, exampleUid, onSave })
           break;
       }
 
-      dispatch(updateResponseExampleRequest({
-        itemUid: item.uid,
-        collectionUid: collection.uid,
-        exampleUid: exampleUid,
-        request: {
-          body: updatedBody
-        }
-      }));
+      dispatch(
+        updateResponseExampleRequest({
+          itemUid: item.uid,
+          collectionUid: collection.uid,
+          exampleUid: exampleUid,
+          request: {
+            body: updatedBody
+          }
+        })
+      );
     }
   };
 

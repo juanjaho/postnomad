@@ -50,18 +50,24 @@ test.describe('Import Insomnia v5 Collection - Environment Import', () => {
     });
 
     await test.step('Verify all environments are present', async () => {
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Base Environment$/ })
-        .first()).toBeVisible();
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Staging$/ })
-        .first()).toBeVisible();
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Development$/ })
-        .first()).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Base Environment$/ })
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Staging$/ })
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Development$/ })
+          .first()
+      ).toBeVisible();
     });
 
     await test.step('Test Base Environment - verify flattened keys', async () => {
@@ -127,7 +133,9 @@ test.describe('Import Insomnia v5 Collection - Environment Import', () => {
       await expect(configDebugInput).toBeVisible();
 
       // Assert: Numeric values in nested objects are converted to strings
-      const configTimeoutRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"config.timeout\"]') });
+      const configTimeoutRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value=\"config.timeout\"]') });
       await expect(configTimeoutRow.locator('.CodeMirror-line').first()).toHaveText('30000');
       // Assert: Boolean values in nested objects are converted to strings
       const configDebugRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"config.debug\"]') });
@@ -185,7 +193,9 @@ test.describe('Import Insomnia v5 Collection - Environment Import', () => {
       await expect(stagingConfigDebugInput).toBeVisible();
 
       // Assert: Staging overrides config.timeout with its own value
-      const configTimeoutRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"config.timeout\"]') });
+      const configTimeoutRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value=\"config.timeout\"]') });
       await expect(configTimeoutRow.locator('.CodeMirror-line').first()).toHaveText('60000');
       // Assert: Staging overrides config.debug with its own value
       const configDebugRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"config.debug\"]') });
@@ -227,10 +237,14 @@ test.describe('Import Insomnia v5 Collection - Environment Import', () => {
       await expect(newFeatureVersionInput).toBeVisible();
 
       // Assert: New boolean variable is added and converted to string
-      const newFeatureEnabledRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"new_feature.enabled\"]') });
+      const newFeatureEnabledRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value=\"new_feature.enabled\"]') });
       await expect(newFeatureEnabledRow.locator('.CodeMirror-line').first()).toHaveText('true');
       // Assert: New numeric variable is added and converted to string with full precision
-      const newFeatureVersionRow = page.locator('tbody tr').filter({ has: page.locator('input[value=\"new_feature.version\"]') });
+      const newFeatureVersionRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value=\"new_feature.version\"]') });
       await expect(newFeatureVersionRow.locator('.CodeMirror-line').first()).toHaveText('2.099123123');
 
       // **Assertion 3: Base Variable Inheritance**

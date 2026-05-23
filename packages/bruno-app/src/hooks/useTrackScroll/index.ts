@@ -39,7 +39,7 @@ export function useTrackScroll(options: UseTrackScrollOptions): void {
     if (!enabled || !ref) return;
 
     const el: HTMLElement | null = selector
-      ? (ref.current?.closest(selector) as HTMLElement | null) ?? null
+      ? ((ref.current?.closest(selector) as HTMLElement | null) ?? null)
       : ref.current;
     if (!el) return;
 

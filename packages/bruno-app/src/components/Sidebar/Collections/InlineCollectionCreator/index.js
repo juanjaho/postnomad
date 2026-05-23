@@ -27,7 +27,9 @@ const InlineCollectionCreator = ({ onComplete, onCancel, onOpenAdvanced }) => {
 
   const defaultLocation = isDefaultWorkspace
     ? get(preferences, 'general.defaultLocation', '')
-    : (activeWorkspace?.pathname ? path.join(activeWorkspace.pathname, 'collections') : '');
+    : activeWorkspace?.pathname
+      ? path.join(activeWorkspace.pathname, 'collections')
+      : '';
 
   useEffect(() => {
     const focusAndSelect = (value) => {
@@ -42,7 +44,8 @@ const InlineCollectionCreator = ({ onComplete, onCancel, onOpenAdvanced }) => {
     };
 
     if (defaultLocation) {
-      window.ipcRenderer?.invoke('renderer:find-unique-folder-name', 'Untitled Collection', defaultLocation)
+      window.ipcRenderer
+        ?.invoke('renderer:find-unique-folder-name', 'Untitled Collection', defaultLocation)
         ?.then((name) => focusAndSelect(name))
         ?.catch(() => focusAndSelect());
     } else {

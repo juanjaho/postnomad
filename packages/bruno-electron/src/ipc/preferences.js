@@ -34,7 +34,9 @@ const registerPreferencesIpc = (mainWindow) => {
       // load global environments
       const globalEnvironments = globalEnvironmentsStore.getGlobalEnvironments();
       let activeGlobalEnvironmentUid = globalEnvironmentsStore.getActiveGlobalEnvironmentUid();
-      activeGlobalEnvironmentUid = globalEnvironments?.find((env) => env?.uid == activeGlobalEnvironmentUid) ? activeGlobalEnvironmentUid : null;
+      activeGlobalEnvironmentUid = globalEnvironments?.find((env) => env?.uid == activeGlobalEnvironmentUid)
+        ? activeGlobalEnvironmentUid
+        : null;
       mainWindow.webContents.send('main:load-global-environments', { globalEnvironments, activeGlobalEnvironmentUid });
     } catch (error) {
       console.error('Error occured while fetching global environements!');

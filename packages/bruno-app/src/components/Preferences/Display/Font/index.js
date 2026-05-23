@@ -24,19 +24,22 @@ const Font = () => {
     setCodeFontSize(clampedSize);
   };
 
-  const handleSave = useCallback((font, fontSize) => {
-    dispatch(
-      savePreferences({
-        ...preferences,
-        font: {
-          codeFont: font,
-          codeFontSize: fontSize
-        }
-      })
-    ).catch(() => {
-      toast.error('Failed to save preferences');
-    });
-  }, [dispatch, preferences]);
+  const handleSave = useCallback(
+    (font, fontSize) => {
+      dispatch(
+        savePreferences({
+          ...preferences,
+          font: {
+            codeFont: font,
+            codeFontSize: fontSize
+          }
+        })
+      ).catch(() => {
+        toast.error('Failed to save preferences');
+      });
+    },
+    [dispatch, preferences]
+  );
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;

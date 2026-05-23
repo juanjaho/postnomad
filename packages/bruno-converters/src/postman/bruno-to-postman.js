@@ -531,8 +531,7 @@ export const brunoToPostman = (collection) => {
       return null;
     }
 
-    const contentTypeHeader = headers.find((header) =>
-      header.name && header.name.toLowerCase() === 'content-type');
+    const contentTypeHeader = headers.find((header) => header.name && header.name.toLowerCase() === 'content-type');
 
     return contentTypeHeader ? contentTypeHeader.value : null;
   };

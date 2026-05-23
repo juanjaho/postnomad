@@ -191,7 +191,7 @@ describe('Multiline Syntax Handling', () => {
     expect(translatedCode).toContain('test("Test with chaining", function() {');
     expect(translatedCode).toContain('expect(res.getStatus()).to.equal(200)');
     expect(translatedCode).toContain('const body = res.getBody()');
-    expect(translatedCode).toContain('.property(\'success\')');
+    expect(translatedCode).toContain(".property('success')");
     expect(translatedCode).toContain('.equal(true)');
   });
 
@@ -270,7 +270,9 @@ describe('Multiline Syntax Handling', () => {
     expect(translatedCode).toContain('bru.setVar("timestamp", new Date().toISOString())');
 
     // Check complex conditionals
-    expect(translatedCode).toContain('if (bru.getEnvVar("apiKey") !== undefined && bru.getEnvVar("apiKey") !== null &&');
+    expect(translatedCode).toContain(
+      'if (bru.getEnvVar("apiKey") !== undefined && bru.getEnvVar("apiKey") !== null &&'
+    );
     expect(translatedCode).toContain('bru.hasVar("testId"))');
 
     // Check response testing

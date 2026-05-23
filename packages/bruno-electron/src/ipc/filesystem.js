@@ -2,13 +2,7 @@ const { ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
-const {
-  browseDirectory,
-  browseFiles,
-  normalizeAndResolvePath,
-  isFile,
-  isDirectory
-} = require('../utils/filesystem');
+const { browseDirectory, browseFiles, normalizeAndResolvePath, isFile, isDirectory } = require('../utils/filesystem');
 const { findUniqueFolderName } = require('../utils/collection-import');
 
 const registerFilesystemIpc = (mainWindow) => {

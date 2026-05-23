@@ -16,9 +16,9 @@ function findCreatedWorkspaceDirs(location: string): string[] {
   return fs.readdirSync(location).filter((e) => {
     const fullPath = path.join(location, e);
     return (
-      fs.statSync(fullPath).isDirectory()
-      && e !== 'default-workspace'
-      && fs.existsSync(path.join(fullPath, 'workspace.yml'))
+      fs.statSync(fullPath).isDirectory() &&
+      e !== 'default-workspace' &&
+      fs.existsSync(path.join(fullPath, 'workspace.yml'))
     );
   });
 }
@@ -71,7 +71,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should create workspace via inline rename and click check icon', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create workspace via inline rename and click check icon', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-check');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -184,7 +187,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should discard temp workspace when clicking outside with empty name', async ({ launchElectronApp, createTmpDir }) => {
+    test('should discard temp workspace when clicking outside with empty name', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-outside-empty');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -211,7 +217,10 @@ test.describe('Create Workspace', () => {
   });
 
   test.describe('Advanced Modal Flow', () => {
-    test('should create workspace via advanced modal with custom location', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create workspace via advanced modal with custom location', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-modal');
       const customLocation = await createTmpDir('custom-ws-location');
 
@@ -241,13 +250,9 @@ test.describe('Create Workspace', () => {
 
         // The location input is read-only and Formik-controlled — .fill() won't update
         // Formik state. Stub the dialog so the browse() callback sets the custom location.
-        await app.evaluate(
-          ({ dialog }, targetPath: string) => {
-            (dialog as any).showOpenDialog = () =>
-              Promise.resolve({ canceled: false, filePaths: [targetPath] });
-          },
-          customLocation
-        );
+        await app.evaluate(({ dialog }, targetPath: string) => {
+          (dialog as any).showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [targetPath] });
+        }, customLocation);
         // Click the location input to trigger browse() which calls showOpenDialog
         await modal.locator('#workspace-location').click();
         // Verify location was set
@@ -286,7 +291,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should create workspace via advanced modal at default location', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create workspace via advanced modal at default location', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-modal-default');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -354,7 +362,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should show validation error for empty name in modal and keep modal open', async ({ launchElectronApp, createTmpDir }) => {
+    test('should show validation error for empty name in modal and keep modal open', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-modal-empty');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -388,7 +399,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should show validation error for whitespace-only name in modal and keep modal open', async ({ launchElectronApp, createTmpDir }) => {
+    test('should show validation error for whitespace-only name in modal and keep modal open', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-modal-whitespace');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -417,7 +431,7 @@ test.describe('Create Workspace', () => {
         const submitButton = modal.getByRole('button', { name: 'Create Workspace' });
         await expect(modal).toBeVisible();
         await expect(submitButton).toBeEnabled();
-        await expect(modal.getByText('Workspace name can\'t be empty')).toBeVisible({ timeout: 2000 });
+        await expect(modal.getByText("Workspace name can't be empty")).toBeVisible({ timeout: 2000 });
       });
 
       await closeElectronApp(app);
@@ -425,7 +439,10 @@ test.describe('Create Workspace', () => {
   });
 
   test.describe('Workspace Name Display', () => {
-    test('should show correct name in title bar dropdown after creation', async ({ launchElectronApp, createTmpDir }) => {
+    test('should show correct name in title bar dropdown after creation', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-display');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -595,7 +612,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should show validation error for empty name inline when pressing Enter', async ({ launchElectronApp, createTmpDir }) => {
+    test('should show validation error for empty name inline when pressing Enter', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-empty');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -623,7 +643,10 @@ test.describe('Create Workspace', () => {
       await closeElectronApp(app);
     });
 
-    test('should not show settings/cog icon when renaming an existing workspace', async ({ launchElectronApp, createTmpDir }) => {
+    test('should not show settings/cog icon when renaming an existing workspace', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-no-cog');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -661,7 +684,10 @@ test.describe('Create Workspace', () => {
   });
 
   test.describe('Workspace Switching After Creation', () => {
-    test('should switch between created workspace and default workspace', async ({ launchElectronApp, createTmpDir }) => {
+    test('should switch between created workspace and default workspace', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-switch');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });
@@ -697,7 +723,10 @@ test.describe('Create Workspace', () => {
   });
 
   test.describe('Temp Workspace Isolation', () => {
-    test('should exclude temp workspace from duplicate name validation in advanced modal', async ({ launchElectronApp, createTmpDir }) => {
+    test('should exclude temp workspace from duplicate name validation in advanced modal', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const wsLocation = await createTmpDir('ws-location-no-temp');
 
       const app = await launchElectronApp({ initUserDataPath, templateVars: { wsLocation } });

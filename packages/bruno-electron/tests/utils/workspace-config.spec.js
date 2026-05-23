@@ -24,7 +24,7 @@ describe('reorderWorkspaceCollections', () => {
       'collections:',
       ...collections.flatMap((c) => [`  - name: ${c.name}`, `    path: ${c.path}`]),
       'specs: []',
-      'docs: \'\''
+      "docs: ''"
     ].join('\n');
     fs.writeFileSync(path.join(workspacePath, 'workspace.yml'), content);
   };
@@ -64,10 +64,7 @@ describe('reorderWorkspaceCollections', () => {
   });
 
   test('deduplicates when reorder list contains duplicate paths', async () => {
-    writeWorkspaceYml([
-      collection('API', 'collections/api'),
-      collection('Backend', 'collections/backend')
-    ]);
+    writeWorkspaceYml([collection('API', 'collections/api'), collection('Backend', 'collections/backend')]);
 
     await reorderWorkspaceCollections(workspacePath, [
       absPath('collections/api'),
@@ -84,26 +81,20 @@ describe('Git remote on workspace collections', () => {
   let workspacePath;
 
   const writeYml = (collections) => {
-    const lines = [
-      'opencollection: 1.0.0',
-      'info:',
-      '  name: Test',
-      '  type: workspace',
-      'collections:'
-    ];
+    const lines = ['opencollection: 1.0.0', 'info:', '  name: Test', '  type: workspace', 'collections:'];
     for (const c of collections) {
       lines.push(`  - name: "${c.name}"`);
       lines.push(`    path: "${c.path}"`);
       if (c.remote) lines.push(`    remote: "${c.remote}"`);
     }
     lines.push('specs: []');
-    lines.push('docs: \'\'');
+    lines.push("docs: ''");
     fs.writeFileSync(path.join(workspacePath, 'workspace.yml'), lines.join('\n'));
   };
 
   const readCollectionsFromYml = () => {
     const raw = fs.readFileSync(path.join(workspacePath, 'workspace.yml'), 'utf8');
-    return (yaml.load(raw).collections || []);
+    return yaml.load(raw).collections || [];
   };
 
   const absPath = (relativePath) => path.resolve(workspacePath, relativePath);
@@ -123,23 +114,24 @@ describe('Git remote on workspace collections', () => {
   });
 
   test('setCollectionGitRemote sets remote on the matching entry only', async () => {
-    writeYml([
-      collection('API', 'collections/api'),
-      collection('Backend', 'collections/backend')
-    ]);
+    writeYml([collection('API', 'collections/api'), collection('Backend', 'collections/backend')]);
 
     await setCollectionGitRemote(workspacePath, absPath('collections/backend'), 'https://github.com/x/backend');
 
     const entries = readCollectionsFromYml();
     expect(entries[0]).toEqual({ name: 'API', path: 'collections/api' });
-    expect(entries[1]).toEqual({ name: 'Backend', path: 'collections/backend', remote: 'https://github.com/x/backend' });
+    expect(entries[1]).toEqual({
+      name: 'Backend',
+      path: 'collections/backend',
+      remote: 'https://github.com/x/backend'
+    });
   });
 
   test('setCollectionGitRemote rejects empty URL', async () => {
     writeYml([collection('API', 'collections/api')]);
-    await expect(
-      setCollectionGitRemote(workspacePath, absPath('collections/api'), '   ')
-    ).rejects.toThrow(/non-empty/i);
+    await expect(setCollectionGitRemote(workspacePath, absPath('collections/api'), '   ')).rejects.toThrow(
+      /non-empty/i
+    );
   });
 
   test('setCollectionGitRemote throws when collection is missing from workspace.yml', async () => {
@@ -159,7 +151,11 @@ describe('Git remote on workspace collections', () => {
 
     const entries = readCollectionsFromYml();
     expect(entries[0]).toEqual({ name: 'API', path: 'collections/api' });
-    expect(entries[1]).toEqual({ name: 'Backend', path: 'collections/backend', remote: 'https://github.com/x/backend' });
+    expect(entries[1]).toEqual({
+      name: 'Backend',
+      path: 'collections/backend',
+      remote: 'https://github.com/x/backend'
+    });
   });
 
   test('getWorkspaceCollections keeps git-backed entries even when local folder is missing', () => {
@@ -223,13 +219,16 @@ describe('Git remote on workspace collections', () => {
   test('clearCollectionGitRemote removes the collection path from .gitignore', async () => {
     ensureCollectionDir('collections/api');
     writeYml([collection('API', 'collections/api', { remote: 'https://github.com/x/api' })]);
-    fs.writeFileSync(path.join(workspacePath, '.gitignore'), [
-      'node_modules',
-      '# Bruno managed collection remotes',
-      'collections/api/',
-      '# End Bruno managed collection remotes',
-      ''
-    ].join('\n'));
+    fs.writeFileSync(
+      path.join(workspacePath, '.gitignore'),
+      [
+        'node_modules',
+        '# Bruno managed collection remotes',
+        'collections/api/',
+        '# End Bruno managed collection remotes',
+        ''
+      ].join('\n')
+    );
 
     await clearCollectionGitRemote(workspacePath, absPath('collections/api'));
 
@@ -253,7 +252,10 @@ describe('Git remote on workspace collections', () => {
 
   test('setCollectionGitRemote skips .gitignore for collections outside the workspace', async () => {
     const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bruno-outside-'));
-    fs.writeFileSync(path.join(outsideDir, 'bruno.json'), JSON.stringify({ name: 'x', version: '1', type: 'collection' }));
+    fs.writeFileSync(
+      path.join(outsideDir, 'bruno.json'),
+      JSON.stringify({ name: 'x', version: '1', type: 'collection' })
+    );
     try {
       writeYml([collection('External', outsideDir)]);
       await setCollectionGitRemote(workspacePath, outsideDir, 'https://github.com/x/external');

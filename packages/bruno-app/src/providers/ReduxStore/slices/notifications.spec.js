@@ -59,9 +59,7 @@ describe('filterNotificationsByVersion - semver', () => {
     ];
     const currentVersion = '1.0.5';
     const filteredNotifications = filterNotificationsByVersion(notifications, currentVersion);
-    expect(filteredNotifications).toEqual([
-      { minVersion: '1.0.0', maxVersion: '1.1.0' }
-    ]);
+    expect(filteredNotifications).toEqual([{ minVersion: '1.0.0', maxVersion: '1.1.0' }]);
   });
 
   it('should handle mixed valid and invalid version ranges', () => {
@@ -96,36 +94,28 @@ describe('filterNotificationsByVersion - semver', () => {
 
 describe('filterNotificationsByVersion - undefined version bounds', () => {
   it('should include notifications when minVersion is undefined and current version is below maxVersion', () => {
-    const notifications = [
-      { minVersion: undefined, maxVersion: '2.0.0' }
-    ];
+    const notifications = [{ minVersion: undefined, maxVersion: '2.0.0' }];
     const currentVersion = '1.5.0';
     const filteredNotifications = filterNotificationsByVersion(notifications, currentVersion);
     expect(filteredNotifications).toEqual(notifications);
   });
 
   it('should exclude notifications when minVersion is undefined and current version is above maxVersion', () => {
-    const notifications = [
-      { minVersion: undefined, maxVersion: '2.0.0' }
-    ];
+    const notifications = [{ minVersion: undefined, maxVersion: '2.0.0' }];
     const currentVersion = '2.1.0';
     const filteredNotifications = filterNotificationsByVersion(notifications, currentVersion);
     expect(filteredNotifications).toEqual([]);
   });
 
   it('should include notifications when maxVersion is undefined and current version is above minVersion', () => {
-    const notifications = [
-      { minVersion: '1.0.0', maxVersion: undefined }
-    ];
+    const notifications = [{ minVersion: '1.0.0', maxVersion: undefined }];
     const currentVersion = '2.0.0';
     const filteredNotifications = filterNotificationsByVersion(notifications, currentVersion);
     expect(filteredNotifications).toEqual(notifications);
   });
 
   it('should exclude notifications when maxVersion is undefined and current version is below minVersion', () => {
-    const notifications = [
-      { minVersion: '1.0.0', maxVersion: undefined }
-    ];
+    const notifications = [{ minVersion: '1.0.0', maxVersion: undefined }];
     const currentVersion = '0.9.0';
     const filteredNotifications = filterNotificationsByVersion(notifications, currentVersion);
     expect(filteredNotifications).toEqual([]);

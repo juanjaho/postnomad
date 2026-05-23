@@ -9,12 +9,12 @@ const StyledWrapper = styled.div`
     .auth-mode-label {
       color: ${(props) => props.theme.primary.text};
 
-    .caret {
-      color: rgb(140, 140, 140);
-      fill: rgb(140, 140, 140);
+      .caret {
+        color: rgb(140, 140, 140);
+        fill: rgb(140, 140, 140);
+      }
     }
   }
-}
 `;
 
 export default StyledWrapper;

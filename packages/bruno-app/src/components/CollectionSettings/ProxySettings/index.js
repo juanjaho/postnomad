@@ -84,10 +84,12 @@ const ProxySettings = ({ collection }) => {
   // Helper to update proxy config
   const updateProxy = (updates) => {
     const updatedProxy = { ...currentProxyConfig, ...updates };
-    dispatch(updateCollectionProxy({
-      collectionUid: collection.uid,
-      proxy: updatedProxy
-    }));
+    dispatch(
+      updateCollectionProxy({
+        collectionUid: collection.uid,
+        proxy: updatedProxy
+      })
+    );
   };
 
   const handleSave = () => dispatch(saveCollectionSettings(collection.uid));
@@ -194,7 +196,7 @@ const ProxySettings = ({ collection }) => {
   // Map new format to UI values
   const disabled = currentProxyConfig.disabled || false;
   const inherit = currentProxyConfig.inherit !== undefined ? currentProxyConfig.inherit : true;
-  const enabledValue = disabled ? 'false' : (inherit ? 'inherit' : 'true');
+  const enabledValue = disabled ? 'false' : inherit ? 'inherit' : 'true';
 
   return (
     <StyledWrapper className="h-full w-full">
@@ -206,9 +208,18 @@ const ProxySettings = ({ collection }) => {
             <InfoTip infotipId="request-var">
               <div>
                 <ul>
-                  <li><span style={{ width: '50px', display: 'inline-block' }}>inherit</span> - inherit from global preferences</li>
-                  <li><span style={{ width: '50px', display: 'inline-block' }}>enabled</span> - use collection-specific proxy config</li>
-                  <li><span style={{ width: '50px', display: 'inline-block' }}>disabled</span> - disable proxy for this collection</li>
+                  <li>
+                    <span style={{ width: '50px', display: 'inline-block' }}>inherit</span> - inherit from global
+                    preferences
+                  </li>
+                  <li>
+                    <span style={{ width: '50px', display: 'inline-block' }}>enabled</span> - use collection-specific
+                    proxy config
+                  </li>
+                  <li>
+                    <span style={{ width: '50px', display: 'inline-block' }}>disabled</span> - disable proxy for this
+                    collection
+                  </li>
                 </ul>
               </div>
             </InfoTip>
@@ -387,7 +398,11 @@ const ProxySettings = ({ collection }) => {
                     className="btn btn-sm absolute right-0"
                     onClick={() => setPasswordVisible(!passwordVisible)}
                   >
-                    {passwordVisible ? <IconEyeOff size={18} strokeWidth={1.5} /> : <IconEye size={18} strokeWidth={1.5} />}
+                    {passwordVisible ? (
+                      <IconEyeOff size={18} strokeWidth={1.5} />
+                    ) : (
+                      <IconEye size={18} strokeWidth={1.5} />
+                    )}
                   </button>
                 </div>
               </div>

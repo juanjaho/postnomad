@@ -9,7 +9,9 @@ const ResponseExampleUrlBar = ({ item, collection, editMode, onSave, exampleUid 
   const dispatch = useDispatch();
 
   const exampleData = useMemo(() => {
-    return item.draft ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid) : get(item, 'examples', []).find((e) => e.uid === exampleUid);
+    return item.draft
+      ? get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)
+      : get(item, 'examples', []).find((e) => e.uid === exampleUid);
   }, [item, exampleUid]);
   const method = get(exampleData, 'request.method');
   const url = get(exampleData, 'request.url');
@@ -19,12 +21,14 @@ const ResponseExampleUrlBar = ({ item, collection, editMode, onSave, exampleUid 
       return;
     }
 
-    dispatch(updateResponseExampleRequestUrl({
-      itemUid: item.uid,
-      collectionUid: collection.uid,
-      exampleUid: exampleUid,
-      request: { url: value }
-    }));
+    dispatch(
+      updateResponseExampleRequestUrl({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        exampleUid: exampleUid,
+        request: { url: value }
+      })
+    );
   };
 
   const getMethodClass = () => {
@@ -49,13 +53,18 @@ const ResponseExampleUrlBar = ({ item, collection, editMode, onSave, exampleUid 
         return 'method-head';
       default:
         return 'method-get';
-    };
+    }
   };
 
   return (
     <StyledWrapper className="flex items-center">
-      <div className="url-bar-container w-full flex p-2 text-xs rounded-md items-center justify-between" data-testid="url-bar-container">
-        <div className={`method flex text-xs items-center justify-center px-2 rounded h-6 flex-shrink-0 mr-2 overflow-hidden whitespace-nowrap font-medium uppercase ${getMethodClass()}`}>
+      <div
+        className="url-bar-container w-full flex p-2 text-xs rounded-md items-center justify-between"
+        data-testid="url-bar-container"
+      >
+        <div
+          className={`method flex text-xs items-center justify-center px-2 rounded h-6 flex-shrink-0 mr-2 overflow-hidden whitespace-nowrap font-medium uppercase ${getMethodClass()}`}
+        >
           {method || 'GET'}
         </div>
 

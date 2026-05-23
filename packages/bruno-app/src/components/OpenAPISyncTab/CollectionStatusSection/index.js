@@ -29,7 +29,8 @@ const CollectionStatusSection = ({
   onTabSelect
 }) => {
   const {
-    pendingAction, setPendingAction,
+    pendingAction,
+    setPendingAction,
     confirmPendingAction,
     handleResetEndpoint,
     handleResetAllModified,
@@ -42,9 +43,11 @@ const CollectionStatusSection = ({
 
   const spec = storedSpec || specDrift?.newSpec;
   const hasStoredSpec = collectionDrift && !collectionDrift.noStoredSpec;
-  const hasDrift = hasStoredSpec && (collectionDrift.modified?.length > 0
-    || collectionDrift.missing?.length > 0
-    || collectionDrift.localOnly?.length > 0);
+  const hasDrift =
+    hasStoredSpec &&
+    (collectionDrift.modified?.length > 0 ||
+      collectionDrift.missing?.length > 0 ||
+      collectionDrift.localOnly?.length > 0);
 
   const renderDriftRow = (endpoint, idx, actions) => (
     <ExpandableEndpointRow
@@ -83,17 +86,29 @@ const CollectionStatusSection = ({
       {bannerState && (
         <div className={`spec-update-banner ${bannerState.variant}`}>
           <div className="banner-left">
-            {bannerState.variant === 'success'
-              ? <IconCheck size={16} className="status-check-icon" />
-              : <div className={`status-dot ${bannerState.variant}`} />}
-            <span className="banner-title">
-              {bannerState.message}
-            </span>
+            {bannerState.variant === 'success' ? (
+              <IconCheck size={16} className="status-check-icon" />
+            ) : (
+              <div className={`status-dot ${bannerState.variant}`} />
+            )}
+            <span className="banner-title">{bannerState.message}</span>
             {bannerState.badges && (
               <span className="banner-details">
-                {bannerState.badges.modifiedCount > 0 && <StatusBadge status="warning" radius="full">{bannerState.badges.modifiedCount} modified</StatusBadge>}
-                {bannerState.badges.missingCount > 0 && <StatusBadge status="danger" radius="full">{bannerState.badges.missingCount} deleted</StatusBadge>}
-                {bannerState.badges.localOnlyCount > 0 && <StatusBadge status="muted" radius="full">{bannerState.badges.localOnlyCount} added</StatusBadge>}
+                {bannerState.badges.modifiedCount > 0 && (
+                  <StatusBadge status="warning" radius="full">
+                    {bannerState.badges.modifiedCount} modified
+                  </StatusBadge>
+                )}
+                {bannerState.badges.missingCount > 0 && (
+                  <StatusBadge status="danger" radius="full">
+                    {bannerState.badges.missingCount} deleted
+                  </StatusBadge>
+                )}
+                {bannerState.badges.localOnlyCount > 0 && (
+                  <StatusBadge status="muted" radius="full">
+                    {bannerState.badges.localOnlyCount} added
+                  </StatusBadge>
+                )}
               </span>
             )}
           </div>
@@ -110,7 +125,10 @@ const CollectionStatusSection = ({
       {hasDrift && (
         <div className="sync-info-notice mt-4">
           <IconInfoCircle size={14} className="sync-info-icon" />
-          <span><span className="whats-updated-title">What's tracked:</span> Changes to parameters, headers, body and auth compared to the synced spec. Your variables, scripts, tests, assertions, settings etc. are not tracked here.</span>
+          <span>
+            <span className="whats-updated-title">What's tracked:</span> Changes to parameters, headers, body and auth
+            compared to the synced spec. Your variables, scripts, tests, assertions, settings etc. are not tracked here.
+          </span>
         </div>
       )}
 
@@ -125,17 +143,32 @@ const CollectionStatusSection = ({
             collectionUid={collection.uid}
             sectionKey="drift-modified"
             renderItem={(endpoint, idx) =>
-              renderDriftRow(endpoint, idx, (
+              renderDriftRow(
+                endpoint,
+                idx,
                 <>
-                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title="Open in tab" icon={<IconExternalLink size={14} />}>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => onOpenEndpoint(endpoint.id)}
+                    title="Open in tab"
+                    icon={<IconExternalLink size={14} />}
+                  >
                     Open
                   </Button>
-                  <Button size="xs" variant="ghost" onClick={() => handleResetEndpoint(endpoint)} title="Reset to spec" icon={<IconArrowBackUp size={14} />}>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => handleResetEndpoint(endpoint)}
+                    title="Reset to spec"
+                    icon={<IconArrowBackUp size={14} />}
+                  >
                     Reset
                   </Button>
                 </>
-              ))}
-            actions={(
+              )
+            }
+            actions={
               <Button
                 size="xs"
                 variant="outline"
@@ -145,7 +178,7 @@ const CollectionStatusSection = ({
               >
                 Reset All
               </Button>
-            )}
+            }
           />
 
           {/* Deleted from Collection */}
@@ -157,12 +190,21 @@ const CollectionStatusSection = ({
             collectionUid={collection.uid}
             sectionKey="drift-missing"
             renderItem={(endpoint, idx) =>
-              renderDriftRow(endpoint, idx, (
-                <Button size="xs" variant="ghost" onClick={() => handleAddMissingEndpoint(endpoint)} title="Restore to collection" icon={<IconPlus size={14} />}>
+              renderDriftRow(
+                endpoint,
+                idx,
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  onClick={() => handleAddMissingEndpoint(endpoint)}
+                  title="Restore to collection"
+                  icon={<IconPlus size={14} />}
+                >
                   Restore
                 </Button>
-              ))}
-            actions={(
+              )
+            }
+            actions={
               <Button
                 size="xs"
                 variant="outline"
@@ -172,7 +214,7 @@ const CollectionStatusSection = ({
               >
                 Restore All
               </Button>
-            )}
+            }
           />
 
           {/* Added to Collection */}
@@ -184,17 +226,33 @@ const CollectionStatusSection = ({
             collectionUid={collection.uid}
             sectionKey="drift-local-only"
             renderItem={(endpoint, idx) =>
-              renderDriftRow(endpoint, idx, (
+              renderDriftRow(
+                endpoint,
+                idx,
                 <>
-                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title="Open in tab" icon={<IconExternalLink size={14} />}>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => onOpenEndpoint(endpoint.id)}
+                    title="Open in tab"
+                    icon={<IconExternalLink size={14} />}
+                  >
                     Open
                   </Button>
-                  <Button size="xs" variant="ghost" color="danger" onClick={() => handleDeleteEndpoint(endpoint)} title="Delete endpoint" icon={<IconTrash size={14} />}>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    color="danger"
+                    onClick={() => handleDeleteEndpoint(endpoint)}
+                    title="Delete endpoint"
+                    icon={<IconTrash size={14} />}
+                  >
                     Delete
                   </Button>
                 </>
-              ))}
-            actions={(
+              )
+            }
+            actions={
               <Button
                 size="xs"
                 variant="outline"
@@ -205,7 +263,7 @@ const CollectionStatusSection = ({
               >
                 Delete All
               </Button>
-            )}
+            }
           />
         </div>
       ) : isLoading ? (
@@ -218,11 +276,14 @@ const CollectionStatusSection = ({
         <div className="sync-review-empty-state mt-5">
           <IconAlertTriangle size={40} className="empty-state-icon" />
           <h4>{lastSyncDate ? 'Cannot track collection changes' : 'Waiting for initial sync'}</h4>
-          <p>{lastSyncDate
-            ? 'The last synced spec is missing. Go to the \'Spec Updates\' tab to restore it, or sync the collection if updates are available to track future changes.'
-            : 'Once you sync your collection with the spec, local changes will appear here.'}
+          <p>
+            {lastSyncDate
+              ? "The last synced spec is missing. Go to the 'Spec Updates' tab to restore it, or sync the collection if updates are available to track future changes."
+              : 'Once you sync your collection with the spec, local changes will appear here.'}
           </p>
-          <Button variant="outline" size="sm" className="mt-4" onClick={() => onTabSelect('spec-updates')}>Go to Spec Updates</Button>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => onTabSelect('spec-updates')}>
+            Go to Spec Updates
+          </Button>
         </div>
       ) : (
         <div className="sync-review-empty-state mt-5">

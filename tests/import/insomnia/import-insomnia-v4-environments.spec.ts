@@ -41,7 +41,9 @@ test.describe('Import Insomnia v4 Collection - Environment Import', () => {
       await locationModal.getByRole('button', { name: 'Import' }).click();
       await locationModal.waitFor({ state: 'hidden' });
 
-      await expect(page.locator('#sidebar-collection-name').getByText('Test API Collection v4 with Environments')).toBeVisible();
+      await expect(
+        page.locator('#sidebar-collection-name').getByText('Test API Collection v4 with Environments')
+      ).toBeVisible();
 
       await openCollection(page, 'Test API Collection v4 with Environments');
     });
@@ -53,18 +55,24 @@ test.describe('Import Insomnia v4 Collection - Environment Import', () => {
     });
 
     await test.step('Verify all environments are present', async () => {
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Base Environment$/ })
-        .first()).toBeVisible();
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Staging$/ })
-        .first()).toBeVisible();
-      await expect(page
-        .locator('div')
-        .filter({ hasText: /^Development$/ })
-        .first()).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Base Environment$/ })
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Staging$/ })
+          .first()
+      ).toBeVisible();
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^Development$/ })
+          .first()
+      ).toBeVisible();
     });
 
     await test.step('Test Base Environment - verify flattened keys', async () => {
@@ -168,7 +176,9 @@ test.describe('Import Insomnia v4 Collection - Environment Import', () => {
       const stagingUserIdRow = page.locator('tbody tr').filter({ has: page.locator('input[value="user.id"]') });
       await expect(stagingUserIdRow.locator('.CodeMirror-line').first()).toHaveText('123');
       // Assert: Staging inherits user.roles[0] from base (not overridden in staging)
-      const stagingUserRoles0Row = page.locator('tbody tr').filter({ has: page.locator('input[value="user.roles[0]"]') });
+      const stagingUserRoles0Row = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value="user.roles[0]"]') });
       await expect(stagingUserRoles0Row.locator('.CodeMirror-line').first()).toHaveText('admin');
     });
 
@@ -208,10 +218,14 @@ test.describe('Import Insomnia v4 Collection - Environment Import', () => {
       await expect(v4NewFeatureVersionInput).toBeVisible();
 
       // Assert: New boolean variable is added and converted to string
-      const newFeatureEnabledRow = page.locator('tbody tr').filter({ has: page.locator('input[value="newFeature.enabled"]') });
+      const newFeatureEnabledRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value="newFeature.enabled"]') });
       await expect(newFeatureEnabledRow.locator('.CodeMirror-line').first()).toHaveText('true');
       // Assert: New numeric variable is added and converted to string with full precision
-      const newFeatureVersionRow = page.locator('tbody tr').filter({ has: page.locator('input[value="newFeature.version"]') });
+      const newFeatureVersionRow = page
+        .locator('tbody tr')
+        .filter({ has: page.locator('input[value="newFeature.version"]') });
       await expect(newFeatureVersionRow.locator('.CodeMirror-line').first()).toHaveText('2.099123123');
     });
 

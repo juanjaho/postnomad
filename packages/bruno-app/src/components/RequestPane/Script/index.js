@@ -35,7 +35,10 @@ const Script = ({ item, collection }) => {
   const preferences = useSelector((state) => state.app.preferences);
 
   const [preReqScroll, setPreReqScroll] = usePersistedState({ key: `request-pre-req-scroll-${item.uid}`, default: 0 });
-  const [postResScroll, setPostResScroll] = usePersistedState({ key: `request-post-res-scroll-${item.uid}`, default: 0 });
+  const [postResScroll, setPostResScroll] = usePersistedState({
+    key: `request-post-res-scroll-${item.uid}`,
+    default: 0
+  });
 
   // Refresh CodeMirror when tab becomes visible and restore scroll position.
   // CodeMirror's scrollTo() is silently ignored when the editor is inside a display:none container
@@ -91,15 +94,11 @@ const Script = ({ item, collection }) => {
         <TabsList>
           <TabsTrigger value="pre-request">
             Pre Request
-            {hasPreRequestScript && (
-              <StatusDot type={item.preRequestScriptErrorMessage ? 'error' : 'default'} />
-            )}
+            {hasPreRequestScript && <StatusDot type={item.preRequestScriptErrorMessage ? 'error' : 'default'} />}
           </TabsTrigger>
           <TabsTrigger value="post-response">
             Post Response
-            {hasPostResponseScript && (
-              <StatusDot type={item.postResponseScriptErrorMessage ? 'error' : 'default'} />
-            )}
+            {hasPostResponseScript && <StatusDot type={item.postResponseScriptErrorMessage ? 'error' : 'default'} />}
           </TabsTrigger>
         </TabsList>
 

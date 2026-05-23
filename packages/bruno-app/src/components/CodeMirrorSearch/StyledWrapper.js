@@ -53,7 +53,7 @@ const StyledWrapper = styled.div`
     text-align: center;
     font-size: ${(props) => props.theme.font.size.xs};
     color: ${(props) => props.theme.colors.text.subtext1};
-    margin: 0 8px 0 1px; 
+    margin: 0 8px 0 1px;
     white-space: nowrap;
   }
 
@@ -71,8 +71,17 @@ const StyledWrapper = styled.div`
     outline: 1px solid ${(props) => props.theme.codemirror.border};
   }
 
-  .bruno-search-bar, .bruno-search-bar input {
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  .bruno-search-bar,
+  .bruno-search-bar input {
+    font-family:
+      Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif !important;
   }
 
   .cm-search-line-highlight {

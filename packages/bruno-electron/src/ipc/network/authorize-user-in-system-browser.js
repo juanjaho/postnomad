@@ -1,5 +1,8 @@
 const { shell } = require('electron');
-const { registerOauth2AuthorizationRequest, rejectOauth2AuthorizationRequest } = require('../../utils/oauth2-protocol-handler');
+const {
+  registerOauth2AuthorizationRequest,
+  rejectOauth2AuthorizationRequest
+} = require('../../utils/oauth2-protocol-handler');
 
 const authorizeUserInSystemBrowser = ({ authorizeUrl, callbackUrl, grantType = 'authorization_code' }) => {
   return new Promise((resolve, reject) => {
@@ -9,9 +12,12 @@ const authorizeUserInSystemBrowser = ({ authorizeUrl, callbackUrl, grantType = '
     const modifiedAuthorizeUrl = authorizationUrlObj.toString();
 
     // Set timeout for the request (5 minutes)
-    const timeout = setTimeout(() => {
-      rejectOauth2AuthorizationRequest(new Error('Authorization timeout'));
-    }, 5 * 60 * 1000);
+    const timeout = setTimeout(
+      () => {
+        rejectOauth2AuthorizationRequest(new Error('Authorization timeout'));
+      },
+      5 * 60 * 1000
+    );
 
     // Wrap resolve/reject to clear timeout and add debugInfo
     const debugInfo = {

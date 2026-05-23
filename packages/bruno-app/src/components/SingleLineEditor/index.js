@@ -41,7 +41,7 @@ class SingleLineEditor extends Component {
         this.props.onSave();
       }
     };
-    const noopHandler = () => { };
+    const noopHandler = () => {};
 
     this.editor = CodeMirror(this.editorRef.current, {
       placeholder: this.props.placeholder ?? '',
@@ -49,16 +49,19 @@ class SingleLineEditor extends Component {
       lineNumbers: false,
       theme: this.props.theme === 'dark' ? 'monokai' : 'default',
       mode: 'brunovariables',
-      brunoVarInfo: this.props.enableBrunoVarInfo !== false ? {
-        variables,
-        collection: this.props.collection,
-        item: this.props.item
-      } : false,
+      brunoVarInfo:
+        this.props.enableBrunoVarInfo !== false
+          ? {
+              variables,
+              collection: this.props.collection,
+              item: this.props.item
+            }
+          : false,
       scrollbarStyle: null,
       tabindex: 0,
       readOnly: this.props.readOnly,
       extraKeys: {
-        'Enter': runHandler,
+        Enter: runHandler,
         'Alt-Enter': () => {
           if (this.props.allowNewlines) {
             this.editor.setValue(this.editor.getValue() + '\n');
@@ -70,7 +73,7 @@ class SingleLineEditor extends Component {
         'Cmd-F': noopHandler,
         'Ctrl-F': noopHandler,
         // Tabbing disabled to make tabindex work
-        'Tab': false,
+        Tab: false,
         'Shift-Tab': false
       }
     });
@@ -86,10 +89,7 @@ class SingleLineEditor extends Component {
       showHintsOnClick: this.props.showHintsOnClick
     };
 
-    this.brunoAutoCompleteCleanup = setupAutoComplete(
-      this.editor,
-      autoCompleteOptions
-    );
+    this.brunoAutoCompleteCleanup = setupAutoComplete(this.editor, autoCompleteOptions);
 
     this.editor.setValue(String(this.props.value ?? ''));
     this.editor.on('change', this._onEdit);
@@ -137,7 +137,7 @@ class SingleLineEditor extends Component {
   _onEdit = () => {
     if (!this.ignoreChangeEvent && this.editor) {
       this.cachedValue = this.editor.getValue();
-      if (this.props.onChange && (this.props.value !== this.cachedValue)) {
+      if (this.props.onChange && this.props.value !== this.cachedValue) {
         this.props.onChange(this.cachedValue);
       }
 
@@ -321,9 +321,7 @@ class SingleLineEditor extends Component {
           $isCompact={this.props.isCompact}
           {...(this.props['data-testid'] ? { 'data-testid': this.props['data-testid'] } : {})}
         />
-        <div className="flex items-center">
-          {this.secretEye(this.props.isSecret)}
-        </div>
+        <div className="flex items-center">{this.secretEye(this.props.isSecret)}</div>
       </div>
     );
   }

@@ -204,7 +204,8 @@ describe('Variables Translation', () => {
 
   // TODO: Restore once UI update fixes are live for setCollectionVar
   it.skip('should handle more complex nested expressions with variables', () => {
-    const code = 'pm.collectionVariables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));';
+    const code =
+      'pm.collectionVariables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));';
     const translatedCode = translateCode(code);
 
     expect(translatedCode).toBe('bru.setCollectionVar("fullPath", bru.getEnvVar("baseUrl") + bru.getVar("endpoint"));');

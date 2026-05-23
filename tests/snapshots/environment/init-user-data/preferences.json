@@ -1,8 +1,6 @@
 {
   "maximized": false,
-  "lastOpenedCollections": [
-    "{{projectRoot}}/tests/snapshots/environment/fixtures/collection"
-  ],
+  "lastOpenedCollections": ["{{projectRoot}}/tests/snapshots/environment/fixtures/collection"],
   "preferences": {
     "onboarding": {
       "hasLaunchedBefore": true,

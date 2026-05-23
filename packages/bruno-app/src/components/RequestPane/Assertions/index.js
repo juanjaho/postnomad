@@ -33,9 +33,23 @@ const parseAssertionOperator = (str = '') => {
   }
 
   const operators = [
-    'eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'notIn',
-    'contains', 'notContains', 'length', 'matches', 'notMatches',
-    'startsWith', 'endsWith', 'between', ...unaryOperators
+    'eq',
+    'neq',
+    'gt',
+    'gte',
+    'lt',
+    'lte',
+    'in',
+    'notIn',
+    'contains',
+    'notContains',
+    'length',
+    'matches',
+    'notMatches',
+    'startsWith',
+    'endsWith',
+    'between',
+    ...unaryOperators
   ];
 
   const [operator, ...rest] = str.split(' ');
@@ -75,21 +89,31 @@ const Assertions = ({ item, collection }) => {
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
   const handleRun = () => dispatch(sendRequest(item, collection.uid));
 
-  const handleAssertionsChange = useCallback((updatedAssertions) => {
-    dispatch(setRequestAssertions({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      assertions: updatedAssertions
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleAssertionsChange = useCallback(
+    (updatedAssertions) => {
+      dispatch(
+        setRequestAssertions({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          assertions: updatedAssertions
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
-  const handleAssertionDrag = useCallback(({ updateReorderedItem }) => {
-    dispatch(moveAssertion({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      updateReorderedItem
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleAssertionDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      dispatch(
+        moveAssertion({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          updateReorderedItem
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
   const columns = [
     {
@@ -129,12 +153,7 @@ const Assertions = ({ item, collection }) => {
           }
         };
 
-        return (
-          <AssertionOperator
-            operator={operator}
-            onChange={handleOperatorChange}
-          />
-        );
+        return <AssertionOperator operator={operator} onChange={handleOperatorChange} />;
       }
     },
     {

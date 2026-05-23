@@ -39,21 +39,31 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
   const handleRun = () => dispatch(sendRequest(item, collection.uid));
 
-  const handleHeadersChange = useCallback((updatedHeaders) => {
-    dispatch(setRequestHeaders({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      headers: updatedHeaders
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleHeadersChange = useCallback(
+    (updatedHeaders) => {
+      dispatch(
+        setRequestHeaders({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          headers: updatedHeaders
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
-  const handleHeaderDrag = useCallback(({ updateReorderedItem }) => {
-    dispatch(moveRequestHeader({
-      collectionUid: collection.uid,
-      itemUid: item.uid,
-      updateReorderedItem
-    }));
-  }, [dispatch, collection.uid, item.uid]);
+  const handleHeaderDrag = useCallback(
+    ({ updateReorderedItem }) => {
+      dispatch(
+        moveRequestHeader({
+          collectionUid: collection.uid,
+          itemUid: item.uid,
+          updateReorderedItem
+        })
+      );
+    },
+    [dispatch, collection.uid, item.uid]
+  );
 
   const getRowError = useCallback((row, index, key) => {
     if (key === 'name') {
@@ -152,7 +162,11 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
         onColumnWidthsChange={(widths) => handleColumnWidthsChange('request-headers', widths)}
       />
       <div className="bulk-edit-bar flex justify-end mt-2">
-        <button className="btn-action text-link select-none" data-testid="bulk-edit-toggle" onClick={toggleBulkEditMode}>
+        <button
+          className="btn-action text-link select-none"
+          data-testid="bulk-edit-toggle"
+          onClick={toggleBulkEditMode}
+        >
           Bulk Edit
         </button>
       </div>

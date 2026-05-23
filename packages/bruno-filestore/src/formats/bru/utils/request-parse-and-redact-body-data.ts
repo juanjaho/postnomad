@@ -6,13 +6,7 @@
 export const bruRequestParseAndRedactBodyData = (bruFileContent: string) => {
   try {
     // Define the patterns that indicate the start of different body types
-    const bodyTypePatterns = [
-      'body:json {',
-      'body:text {',
-      'body:xml {',
-      'body:sparql {',
-      'body:graphql {'
-    ];
+    const bodyTypePatterns = ['body:json {', 'body:text {', 'body:xml {', 'body:sparql {', 'body:graphql {'];
 
     // Normalize line endings to LF
     bruFileContent = (bruFileContent || '').replace(/\r\n/g, '\n');
@@ -59,8 +53,8 @@ export const bruRequestParseAndRedactBodyData = (bruFileContent: string) => {
       }, {});
 
     // Filter out body blocks to get the remaining file content
-    const fileContentWithoutBodyBlocks = fileContentBlocks.filter((block) =>
-      !bodyTypePatterns.some((pattern) => block.startsWith(pattern))
+    const fileContentWithoutBodyBlocks = fileContentBlocks.filter(
+      (block) => !bodyTypePatterns.some((pattern) => block.startsWith(pattern))
     );
 
     return {

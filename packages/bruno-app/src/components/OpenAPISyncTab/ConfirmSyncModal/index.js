@@ -33,9 +33,7 @@ const ConfirmGroup = ({ group }) => {
             <div key={ep.id || i} className="endpoint-row">
               <MethodBadge method={ep.method} />
               <span className="endpoint-path">{ep.path}</span>
-              {(ep.summary || ep.name) && (
-                <span className="endpoint-summary">{ep.summary || ep.name}</span>
-              )}
+              {(ep.summary || ep.name) && <span className="endpoint-summary">{ep.summary || ep.name}</span>}
             </div>
           ))}
         </div>
@@ -48,21 +46,18 @@ const ConfirmSyncModal = ({ groups, onCancel, onSync, isSyncing }) => {
   const hasNoChanges = groups.length === 0;
 
   return (
-    <Modal
-      size="md"
-      title="Confirm Sync"
-      handleCancel={onCancel}
-      hideFooter={true}
-    >
+    <Modal size="md" title="Confirm Sync" handleCancel={onCancel} hideFooter={true}>
       <div className="sync-confirm-modal">
         {hasNoChanges ? (
           <p className="sync-confirm-description">
-            Your collection is already in sync with the remote spec. Syncing will update the local spec file to match the latest remote version.
+            Your collection is already in sync with the remote spec. Syncing will update the local spec file to match
+            the latest remote version.
           </p>
         ) : (
           <>
             <p className="sync-confirm-description">
-              The following changes will be applied to your collection. This action cannot be undone. Are you sure you want to proceed?
+              The following changes will be applied to your collection. This action cannot be undone. Are you sure you
+              want to proceed?
             </p>
 
             <div className="sync-confirm-groups">

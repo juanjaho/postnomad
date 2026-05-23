@@ -28,45 +28,21 @@ describe('sortByNameThenSequence', () => {
 
   describe('Alphabetical sorting (no sequence numbers)', () => {
     it('should sort items alphabetically by name when no sequence numbers are present', () => {
-      const items = [
-        { name: 'folder_3' },
-        { name: 'folder_1' },
-        { name: 'folder_2' }
-      ];
+      const items = [{ name: 'folder_3' }, { name: 'folder_1' }, { name: 'folder_2' }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder_1' },
-        { name: 'folder_2' },
-        { name: 'folder_3' }
-      ]);
+      expect(result).toEqual([{ name: 'folder_1' }, { name: 'folder_2' }, { name: 'folder_3' }]);
     });
 
     it('should handle case-sensitive sorting correctly', () => {
-      const items = [
-        { name: 'Folder_2' },
-        { name: 'folder_1' },
-        { name: 'FOLDER_3' }
-      ];
+      const items = [{ name: 'Folder_2' }, { name: 'folder_1' }, { name: 'FOLDER_3' }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder_1' },
-        { name: 'Folder_2' },
-        { name: 'FOLDER_3' }
-      ]);
+      expect(result).toEqual([{ name: 'folder_1' }, { name: 'Folder_2' }, { name: 'FOLDER_3' }]);
     });
 
     it('should handle special characters in names', () => {
-      const items = [
-        { name: 'folder-2' },
-        { name: 'folder_1' },
-        { name: 'folder 3' }
-      ];
+      const items = [{ name: 'folder-2' }, { name: 'folder_1' }, { name: 'folder 3' }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder 3' },
-        { name: 'folder_1' },
-        { name: 'folder-2' }
-      ]);
+      expect(result).toEqual([{ name: 'folder 3' }, { name: 'folder_1' }, { name: 'folder-2' }]);
     });
   });
 
@@ -278,43 +254,23 @@ describe('sortByNameThenSequence', () => {
     });
 
     it('should handle sequence numbers beyond the array length', () => {
-      const items = [
-        { name: 'folder_1', seq: 10 },
-        { name: 'folder_2' },
-        { name: 'folder_3', seq: 20 }
-      ];
+      const items = [{ name: 'folder_1', seq: 10 }, { name: 'folder_2' }, { name: 'folder_3', seq: 20 }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder_2' },
-        { name: 'folder_1', seq: 10 },
-        { name: 'folder_3', seq: 20 }
-      ]);
+      expect(result).toEqual([{ name: 'folder_2' }, { name: 'folder_1', seq: 10 }, { name: 'folder_3', seq: 20 }]);
     });
   });
 
   describe('Edge cases and boundary conditions', () => {
     it('should handle items with missing name property without throwing errors', () => {
-      const items = [
-        { seq: 1 },
-        { name: 'folder_1' },
-        { name: 'folder_2', seq: 2 }
-      ];
+      const items = [{ seq: 1 }, { name: 'folder_1' }, { name: 'folder_2', seq: 2 }];
       // Note: This might cause issues in production, but we test the current behavior
       expect(() => sortByNameThenSequence(items)).not.toThrow();
     });
 
     it('should handle items with no seq property (equivalent to undefined)', () => {
-      const items = [
-        { name: 'folder_3' },
-        { name: 'folder_1', seq: 1 },
-        { name: 'folder_2' }
-      ];
+      const items = [{ name: 'folder_3' }, { name: 'folder_1', seq: 1 }, { name: 'folder_2' }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder_1', seq: 1 },
-        { name: 'folder_2' },
-        { name: 'folder_3' }
-      ]);
+      expect(result).toEqual([{ name: 'folder_1', seq: 1 }, { name: 'folder_2' }, { name: 'folder_3' }]);
     });
 
     it('should handle single item arrays', () => {
@@ -324,17 +280,9 @@ describe('sortByNameThenSequence', () => {
     });
 
     it('should handle items with identical names but different sequences', () => {
-      const items = [
-        { name: 'folder', seq: 2 },
-        { name: 'folder', seq: 1 },
-        { name: 'folder' }
-      ];
+      const items = [{ name: 'folder', seq: 2 }, { name: 'folder', seq: 1 }, { name: 'folder' }];
       const result = sortByNameThenSequence(items);
-      expect(result).toEqual([
-        { name: 'folder', seq: 1 },
-        { name: 'folder', seq: 2 },
-        { name: 'folder' }
-      ]);
+      expect(result).toEqual([{ name: 'folder', seq: 1 }, { name: 'folder', seq: 2 }, { name: 'folder' }]);
     });
   });
 

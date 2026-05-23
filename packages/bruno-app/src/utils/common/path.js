@@ -198,11 +198,11 @@ const getRelativePathWithinBasePath = (basePath, filePath, shouldPosixify = fals
     const sep = shouldPosixify ? '/' : brunoPath.sep;
 
     if (
-      !relativePath
-      || relativePath === '.'
-      || relativePath === '..'
-      || relativePath.startsWith(`..${sep}`)
-      || brunoPath.isAbsolute(relativePath)
+      !relativePath ||
+      relativePath === '.' ||
+      relativePath === '..' ||
+      relativePath.startsWith(`..${sep}`) ||
+      brunoPath.isAbsolute(relativePath)
     ) {
       return shouldPosixify ? posixify(filePath) : filePath;
     }

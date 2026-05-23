@@ -78,9 +78,7 @@ const ManageWorkspace = () => {
 
   return (
     <StyledWrapper>
-      {createWorkspaceModalOpen && (
-        <CreateWorkspace onClose={() => setCreateWorkspaceModalOpen(false)} />
-      )}
+      {createWorkspaceModalOpen && <CreateWorkspace onClose={() => setCreateWorkspaceModalOpen(false)} />}
 
       {renameWorkspaceModal.open && renameWorkspaceModal.workspace && (
         <RenameWorkspace
@@ -132,24 +130,16 @@ const ManageWorkspace = () => {
                     <span className="workspace-name">{workspace.name}</span>
                     {isDefault && <span className="default-badge">Default</span>}
                   </div>
-                  {workspace.pathname && (
-                    <div className="workspace-path">{workspace.pathname}</div>
-                  )}
+                  {workspace.pathname && <div className="workspace-path">{workspace.pathname}</div>}
                 </div>
 
                 <div className="workspace-actions">
-                  <button
-                    className="action-btn"
-                    onClick={() => handleOpenWorkspace(workspace)}
-                  >
+                  <button className="action-btn" onClick={() => handleOpenWorkspace(workspace)}>
                     <IconLogin size={14} strokeWidth={1.5} />
                     <span>Open</span>
                   </button>
                   {workspace.pathname && workspace.type !== 'default' && (
-                    <button
-                      className="action-btn"
-                      onClick={() => handleShowInFolder(workspace)}
-                    >
+                    <button className="action-btn" onClick={() => handleShowInFolder(workspace)}>
                       <IconFolder size={14} strokeWidth={1.5} />
                       <span>{getRevealInFolderLabel()}</span>
                     </button>
@@ -158,7 +148,11 @@ const ManageWorkspace = () => {
                     <MenuDropdown
                       placement="bottom-end"
                       items={[
-                        { id: 'open-in-terminal', label: 'Open in Terminal', onClick: () => openDevtoolsAndSwitchToTerminal(dispatch, workspace.pathname) },
+                        {
+                          id: 'open-in-terminal',
+                          label: 'Open in Terminal',
+                          onClick: () => openDevtoolsAndSwitchToTerminal(dispatch, workspace.pathname)
+                        },
                         { id: 'rename', label: 'Rename', onClick: () => handleRenameClick(workspace) },
                         { id: 'remove', label: 'Remove', onClick: () => handleCloseClick(workspace) }
                       ]}

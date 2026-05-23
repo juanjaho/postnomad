@@ -19,8 +19,10 @@ const { BrowserWindow, app, session, Menu, globalShortcut, ipcMain, nativeTheme 
 const { setContentSecurityPolicy } = require('electron-util');
 
 if (isDev && process.env.ELECTRON_USER_DATA_PATH) {
-  console.debug('`ELECTRON_USER_DATA_PATH` found, modifying `userData` path: \n'
-    + `\t${app.getPath('userData')} -> ${process.env.ELECTRON_USER_DATA_PATH}`);
+  console.debug(
+    '`ELECTRON_USER_DATA_PATH` found, modifying `userData` path: \n' +
+      `\t${app.getPath('userData')} -> ${process.env.ELECTRON_USER_DATA_PATH}`
+  );
 
   app.setPath('userData', process.env.ELECTRON_USER_DATA_PATH);
 }
@@ -69,18 +71,18 @@ const apiSpecWatcher = new ApiSpecWatcher();
 
 // Reference: https://content-security-policy.com/
 const contentSecurityPolicy = [
-  'default-src \'self\'',
-  'connect-src \'self\' https://*.posthog.com',
-  'font-src \'self\' https: data:;',
+  "default-src 'self'",
+  "connect-src 'self' https://*.posthog.com",
+  "font-src 'self' https: data:;",
   'frame-src data:',
-  'script-src \'self\' data:',
+  "script-src 'self' data:",
   // this has been commented out to make oauth2 work
   // "form-action 'none'",
   // we make an exception and allow http for images so that
   // they can be used as link in the embedded markdown editors
-  'img-src \'self\' blob: data: http: https:',
-  'media-src \'self\' blob: data: https:',
-  'style-src \'self\' \'unsafe-inline\' https:'
+  "img-src 'self' blob: data: http: https:",
+  "media-src 'self' blob: data: https:",
+  "style-src 'self' 'unsafe-inline' https:"
 ];
 
 setContentSecurityPolicy(contentSecurityPolicy.join(';') + ';');
@@ -123,11 +125,12 @@ const focusMainWindow = () => {
   }
 };
 
-const closeAllWatchers = () => Promise.allSettled([
-  collectionWatcher.closeAllWatchers(),
-  workspaceWatcher.closeAllWatchers(),
-  apiSpecWatcher.closeAllWatchers()
-]);
+const closeAllWatchers = () =>
+  Promise.allSettled([
+    collectionWatcher.closeAllWatchers(),
+    workspaceWatcher.closeAllWatchers(),
+    apiSpecWatcher.closeAllWatchers()
+  ]);
 
 // Parse protocol URL from command line arguments (if any)
 appProtocolUrl = getAppProtocolUrlFromArgv(process.argv);
@@ -361,13 +364,13 @@ app.on('ready', async () => {
     console.error('Original message:', reason);
     if (isDev) {
       console.error(
-        'Could not connect to Next.Js dev server, is it running?'
-        + ' Start the dev server using "npm run dev:web" and restart electron'
+        'Could not connect to Next.Js dev server, is it running?' +
+          ' Start the dev server using "npm run dev:web" and restart electron'
       );
     } else {
       console.error(
-        'If you are using an official production build: the above error is most likely a bug! '
-        + ' Please report this under: https://github.com/usebruno/bruno/issues'
+        'If you are using an official production build: the above error is most likely a bug! ' +
+          ' Please report this under: https://github.com/usebruno/bruno/issues'
       );
     }
   });
@@ -439,10 +442,13 @@ app.on('ready', async () => {
     try {
       let ogSend = mainWindow.webContents.send;
       mainWindow.webContents.send = function (channel, ...args) {
-        return ogSend.apply(this, [channel, ...args.map((_) => {
-          // todo: replace this with @msgpack/msgpack encode/decode
-          return safeParseJSON(safeStringifyJSON(_));
-        })]);
+        return ogSend.apply(this, [
+          channel,
+          ...args.map((_) => {
+            // todo: replace this with @msgpack/msgpack encode/decode
+            return safeParseJSON(safeStringifyJSON(_));
+          })
+        ]);
       };
     } catch (err) {
       console.error('Error wrapping webContents.send:', err);
@@ -504,7 +510,9 @@ app.on('before-quit', (event) => {
     } catch {}
 
     if (useSingleInstance && gotTheLock) {
-      try { app.releaseSingleInstanceLock(); } catch {}
+      try {
+        app.releaseSingleInstanceLock();
+      } catch {}
     }
 
     try {
@@ -550,10 +558,7 @@ app.on('browser-window-blur', () => {
  */
 function incrementZoomAndPersist(inc) {
   const currentPercentage = preferencesUtil.getZoomPercentage();
-  const nextPercentage = Math.min(
-    Math.max(currentPercentage + inc, 50),
-    150
-  );
+  const nextPercentage = Math.min(Math.max(currentPercentage + inc, 50), 150);
   updateZoomLevel(nextPercentage);
 }
 

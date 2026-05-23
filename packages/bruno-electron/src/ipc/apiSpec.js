@@ -30,18 +30,21 @@ const registerRendererEventHandlers = (mainWindow, watcher, lastOpenedApiSpecs) 
     }
   });
 
-  ipcMain.handle('renderer:create-api-spec', async (event, apiSpecName, apiSpecLocation, content = '', workspacePath = null) => {
-    try {
-      let pathname = path.join(apiSpecLocation, apiSpecName);
-      if (fs.existsSync(pathname)) {
-        throw new Error(`path: ${pathname} already exists`);
+  ipcMain.handle(
+    'renderer:create-api-spec',
+    async (event, apiSpecName, apiSpecLocation, content = '', workspacePath = null) => {
+      try {
+        let pathname = path.join(apiSpecLocation, apiSpecName);
+        if (fs.existsSync(pathname)) {
+          throw new Error(`path: ${pathname} already exists`);
+        }
+        await writeFile(pathname, content);
+        openApiSpec(mainWindow, watcher, pathname, { workspacePath });
+      } catch (error) {
+        return Promise.reject(error);
       }
-      await writeFile(pathname, content);
-      openApiSpec(mainWindow, watcher, pathname, { workspacePath });
-    } catch (error) {
-      return Promise.reject(error);
     }
-  });
+  );
 
   ipcMain.handle('renderer:remove-api-spec', async (event, pathname, workspacePath = null) => {
     try {
@@ -65,19 +68,23 @@ const registerRendererEventHandlers = (mainWindow, watcher, lastOpenedApiSpecs) 
   ipcMain.handle('renderer:fetch-api-spec', async (event, url) => {
     try {
       // Use a proxy-aware axios instance so that the user's configured proxy
-      const { proxyMode, proxyConfig, httpsAgentRequestFields, interpolationOptions }
-        = await getCertsAndProxyConfig({
-          collectionUid: null,
-          collection: { promptVariables: {} },
-          request: {},
-          envVars: {},
-          runtimeVariables: {},
-          processEnvVars: {},
-          collectionPath: '',
-          globalEnvironmentVariables: {}
-        });
+      const { proxyMode, proxyConfig, httpsAgentRequestFields, interpolationOptions } = await getCertsAndProxyConfig({
+        collectionUid: null,
+        collection: { promptVariables: {} },
+        request: {},
+        envVars: {},
+        runtimeVariables: {},
+        processEnvVars: {},
+        collectionPath: '',
+        globalEnvironmentVariables: {}
+      });
 
-      const axiosInstance = makeAxiosInstance({ proxyMode, proxyConfig, httpsAgentRequestFields, interpolationOptions });
+      const axiosInstance = makeAxiosInstance({
+        proxyMode,
+        proxyConfig,
+        httpsAgentRequestFields,
+        interpolationOptions
+      });
       const response = await axiosInstance.get(url, {
         timeout: 30000,
         transformResponse: [(data) => data]

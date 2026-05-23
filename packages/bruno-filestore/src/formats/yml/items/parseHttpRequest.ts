@@ -1,4 +1,7 @@
-import type { Item as BrunoItem, HttpItemSettings as BrunoHttpItemSettings } from '@usebruno/schema-types/collection/item';
+import type {
+  Item as BrunoItem,
+  HttpItemSettings as BrunoHttpItemSettings
+} from '@usebruno/schema-types/collection/item';
 import type { HttpRequest as BrunoHttpRequest } from '@usebruno/schema-types/requests/http';
 import type { HttpRequest, HttpRequestBody } from '@opencollection/types/requests/http';
 import { toBrunoAuth } from '../common/auth';
@@ -171,8 +174,12 @@ const parseHttpRequest = (ocRequest: HttpRequest): BrunoItem => {
 
       if (example.response) {
         brunoExample.response = {
-          status: typeof example.response.status === 'number' ? example.response.status
-            : example.response.status !== undefined ? Number(example.response.status) : null,
+          status:
+            typeof example.response.status === 'number'
+              ? example.response.status
+              : example.response.status !== undefined
+                ? Number(example.response.status)
+                : null,
           statusText: example.response.statusText || null,
           headers: toBrunoHttpHeaders(example.response.headers) || [],
           body: null

@@ -30,13 +30,7 @@ const StatusBadge = ({
   className = ''
 }) => {
   return (
-    <StyledWrapper
-      $status={status}
-      $variant={variant}
-      $size={size}
-      $radius={radius}
-      className={className}
-    >
+    <StyledWrapper $status={status} $variant={variant} $size={size} $radius={radius} className={className}>
       {leftSection}
       {children}
       {rightSection}

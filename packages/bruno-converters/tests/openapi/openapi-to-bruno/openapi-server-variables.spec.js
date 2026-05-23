@@ -263,13 +263,15 @@ describe('operation-level servers to request vars', () => {
         '/regional': {
           get: {
             summary: 'Regional data',
-            servers: [{
-              url: '{protocol}://{region}.example.com/v2',
-              variables: {
-                protocol: { default: 'https' },
-                region: { default: 'us-east' }
+            servers: [
+              {
+                url: '{protocol}://{region}.example.com/v2',
+                variables: {
+                  protocol: { default: 'https' },
+                  region: { default: 'us-east' }
+                }
               }
-            }],
+            ],
             responses: { 200: { description: 'OK' } }
           }
         }

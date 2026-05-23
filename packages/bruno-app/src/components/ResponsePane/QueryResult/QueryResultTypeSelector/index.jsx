@@ -1,5 +1,15 @@
 import React, { forwardRef, useState } from 'react';
-import { IconEye, IconCaretDown, IconBraces, IconCode, IconFileCode, IconBrandJavascript, IconFileText, IconHexagons, IconBinaryTree } from '@tabler/icons';
+import {
+  IconEye,
+  IconCaretDown,
+  IconBraces,
+  IconCode,
+  IconFileCode,
+  IconBrandJavascript,
+  IconFileText,
+  IconHexagons,
+  IconBinaryTree
+} from '@tabler/icons';
 import classnames from 'classnames';
 import MenuDropdown from 'ui/MenuDropdown';
 import ToggleSwitch from 'components/ToggleSwitch';
@@ -16,28 +26,32 @@ const FORMAT_ICONS = {
   base64: IconBinaryTree
 };
 
-const ButtonIcon = forwardRef(({ disabled, className, style, prefix, selectedLabel, suffix, isActive, ...props }, ref) => {
-  return (
-    <button
-      ref={ref}
-      className={classnames('button-dropdown-button flex items-center gap-1.5 text-xs',
-        'cursor-pointer select-none',
-        'h-7 rounded-[6px] border px-2 transition-colors',
-        { 'opacity-50 cursor-not-allowed': disabled },
-        className)}
-      disabled={disabled}
-      data-testid={props['data-testid']}
-      style={style}
-      role="button"
-      {...props}
-    >
-      {prefix && <span className={isActive ? 'active' : 'icon-muted'}>{prefix}</span>}
-      <span>{selectedLabel}</span>
-      {suffix && <span>{suffix}</span>}
-      {isActive && <IconCaretDown className="caret ml-0.5" size={12} strokeWidth={2} />}
-    </button>
-  );
-});
+const ButtonIcon = forwardRef(
+  ({ disabled, className, style, prefix, selectedLabel, suffix, isActive, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={classnames(
+          'button-dropdown-button flex items-center gap-1.5 text-xs',
+          'cursor-pointer select-none',
+          'h-7 rounded-[6px] border px-2 transition-colors',
+          { 'opacity-50 cursor-not-allowed': disabled },
+          className
+        )}
+        disabled={disabled}
+        data-testid={props['data-testid']}
+        style={style}
+        role="button"
+        {...props}
+      >
+        {prefix && <span className={isActive ? 'active' : 'icon-muted'}>{prefix}</span>}
+        <span>{selectedLabel}</span>
+        {suffix && <span>{suffix}</span>}
+        {isActive && <IconCaretDown className="caret ml-0.5" size={12} strokeWidth={2} />}
+      </button>
+    );
+  }
+);
 ButtonIcon.displayName = 'ButtonIcon';
 
 const QueryResultTypeSelector = ({
@@ -63,7 +77,9 @@ const QueryResultTypeSelector = ({
   // Find the selected item's label
   const findSelectedLabel = () => {
     if (formatValue != null) {
-      const selectedItem = formatOptions.find((item) => item.id === formatValue && (item.type === 'item' || !item.type));
+      const selectedItem = formatOptions.find(
+        (item) => item.id === formatValue && (item.type === 'item' || !item.type)
+      );
       if (selectedItem) return selectedItem.label;
     }
     return formatValue;

@@ -18,10 +18,7 @@ const ProtoFilesTab = ({
         <div className="content-wrapper">
           <div className="header-wrapper">
             <div className="header-text">From Collection Settings</div>
-            <button
-              onClick={onOpenCollectionProtobufSettings}
-              className="settings-button"
-            >
+            <button onClick={onOpenCollectionProtobufSettings} className="settings-button">
               <IconSettings size={16} strokeWidth={1.5} />
             </button>
           </div>
@@ -30,12 +27,8 @@ const ProtoFilesTab = ({
             <div className="error-wrapper">
               <p className="error-text">
                 <IconAlertCircle size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
-                Some proto files could not be found.
-                {' '}
-                <button
-                  onClick={onOpenCollectionProtobufSettings}
-                  className="error-link"
-                >
+                Some proto files could not be found.{' '}
+                <button onClick={onOpenCollectionProtobufSettings} className="error-link">
                   Manage proto files
                 </button>
               </p>
@@ -70,9 +63,7 @@ const ProtoFilesTab = ({
                           </span>
                         )}
                       </div>
-                      <div className="item-path">
-                        {protoFile.path}
-                      </div>
+                      <div className="item-path">{protoFile.path}</div>
                     </div>
                   </div>
                 </div>
@@ -84,17 +75,12 @@ const ProtoFilesTab = ({
 
       {(!collectionProtoFiles || collectionProtoFiles.length === 0) && (
         <div className="empty-wrapper">
-          <div className="empty-text">
-            No proto files configured in collection settings
-          </div>
+          <div className="empty-text">No proto files configured in collection settings</div>
         </div>
       )}
 
       <div className="button-wrapper">
-        <button
-          className="browse-button"
-          onClick={onSelectProtoFile}
-        >
+        <button className="browse-button" onClick={onSelectProtoFile}>
           <IconFile size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
           Browse for Proto File
         </button>

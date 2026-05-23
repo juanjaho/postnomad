@@ -8,11 +8,13 @@ const makeHtmlOutput = async (results, outputPath, runCompletionTime, environmen
     runnerResults = [];
   } else if (results.results) {
     // Convert CLI format to expected format: array of { iterationIndex, results, summary }
-    runnerResults = [{
-      iterationIndex: 0,
-      results: results.results,
-      summary: results.summary
-    }];
+    runnerResults = [
+      {
+        iterationIndex: 0,
+        results: results.results,
+        summary: results.summary
+      }
+    ];
   } else if (Array.isArray(results)) {
     runnerResults = results;
   }

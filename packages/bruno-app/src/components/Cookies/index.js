@@ -17,9 +17,7 @@ const ClearDomainCookiesModal = ({ onClose, domain, onClear }) => (
       <IconAlertTriangle size={32} strokeWidth={1.5} className="warning-icon" />
       <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
     </div>
-    <div className="font-normal mt-4">
-      Are you sure you want to clear all cookies for the domain {domain}?
-    </div>
+    <div className="font-normal mt-4">Are you sure you want to clear all cookies for the domain {domain}?</div>
 
     <div className="flex justify-between mt-6">
       <div>
@@ -42,9 +40,7 @@ const DeleteCookieModal = ({ onClose, cookieName, onDelete }) => (
       <IconAlertTriangle size={32} strokeWidth={1.5} className="warning-icon" />
       <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
     </div>
-    <div className="font-normal mt-4">
-      Are you sure you want to delete the cookie {cookieName}?
-    </div>
+    <div className="font-normal mt-4">Are you sure you want to delete the cookie {cookieName}?</div>
 
     <div className="flex justify-between mt-6">
       <div>
@@ -115,9 +111,7 @@ const CollectionProperties = ({ onClose }) => {
   const filteredCookies = useMemo(() => {
     if (!searchText) return cookies;
 
-    return cookies.filter((cookie) =>
-      cookie.domain.toLowerCase().includes(searchText.toLowerCase())
-    );
+    return cookies.filter((cookie) => cookie.domain.toLowerCase().includes(searchText.toLowerCase()));
   }, [cookies, searchText]);
 
   const shouldShowHeader = cookies && cookies.length > 0;
@@ -129,31 +123,33 @@ const CollectionProperties = ({ onClose }) => {
         title="Cookies"
         hideFooter={true}
         handleCancel={onClose}
-        customHeader={shouldShowHeader ? (
-          <StyledWrapper className="header flex items-center justify-between w-full">
-            <h2 className="text-xs font-medium">Cookies</h2>
-            <input
-              type="search"
-              placeholder="Search by domain"
-              value={searchText || ''}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="block textbox non-passphrase-input ml-auto font-normal"
-              autoFocus
-            />
-            <Button
-              type="submit"
-              size="sm"
-              className="mx-4"
-              icon={<IconCirclePlus strokeWidth={1.5} size={16} />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddCookie();
-              }}
-            >
-              <span>Add Cookie</span>
-            </Button>
-          </StyledWrapper>
-        ) : null}
+        customHeader={
+          shouldShowHeader ? (
+            <StyledWrapper className="header flex items-center justify-between w-full">
+              <h2 className="text-xs font-medium">Cookies</h2>
+              <input
+                type="search"
+                placeholder="Search by domain"
+                value={searchText || ''}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="block textbox non-passphrase-input ml-auto font-normal"
+                autoFocus
+              />
+              <Button
+                type="submit"
+                size="sm"
+                className="mx-4"
+                icon={<IconCirclePlus strokeWidth={1.5} size={16} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddCookie();
+                }}
+              >
+                <span>Add Cookie</span>
+              </Button>
+            </StyledWrapper>
+          ) : null
+        }
       >
         <StyledWrapper>
           {!cookies || !cookies.length ? (

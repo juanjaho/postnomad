@@ -234,7 +234,7 @@ const StyledWrapper = styled.div`
   .contents {
     display: contents;
     font-size: ${(props) => props.theme.font.size.xs};
-    
+
     div:first-child {
       font-weight: 500;
     }

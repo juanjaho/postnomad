@@ -118,12 +118,12 @@ const StyledWrapper = styled.div`
     .tags-container {
       gap: 6px;
     }
-    
+
     .tag-item {
       padding: 4px 8px;
       font-size: ${(props) => props.theme.font.size.xs};
     }
-    
+
     .empty-state {
       padding: 16px 12px;
       flex-direction: column;

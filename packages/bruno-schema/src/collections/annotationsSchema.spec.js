@@ -10,12 +10,17 @@ describe('annotation acceptance', () => {
         url: 'https://example.com',
         method: 'GET',
         headers: [
-          { uid: 'bbbbbbbbbbbbbbbbbbbbb', name: 'X-Test', value: '1', annotations: [{ name: 'note', value: 'header note' }] }
+          {
+            uid: 'bbbbbbbbbbbbbbbbbbbbb',
+            name: 'X-Test',
+            value: '1',
+            annotations: [{ name: 'note', value: 'header note' }]
+          }
         ],
         params: [
           { uid: 'ccccccccccccccccccccc', name: 'q', value: '1', type: 'query', annotations: [{ name: 'hint' }] }
-        ],
-      },
+        ]
+      }
     };
 
     await expect(itemSchema.validate(item)).resolves.toBeTruthy();
@@ -26,7 +31,15 @@ describe('annotation acceptance', () => {
       uid: 'ddddddddddddddddddddd',
       name: 'Env',
       variables: [
-        { uid: 'eeeeeeeeeeeeeeeeeeeee', name: 'API_KEY', value: 'abc', annotations: [{ name: 'secret', value: null }], type: 'text', enabled: true, secret: false }
+        {
+          uid: 'eeeeeeeeeeeeeeeeeeeee',
+          name: 'API_KEY',
+          value: 'abc',
+          annotations: [{ name: 'secret', value: null }],
+          type: 'text',
+          enabled: true,
+          secret: false
+        }
       ]
     };
 
@@ -43,7 +56,22 @@ describe('annotation acceptance', () => {
           uid: 'ggggggggggggggggggggg',
           type: 'http-request',
           name: 'Req2',
-          request: { url: '/path', method: 'POST', headers: [], params: [], vars: { req: [{ uid: 'hhhhhhhhhhhhhhhhhhhhh', name: 'base', value: 'https://example.com', annotations: [{ name: 'base-note' }] }] } }
+          request: {
+            url: '/path',
+            method: 'POST',
+            headers: [],
+            params: [],
+            vars: {
+              req: [
+                {
+                  uid: 'hhhhhhhhhhhhhhhhhhhhh',
+                  name: 'base',
+                  value: 'https://example.com',
+                  annotations: [{ name: 'base-note' }]
+                }
+              ]
+            }
+          }
         }
       ]
     };

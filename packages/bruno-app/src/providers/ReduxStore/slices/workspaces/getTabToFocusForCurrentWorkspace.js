@@ -16,9 +16,7 @@ export function getWorkspaceCollectionUids(state, workspace) {
     uids.add(workspace.scratchCollectionUid);
   }
   const workspacePaths = new Set(
-    (workspace.collections || [])
-      .filter((wc) => wc.path)
-      .map((wc) => normalizePath(wc.path))
+    (workspace.collections || []).filter((wc) => wc.path).map((wc) => normalizePath(wc.path))
   );
   state.collections?.collections?.forEach((c) => {
     if (!c.pathname) return;
@@ -42,9 +40,7 @@ export function getTabToFocusForCurrentWorkspace(state) {
   if (!activeTab) {
     return null;
   }
-  const activeWorkspace = state.workspaces?.workspaces?.find(
-    (w) => w.uid === state.workspaces?.activeWorkspaceUid
-  );
+  const activeWorkspace = state.workspaces?.workspaces?.find((w) => w.uid === state.workspaces?.activeWorkspaceUid);
   if (!activeWorkspace) {
     return null;
   }

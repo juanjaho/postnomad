@@ -18,7 +18,10 @@ test.describe.serial('subprotocol tests', () => {
     }
   });
 
-  test('Only connect if a valid subprotocol is sent with the request', async ({ pageWithUserData: page, restartApp }) => {
+  test('Only connect if a valid subprotocol is sent with the request', async ({
+    pageWithUserData: page,
+    restartApp
+  }) => {
     const locators = buildWebsocketCommonLocators(page);
     const clearText = async (text: string) => {
       for (let i = text.length; i > 0; i--) {

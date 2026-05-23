@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  IconX,
-  IconBug,
-  IconFileText,
-  IconCode,
-  IconStack,
-  IconBrandGithub
-} from '@tabler/icons';
+import { IconX, IconBug, IconFileText, IconCode, IconStack, IconBrandGithub } from '@tabler/icons';
 import { clearSelectedError } from 'providers/ReduxStore/slices/logs';
 import { useApp } from 'providers/App';
 import platformLib from 'platform';
@@ -44,12 +37,18 @@ ${error.stack || 'No stack trace available'}
 
 ### Arguments
 \`\`\`
-${error.args ? error.args.map((arg, index) => {
-  if (arg && typeof arg === 'object' && arg.__type === 'Error') {
-    return `[${index}]: Error: ${arg.message}`;
-  }
-  return `[${index}]: ${typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)}`;
-}).join('\n') : 'No arguments'}
+${
+  error.args
+    ? error.args
+        .map((arg, index) => {
+          if (arg && typeof arg === 'object' && arg.__type === 'Error') {
+            return `[${index}]: Error: ${arg.message}`;
+          }
+          return `[${index}]: ${typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)}`;
+        })
+        .join('\n')
+    : 'No arguments'
+}
 \`\`\`
 
 ### Steps to Reproduce
@@ -95,7 +94,10 @@ ${error.args ? error.args.map((arg, index) => {
           {error.lineno && (
             <div className="info-item">
               <label>Line:</label>
-              <span>{error.lineno}{error.colno ? `:${error.colno}` : ''}</span>
+              <span>
+                {error.lineno}
+                {error.colno ? `:${error.colno}` : ''}
+              </span>
             </div>
           )}
 
@@ -110,11 +112,7 @@ ${error.args ? error.args.map((arg, index) => {
         <h4>Report Issue</h4>
         <div className="report-section">
           <p>Found a bug? Help us improve Bruno by reporting this error on GitHub.</p>
-          <button
-            className="report-button"
-            onClick={handleReportIssue}
-            title="Report this error on GitHub"
-          >
+          <button className="report-button" onClick={handleReportIssue} title="Report this error on GitHub">
             <IconBrandGithub size={16} strokeWidth={1.5} />
             <span>Report Issue on GitHub</span>
           </button>
@@ -140,9 +138,7 @@ const StackTraceTab = ({ error }) => {
       <div className="section">
         <h4>Stack Trace</h4>
         <div className="stack-trace-container">
-          <pre className="stack-trace">
-            {formatStackTrace(error.stack)}
-          </pre>
+          <pre className="stack-trace">{formatStackTrace(error.stack)}</pre>
         </div>
       </div>
     </div>
@@ -154,18 +150,20 @@ const ArgumentsTab = ({ error }) => {
     if (!args || args.length === 0) return 'No arguments available';
 
     try {
-      return args.map((arg, index) => {
-        // Handle special Error object format
-        if (arg && typeof arg === 'object' && arg.__type === 'Error') {
-          return `[${index}]: Error: ${arg.message}\n  Name: ${arg.name}\n  Stack: ${arg.stack || 'No stack trace'}`;
-        }
+      return args
+        .map((arg, index) => {
+          // Handle special Error object format
+          if (arg && typeof arg === 'object' && arg.__type === 'Error') {
+            return `[${index}]: Error: ${arg.message}\n  Name: ${arg.name}\n  Stack: ${arg.stack || 'No stack trace'}`;
+          }
 
-        if (typeof arg === 'object' && arg !== null) {
-          return `[${index}]: ${JSON.stringify(arg, null, 2)}`;
-        }
+          if (typeof arg === 'object' && arg !== null) {
+            return `[${index}]: ${JSON.stringify(arg, null, 2)}`;
+          }
 
-        return `[${index}]: ${String(arg)}`;
-      }).join('\n\n');
+          return `[${index}]: ${String(arg)}`;
+        })
+        .join('\n\n');
     } catch (e) {
       return 'Arguments could not be formatted';
     }
@@ -176,9 +174,7 @@ const ArgumentsTab = ({ error }) => {
       <div className="section">
         <h4>Arguments</h4>
         <div className="arguments-container">
-          <pre className="arguments">
-            {formatArguments(error.args)}
-          </pre>
+          <pre className="arguments">{formatArguments(error.args)}</pre>
         </div>
       </div>
     </div>
@@ -223,44 +219,29 @@ const ErrorDetailsPanel = () => {
           <span className="error-time">({formatTime(selectedError.timestamp)})</span>
         </div>
 
-        <button
-          className="close-button"
-          onClick={handleClose}
-          title="Close details panel"
-        >
+        <button className="close-button" onClick={handleClose} title="Close details panel">
           <IconX size={16} strokeWidth={1.5} />
         </button>
       </div>
 
       <div className="panel-tabs">
-        <button
-          className={`tab-button ${activeTab === 'info' ? 'active' : ''}`}
-          onClick={() => setActiveTab('info')}
-        >
+        <button className={`tab-button ${activeTab === 'info' ? 'active' : ''}`} onClick={() => setActiveTab('info')}>
           <IconFileText size={14} strokeWidth={1.5} />
           Info
         </button>
 
-        <button
-          className={`tab-button ${activeTab === 'stack' ? 'active' : ''}`}
-          onClick={() => setActiveTab('stack')}
-        >
+        <button className={`tab-button ${activeTab === 'stack' ? 'active' : ''}`} onClick={() => setActiveTab('stack')}>
           <IconStack size={14} strokeWidth={1.5} />
           Stack
         </button>
 
-        <button
-          className={`tab-button ${activeTab === 'args' ? 'active' : ''}`}
-          onClick={() => setActiveTab('args')}
-        >
+        <button className={`tab-button ${activeTab === 'args' ? 'active' : ''}`} onClick={() => setActiveTab('args')}>
           <IconCode size={14} strokeWidth={1.5} />
           Args
         </button>
       </div>
 
-      <div className="panel-content">
-        {getTabContent()}
-      </div>
+      <div className="panel-content">{getTabContent()}</div>
     </StyledWrapper>
   );
 };

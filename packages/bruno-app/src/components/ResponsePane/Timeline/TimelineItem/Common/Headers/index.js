@@ -8,15 +8,16 @@ const HeadersBlock = ({ headers, type }) => {
       <div className="section-header" onClick={() => toggleHeaders(!areHeadersCollapsed)}>
         <pre className="flex flex-row items-center">
           <div className="opacity-70">{areHeadersCollapsed ? '▼' : '▶'}</div> Headers
-          {headers && Object.keys(headers).length > 0
-            && <div className="ml-1">({Object.keys(headers).length})</div>}
+          {headers && Object.keys(headers).length > 0 && <div className="ml-1">({Object.keys(headers).length})</div>}
         </pre>
       </div>
       {areHeadersCollapsed && (
         <div className="mt-1">
-          {headers && Object.keys(headers).length > 0
-            ? <Headers headers={headers} type={type} />
-            : <div className="timeline-item-timestamp">No Headers found</div>}
+          {headers && Object.keys(headers).length > 0 ? (
+            <Headers headers={headers} type={type} />
+          ) : (
+            <div className="timeline-item-timestamp">No Headers found</div>
+          )}
         </div>
       )}
     </div>

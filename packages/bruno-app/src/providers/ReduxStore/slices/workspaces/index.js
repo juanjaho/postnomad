@@ -50,8 +50,9 @@ export const workspacesSlice = createSlice({
       const workspace = state.workspaces.find((w) => w.uid === workspaceUid);
       if (workspace) {
         workspace.collections = workspace.collections || [];
-        const existingCollection = workspace.collections.find((c) =>
-          c.uid === collection.uid || c.path === collection.path);
+        const existingCollection = workspace.collections.find(
+          (c) => c.uid === collection.uid || c.path === collection.path
+        );
         if (!existingCollection) {
           workspace.collections.push(collection);
         }

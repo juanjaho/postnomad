@@ -55,9 +55,10 @@ const getErrorSourceInfo = (filePath, item, collection, getTreePath) => {
         for (const node of treePath) {
           if (node?.type === 'folder') {
             const nodePath = normalizePath(node.pathname || '');
-            const folderRelPath = nodePath && nodePath.startsWith(collectionPathname)
-              ? nodePath.slice(collectionPathname.length).replace(/^\//, '') + '/' + folderFileName
-              : folderFileName;
+            const folderRelPath =
+              nodePath && nodePath.startsWith(collectionPathname)
+                ? nodePath.slice(collectionPathname.length).replace(/^\//, '') + '/' + folderFileName
+                : folderFileName;
             if (folderRelPath === normalizedPath) {
               info.sourceUid = node.uid;
               info.label = `Folder: ${node.name}`;
@@ -86,18 +87,14 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
 
   const displayFilePath = errorContext?.filePath ? normalizePath(errorContext.filePath) : null;
 
-  const sourceInfo = getErrorSourceInfo(
-    errorContext?.filePath,
-    item,
-    collection,
-    getTreePathFromCollectionToItem
-  );
+  const sourceInfo = getErrorSourceInfo(errorContext?.filePath, item, collection, getTreePathFromCollectionToItem);
 
-  const canNavigate = sourceInfo
-    && collection?.uid
-    && (sourceInfo.sourceType === 'collection'
-      || (sourceInfo.sourceType === 'folder' && sourceInfo.sourceUid)
-      || (sourceInfo.sourceType === 'request' && item?.uid));
+  const canNavigate =
+    sourceInfo &&
+    collection?.uid &&
+    (sourceInfo.sourceType === 'collection' ||
+      (sourceInfo.sourceType === 'folder' && sourceInfo.sourceUid) ||
+      (sourceInfo.sourceType === 'request' && item?.uid));
 
   const handleNavigateKeyDown = (e) => {
     if (!canNavigate) return;
@@ -122,7 +119,13 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
       }
     } else if (sourceInfo.sourceType === 'folder' && sourceInfo.sourceUid) {
       dispatch(addTab({ uid: sourceInfo.sourceUid, collectionUid: collection.uid, type: 'folder-settings' }));
-      dispatch(updatedFolderSettingsSelectedTab({ collectionUid: collection.uid, folderUid: sourceInfo.sourceUid, tab: folderSettingsTab }));
+      dispatch(
+        updatedFolderSettingsSelectedTab({
+          collectionUid: collection.uid,
+          folderUid: sourceInfo.sourceUid,
+          tab: folderSettingsTab
+        })
+      );
       if (folderSettingsTab === 'script') {
         dispatch(updateScriptPaneTab({ uid: sourceInfo.sourceUid, scriptPaneTab: scriptPhase }));
       }
@@ -145,9 +148,16 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
     <StyledWrapper>
       <div className="script-error-card" data-testid="script-error-card">
         <div className="script-error-header">
-          <div className="error-title" data-testid="script-error-title">{title}</div>
+          <div className="error-title" data-testid="script-error-title">
+            {title}
+          </div>
           {onClose && (
-            <button className="close-button flex-shrink-0 cursor-pointer" data-testid="script-error-close" onClick={onClose} aria-label="Close error">
+            <button
+              className="close-button flex-shrink-0 cursor-pointer"
+              data-testid="script-error-close"
+              onClick={onClose}
+              aria-label="Close error"
+            >
               <IconX size={16} strokeWidth={1.5} />
             </button>
           )}
@@ -188,7 +198,9 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
               <span>{showStack ? 'Hide' : 'Show'} stack trace</span>
             </button>
             {showStack && (
-              <pre className="script-error-stack" data-testid="script-error-stack">{errorContext.stack}</pre>
+              <pre className="script-error-stack" data-testid="script-error-stack">
+                {errorContext.stack}
+              </pre>
             )}
           </div>
         )}

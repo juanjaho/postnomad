@@ -88,14 +88,21 @@ const ThemeDropdown = ({ children }) => {
   }, [isSystemMode, storedTheme]);
 
   // Get max index for a section
-  const getMaxIndex = useCallback((section) => {
-    switch (section) {
-      case 'mode': return 2;
-      case 'light': return lightThemes.length - 1;
-      case 'dark': return darkThemes.length - 1;
-      default: return 0;
-    }
-  }, [lightThemes.length, darkThemes.length]);
+  const getMaxIndex = useCallback(
+    (section) => {
+      switch (section) {
+        case 'mode':
+          return 2;
+        case 'light':
+          return lightThemes.length - 1;
+        case 'dark':
+          return darkThemes.length - 1;
+        default:
+          return 0;
+      }
+    },
+    [lightThemes.length, darkThemes.length]
+  );
 
   // Get mode index for returning to mode section
   const getModeIndex = useCallback(() => {
@@ -119,85 +126,95 @@ const ThemeDropdown = ({ children }) => {
   }, [isOpen, focusedSection, focusedIndex]);
 
   // Keyboard navigation handler
-  const handleKeyDown = useCallback((e) => {
-    if (!isOpen) return;
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!isOpen) return;
 
-    const sections = getAvailableSections();
-    const maxIndex = getMaxIndex(focusedSection);
+      const sections = getAvailableSections();
+      const maxIndex = getMaxIndex(focusedSection);
 
-    const navigationHandlers = {
-      'Escape': () => {
-        e.preventDefault();
-        handleClose();
-      },
+      const navigationHandlers = {
+        Escape: () => {
+          e.preventDefault();
+          handleClose();
+        },
 
-      'ArrowDown': () => {
-        e.preventDefault();
-        setIsKeyboardNav(true);
-        if (focusedSection === 'mode') {
-          setFocusedSection(sections[1]);
-          setFocusedIndex(0);
-        } else if (focusedIndex < maxIndex) {
-          setFocusedIndex(focusedIndex + 1);
-        }
-      },
-
-      'ArrowUp': () => {
-        e.preventDefault();
-        setIsKeyboardNav(true);
-        if (focusedSection !== 'mode') {
-          if (focusedIndex > 0) {
-            setFocusedIndex(focusedIndex - 1);
-          } else {
-            setFocusedSection('mode');
-            setFocusedIndex(getModeIndex());
+        ArrowDown: () => {
+          e.preventDefault();
+          setIsKeyboardNav(true);
+          if (focusedSection === 'mode') {
+            setFocusedSection(sections[1]);
+            setFocusedIndex(0);
+          } else if (focusedIndex < maxIndex) {
+            setFocusedIndex(focusedIndex + 1);
           }
-        }
-      },
+        },
 
-      'ArrowLeft': () => {
-        e.preventDefault();
-        setIsKeyboardNav(true);
-        if (focusedSection === 'mode') {
-          if (focusedIndex > 0) setFocusedIndex(focusedIndex - 1);
-        } else if (isSystemMode && focusedSection === 'dark') {
-          setFocusedSection('light');
-          setFocusedIndex(Math.min(focusedIndex, lightThemes.length - 1));
-        }
-      },
+        ArrowUp: () => {
+          e.preventDefault();
+          setIsKeyboardNav(true);
+          if (focusedSection !== 'mode') {
+            if (focusedIndex > 0) {
+              setFocusedIndex(focusedIndex - 1);
+            } else {
+              setFocusedSection('mode');
+              setFocusedIndex(getModeIndex());
+            }
+          }
+        },
 
-      'ArrowRight': () => {
-        e.preventDefault();
-        setIsKeyboardNav(true);
-        if (focusedSection === 'mode') {
-          if (focusedIndex < 2) setFocusedIndex(focusedIndex + 1);
-        } else if (isSystemMode && focusedSection === 'light') {
-          setFocusedSection('dark');
-          setFocusedIndex(Math.min(focusedIndex, darkThemes.length - 1));
-        }
-      },
+        ArrowLeft: () => {
+          e.preventDefault();
+          setIsKeyboardNav(true);
+          if (focusedSection === 'mode') {
+            if (focusedIndex > 0) setFocusedIndex(focusedIndex - 1);
+          } else if (isSystemMode && focusedSection === 'dark') {
+            setFocusedSection('light');
+            setFocusedIndex(Math.min(focusedIndex, lightThemes.length - 1));
+          }
+        },
 
-      'Enter': () => {
-        e.preventDefault();
-        if (focusedSection === 'mode') {
-          handleModeSelect(MODES[focusedIndex]);
-        } else if (focusedSection === 'light') {
-          handleThemeSelect(lightThemes[focusedIndex].id, true);
-        } else if (focusedSection === 'dark') {
-          handleThemeSelect(darkThemes[focusedIndex].id, false);
-        }
-      },
+        ArrowRight: () => {
+          e.preventDefault();
+          setIsKeyboardNav(true);
+          if (focusedSection === 'mode') {
+            if (focusedIndex < 2) setFocusedIndex(focusedIndex + 1);
+          } else if (isSystemMode && focusedSection === 'light') {
+            setFocusedSection('dark');
+            setFocusedIndex(Math.min(focusedIndex, darkThemes.length - 1));
+          }
+        },
 
-      ' ': () => navigationHandlers.Enter(),
+        Enter: () => {
+          e.preventDefault();
+          if (focusedSection === 'mode') {
+            handleModeSelect(MODES[focusedIndex]);
+          } else if (focusedSection === 'light') {
+            handleThemeSelect(lightThemes[focusedIndex].id, true);
+          } else if (focusedSection === 'dark') {
+            handleThemeSelect(darkThemes[focusedIndex].id, false);
+          }
+        },
 
-      'Tab': () => handleClose()
-    };
+        ' ': () => navigationHandlers.Enter(),
 
-    navigationHandlers[e.key]?.();
-  }, [
-    isOpen, focusedSection, focusedIndex, getAvailableSections,
-    getMaxIndex, getModeIndex, isSystemMode, lightThemes, darkThemes
-  ]);
+        Tab: () => handleClose()
+      };
+
+      navigationHandlers[e.key]?.();
+    },
+    [
+      isOpen,
+      focusedSection,
+      focusedIndex,
+      getAvailableSections,
+      getMaxIndex,
+      getModeIndex,
+      isSystemMode,
+      lightThemes,
+      darkThemes
+    ]
+  );
 
   // Set up keyboard listener
   useEffect(() => {
@@ -210,7 +227,8 @@ const ThemeDropdown = ({ children }) => {
   const renderThemeList = (themes, isLight, currentVariant, label) => {
     const refs = isLight ? lightItemRefs : darkItemRefs;
     const section = isLight ? 'light' : 'dark';
-    const isActiveSystemTheme = isSystemMode && ((isLight && displayedTheme === 'light') || (!isLight && displayedTheme === 'dark'));
+    const isActiveSystemTheme =
+      isSystemMode && ((isLight && displayedTheme === 'light') || (!isLight && displayedTheme === 'dark'));
 
     return (
       <div className="theme-list" role="listbox" aria-label={label}>
@@ -275,15 +293,17 @@ const ThemeDropdown = ({ children }) => {
         aria-label="Theme selector"
       >
         <div className="mode-section">
-          <div className="mode-label" id="mode-label">Appearance</div>
+          <div className="mode-label" id="mode-label">
+            Appearance
+          </div>
           {renderModeButtons()}
         </div>
 
         <div className={`theme-lists ${isSystemMode ? 'two-columns' : ''}`}>
-          {(storedTheme === 'light' || isSystemMode)
-            && renderThemeList(lightThemes, true, themeVariantLight, 'Light theme')}
-          {(storedTheme === 'dark' || isSystemMode)
-            && renderThemeList(darkThemes, false, themeVariantDark, 'Dark theme')}
+          {(storedTheme === 'light' || isSystemMode) &&
+            renderThemeList(lightThemes, true, themeVariantLight, 'Light theme')}
+          {(storedTheme === 'dark' || isSystemMode) &&
+            renderThemeList(darkThemes, false, themeVariantDark, 'Dark theme')}
         </div>
       </div>
     </StyledWrapper>
@@ -301,9 +321,7 @@ const ThemeDropdown = ({ children }) => {
         onClickOutside={handleClose}
         appendTo="parent"
       >
-        <div onClick={() => (isOpen ? handleClose() : handleOpen())}>
-          {children}
-        </div>
+        <div onClick={() => (isOpen ? handleClose() : handleOpen())}>{children}</div>
       </Tippy>
     </ToolHint>
   );

@@ -9,9 +9,9 @@ export const getFilteredRequestResults = (results: T_RunnerRequestExecutionResul
 
   return indexedResults.filter(
     ({ value }) =>
-      value?.status === 'error'
-      || !!value?.testResults?.find((t) => t.status !== 'pass')
-      || !!value?.assertionResults?.find((t) => t.status !== 'pass')
+      value?.status === 'error' ||
+      !!value?.testResults?.find((t) => t.status !== 'pass') ||
+      !!value?.assertionResults?.find((t) => t.status !== 'pass')
   );
 };
 

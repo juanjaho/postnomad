@@ -10,12 +10,7 @@ const isGitUrl = (str) => {
 
     // Validate that it has the essential parts of a git URL and uses valid protocols
     const validProtocols = ['git', 'ssh', 'http', 'https'];
-    return !!(
-      parsed
-      && parsed.owner
-      && parsed.source
-      && validProtocols.includes(parsed.protocol)
-    );
+    return !!(parsed && parsed.owner && parsed.source && validProtocols.includes(parsed.protocol));
   } catch (error) {
     return false;
   }
@@ -40,8 +35,7 @@ export const getSafeGitRemoteUrls = (remotes = []) => {
     ?.map((remote) => remote?.refs?.fetch)
     ?.filter((url) => typeof url === 'string' && url?.trim()?.length > 0);
 
-  const safeRemoteUrls = remoteUrls
-    ?.filter((remoteUrl) => !containsGitHubToken(remoteUrl));
+  const safeRemoteUrls = remoteUrls?.filter((remoteUrl) => !containsGitHubToken(remoteUrl));
   return safeRemoteUrls || [];
 };
 

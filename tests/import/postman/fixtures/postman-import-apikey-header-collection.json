@@ -36,13 +36,8 @@
         "url": {
           "raw": "https://api.com/users?X-API-KEY=12345",
           "protocol": "https",
-          "host": [
-            "api",
-            "com"
-          ],
-          "path": [
-            "users"
-          ],
+          "host": ["api", "com"],
+          "path": ["users"],
           "query": [
             {
               "key": "X-API-KEY",

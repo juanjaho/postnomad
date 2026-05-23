@@ -13,10 +13,8 @@ type WaitForAppReadyOptions = {
  * Wait for the Electron app to have a ready, loaded window.
  * Handles cases where the first window is slow to appear.
  */
-const waitForReadyPage = (
-  app: ElectronApplication,
-  options: WaitForAppReadyOptions = {}
-) => waitForReadyPageImpl(app, options);
+const waitForReadyPage = (app: ElectronApplication, options: WaitForAppReadyOptions = {}) =>
+  waitForReadyPageImpl(app, options);
 
 /**
  * Close all collections
@@ -38,7 +36,10 @@ const closeAllCollections = async (page) => {
       await removeModal.waitFor({ state: 'visible', timeout: 5000 });
 
       // Check if it's the drafts confirmation modal (has "Discard All and Remove" button)
-      const hasDiscardButton = await page.getByRole('button', { name: 'Discard All and Remove' }).isVisible().catch(() => false);
+      const hasDiscardButton = await page
+        .getByRole('button', { name: 'Discard All and Remove' })
+        .isVisible()
+        .catch(() => false);
 
       if (hasDiscardButton) {
         // Drafts modal - the modal animates in and the footer can shift mid-frame,
@@ -81,12 +82,7 @@ const openCollection = async (page, collectionName: string) => {
  *
  * @returns void
  */
-const createCollection = async (
-  page,
-  collectionName: string,
-  collectionLocation: string,
-  format?: 'bru' | 'yml'
-) => {
+const createCollection = async (page, collectionName: string, collectionLocation: string, format?: 'bru' | 'yml') => {
   await test.step(`Create collection "${collectionName}"`, async () => {
     await page.getByTestId('collections-header-add-menu').click();
     await page.locator('.tippy-box .dropdown-item').filter({ hasText: 'Create collection' }).click();
@@ -146,7 +142,10 @@ const createCollection = async (
     await createCollectionModal.waitFor({ state: 'hidden', timeout: 5000 });
     await expect(page.locator('.bruno-modal-backdrop')).toHaveCount(0);
     // Wait for the collection name to appear in the sidebar before proceeding
-    await page.locator('#sidebar-collection-name').filter({ hasText: collectionName }).waitFor({ state: 'visible', timeout: 5000 });
+    await page
+      .locator('#sidebar-collection-name')
+      .filter({ hasText: collectionName })
+      .waitFor({ state: 'visible', timeout: 5000 });
     await openCollection(page, collectionName);
   });
 };
@@ -172,10 +171,7 @@ type CreateUntitledRequestOptions = {
  * @param options - Optional settings (requestType, url, tag)
  * @returns void
  */
-const createUntitledRequest = async (
-  page: Page,
-  options: CreateUntitledRequestOptions = {}
-) => {
+const createUntitledRequest = async (page: Page, options: CreateUntitledRequestOptions = {}) => {
   const { requestType = 'HTTP', url, tag } = options;
 
   await test.step(`Create untitled ${requestType} request${url ? ' with URL' : ''}${tag ? ' with tag' : ''}`, async () => {
@@ -216,9 +212,11 @@ const createUntitledRequest = async (
 
     // Wait for toast message to ensure request creation is complete
     // This helps prevent race conditions when creating multiple requests
-    await expect(page.getByText('New request created!')).toBeVisible({ timeout: 2000 }).catch(() => {
-      // Toast might have already disappeared, that's okay
-    });
+    await expect(page.getByText('New request created!'))
+      .toBeVisible({ timeout: 2000 })
+      .catch(() => {
+        // Toast might have already disappeared, that's okay
+      });
   });
 };
 
@@ -233,10 +231,7 @@ type CreateTransientRequestOptions = {
  * @param options - Optional settings (requestType)
  * @returns void
  */
-const createTransientRequest = async (
-  page: Page,
-  options: CreateTransientRequestOptions = {}
-) => {
+const createTransientRequest = async (page: Page, options: CreateTransientRequestOptions = {}) => {
   const { requestType = 'HTTP' } = options;
 
   await test.step(`Create transient ${requestType} request`, async () => {
@@ -370,7 +365,10 @@ const deleteRequest = async (page, requestName: string, collectionName: string) 
 
     // Find the request within the collection's context
     // Use the collection container (.collection-name) scoped to sidebar to scope the search
-    const collectionContainer = page.getByTestId('collections').locator('.collection-name').filter({ hasText: collectionName });
+    const collectionContainer = page
+      .getByTestId('collections')
+      .locator('.collection-name')
+      .filter({ hasText: collectionName });
     const collectionWrapper = collectionContainer.locator('..');
     const request = collectionWrapper.locator('.collection-item-name').filter({ hasText: requestName });
 
@@ -499,7 +497,10 @@ const removeCollection = async (page: Page, collectionName: string) => {
     await removeModal.waitFor({ state: 'visible', timeout: 5000 });
 
     // Check if it's the drafts confirmation modal (has "Discard All and Remove" button)
-    const hasDiscardButton = await page.getByRole('button', { name: 'Discard All and Remove' }).isVisible().catch(() => false);
+    const hasDiscardButton = await page
+      .getByRole('button', { name: 'Discard All and Remove' })
+      .isVisible()
+      .catch(() => false);
 
     if (hasDiscardButton) {
       // Drafts modal - click "Discard All and Remove"
@@ -513,9 +514,7 @@ const removeCollection = async (page: Page, collectionName: string) => {
     await removeModal.waitFor({ state: 'hidden', timeout: 5000 });
 
     // Verify collection is removed
-    await expect(
-      page.locator('#sidebar-collection-name').filter({ hasText: collectionName })
-    ).not.toBeVisible();
+    await expect(page.locator('#sidebar-collection-name').filter({ hasText: collectionName })).not.toBeVisible();
   });
 };
 
@@ -527,12 +526,7 @@ const removeCollection = async (page: Page, collectionName: string) => {
  * @param isCollection - Whether the parent is a collection (true) or folder (false)
  * @returns void
  */
-const createFolder = async (
-  page: Page,
-  folderName: string,
-  parentName: string,
-  isCollection: boolean = true
-) => {
+const createFolder = async (page: Page, folderName: string, parentName: string, isCollection: boolean = true) => {
   await test.step(`Create folder "${folderName}" in "${parentName}"`, async () => {
     const locators = buildCommonLocators(page);
 
@@ -581,19 +575,13 @@ const openEnvironmentSelector = async (page: Page, type: EnvironmentType = 'coll
  * @param type - The type of environment (collection or global)
  * @returns void
  */
-const createEnvironment = async (
-  page: Page,
-  environmentName: string,
-  type: EnvironmentType = 'collection'
-) => {
+const createEnvironment = async (page: Page, environmentName: string, type: EnvironmentType = 'collection') => {
   await test.step(`Create ${type} environment "${environmentName}"`, async () => {
     await openEnvironmentSelector(page, type);
 
     await page.locator('button[id="create-env"]').click();
 
-    const nameInput = type === 'collection'
-      ? page.locator('input[name="name"]')
-      : page.locator('#environment-name');
+    const nameInput = type === 'collection' ? page.locator('input[name="name"]') : page.locator('#environment-name');
     await expect(nameInput).toBeVisible();
     await nameInput.fill(environmentName);
     await page.getByRole('button', { name: 'Create' }).click();
@@ -625,11 +613,7 @@ type EnvironmentVariable = {
  * @param index - The index of the variable (0-based)
  * @returns void
  */
-const addEnvironmentVariable = async (
-  page: Page,
-  variable: EnvironmentVariable,
-  index: number
-) => {
+const addEnvironmentVariable = async (page: Page, variable: EnvironmentVariable, index: number) => {
   await test.step(`Add environment variable "${variable.name}"`, async () => {
     const nameInput = page.locator(`input[name="${index}.name"]`);
     await nameInput.waitFor({ state: 'visible' });
@@ -697,11 +681,7 @@ const closeEnvironmentPanel = async (page: Page, type: EnvironmentType = 'collec
  * @param type - The type of environment (collection or global)
  * @returns void
  */
-const selectEnvironment = async (
-  page: Page,
-  environmentName: string,
-  type: EnvironmentType = 'collection'
-) => {
+const selectEnvironment = async (page: Page, environmentName: string, type: EnvironmentType = 'collection') => {
   await test.step(`Select ${type} environment "${environmentName}"`, async () => {
     const locators = buildCommonLocators(page);
 
@@ -725,20 +705,13 @@ const selectEnvironment = async (
  * @param timeout - Timeout in milliseconds (default: 30000)
  * @returns void
  */
-const sendRequest = async (
-  page: Page,
-  expectedStatusCode?: number,
-  timeout: number = 30000
-) => {
+const sendRequest = async (page: Page, expectedStatusCode?: number, timeout: number = 30000) => {
   await test.step('Send request', async () => {
     await page.getByTestId('send-arrow-icon').click();
     await page.getByTestId('response-status-code').waitFor({ state: 'visible', timeout });
 
     if (expectedStatusCode !== undefined) {
-      await expect(page.getByTestId('response-status-code')).toContainText(
-        String(expectedStatusCode),
-        { timeout }
-      );
+      await expect(page.getByTestId('response-status-code')).toContainText(String(expectedStatusCode), { timeout });
     }
   });
 };
@@ -758,11 +731,11 @@ const sendRequest = async (
 // };
 
 /**
-* Navigate to a collection and open a request
-* @param page - The page object
-* @param collectionName - The name of the collection
-* @param requestName - The name of the request
-*/
+ * Navigate to a collection and open a request
+ * @param page - The page object
+ * @param collectionName - The name of the collection
+ * @param requestName - The name of the request
+ */
 const openRequest = async (page: Page, collectionName: string, requestName: string, { persist = false } = {}) => {
   await test.step(`Navigate to collection "${collectionName}" and open request "${requestName}"`, async () => {
     const collectionContainer = page.getByTestId('sidebar-collection-row').filter({ hasText: collectionName });
@@ -792,18 +765,20 @@ const openFolderRequest = async (page: Page, folderName: string, requestName: st
 };
 
 /**
-* Send a request and wait for the response
+ * Send a request and wait for the response
  * @param page - The page object
  * @param expectedStatusCode - The expected status code (default: 200)
  * @param options - The options for sending the request (default: { timeout: 15000 })
  */
-const sendRequestAndWaitForResponse = async (page: Page,
+const sendRequestAndWaitForResponse = async (
+  page: Page,
   expectedStatusCode: number = 200,
   options: {
     ignoreCase?: boolean;
     timeout?: number;
     useInnerText?: boolean;
-  } = { timeout: 15000 }) => {
+  } = { timeout: 15000 }
+) => {
   await test.step(`Send request and wait for status code ${expectedStatusCode}`, async () => {
     await page.getByTestId('send-arrow-icon').click();
     await expect(page.getByTestId('response-status-code')).toContainText(String(expectedStatusCode), options);
@@ -929,9 +904,7 @@ const trySelectPaneTabOnce = async (page: Page, paneSelector: string, tabName: s
     return false;
   }
 
-  const dropdownItem = page
-    .getByRole('menuitem', { name: new RegExp(escapeRegExp(tabName), 'i') })
-    .first();
+  const dropdownItem = page.getByRole('menuitem', { name: new RegExp(escapeRegExp(tabName), 'i') }).first();
 
   if (await dropdownItem.isVisible({ timeout: 1500 }).catch(() => false)) {
     try {
@@ -1057,7 +1030,7 @@ const removeFirstMultipartFile = async (page: Page) => {
     const inlineRemove = firstRow.getByTestId('multipart-file-chip-remove').first();
     const summary = firstRow.getByTestId('multipart-file-summary');
 
-    if (await inlineRemove.count() > 0) {
+    if ((await inlineRemove.count()) > 0) {
       await inlineRemove.click();
     } else {
       await expect(summary).toBeVisible();
@@ -1262,7 +1235,11 @@ const saveRequest = async (page: Page) => {
 const closeAllTabs = async (page: Page) => {
   await test.step('Close all tabs', async () => {
     // Find actual request tabs (those with .tab-method, not Overview/Environments)
-    const requestTabLabel = page.locator('.request-tab').filter({ has: page.locator('.tab-method') }).locator('.tab-label').first();
+    const requestTabLabel = page
+      .locator('.request-tab')
+      .filter({ has: page.locator('.tab-method') })
+      .locator('.tab-label')
+      .first();
     if (!(await requestTabLabel.isVisible().catch(() => false))) {
       return; // No request tabs to close
     }
@@ -1455,7 +1432,12 @@ const readField = async (page: Page, labelText: string): Promise<string> => {
   return editor.evaluate((el: any) => (el as any).CodeMirror?.getValue() ?? '');
 };
 
-const createExampleFromSidebar = async (page: Page, requestName: string, exampleName: string, description: string = '') => {
+const createExampleFromSidebar = async (
+  page: Page,
+  requestName: string,
+  exampleName: string,
+  description: string = ''
+) => {
   const requestRow = page.locator('.collection-item-name').filter({ hasText: requestName }).first();
 
   await requestRow.hover();
@@ -1495,13 +1477,9 @@ type DialogOptions = {
 };
 
 const openWorkspaceFromDialog = async (app: any, page: any, targetPath: string) => {
-  await app.evaluate(
-    ({ dialog }: { dialog: DialogOptions }, workspacePath: string) => {
-      dialog.showOpenDialog = () =>
-        Promise.resolve({ canceled: false, filePaths: [workspacePath] });
-    },
-    targetPath
-  );
+  await app.evaluate(({ dialog }: { dialog: DialogOptions }, workspacePath: string) => {
+    dialog.showOpenDialog = () => Promise.resolve({ canceled: false, filePaths: [workspacePath] });
+  }, targetPath);
 
   await page.getByTestId('workspace-menu').click();
   await page.locator('.dropdown-item').filter({ hasText: 'Open workspace' }).click();
@@ -1566,4 +1544,13 @@ export {
   openWorkspaceFromDialog
 };
 
-export type { SandboxMode, EnvironmentType, EnvironmentVariable, ImportCollectionOptions, CreateRequestOptions, CreateUntitledRequestOptions, CreateTransientRequestOptions, AssertionInput };
+export type {
+  SandboxMode,
+  EnvironmentType,
+  EnvironmentVariable,
+  ImportCollectionOptions,
+  CreateRequestOptions,
+  CreateUntitledRequestOptions,
+  CreateTransientRequestOptions,
+  AssertionInput
+};

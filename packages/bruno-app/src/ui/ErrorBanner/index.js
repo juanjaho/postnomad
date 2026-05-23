@@ -12,20 +12,13 @@ const ErrorBanner = ({ errors, onClose, className = '' }) => {
           {errors.map((error, index) => (
             <div key={index}>
               {index > 0 && <div className="separator my-2"></div>}
-              <div className="error-title">
-                {error.title}
-              </div>
-              <div className="error-message">
-                {error.message}
-              </div>
+              <div className="error-title">{error.title}</div>
+              <div className="error-message">{error.message}</div>
             </div>
           ))}
         </div>
         {onClose && (
-          <div
-            className="close-button flex-shrink-0 cursor-pointer"
-            onClick={onClose}
-          >
+          <div className="close-button flex-shrink-0 cursor-pointer" onClick={onClose}>
             <IconX size={16} strokeWidth={1.5} />
           </div>
         )}

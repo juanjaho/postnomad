@@ -54,15 +54,18 @@ const parseDisplayValue = (displayValue, os) => {
   const result = rangeParts.map((part) => {
     // Split by "+bind+" to get individual keys (consistent with storage format)
     // Filter out empty strings that may result from the split
-    const keys = part.split(SEP).filter(Boolean).map((key) => {
-      const lowerKey = key.toLowerCase().trim();
-      // Check if it's a symbol and convert back to key name
-      if (symbolToKey[lowerKey]) {
-        return symbolToKey[lowerKey];
-      }
-      // For non-modifier keys, return as-is but lowercase
-      return lowerKey;
-    });
+    const keys = part
+      .split(SEP)
+      .filter(Boolean)
+      .map((key) => {
+        const lowerKey = key.toLowerCase().trim();
+        // Check if it's a symbol and convert back to key name
+        if (symbolToKey[lowerKey]) {
+          return symbolToKey[lowerKey];
+        }
+        // For non-modifier keys, return as-is but lowercase
+        return lowerKey;
+      });
     return keys;
   });
 
@@ -780,9 +783,7 @@ const Keybindings = () => {
     }
 
     const isRecording = recordingAction === action;
-    const arr = isRecording
-      ? draftByAction[action]
-      : fromKeysString(getCurrentRowKeysString(action));
+    const arr = isRecording ? draftByAction[action] : fromKeysString(getCurrentRowKeysString(action));
 
     if (isRecording) {
       const textParts = (arr || []).map((key) => formatSingleKeyForDisplay(key, os));
@@ -853,8 +854,8 @@ const Keybindings = () => {
                       const showLock = isHovered && isReadOnly && !isEditing && !isSuccess;
                       const inputId = `kb-input-${action}`;
 
-                      const isLastInSection = rowIndex === section.rows.length - 1
-                        && sectionIndex < groupedKeyMappings.length - 1;
+                      const isLastInSection =
+                        rowIndex === section.rows.length - 1 && sectionIndex < groupedKeyMappings.length - 1;
 
                       return (
                         <tr
@@ -862,8 +863,7 @@ const Keybindings = () => {
                           className={`${isSuccess ? 'row-success' : ''} ${isEditing ? 'row-editing' : ''} ${isLastInSection ? 'section-last-row' : ''}`}
                           data-testid={`keybinding-row-${action}`}
                           onMouseEnter={() => setHoveredAction(action)}
-                          onMouseLeave={() =>
-                            setHoveredAction((prev) => (prev === action ? null : prev))}
+                          onMouseLeave={() => setHoveredAction((prev) => (prev === action ? null : prev))}
                           onClick={() => !isReadOnly && !isEditing && startEditing(action)}
                         >
                           <td data-testid={`keybinding-name-${action}`}>{row.name}</td>
@@ -877,7 +877,8 @@ const Keybindings = () => {
                                     if (el) inputRefs.current[action] = el;
                                   }}
                                   data-testid={`keybinding-input-${action}`}
-                                  className={`shortcut-input ${hasError && errorByAction[action]?.code !== ERROR.EMPTY ? 'shortcut-input--error' : ''} ${isEditing ? 'shortcut-input--editing' : ''
+                                  className={`shortcut-input ${hasError && errorByAction[action]?.code !== ERROR.EMPTY ? 'shortcut-input--error' : ''} ${
+                                    isEditing ? 'shortcut-input--editing' : ''
                                   } ${isReadOnly ? 'shortcut-input--readonly' : ''}`}
                                   tabIndex={isReadOnly ? -1 : 0}
                                   role="textbox"
@@ -927,7 +928,8 @@ const Keybindings = () => {
                                       className="action-btn"
                                       data-testid={`keybinding-reset-${action}`}
                                       onClick={(e) => {
-                                        e.stopPropagation(); resetRowToDefault(action);
+                                        e.stopPropagation();
+                                        resetRowToDefault(action);
                                       }}
                                       title="Reset to default"
                                     >

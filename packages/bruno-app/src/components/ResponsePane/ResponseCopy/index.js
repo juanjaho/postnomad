@@ -52,10 +52,14 @@ const ResponseCopy = forwardRef(({ item, children, selectedFormat, selectedTab, 
 
   const isDisabled = !hasData ? true : false;
 
-  useImperativeHandle(ref, () => ({
-    click: () => elementRef.current?.click(),
-    isDisabled
-  }), [isDisabled]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      click: () => elementRef.current?.click(),
+      isDisabled
+    }),
+    [isDisabled]
+  );
 
   const handleKeyDown = (e) => {
     if ((e.key === 'Enter' || e.key === ' ') && hasData) {
@@ -82,14 +86,12 @@ const ResponseCopy = forwardRef(({ item, children, selectedFormat, selectedTab, 
       })}
       data-testid="response-copy-btn"
     >
-      {children ? children : (
+      {children ? (
+        children
+      ) : (
         <StyledWrapper className="flex items-center">
           <ActionIcon className="p-1" disabled={isDisabled}>
-            {copied ? (
-              <IconCheck size={16} strokeWidth={2} />
-            ) : (
-              <IconCopy size={16} strokeWidth={2} />
-            )}
+            {copied ? <IconCheck size={16} strokeWidth={2} /> : <IconCopy size={16} strokeWidth={2} />}
           </ActionIcon>
         </StyledWrapper>
       )}

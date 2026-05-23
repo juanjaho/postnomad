@@ -7,9 +7,9 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        
+
         cd tests/ssl/custom-ca-certs/server
-        
+
         echo "running certificate setup"
         node scripts/generate-certs.js
 
@@ -17,10 +17,10 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        
+
         cd tests/ssl/custom-ca-certs/server
-        
+
         echo "starting server in background"
         node index.js &
-        
+
         echo "server started with PID: $!"

@@ -19,8 +19,10 @@ chai.use(function (chai, utils) {
     // Objects created inside Node's vm.createContext() have a different Object constructor,
     // so obj.constructor === Object fails for objects passed via res.setBody() from scripts.
     // Note: toString check is more permissive than constructor check — custom class instances
-    const isJson = typeof obj === 'object' && obj !== null
-      && (Array.isArray(obj) || Object.prototype.toString.call(obj) === '[object Object]');
+    const isJson =
+      typeof obj === 'object' &&
+      obj !== null &&
+      (Array.isArray(obj) || Object.prototype.toString.call(obj) === '[object Object]');
 
     this.assert(isJson, `expected ${utils.inspect(obj)} to be JSON`, `expected ${utils.inspect(obj)} not to be JSON`);
   });
@@ -30,10 +32,7 @@ chai.use(function (chai, utils) {
 const defaultAjv = new Ajv({ allErrors: true });
 addFormats(defaultAjv);
 
-const SUPPORTED_SCHEMA_VERSIONS = [
-  'http://json-schema.org/draft-07/schema#',
-  'http://json-schema.org/draft-07/schema'
-];
+const SUPPORTED_SCHEMA_VERSIONS = ['http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-07/schema'];
 
 chai.use(function (chai) {
   chai.Assertion.addMethod('jsonSchema', function (schema, ajvOptions) {
@@ -62,7 +61,8 @@ chai.use(function (chai) {
 
     this.assert(
       isValid,
-      'expected #{this} to match JSON schema, validation errors: ' + (validate.errors ? JSON.stringify(validate.errors) : 'none'),
+      'expected #{this} to match JSON schema, validation errors: ' +
+        (validate.errors ? JSON.stringify(validate.errors) : 'none'),
       'expected #{this} to not match JSON schema'
     );
   });
@@ -109,7 +109,7 @@ chai.use(function (chai, utils) {
         i++;
       } else if (path[i] === '[') {
         i++; // skip '['
-        if (i < path.length && (path[i] === '\'' || path[i] === '"')) {
+        if (i < path.length && (path[i] === "'" || path[i] === '"')) {
           // Quoted key — collect until matching unescaped quote + ']'
           const quote = path[i];
           i++; // skip opening quote

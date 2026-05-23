@@ -42,9 +42,7 @@ headers {
 }
 `;
     const output = parser(input);
-    expect(output.headers).toEqual([
-      { name: 'key', value: 'value', enabled: true, annotations: [{ name: 'string' }] }
-    ]);
+    expect(output.headers).toEqual([{ name: 'key', value: 'value', enabled: true, annotations: [{ name: 'string' }] }]);
   });
 
   it('multiple above-line annotations on same pair', () => {
@@ -120,7 +118,7 @@ headers {
     expect(output.headers[0].annotations).toEqual([{ name: 'description', value: 'hello' }]);
   });
 
-  it('single quote inside double-quoted annotation arg (e.g. O\'Reilly)', () => {
+  it("single quote inside double-quoted annotation arg (e.g. O'Reilly)", () => {
     const input = `
 headers {
   @description("O'Reilly")
@@ -128,7 +126,7 @@ headers {
 }
 `;
     const output = parser(input);
-    expect(output.headers[0].annotations).toEqual([{ name: 'description', value: 'O\'Reilly' }]);
+    expect(output.headers[0].annotations).toEqual([{ name: 'description', value: "O'Reilly" }]);
   });
 
   it('double quote inside single-quoted annotation arg (e.g. say "hello")', () => {
@@ -146,7 +144,7 @@ headers {
     const input = fs.readFileSync(path.join(__dirname, './fixtures/annotations.bru'));
     const output = parser(input);
     expect(output.vars.req[0].annotations).toEqual([{ name: 'description', value: 'found in C:\\Users\\File\\Path' }]);
-    expect(output.vars.req[1].annotations).toEqual([{ name: 'description', value: 'height of 2\' ' }]);
+    expect(output.vars.req[1].annotations).toEqual([{ name: 'description', value: "height of 2' " }]);
   });
 
   it('unquoted annotation arg', () => {
@@ -223,7 +221,9 @@ headers {
 }
 `;
     const output = parser(input);
-    expect(output.headers[0].annotations).toEqual([{ name: 'description', value: 'https://example.com/path?q=1&r=2#anchor' }]);
+    expect(output.headers[0].annotations).toEqual([
+      { name: 'description', value: 'https://example.com/path?q=1&r=2#anchor' }
+    ]);
   });
 
   it('colon inside annotation arg value', () => {
@@ -281,10 +281,18 @@ headers {
     const json = {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'line one\nline two' }] }]
+      headers: [
+        {
+          name: 'x-key',
+          value: 'val',
+          enabled: true,
+          annotations: [{ name: 'description', value: 'line one\nline two' }]
+        }
+      ]
     };
     const bru = jsonToBru(json);
-    expect(bru).toContain('@description(\'\'\'\n    line one\n    line two\n  \'\'\')\n  x-key: val'); const parsed = parser(bru);
+    expect(bru).toContain("@description('''\n    line one\n    line two\n  ''')\n  x-key: val");
+    const parsed = parser(bru);
     expect(parsed.headers[0].annotations).toEqual([{ name: 'description', value: 'line one\nline two' }]);
   });
 
@@ -303,17 +311,31 @@ headers {
     const json = {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'https://example.com?q=1&r=2' }] }]
+      headers: [
+        {
+          name: 'x-key',
+          value: 'val',
+          enabled: true,
+          annotations: [{ name: 'description', value: 'https://example.com?q=1&r=2' }]
+        }
+      ]
     };
     const bru = jsonToBru(json);
-    expect(bru).toContain('@description(\'https://example.com?q=1&r=2\')\n  x-key: val');
+    expect(bru).toContain("@description('https://example.com?q=1&r=2')\n  x-key: val");
   });
 
   it('serializeAnnotations — template variable in value roundtrips correctly', () => {
     const json = {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: '{{baseUrl}}/path' }] }]
+      headers: [
+        {
+          name: 'x-key',
+          value: 'val',
+          enabled: true,
+          annotations: [{ name: 'description', value: '{{baseUrl}}/path' }]
+        }
+      ]
     };
     const bru = jsonToBru(json);
     const parsed = parser(bru);
@@ -322,31 +344,48 @@ headers {
 
   it('serializeAnnotations — annotation on params:path', () => {
     const json = {
-      params: [{ name: 'userId', value: '123', enabled: true, type: 'path', annotations: [{ name: 'description', value: 'user id' }] }]
+      params: [
+        {
+          name: 'userId',
+          value: '123',
+          enabled: true,
+          type: 'path',
+          annotations: [{ name: 'description', value: 'user id' }]
+        }
+      ]
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('params:path {');
-    expect(bru).toContain('@description(\'user id\')\n  userId: 123');
+    expect(bru).toContain("@description('user id')\n  userId: 123");
   });
 
   it('serializeAnnotations — annotation on metadata', () => {
     const json = {
-      metadata: [{ name: 'trace-id', value: 'abc123', enabled: true, annotations: [{ name: 'description', value: 'trace id' }] }]
+      metadata: [
+        { name: 'trace-id', value: 'abc123', enabled: true, annotations: [{ name: 'description', value: 'trace id' }] }
+      ]
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('metadata {');
-    expect(bru).toContain('@description(\'trace id\')\n  trace-id: abc123');
+    expect(bru).toContain("@description('trace id')\n  trace-id: abc123");
   });
 
   it('serializeAnnotations — annotation on body:form-urlencoded', () => {
     const json = {
       body: {
-        formUrlEncoded: [{ name: 'username', value: 'alice', enabled: true, annotations: [{ name: 'description', value: 'username field' }] }]
+        formUrlEncoded: [
+          {
+            name: 'username',
+            value: 'alice',
+            enabled: true,
+            annotations: [{ name: 'description', value: 'username field' }]
+          }
+        ]
       }
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('body:form-urlencoded {');
-    expect(bru).toContain('@description(\'username field\')\n  username: alice');
+    expect(bru).toContain("@description('username field')\n  username: alice");
   });
 
   it('annotation on params:query block', () => {
@@ -371,7 +410,13 @@ params:path {
 `;
     const output = parser(input);
     expect(output.params).toEqual([
-      { name: 'userId', value: '123', enabled: true, type: 'path', annotations: [{ name: 'description', value: 'user id' }] }
+      {
+        name: 'userId',
+        value: '123',
+        enabled: true,
+        type: 'path',
+        annotations: [{ name: 'description', value: 'user id' }]
+      }
     ]);
   });
 
@@ -397,7 +442,12 @@ body:form-urlencoded {
 `;
     const output = parser(input);
     expect(output.body.formUrlEncoded).toEqual([
-      { name: 'username', value: 'alice', enabled: true, annotations: [{ name: 'description', value: 'username field' }] }
+      {
+        name: 'username',
+        value: 'alice',
+        enabled: true,
+        annotations: [{ name: 'description', value: 'username field' }]
+      }
     ]);
   });
 
@@ -551,7 +601,7 @@ body:file {
       }
     };
     const bru = jsonToBru(json);
-    expect(bru).toContain('@description(\'plain field\')\n  field: value @contentType(text/plain)');
+    expect(bru).toContain("@description('plain field')\n  field: value @contentType(text/plain)");
   });
 
   it('serializeAnnotations — multipart file field with contentType', () => {
@@ -570,51 +620,84 @@ body:file {
       }
     };
     const bru = jsonToBru(json);
-    expect(bru).toContain('@description(\'upload image\')\n  upload: @file(/tmp/a.png|/tmp/b.png) @contentType(image/png)');
+    expect(bru).toContain(
+      "@description('upload image')\n  upload: @file(/tmp/a.png|/tmp/b.png) @contentType(image/png)"
+    );
   });
 
   it('serializeAnnotations — annotation on vars:post-response', () => {
     const json = {
       vars: {
-        res: [{ name: 'token', value: 'abc123', enabled: true, local: false, annotations: [{ name: 'description', value: 'auth token' }] }]
+        res: [
+          {
+            name: 'token',
+            value: 'abc123',
+            enabled: true,
+            local: false,
+            annotations: [{ name: 'description', value: 'auth token' }]
+          }
+        ]
       }
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('vars:post-response {');
-    expect(bru).toContain('@description(\'auth token\')\n  token: abc123');
+    expect(bru).toContain("@description('auth token')\n  token: abc123");
   });
 
   it('serializeAnnotations — annotation on local vars:pre-request', () => {
     const json = {
       vars: {
-        req: [{ name: 'BASE_URL', value: 'http://localhost', enabled: true, local: true, annotations: [{ name: 'description', value: 'local base url' }] }]
+        req: [
+          {
+            name: 'BASE_URL',
+            value: 'http://localhost',
+            enabled: true,
+            local: true,
+            annotations: [{ name: 'description', value: 'local base url' }]
+          }
+        ]
       }
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('vars:pre-request {');
-    expect(bru).toContain('@description(\'local base url\')\n  @BASE_URL: http://localhost');
+    expect(bru).toContain("@description('local base url')\n  @BASE_URL: http://localhost");
   });
 
   it('serializeAnnotations — annotation on disabled local vars:post-response', () => {
     const json = {
       vars: {
-        res: [{ name: 'token', value: 'abc123', enabled: false, local: true, annotations: [{ name: 'description', value: 'local token' }] }]
+        res: [
+          {
+            name: 'token',
+            value: 'abc123',
+            enabled: false,
+            local: true,
+            annotations: [{ name: 'description', value: 'local token' }]
+          }
+        ]
       }
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('vars:post-response {');
-    expect(bru).toContain('@description(\'local token\')\n  ~@token: abc123');
+    expect(bru).toContain("@description('local token')\n  ~@token: abc123");
   });
 
   it('serializeAnnotations — body:file with annotations', () => {
     const json = {
       body: {
-        file: [{ filePath: '/tmp/readme.pdf', selected: true, contentType: 'application/pdf', annotations: [{ name: 'description', value: 'upload doc' }] }]
+        file: [
+          {
+            filePath: '/tmp/readme.pdf',
+            selected: true,
+            contentType: 'application/pdf',
+            annotations: [{ name: 'description', value: 'upload doc' }]
+          }
+        ]
       }
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('body:file {');
-    expect(bru).toContain('@description(\'upload doc\')\n  file: @file(/tmp/readme.pdf) @contentType(application/pdf)');
+    expect(bru).toContain("@description('upload doc')\n  file: @file(/tmp/readme.pdf) @contentType(application/pdf)");
     const parsed = parser(bru);
     expect(parsed.body.file).toEqual(json.body.file);
   });
@@ -676,7 +759,7 @@ headers {
       ]
     };
     const bru = jsonToBru(json);
-    expect(bru).toContain('@description(\'my header\')\n  x-key: val');
+    expect(bru).toContain("@description('my header')\n  x-key: val");
   });
 
   it('serializeAnnotations — disabled pair with annotation', () => {
@@ -689,11 +772,13 @@ headers {
     expect(bru).toContain('@string\n  ~x-key: val');
   });
 
-  it('serializeAnnotations — value with single quote uses double-quote delimiters (e.g. O\'Reilly)', () => {
+  it("serializeAnnotations — value with single quote uses double-quote delimiters (e.g. O'Reilly)", () => {
     const json = {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'O\'Reilly' }] }]
+      headers: [
+        { name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: "O'Reilly" }] }
+      ]
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('@description("O\'Reilly")\n  x-key: val');
@@ -703,7 +788,9 @@ headers {
     const json = {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'say "hello"' }] }]
+      headers: [
+        { name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'say "hello"' }] }
+      ]
     };
     const bru = jsonToBru(json);
     expect(bru).toContain('@description(\'say "hello"\')\n  x-key: val');
@@ -723,7 +810,9 @@ headers {
 
   it('parseAndSerialise - json sourced roundtrip check - headers', () => {
     const input = {
-      headers: [{ name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'say "hello"' }] }]
+      headers: [
+        { name: 'x-key', value: 'val', enabled: true, annotations: [{ name: 'description', value: 'say "hello"' }] }
+      ]
     };
     const stringified = jsonToBru(input);
     const output = parser(stringified);
@@ -749,7 +838,10 @@ headers {
       assertions: [
         {
           annotations: [{ name: 'description', value: 'hello' }],
-          name: 'res.status', value: 'eq 200', enabled: true }
+          name: 'res.status',
+          value: 'eq 200',
+          enabled: true
+        }
       ]
     };
 
@@ -794,7 +886,12 @@ headers {
       meta: { name: 'test', type: 'http', seq: 1 },
       http: { method: 'get', url: 'https://example.com' },
       headers: [
-        { name: 'Authorization', value: 'Bearer token', enabled: true, annotations: [{ name: 'description', value: 'Token (JWT)' }] }
+        {
+          name: 'Authorization',
+          value: 'Bearer token',
+          enabled: true,
+          annotations: [{ name: 'description', value: 'Token (JWT)' }]
+        }
       ]
     };
     const bru = jsonToBru(json);
@@ -821,7 +918,13 @@ describe('env pair annotations', () => {
 `;
     const output = envParser(input);
     expect(output.variables).toEqual([
-      { name: 'API_KEY', value: 'abc123', enabled: true, secret: false, annotations: [{ name: 'description', value: 'my api key' }] }
+      {
+        name: 'API_KEY',
+        value: 'abc123',
+        enabled: true,
+        secret: false,
+        annotations: [{ name: 'description', value: 'my api key' }]
+      }
     ]);
   });
 
@@ -891,7 +994,9 @@ describe('env pair annotations', () => {
 
   it('serializeAnnotations in jsonToEnv — annotation without value', () => {
     const json = {
-      variables: [{ name: 'API_KEY', value: 'abc', enabled: true, secret: false, annotations: [{ name: 'deprecated' }] }]
+      variables: [
+        { name: 'API_KEY', value: 'abc', enabled: true, secret: false, annotations: [{ name: 'deprecated' }] }
+      ]
     };
     const bru = jsonToEnv(json);
     expect(bru).toContain('@deprecated\n  API_KEY: abc');
@@ -899,15 +1004,25 @@ describe('env pair annotations', () => {
 
   it('serializeAnnotations in jsonToEnv — annotation with value', () => {
     const json = {
-      variables: [{ name: 'BASE_URL', value: 'http://localhost', enabled: true, secret: false, annotations: [{ name: 'description', value: 'base url' }] }]
+      variables: [
+        {
+          name: 'BASE_URL',
+          value: 'http://localhost',
+          enabled: true,
+          secret: false,
+          annotations: [{ name: 'description', value: 'base url' }]
+        }
+      ]
     };
     const bru = jsonToEnv(json);
-    expect(bru).toContain('@description(\'base url\')\n  BASE_URL: http://localhost');
+    expect(bru).toContain("@description('base url')\n  BASE_URL: http://localhost");
   });
 
   it('serializeAnnotations in jsonToEnv — disabled var with annotation', () => {
     const json = {
-      variables: [{ name: 'OLD_KEY', value: 'old', enabled: false, secret: false, annotations: [{ name: 'deprecated' }] }]
+      variables: [
+        { name: 'OLD_KEY', value: 'old', enabled: false, secret: false, annotations: [{ name: 'deprecated' }] }
+      ]
     };
     const bru = jsonToEnv(json);
     expect(bru).toContain('@deprecated\n  ~OLD_KEY: old');
@@ -926,7 +1041,15 @@ describe('env pair annotations', () => {
 
   it('parseAndSerialise - json sourced roundtrip check - env vars', () => {
     const input = {
-      variables: [{ name: 'API_KEY', value: 'abc123', enabled: true, secret: false, annotations: [{ name: 'description', value: 'api key' }] }]
+      variables: [
+        {
+          name: 'API_KEY',
+          value: 'abc123',
+          enabled: true,
+          secret: false,
+          annotations: [{ name: 'description', value: 'api key' }]
+        }
+      ]
     };
     const bru = jsonToEnv(input);
     const output = envParser(bru);
@@ -951,7 +1074,12 @@ describe('collection pair annotations', () => {
 `;
     const output = collectionParser(input);
     expect(output.headers).toEqual([
-      { name: 'content-type', value: 'application/json', enabled: true, annotations: [{ name: 'description', value: 'content type' }] }
+      {
+        name: 'content-type',
+        value: 'application/json',
+        enabled: true,
+        annotations: [{ name: 'description', value: 'content type' }]
+      }
     ]);
   });
 
@@ -974,9 +1102,7 @@ describe('collection pair annotations', () => {
 }
 `;
     const output = collectionParser(input);
-    expect(output.query).toEqual([
-      { name: 'q', value: 'search', enabled: true, annotations: [{ name: 'string' }] }
-    ]);
+    expect(output.query).toEqual([{ name: 'q', value: 'search', enabled: true, annotations: [{ name: 'string' }] }]);
   });
 
   it('disabled header with annotation', () => {
@@ -999,7 +1125,13 @@ describe('collection pair annotations', () => {
 `;
     const output = collectionParser(input);
     expect(output.vars.req).toEqual([
-      { name: 'BASE_URL', value: 'http://localhost', enabled: true, local: false, annotations: [{ name: 'description', value: 'base url' }] }
+      {
+        name: 'BASE_URL',
+        value: 'http://localhost',
+        enabled: true,
+        local: false,
+        annotations: [{ name: 'description', value: 'base url' }]
+      }
     ]);
   });
 
@@ -1021,9 +1153,7 @@ describe('collection pair annotations', () => {
 }
 `;
     const output = collectionParser(input);
-    expect(output.vars.req).toEqual([
-      { name: 'localVar', value: 'http://localhost', enabled: true, local: true }
-    ]);
+    expect(output.vars.req).toEqual([{ name: 'localVar', value: 'http://localhost', enabled: true, local: true }]);
     expect(output.vars.req[0]).not.toHaveProperty('annotations');
   });
 
@@ -1047,10 +1177,17 @@ describe('collection pair annotations', () => {
 
   it('serializeAnnotations in jsonToCollectionBru — header with annotation value', () => {
     const json = {
-      headers: [{ name: 'content-type', value: 'application/json', enabled: true, annotations: [{ name: 'description', value: 'content type' }] }]
+      headers: [
+        {
+          name: 'content-type',
+          value: 'application/json',
+          enabled: true,
+          annotations: [{ name: 'description', value: 'content type' }]
+        }
+      ]
     };
     const bru = jsonToCollectionBru(json);
-    expect(bru).toContain('@description(\'content type\')\n  content-type: application/json');
+    expect(bru).toContain("@description('content type')\n  content-type: application/json");
   });
 
   it('serializeAnnotations in jsonToCollectionBru — disabled header with annotation', () => {
@@ -1072,44 +1209,76 @@ describe('collection pair annotations', () => {
   it('serializeAnnotations in jsonToCollectionBru — vars:pre-request with annotation', () => {
     const json = {
       vars: {
-        req: [{ name: 'BASE_URL', value: 'http://localhost', enabled: true, local: false, annotations: [{ name: 'description', value: 'base url' }] }]
+        req: [
+          {
+            name: 'BASE_URL',
+            value: 'http://localhost',
+            enabled: true,
+            local: false,
+            annotations: [{ name: 'description', value: 'base url' }]
+          }
+        ]
       }
     };
     const bru = jsonToCollectionBru(json);
-    expect(bru).toContain('@description(\'base url\')\n  BASE_URL: http://localhost');
+    expect(bru).toContain("@description('base url')\n  BASE_URL: http://localhost");
   });
 
   it('serializeAnnotations in jsonToCollectionBru — vars:post-response with annotation', () => {
     const json = {
       vars: {
-        res: [{ name: 'token', value: 'abc123', enabled: true, local: false, annotations: [{ name: 'description', value: 'auth token' }] }]
+        res: [
+          {
+            name: 'token',
+            value: 'abc123',
+            enabled: true,
+            local: false,
+            annotations: [{ name: 'description', value: 'auth token' }]
+          }
+        ]
       }
     };
     const bru = jsonToCollectionBru(json);
     expect(bru).toContain('vars:post-response {');
-    expect(bru).toContain('@description(\'auth token\')\n  token: abc123');
+    expect(bru).toContain("@description('auth token')\n  token: abc123");
   });
 
   it('serializeAnnotations in jsonToCollectionBru — local vars:pre-request with annotation', () => {
     const json = {
       vars: {
-        req: [{ name: 'BASE_URL', value: 'http://localhost', enabled: true, local: true, annotations: [{ name: 'description', value: 'local base url' }] }]
+        req: [
+          {
+            name: 'BASE_URL',
+            value: 'http://localhost',
+            enabled: true,
+            local: true,
+            annotations: [{ name: 'description', value: 'local base url' }]
+          }
+        ]
       }
     };
     const bru = jsonToCollectionBru(json);
     expect(bru).toContain('vars:pre-request {');
-    expect(bru).toContain('@description(\'local base url\')\n  @BASE_URL: http://localhost');
+    expect(bru).toContain("@description('local base url')\n  @BASE_URL: http://localhost");
   });
 
   it('serializeAnnotations in jsonToCollectionBru — disabled local vars:post-response with annotation', () => {
     const json = {
       vars: {
-        res: [{ name: 'token', value: 'abc123', enabled: false, local: true, annotations: [{ name: 'description', value: 'local token' }] }]
+        res: [
+          {
+            name: 'token',
+            value: 'abc123',
+            enabled: false,
+            local: true,
+            annotations: [{ name: 'description', value: 'local token' }]
+          }
+        ]
       }
     };
     const bru = jsonToCollectionBru(json);
     expect(bru).toContain('vars:post-response {');
-    expect(bru).toContain('@description(\'local token\')\n  ~@token: abc123');
+    expect(bru).toContain("@description('local token')\n  ~@token: abc123");
   });
 
   it('parseAndSerialise - bru sourced roundtrip check - collection headers', () => {
@@ -1125,7 +1294,14 @@ describe('collection pair annotations', () => {
 
   it('parseAndSerialise - json sourced roundtrip check - collection headers', () => {
     const input = {
-      headers: [{ name: 'content-type', value: 'application/json', enabled: true, annotations: [{ name: 'description', value: 'content type' }] }]
+      headers: [
+        {
+          name: 'content-type',
+          value: 'application/json',
+          enabled: true,
+          annotations: [{ name: 'description', value: 'content type' }]
+        }
+      ]
     };
     const bru = jsonToCollectionBru(input);
     const output = collectionParser(bru);

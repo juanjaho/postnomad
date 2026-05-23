@@ -15,8 +15,7 @@ const ImportEnvironment = ({ onClose, onEnvironmentCreated }) => {
     importPostmanEnvironment()
       .then((environments) => {
         const importPromises = environments
-          .filter((env) =>
-            env.name && env.name !== 'undefined')
+          .filter((env) => env.name && env.name !== 'undefined')
           .map((environment) =>
             dispatch(addGlobalEnvironment({ name: environment.name, variables: environment.variables }))
               .then(() => {
@@ -25,7 +24,8 @@ const ImportEnvironment = ({ onClose, onEnvironmentCreated }) => {
               .catch((error) => {
                 toast.error('An error occurred while importing the environment');
                 console.error(error);
-              }));
+              })
+          );
         return Promise.all(importPromises);
       })
       .then(() => {
@@ -40,7 +40,14 @@ const ImportEnvironment = ({ onClose, onEnvironmentCreated }) => {
 
   return (
     <Portal>
-      <Modal size="sm" title="Import Environment" hideFooter={true} handleConfirm={onClose} handleCancel={onClose} dataTestId="import-environment-modal">
+      <Modal
+        size="sm"
+        title="Import Environment"
+        hideFooter={true}
+        handleConfirm={onClose}
+        handleCancel={onClose}
+        dataTestId="import-environment-modal"
+      >
         <button
           type="button"
           onClick={handleImportPostmanEnvironment}

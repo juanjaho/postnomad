@@ -17,30 +17,36 @@ const Tags = ({ item, collection }) => {
   // Filter out tags that are already associated with the current request
   const collectionTagsWithoutCurrentRequestTags = collectionTags?.filter((tag) => !tags.includes(tag)) || [];
 
-  const handleAdd = useCallback((tag) => {
-    const trimmedTag = tag.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
+  const handleAdd = useCallback(
+    (tag) => {
+      const trimmedTag = tag.trim();
+      if (trimmedTag && !tags.includes(trimmedTag)) {
+        dispatch(
+          addRequestTag({
+            tag: trimmedTag,
+            itemUid: item.uid,
+            collectionUid: collection.uid
+          })
+        );
+        dispatch(makeTabPermanent({ uid: item.uid }));
+      }
+    },
+    [dispatch, tags, item.uid, collection.uid]
+  );
+
+  const handleRemove = useCallback(
+    (tag) => {
       dispatch(
-        addRequestTag({
-          tag: trimmedTag,
+        deleteRequestTag({
+          tag,
           itemUid: item.uid,
           collectionUid: collection.uid
         })
       );
       dispatch(makeTabPermanent({ uid: item.uid }));
-    }
-  }, [dispatch, tags, item.uid, collection.uid]);
-
-  const handleRemove = useCallback((tag) => {
-    dispatch(
-      deleteRequestTag({
-        tag,
-        itemUid: item.uid,
-        collectionUid: collection.uid
-      })
-    );
-    dispatch(makeTabPermanent({ uid: item.uid }));
-  }, [dispatch, item.uid, collection.uid]);
+    },
+    [dispatch, item.uid, collection.uid]
+  );
 
   const handleRequestSave = () => {
     dispatch(saveRequest(item.uid, collection.uid));

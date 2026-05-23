@@ -23,6 +23,10 @@ test.describe.serial('URL Interpolation', () => {
     await sendRequest(page, 200);
 
     const texts = await page.getByTestId('response-preview-container').locator('.CodeMirror-scroll').allInnerTexts();
-    await expect(texts.some((d) => d.includes(`"url": "/path/Category('category123')/Item(item456)/foobar/Tags(%22tag%20test%22)"`))).toBe(true);
+    await expect(
+      texts.some((d) =>
+        d.includes(`"url": "/path/Category('category123')/Item(item456)/foobar/Tags(%22tag%20test%22)"`)
+      )
+    ).toBe(true);
   });
 });

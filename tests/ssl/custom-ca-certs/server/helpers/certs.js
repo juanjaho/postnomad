@@ -85,12 +85,18 @@ IP.2 = ::1
 IP.3 = ::ffff:127.0.0.1`;
 
   fs.writeFileSync(path.join(certsDir, 'localhost.conf'), serverConfigContent);
-  execCommand('openssl x509 -req -in localhost.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out localhost-cert.pem -days 730 -extensions v3_req -extfile localhost.conf', certsDir);
+  execCommand(
+    'openssl x509 -req -in localhost.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out localhost-cert.pem -days 730 -extensions v3_req -extfile localhost.conf',
+    certsDir
+  );
 
   const platform = detectPlatform();
   if (platform === 'windows') {
     execCommand('openssl x509 -in ca-cert.pem -outform DER -out ca-cert.der', certsDir);
-    execCommand('openssl pkcs12 -export -out localhost.p12 -inkey localhost-key.pem -in localhost-cert.pem -certfile ca-cert.pem -password pass:', certsDir);
+    execCommand(
+      'openssl pkcs12 -export -out localhost.p12 -inkey localhost-key.pem -in localhost-cert.pem -certfile ca-cert.pem -password pass:',
+      certsDir
+    );
     execCommand('openssl x509 -in localhost-cert.pem -outform DER -out localhost-cert.der', certsDir);
   }
 
@@ -122,7 +128,10 @@ function validateCertificateChain(certsDir) {
     }
 
     // Verify server certificate is valid and signed by CA
-    const serverVerifyOutput = execCommandSilent('openssl x509 -in localhost-cert.pem -text -noout', certsDir).toString();
+    const serverVerifyOutput = execCommandSilent(
+      'openssl x509 -in localhost-cert.pem -text -noout',
+      certsDir
+    ).toString();
 
     if (!serverVerifyOutput.includes('CA:FALSE')) {
       throw new Error('Server certificate should have basicConstraints=CA:FALSE');
@@ -148,7 +157,9 @@ function addCAToTruststore(certsDir) {
   switch (platform) {
     case 'macos': {
       const macCertPath = path.join(certsDir, 'ca-cert.pem');
-      execCommand(`sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${macCertPath}"`);
+      execCommand(
+        `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${macCertPath}"`
+      );
       break;
     }
 

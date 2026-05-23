@@ -88,8 +88,8 @@ const yamlPlugin = (cm) => {
 
         /* pairs (associative arrays) -> key */
         if (
-          !state.pair
-          && stream.match(/^\s*(?:[,\[\]{}&*!|>'"%@`][^\s'":]|[^\s,\[\]{}#&*!|>'"%@`])[^#:]*(?=:($|\s))/)
+          !state.pair &&
+          stream.match(/^\s*(?:[,\[\]{}&*!|>'"%@`][^\s'":]|[^\s,\[\]{}#&*!|>'"%@`])[^#:]*(?=:($|\s))/)
         ) {
           state.pair = true;
           state.keyCol = stream.indentation();

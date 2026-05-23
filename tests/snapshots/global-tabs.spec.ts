@@ -1,15 +1,12 @@
 import { test, expect, closeElectronApp } from '../../playwright';
-import {
-  createCollection,
-  createRequest,
-  openRequest,
-  createEnvironment,
-  waitForReadyPage
-} from '../utils/page';
+import { createCollection, createRequest, openRequest, createEnvironment, waitForReadyPage } from '../utils/page';
 import { buildCommonLocators } from '../utils/page/locators';
 
 test.describe('Snapshot: Global Tab Restoration', () => {
-  test('preferences and global environment tabs are restored and reusable after restart', async ({ launchElectronApp, createTmpDir }) => {
+  test('preferences and global environment tabs are restored and reusable after restart', async ({
+    launchElectronApp,
+    createTmpDir
+  }) => {
     const userDataPath = await createTmpDir('snap-global-tabs');
     const colPath = await createTmpDir('col');
 

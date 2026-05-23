@@ -35,7 +35,9 @@ describe('Bruno to Postman Variables Translation', () => {
   it('should translate bru.interpolate with complex template', () => {
     const code = 'const greeting = bru.interpolate("Hello {{name}}, your user id is {{userId}}");';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toBe('const greeting = pm.variables.replaceIn("Hello {{name}}, your user id is {{userId}}");');
+    expect(translatedCode).toBe(
+      'const greeting = pm.variables.replaceIn("Hello {{name}}, your user id is {{userId}}");'
+    );
   });
 
   // Global variables tests
@@ -138,6 +140,8 @@ console.log(\`Has userId: \${hasUserId}, User ID: \${userId}\`);
   it('should handle nested expressions with variables', () => {
     const code = 'bru.setVar("fullPath", bru.getEnvVar("baseUrl") + bru.getVar("endpoint"));';
     const translatedCode = translateBruToPostman(code);
-    expect(translatedCode).toBe('pm.variables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));');
+    expect(translatedCode).toBe(
+      'pm.variables.set("fullPath", pm.environment.get("baseUrl") + pm.variables.get("endpoint"));'
+    );
   });
 });

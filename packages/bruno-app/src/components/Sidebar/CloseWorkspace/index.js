@@ -33,20 +33,12 @@ const CloseWorkspace = ({ workspaceUid, onClose }) => {
   };
 
   return (
-    <Modal
-      size="sm"
-      title="Close Workspace"
-      confirmText="Close"
-      handleConfirm={onConfirm}
-      handleCancel={onClose}
-    >
+    <Modal size="sm" title="Close Workspace" confirmText="Close" handleConfirm={onConfirm} handleCancel={onClose}>
       <div className="flex items-center">
         <IconFolder size={18} strokeWidth={1.5} />
         <span className="ml-2 mr-4 font-semibold">{workspace?.name}</span>
       </div>
-      {workspace?.pathname && (
-        <div className="break-words text-xs mt-1">{workspace.pathname}</div>
-      )}
+      {workspace?.pathname && <div className="break-words text-xs mt-1">{workspace.pathname}</div>}
       <div className="mt-4">
         Are you sure you want to close workspace <span className="font-semibold">{workspace?.name}</span>?
       </div>

@@ -54,12 +54,7 @@ const VisualDiffHeaders = ({ oldData, newData, showSide }) => {
                 )}
               </td>
               <td className="checkbox-cell">
-                <input
-                  type="checkbox"
-                  checked={header.enabled !== false}
-                  readOnly
-                  disabled
-                />
+                <input type="checkbox" checked={header.enabled !== false} readOnly disabled />
               </td>
               <td className="key-cell">{header.name}</td>
               <td className="value-cell">{header.value}</td>

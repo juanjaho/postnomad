@@ -31,10 +31,7 @@ const NewFolder = ({ collectionUid, item, onClose }) => {
       directoryName: ''
     },
     validationSchema: Yup.object({
-      folderName: Yup.string()
-        .trim()
-        .min(1, 'must be at least 1 character')
-        .required('name is required'),
+      folderName: Yup.string().trim().min(1, 'must be at least 1 character').required('name is required'),
       directoryName: Yup.string()
         .trim()
         .min(1, 'must be at least 1 character')
@@ -71,10 +68,7 @@ const NewFolder = ({ collectionUid, item, onClose }) => {
   const AdvancedOptions = forwardRef((props, ref) => {
     return (
       <div ref={ref} className="flex mr-2 text-link cursor-pointer items-center">
-        <button
-          className="btn-advanced"
-          type="button"
-        >
+        <button className="btn-advanced" type="button">
           Options
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
@@ -118,7 +112,8 @@ const NewFolder = ({ collectionUid, item, onClose }) => {
                     Folder Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
                     <Help width="300">
                       <p>
-                        You can choose to save the folder as a different name on your file system versus what is displayed in the app.
+                        You can choose to save the folder as a different name on your file system versus what is
+                        displayed in the app.
                       </p>
                     </Help>
                   </label>
@@ -156,10 +151,7 @@ const NewFolder = ({ collectionUid, item, onClose }) => {
                   </div>
                 ) : (
                   <div className="relative flex flex-row gap-1 items-center justify-between">
-                    <PathDisplay
-                      iconType="folder"
-                      baseName={formik.values.directoryName}
-                    />
+                    <PathDisplay iconType="folder" baseName={formik.values.directoryName} />
                   </div>
                 )}
                 {formik.touched.directoryName && formik.errors.directoryName ? (
@@ -186,9 +178,7 @@ const NewFolder = ({ collectionUid, item, onClose }) => {
                 <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-2">
                   Cancel
                 </Button>
-                <Button type="submit">
-                  Create
-                </Button>
+                <Button type="submit">Create</Button>
               </div>
             </div>
           </form>

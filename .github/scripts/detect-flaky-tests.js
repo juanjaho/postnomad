@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-
 // Read Playwright JSON report
 const resultsPath = 'playwright-report/results.json';
 
@@ -58,7 +57,7 @@ fs.writeFileSync('flaky-tests.json', JSON.stringify(flakyTests, null, 2));
 let markdown = '## ⚠️ Flaky/Failed Tests Detected\n\n';
 markdown += 'The following tests are problematic:\n\n';
 
-flakyTests.forEach(test => {
+flakyTests.forEach((test) => {
   const testType = test.status === 'failed' ? '❌ Failed' : '⚠️ Flaky';
   markdown += `### ${testType}: \`${test.file}\`\n`;
   markdown += `- **Test:** ${test.testTitle}\n`;

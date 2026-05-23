@@ -182,20 +182,24 @@ export const checkCollectionForUpdates = (collection) => async (dispatch) => {
       }
     });
 
-    dispatch(setCollectionUpdate({
-      collectionUid: collection.uid,
-      hasUpdates: result.hasUpdates || false,
-      error: result.error || null
-    }));
+    dispatch(
+      setCollectionUpdate({
+        collectionUid: collection.uid,
+        hasUpdates: result.hasUpdates || false,
+        error: result.error || null
+      })
+    );
 
     return result;
   } catch (error) {
     console.error('[OpenAPI Sync] Error checking for updates:', error);
-    dispatch(setCollectionUpdate({
-      collectionUid: collection.uid,
-      hasUpdates: false,
-      error: error.message
-    }));
+    dispatch(
+      setCollectionUpdate({
+        collectionUid: collection.uid,
+        hasUpdates: false,
+        error: error.message
+      })
+    );
     return null;
   }
 };

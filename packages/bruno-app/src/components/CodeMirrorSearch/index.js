@@ -11,7 +11,8 @@ function escapeRegExp(string) {
 const MAX_MATCHES = 99_999;
 function findSearchMatches(editor, searchText, regex, caseSensitive, wholeWord) {
   try {
-    let query, options = {};
+    let query,
+      options = {};
     if (regex) {
       try {
         query = new RegExp(searchText, caseSensitive ? 'g' : 'gi');
@@ -61,103 +62,106 @@ const CodeMirrorSearch = forwardRef(({ visible, editor, onClose }, ref) => {
   const inputRef = useRef(null);
 
   const debouncedSearchText = useDebounce(searchText, 250);
-  const doSearch = useCallback((newIndex = 0) => {
-    if (!editor || !visible) {
-      return;
-    }
-
-    if (searchLineHighlight.current !== null) {
-      editor.removeLineClass(searchLineHighlight.current, 'wrap', 'cm-search-line-highlight');
-      searchLineHighlight.current = null;
-    }
-
-    if (!debouncedSearchText) {
-      setMatchCount(0);
-      setMatchIndex(0);
-      searchMatches.current = [];
-      searchMarks.current.forEach((mark) => mark.clear());
-      searchMarks.current = [];
-      return;
-    }
-
-    try {
-      const newCacheKey = createCacheKey(editor, debouncedSearchText, regex, caseSensitive, wholeWord);
-      const isCacheHit = newCacheKey === searchCacheKey.current;
-
-      let matches = searchMatches.current;
-      if (!isCacheHit) {
-        matches = findSearchMatches(editor, debouncedSearchText, regex, caseSensitive, wholeWord);
-        searchMatches.current = matches;
-        searchCacheKey.current = newCacheKey;
-        setMatchCount(matches.length);
+  const doSearch = useCallback(
+    (newIndex = 0) => {
+      if (!editor || !visible) {
+        return;
       }
 
-      if (!matches.length) {
+      if (searchLineHighlight.current !== null) {
+        editor.removeLineClass(searchLineHighlight.current, 'wrap', 'cm-search-line-highlight');
+        searchLineHighlight.current = null;
+      }
+
+      if (!debouncedSearchText) {
+        setMatchCount(0);
         setMatchIndex(0);
-        // Clear previous marks
+        searchMatches.current = [];
         searchMarks.current.forEach((mark) => mark.clear());
         searchMarks.current = [];
         return;
       }
 
-      const matchIndex = Math.max(0, Math.min(newIndex, matches.length - 1));
-      setMatchIndex(matchIndex);
+      try {
+        const newCacheKey = createCacheKey(editor, debouncedSearchText, regex, caseSensitive, wholeWord);
+        const isCacheHit = newCacheKey === searchCacheKey.current;
 
-      if (isCacheHit) {
-        // Clear only old current mark
-        const oldIndex = searchMarks.current.findIndex((mark) => mark.className?.includes('cm-search-current'));
-
-        if (oldIndex !== -1) {
-          searchMarks.current[oldIndex].clear();
-          searchMarks.current.splice(oldIndex, 1);
+        let matches = searchMatches.current;
+        if (!isCacheHit) {
+          matches = findSearchMatches(editor, debouncedSearchText, regex, caseSensitive, wholeWord);
+          searchMatches.current = matches;
+          searchCacheKey.current = newCacheKey;
+          setMatchCount(matches.length);
         }
 
-        // Add mark to the new current and remark the previous and next
-        const toMark = [
-          // Previous
-          matchIndex > 0 ? matchIndex - 1 : null,
-          // Current
-          matchIndex,
-          // Next
-          matchIndex < matches.length - 1 ? matchIndex + 1 : null
-        ].filter((i) => i !== null);
+        if (!matches.length) {
+          setMatchIndex(0);
+          // Clear previous marks
+          searchMarks.current.forEach((mark) => mark.clear());
+          searchMarks.current = [];
+          return;
+        }
 
-        toMark.forEach((i) => {
-          const mark = editor.markText(matches[i].from, matches[i].to, {
-            className: i === matchIndex ? 'cm-search-current' : 'cm-search-match',
-            clearOnEnter: true
-          });
-          searchMarks.current.push(mark);
-        });
-      } else {
-        // Clear previous marks
-        searchMarks.current.forEach((mark) => mark.clear());
-        searchMarks.current = [];
+        const matchIndex = Math.max(0, Math.min(newIndex, matches.length - 1));
+        setMatchIndex(matchIndex);
 
-        // Mark all on new search
-        matches.forEach((m, i) => {
-          const mark = editor.markText(m.from, m.to, {
-            className: i === matchIndex ? 'cm-search-current' : 'cm-search-match',
-            clearOnEnter: true
+        if (isCacheHit) {
+          // Clear only old current mark
+          const oldIndex = searchMarks.current.findIndex((mark) => mark.className?.includes('cm-search-current'));
+
+          if (oldIndex !== -1) {
+            searchMarks.current[oldIndex].clear();
+            searchMarks.current.splice(oldIndex, 1);
+          }
+
+          // Add mark to the new current and remark the previous and next
+          const toMark = [
+            // Previous
+            matchIndex > 0 ? matchIndex - 1 : null,
+            // Current
+            matchIndex,
+            // Next
+            matchIndex < matches.length - 1 ? matchIndex + 1 : null
+          ].filter((i) => i !== null);
+
+          toMark.forEach((i) => {
+            const mark = editor.markText(matches[i].from, matches[i].to, {
+              className: i === matchIndex ? 'cm-search-current' : 'cm-search-match',
+              clearOnEnter: true
+            });
+            searchMarks.current.push(mark);
           });
-          searchMarks.current.push(mark);
-        });
+        } else {
+          // Clear previous marks
+          searchMarks.current.forEach((mark) => mark.clear());
+          searchMarks.current = [];
+
+          // Mark all on new search
+          matches.forEach((m, i) => {
+            const mark = editor.markText(m.from, m.to, {
+              className: i === matchIndex ? 'cm-search-current' : 'cm-search-match',
+              clearOnEnter: true
+            });
+            searchMarks.current.push(mark);
+          });
+        }
+
+        const currentLine = matches[matchIndex].from.line;
+        editor.addLineClass(currentLine, 'wrap', 'cm-search-line-highlight');
+        searchLineHighlight.current = currentLine;
+
+        editor.scrollIntoView(matches[matchIndex].from, 100);
+        editor.setSelection(matches[matchIndex].from, matches[matchIndex].to);
+      } catch (e) {
+        console.error('Search error:', e);
+        setMatchCount(0);
+        setMatchIndex(0);
+        searchMatches.current = [];
+        searchCacheKey.current = '';
       }
-
-      const currentLine = matches[matchIndex].from.line;
-      editor.addLineClass(currentLine, 'wrap', 'cm-search-line-highlight');
-      searchLineHighlight.current = currentLine;
-
-      editor.scrollIntoView(matches[matchIndex].from, 100);
-      editor.setSelection(matches[matchIndex].from, matches[matchIndex].to);
-    } catch (e) {
-      console.error('Search error:', e);
-      setMatchCount(0);
-      setMatchIndex(0);
-      searchMatches.current = [];
-      searchCacheKey.current = '';
-    }
-  }, [debouncedSearchText, regex, caseSensitive, wholeWord, editor, visible]);
+    },
+    [debouncedSearchText, regex, caseSensitive, wholeWord, editor, visible]
+  );
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -238,19 +242,33 @@ const CodeMirrorSearch = forwardRef(({ visible, editor, onClose }, ref) => {
             if (e.key === 'Escape') handleSearchBarClose();
           }}
         />
-        <span className="searchbar-result-count">{matchCount > 0 ? `${matchIndex + 1} / ${matchCount}` : '0 results'}</span>
+        <span className="searchbar-result-count">
+          {matchCount > 0 ? `${matchIndex + 1} / ${matchCount}` : '0 results'}
+        </span>
         <ToolHint text="Regex search" toolhintId="searchbar-regex-toolhint" place="top">
-          <button className={`searchbar-icon-btn ${regex ? 'active' : ''}`} onClick={handleToggleRegex}><IconRegex size={16} /></button>
+          <button className={`searchbar-icon-btn ${regex ? 'active' : ''}`} onClick={handleToggleRegex}>
+            <IconRegex size={16} />
+          </button>
         </ToolHint>
         <ToolHint text="Case sensitive" toolhintId="searchbar-case-toolhint" place="top">
-          <button className={`searchbar-icon-btn ${caseSensitive ? 'active' : ''}`} onClick={handleToggleCase}><IconLetterCase size={14} /></button>
+          <button className={`searchbar-icon-btn ${caseSensitive ? 'active' : ''}`} onClick={handleToggleCase}>
+            <IconLetterCase size={14} />
+          </button>
         </ToolHint>
         <ToolHint text="Whole word" toolhintId="searchbar-wholeword-toolhint" place="top">
-          <button className={`searchbar-icon-btn ${wholeWord ? 'active' : ''}`} onClick={handleToggleWholeWord}><IconLetterW size={14} /></button>
+          <button className={`searchbar-icon-btn ${wholeWord ? 'active' : ''}`} onClick={handleToggleWholeWord}>
+            <IconLetterW size={14} />
+          </button>
         </ToolHint>
-        <button className="searchbar-icon-btn" title="Previous" onClick={handlePrev}><IconArrowUp size={14} /></button>
-        <button className="searchbar-icon-btn" title="Next" onClick={handleNext}><IconArrowDown size={14} /></button>
-        <button className="searchbar-icon-btn" title="Close" onClick={handleSearchBarClose}><IconX size={14} /></button>
+        <button className="searchbar-icon-btn" title="Previous" onClick={handlePrev}>
+          <IconArrowUp size={14} />
+        </button>
+        <button className="searchbar-icon-btn" title="Next" onClick={handleNext}>
+          <IconArrowDown size={14} />
+        </button>
+        <button className="searchbar-icon-btn" title="Close" onClick={handleSearchBarClose}>
+          <IconX size={14} />
+        </button>
       </div>
     </StyledWrapper>
   );

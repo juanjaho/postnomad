@@ -1,15 +1,7 @@
 import React from 'react';
 import { useTheme } from 'providers/Theme';
 
-const SettingsInput = ({
-  id,
-  label,
-  value,
-  onChange,
-  className = '',
-  description = '',
-  onKeyDown
-}) => {
+const SettingsInput = ({ id, label, value, onChange, className = '', description = '', onKeyDown }) => {
   const { theme } = useTheme();
 
   return (
@@ -18,11 +10,7 @@ const SettingsInput = ({
         <label className="text-xs font-medium text-gray-900 dark:text-gray-100" htmlFor={id}>
           {label}
         </label>
-        {description && (
-          <p className="text-xs text-gray-700 dark:text-gray-400">
-            {description}
-          </p>
-        )}
+        {description && <p className="text-xs text-gray-700 dark:text-gray-400">{description}</p>}
       </div>
       <input
         id={id}

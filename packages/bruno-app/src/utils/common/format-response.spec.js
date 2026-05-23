@@ -66,14 +66,18 @@ describe('formatResponse', () => {
       // This test uses a custom threshold of 100 bytes to trigger large buffer behavior
       const data = {
         test: 'value',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        content:
+          'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
       };
       const buffer = createLargeBase64Buffer(data);
       const result = formatResponse(data, buffer, 'application/json', undefined, 100);
 
       // Since the data exceeds the 100 byte threshold, it should return unformatted JSON
-      expect(result).toBe('{"test":"value","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua","content":"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}');
+      expect(result).toBe(
+        '{"test":"value","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua","content":"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}'
+      );
       expect(typeof result).toBe('string');
     });
   });
@@ -90,7 +94,8 @@ describe('formatResponse', () => {
     });
 
     it('should handle large XML responses', () => {
-      const xmlData = '<root><item>value</item><description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</description><content>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</content></root>';
+      const xmlData =
+        '<root><item>value</item><description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</description><content>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</content></root>';
       const largeBuffer = createLargeBase64Buffer(xmlData);
       const result = formatResponse(xmlData, largeBuffer, 'application/xml', undefined, 100);
 
@@ -112,8 +117,10 @@ describe('formatResponse', () => {
     it('should handle large object data for other modes', () => {
       const data = {
         message: 'hello',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        content:
+          'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
       };
       const largeBuffer = createLargeBase64Buffer(data);
       const result = formatResponse(data, largeBuffer, 'text/plain', undefined, 100);

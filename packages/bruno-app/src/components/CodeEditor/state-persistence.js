@@ -95,13 +95,19 @@ export const applyEditorState = (editor, state, currentContent) => {
   // no longer correspond to anything visible.
   if (contentMatches) {
     if (state.history) {
-      try { doc.setHistory(state.history); } catch {}
+      try {
+        doc.setHistory(state.history);
+      } catch {}
     }
     if (state.cursor) {
-      try { doc.setCursor(state.cursor); } catch {}
+      try {
+        doc.setCursor(state.cursor);
+      } catch {}
     }
     if (state.selections && state.selections.length) {
-      try { doc.setSelections(state.selections); } catch {}
+      try {
+        doc.setSelections(state.selections);
+      } catch {}
     }
   }
   // Folds are cheap and lenient — try them either way.
@@ -112,9 +118,7 @@ export const applyEditorState = (editor, state, currentContent) => {
   // the helper's lookback can land on the wrong opening character once the
   // outer block is collapsed).
   if (state.folds && state.folds.length) {
-    const sorted = [...state.folds].sort(
-      (a, b) => b.line - a.line || b.ch - a.ch
-    );
+    const sorted = [...state.folds].sort((a, b) => b.line - a.line || b.ch - a.ch);
     editor.operation(() => {
       sorted.forEach((from) => {
         try {
@@ -124,6 +128,8 @@ export const applyEditorState = (editor, state, currentContent) => {
     });
   }
   if (state.scrollY != null) {
-    try { editor.scrollTo(null, state.scrollY); } catch {}
+    try {
+      editor.scrollTo(null, state.scrollY);
+    } catch {}
   }
 };

@@ -17,9 +17,7 @@ const RenameCollection = ({ collectionUid, onClose }) => {
       name: collection.name
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .required('name is required')
+      name: Yup.string().min(1, 'must be at least 1 character').required('name is required')
     }),
     onSubmit: (values) => {
       dispatch(renameCollection(values.name, collection.uid))

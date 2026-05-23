@@ -85,10 +85,12 @@ const ConfirmCollectionCloseDrafts = ({ onClose, collection, collectionUid }) =>
   const handleDiscardAll = () => {
     // Discard all drafts (both regular and transient)
     allDrafts.forEach((draft) => {
-      dispatch(deleteRequestDraft({
-        collectionUid: collectionUid,
-        itemUid: draft.uid
-      }));
+      dispatch(
+        deleteRequestDraft({
+          collectionUid: collectionUid,
+          itemUid: draft.uid
+        })
+      );
     });
 
     // Then remove the collection
@@ -166,10 +168,7 @@ const ConfirmCollectionCloseDrafts = ({ onClose, collection, collectionUid }) =>
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {currentTransientDrafts.map((item) => {
                 return (
-                  <div
-                    key={item.uid}
-                    className="flex items-center justify-between py-2 px-3 transient-item"
-                  >
+                  <div key={item.uid} className="flex items-center justify-between py-2 px-3 transient-item">
                     <span className="text-sm transient-item-name truncate mr-3">{item.name}</span>
                     <Button
                       color="primary"

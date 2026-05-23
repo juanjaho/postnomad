@@ -24,7 +24,8 @@ const Collections = ({ showSearch, isCreatingCollection, onCreateClick, onDismis
   const { collections, collectionSortOrder } = useSelector((state) => state.collections);
   const { workspaces, activeWorkspaceUid } = useSelector((state) => state.workspaces);
 
-  const activeWorkspace = workspaces.find((w) => w.uid === activeWorkspaceUid) || workspaces.find((w) => w.type === 'default');
+  const activeWorkspace =
+    workspaces.find((w) => w.uid === activeWorkspaceUid) || workspaces.find((w) => w.type === 'default');
   const isDefaultWorkspace = activeWorkspace?.type === 'default';
 
   // Build the sidebar list in workspace.yml order. Each entry is either a fully
@@ -78,9 +79,7 @@ const Collections = ({ showSearch, isCreatingCollection, onCreateClick, onDismis
 
   return (
     <StyledWrapper data-testid="collections">
-      {showSearch && (
-        <CollectionSearch searchText={searchText} setSearchText={setSearchText} />
-      )}
+      {showSearch && <CollectionSearch searchText={searchText} setSearchText={setSearchText} />}
 
       <div className="collections-list">
         {isCreatingCollection && (

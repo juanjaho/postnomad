@@ -323,11 +323,7 @@ describe('wrapAndJoinScripts', () => {
   });
 
   test('builds segments array from segmentSources', () => {
-    const sources = [
-      { filePath: '/col/collection.bru', displayPath: 'collection.bru' },
-      null,
-      null
-    ];
+    const sources = [{ filePath: '/col/collection.bru', displayPath: 'collection.bru' }, null, null];
     const result = wrapAndJoinScripts(['let x = 1;', '', 'let y = 2;'], 2, sources);
     expect(result.metadata.segments).toHaveLength(1);
     expect(result.metadata.segments[0]).toMatchObject({
@@ -344,11 +340,7 @@ describe('wrapAndJoinScripts', () => {
       { filePath: '/col/sub/folder.bru', displayPath: 'sub/folder.bru' },
       null
     ];
-    const result = wrapAndJoinScripts(
-      ['let a = 1;', 'let b = 2;', 'let c = 3;'],
-      2,
-      sources
-    );
+    const result = wrapAndJoinScripts(['let a = 1;', 'let b = 2;', 'let c = 3;'], 2, sources);
     expect(result.metadata.segments).toHaveLength(2);
     expect(result.metadata.segments[0].displayPath).toBe('collection.bru');
     expect(result.metadata.segments[1].displayPath).toBe('sub/folder.bru');
@@ -420,12 +412,8 @@ describe('mergeScripts metadata', () => {
 
     expect(request.script.reqMetadata.segments).toHaveLength(1);
     expect(request.script.reqMetadata.segments[0].displayPath).toBe('collection.bru');
-    expect(request.script.reqMetadata.segments[0].filePath).toBe(
-      path.join('/test/collection', 'collection.bru')
-    );
-    expect(request.script.reqMetadata.requestStartLine).toBeGreaterThan(
-      request.script.reqMetadata.segments[0].endLine
-    );
+    expect(request.script.reqMetadata.segments[0].filePath).toBe(path.join('/test/collection', 'collection.bru'));
+    expect(request.script.reqMetadata.requestStartLine).toBeGreaterThan(request.script.reqMetadata.segments[0].endLine);
   });
 
   test('produces segments for collection + folder + request scripts', () => {
@@ -436,9 +424,7 @@ describe('mergeScripts metadata', () => {
 
     expect(request.script.reqMetadata.segments).toHaveLength(2);
     expect(request.script.reqMetadata.segments[0].displayPath).toBe('collection.bru');
-    expect(request.script.reqMetadata.segments[1].displayPath).toBe(
-      path.join('subfolder', 'folder.bru')
-    );
+    expect(request.script.reqMetadata.segments[1].displayPath).toBe(path.join('subfolder', 'folder.bru'));
   });
 
   test('non-sequential flow reverses post-res segment order', () => {

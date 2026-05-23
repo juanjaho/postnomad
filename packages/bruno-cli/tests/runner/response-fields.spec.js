@@ -141,10 +141,12 @@ describe('runSingleRequest: duration and size fields (issue #7352)', () => {
   it('should return numeric duration and size on successful request', async () => {
     const responseBody = JSON.stringify({ message: 'ok' });
     const mockHeaders = new Map([['request-duration', '253']]);
-    mockHeaders.delete = function (key) { this.delete(key); };
+    mockHeaders.delete = function (key) {
+      this.delete(key);
+    };
     // Use a plain object with get/delete to simulate axios headers
     const headers = {
-      get: (key) => key === 'request-duration' ? '253' : null,
+      get: (key) => (key === 'request-duration' ? '253' : null),
       delete: jest.fn()
     };
 

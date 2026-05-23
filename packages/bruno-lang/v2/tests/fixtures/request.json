@@ -3,10 +3,7 @@
     "name": "Send Bulk SMS",
     "type": "http",
     "seq": "1",
-    "tags": [
-      "foo",
-      "bar"
-    ]
+    "tags": ["foo", "bar"]
   },
   "http": {
     "method": "get",

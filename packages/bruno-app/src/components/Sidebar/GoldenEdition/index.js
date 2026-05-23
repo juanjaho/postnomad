@@ -53,8 +53,7 @@ const CheckIcon = () => {
         fillRule="evenodd"
         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
         clipRule="evenodd"
-      >
-      </path>
+      ></path>
     </svg>
   );
 };
@@ -114,8 +113,8 @@ const GoldenEdition = ({ onClose }) => {
 
   const themeBasedContainerClassNames = displayedTheme === 'light' ? 'text-gray-900' : 'text-white';
   const themeBasedTabContainerClassNames = displayedTheme === 'light' ? 'bg-gray-200' : 'bg-gray-800';
-  const themeBasedActiveTabClassNames
-    = displayedTheme === 'light' ? 'bg-white text-gray-900 font-medium' : 'bg-gray-700 text-white font-medium';
+  const themeBasedActiveTabClassNames =
+    displayedTheme === 'light' ? 'bg-white text-gray-900 font-medium' : 'bg-gray-700 text-white font-medium';
 
   return (
     <StyledWrapper>

@@ -9,18 +9,21 @@ const isSecret = (type) => {
 const importPostmanEnvironmentVariables = (brunoEnvironment, values = []) => {
   brunoEnvironment.variables = brunoEnvironment.variables || [];
 
-  each(values.filter((i) => !(i.key == null && i.value == null)), (i) => {
-    const brunoEnvironmentVariable = {
-      uid: uuid(),
-      name: (i.key ?? '').replace(invalidVariableCharacterRegex, '_'),
-      value: i.value ?? '',
-      enabled: i.enabled,
-      type: 'text',
-      secret: isSecret(i.type)
-    };
+  each(
+    values.filter((i) => !(i.key == null && i.value == null)),
+    (i) => {
+      const brunoEnvironmentVariable = {
+        uid: uuid(),
+        name: (i.key ?? '').replace(invalidVariableCharacterRegex, '_'),
+        value: i.value ?? '',
+        enabled: i.enabled,
+        type: 'text',
+        secret: isSecret(i.type)
+      };
 
-    brunoEnvironment.variables.push(brunoEnvironmentVariable);
-  });
+      brunoEnvironment.variables.push(brunoEnvironmentVariable);
+    }
+  );
 };
 
 const importPostmanEnvironment = (environment) => {

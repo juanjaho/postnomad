@@ -38,9 +38,7 @@ const ConfirmFolderClose = ({ folder, onCancel, onCloseWithoutSave, onSaveAndClo
           <Button size="sm" color="secondary" variant="ghost" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={onSaveAndClose}>
-            Save
-          </Button>
+          <Button onClick={onSaveAndClose}>Save</Button>
         </div>
       </div>
     </Modal>

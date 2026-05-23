@@ -24,7 +24,14 @@ import {
 } from '@tabler/icons';
 import OpenAPISyncIcon from 'components/Icons/OpenAPISync';
 import { toggleCollection, collapseFullCollection } from 'providers/ReduxStore/slices/collections';
-import { mountCollection, moveCollectionAndPersist, handleCollectionItemDrop, pasteItem, showInFolder, saveCollectionSecurityConfig } from 'providers/ReduxStore/slices/collections/actions';
+import {
+  mountCollection,
+  moveCollectionAndPersist,
+  handleCollectionItemDrop,
+  pasteItem,
+  showInFolder,
+  saveCollectionSecurityConfig
+} from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTab, makeTabPermanent } from 'providers/ReduxStore/slices/tabs';
 import { setFocusedSidebarPath } from 'providers/ReduxStore/slices/app';
@@ -77,7 +84,8 @@ const Collection = ({ collection, searchText }) => {
   const collectionRef = useRef(null);
   // Only count persisted requests and folders; transients and file items
   // (bruno.json, .js scripts) don't affect empty state
-  const itemCount = collection.items?.filter((i) => !i.isTransient && (isItemARequest(i) || isItemAFolder(i))).length || 0;
+  const itemCount =
+    collection.items?.filter((i) => !i.isTransient && (isItemARequest(i) || isItemAFolder(i))).length || 0;
 
   const isCollectionFocused = useSelector(isTabForItemActive({ itemUid: collection.uid }));
   const { hasCopiedItems } = useSelector((state) => state.app.clipboard);
@@ -109,11 +117,13 @@ const Collection = ({ collection, searchText }) => {
     if (collection.mountStatus === 'mounted') {
       return;
     }
-    dispatch(mountCollection({
-      collectionUid: collection.uid,
-      collectionPathname: collection.pathname,
-      brunoConfig: collection.brunoConfig
-    }));
+    dispatch(
+      mountCollection({
+        collectionUid: collection.uid,
+        collectionPathname: collection.pathname,
+        brunoConfig: collection.brunoConfig
+      })
+    );
   };
 
   const hasSearchText = searchText && searchText?.trim()?.length;
@@ -135,9 +145,11 @@ const Collection = ({ collection, searchText }) => {
       dispatch(toggleCollection(collection.uid));
       // Set default jsSandboxMode to 'safe' if not present and save to disk
       if (!collection.securityConfig?.jsSandboxMode) {
-        dispatch(saveCollectionSecurityConfig(collection.uid, {
-          jsSandboxMode: 'safe'
-        }));
+        dispatch(
+          saveCollectionSecurityConfig(collection.uid, {
+            jsSandboxMode: 'safe'
+          })
+        );
       }
     }
 
@@ -206,20 +218,32 @@ const Collection = ({ collection, searchText }) => {
   };
 
   // Sidebar shortcuts — only active when this collection has keyboard focus
-  useKeybinding('cloneItem', () => {
-    setShowCloneCollectionModalOpen(true);
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'cloneItem',
+    () => {
+      setShowCloneCollectionModalOpen(true);
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
-  useKeybinding('renameItem', () => {
-    setShowRenameCollectionModal(true);
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'renameItem',
+    () => {
+      setShowRenameCollectionModal(true);
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
-  useKeybinding('pasteItem', () => {
-    handlePasteItem();
-    return false;
-  }, { enabled: isKeyboardFocused, deps: [isKeyboardFocused] });
+  useKeybinding(
+    'pasteItem',
+    () => {
+      handlePasteItem();
+      return false;
+    },
+    { enabled: isKeyboardFocused, deps: [isKeyboardFocused] }
+  );
 
   const handleFocus = () => {
     setIsKeyboardFocused(true);
@@ -261,7 +285,14 @@ const Collection = ({ collection, searchText }) => {
     drop: (draggedItem, monitor) => {
       const itemType = monitor.getItemType();
       if (isCollectionItem(itemType)) {
-        dispatch(handleCollectionItemDrop({ targetItem: collection, draggedItem, dropType: 'inside', collectionUid: collection.uid }));
+        dispatch(
+          handleCollectionItemDrop({
+            targetItem: collection,
+            draggedItem,
+            dropType: 'inside',
+            collectionUid: collection.uid
+          })
+        );
       } else {
         dispatch(moveCollectionAndPersist({ draggedItem, targetItem: collection }));
       }
@@ -365,13 +396,21 @@ const Collection = ({ collection, searchText }) => {
         setShowCloneCollectionModalOpen(true);
       }
     },
-    ...(isOpenAPISyncEnabled ? [{
-      id: 'sync-openapi',
-      leftSection: OpenAPISyncIcon,
-      label: 'OpenAPI',
-      rightSection: <StatusBadge status="info" size="xs">Beta</StatusBadge>,
-      onClick: openOpenAPISyncTab
-    }] : []),
+    ...(isOpenAPISyncEnabled
+      ? [
+          {
+            id: 'sync-openapi',
+            leftSection: OpenAPISyncIcon,
+            label: 'OpenAPI',
+            rightSection: (
+              <StatusBadge status="info" size="xs">
+                Beta
+              </StatusBadge>
+            ),
+            onClick: openOpenAPISyncTab
+          }
+        ]
+      : []),
     ...(hasCopiedItems
       ? [
           {
@@ -451,7 +490,9 @@ const Collection = ({ collection, searchText }) => {
 
   return (
     <StyledWrapper className="flex flex-col" id={`collection-${collection.name.replace(/\s+/g, '-').toLowerCase()}`}>
-      {showNewRequestModal && <NewRequest collectionUid={collection.uid} onClose={() => setShowNewRequestModal(false)} />}
+      {showNewRequestModal && (
+        <NewRequest collectionUid={collection.uid} onClose={() => setShowNewRequestModal(false)} />
+      )}
       {showNewFolderModal && <NewFolder collectionUid={collection.uid} onClose={() => setShowNewFolderModal(false)} />}
       {showRenameCollectionModal && (
         <RenameCollection collectionUid={collection.uid} onClose={() => setShowRenameCollectionModal(false)} />
@@ -463,7 +504,10 @@ const Collection = ({ collection, searchText }) => {
         <ShareCollection collectionUid={collection.uid} onClose={() => setShowShareCollectionModal(false)} />
       )}
       {showGenerateDocumentationModal && (
-        <GenerateDocumentation collectionUid={collection.uid} onClose={() => setShowGenerateDocumentationModal(false)} />
+        <GenerateDocumentation
+          collectionUid={collection.uid}
+          onClose={() => setShowGenerateDocumentationModal(false)}
+        />
       )}
       {showCloneCollectionModalOpen && (
         <CloneCollection collectionUid={collection.uid} onClose={() => setShowCloneCollectionModalOpen(false)} />
@@ -522,10 +566,26 @@ const Collection = ({ collection, searchText }) => {
         {!collectionIsCollapsed ? (
           <div>
             {folderItems?.map?.((i) => {
-              return <CollectionItem key={i.uid} item={i} collectionUid={collection.uid} collectionPathname={collection.pathname} searchText={searchText} />;
+              return (
+                <CollectionItem
+                  key={i.uid}
+                  item={i}
+                  collectionUid={collection.uid}
+                  collectionPathname={collection.pathname}
+                  searchText={searchText}
+                />
+              );
             })}
             {requestItems?.map?.((i) => {
-              return <CollectionItem key={i.uid} item={i} collectionUid={collection.uid} collectionPathname={collection.pathname} searchText={searchText} />;
+              return (
+                <CollectionItem
+                  key={i.uid}
+                  item={i}
+                  collectionUid={collection.uid}
+                  collectionPathname={collection.pathname}
+                  searchText={searchText}
+                />
+              );
             })}
             {showEmptyCollectionMessage ? (
               <div className="empty-collection-message">

@@ -3,7 +3,7 @@ export interface ProxyConfiguration {
   https_proxy?: string | null;
   no_proxy?: string | null;
   source: string;
-};
+}
 
 export interface ProxyResolver {
   detect(opts?: { timeoutMs?: number }): Promise<ProxyConfiguration>;

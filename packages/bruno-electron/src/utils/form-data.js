@@ -37,7 +37,7 @@ const formatMultipartData = (multipartData, boundary) => {
     parts.push('Content-Disposition: form-data');
 
     if (field.type === 'file') {
-      const filePaths = Array.isArray(field.value) ? field.value : (field.value ? [field.value] : ['']);
+      const filePaths = Array.isArray(field.value) ? field.value : field.value ? [field.value] : [''];
       filePaths.forEach((filePath) => {
         parts.push(`----${boundaryValue}`);
         parts.push('Content-Disposition: form-data');

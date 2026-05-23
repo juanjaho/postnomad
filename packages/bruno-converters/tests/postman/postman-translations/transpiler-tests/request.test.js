@@ -142,7 +142,8 @@ describe('Request Translation', () => {
   });
 
   it('should translate pm.request.headers.upsert with variable values', () => {
-    const code = 'const headerName = "Authorization"; const headerValue = "Bearer " + token; pm.request.headers.upsert({key: headerName, value: headerValue});';
+    const code =
+      'const headerName = "Authorization"; const headerValue = "Bearer " + token; pm.request.headers.upsert({key: headerName, value: headerValue});';
     const translatedCode = translateCode(code);
     expect(translatedCode).toContain('req.setHeader(headerName, headerValue)');
   });

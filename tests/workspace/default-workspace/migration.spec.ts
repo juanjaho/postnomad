@@ -9,7 +9,10 @@ const env = {
 
 test.describe('Default Workspace Migration', () => {
   test.describe('Migration from lastOpenedCollections', () => {
-    test('should migrate collections from lastOpenedCollections to new workspace', async ({ launchElectronApp, createTmpDir }) => {
+    test('should migrate collections from lastOpenedCollections to new workspace', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-migration');
 
       await test.step('Setup test collection and preferences', async () => {
@@ -54,7 +57,10 @@ test.describe('Default Workspace Migration', () => {
       });
     });
 
-    test('should migrate multiple collections from lastOpenedCollections', async ({ launchElectronApp, createTmpDir }) => {
+    test('should migrate multiple collections from lastOpenedCollections', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-migration-multiple');
 
       // Create multiple test collections
@@ -100,7 +106,10 @@ test.describe('Default Workspace Migration', () => {
   });
 
   test.describe('Migration does not affect existing users', () => {
-    test('should skip sample collection when user has existing collections', async ({ launchElectronApp, createTmpDir }) => {
+    test('should skip sample collection when user has existing collections', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-existing-user');
 
       // Create a test collection (simulating existing user)
@@ -171,7 +180,10 @@ test.describe('Default Workspace Migration', () => {
   });
 
   test.describe('Clean installation', () => {
-    test('should create empty workspace on fresh install without old preferences', async ({ launchElectronApp, createTmpDir }) => {
+    test('should create empty workspace on fresh install without old preferences', async ({
+      launchElectronApp,
+      createTmpDir
+    }) => {
       const userDataPath = await createTmpDir('default-workspace-clean');
 
       // Launch with completely empty user data (no preferences file)

@@ -106,7 +106,7 @@ describe('parseCurlCommand', () => {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
+          Authorization: 'Bearer token'
         },
         url: 'https://api.example.com',
         urlWithoutQuery: 'https://api.example.com'
@@ -395,9 +395,7 @@ describe('parseCurlCommand', () => {
 
       expect(result).toEqual({
         method: 'post',
-        multipartUploads: [
-          { name: 'file', value: '/path/to/file.txt', type: 'file', enabled: true }
-        ],
+        multipartUploads: [{ name: 'file', value: '/path/to/file.txt', type: 'file', enabled: true }],
         url: 'https://api.example.com/upload',
         urlWithoutQuery: 'https://api.example.com/upload'
       });
@@ -473,9 +471,11 @@ describe('parseCurlCommand', () => {
       expect(result).toEqual({
         method: 'get',
         headers: {
-          Cookie: 'session=abc123; user=john; path=/; domain=example.com; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; HttpOnly'
+          Cookie:
+            'session=abc123; user=john; path=/; domain=example.com; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; HttpOnly'
         },
-        cookieString: 'session=abc123; user=john; path=/; domain=example.com; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; HttpOnly',
+        cookieString:
+          'session=abc123; user=john; path=/; domain=example.com; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; HttpOnly',
         cookies: {
           session: 'abc123',
           user: 'john',
@@ -593,7 +593,7 @@ describe('parseCurlCommand', () => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token123',
+          Authorization: 'Bearer token123',
           'X-Custom-Header': 'custom header',
           'Accept-Encoding': 'deflate, gzip'
         },
@@ -679,7 +679,7 @@ describe('parseCurlCommand', () => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token123',
+          Authorization: 'Bearer token123',
           'X-Custom-Header': 'custom header',
           'Accept-Encoding': 'deflate, gzip'
         },
@@ -717,7 +717,7 @@ describe('parseCurlCommand', () => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token123',
+          Authorization: 'Bearer token123',
           'Accept-Encoding': 'deflate, gzip'
         },
         data: '{"name": "John\'s data", "email": "john@example.com"}',
@@ -763,7 +763,7 @@ describe('parseCurlCommand', () => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token123'
+          Authorization: 'Bearer token123'
         },
         data: '{"title": "New Post", "content": "Post content"}',
         url: 'https://api.example.com/posts',

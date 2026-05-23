@@ -274,9 +274,7 @@ describe('swagger2-to-bruno body handling', () => {
         '/data': {
           post: {
             summary: 'Post wildcard',
-            parameters: [
-              { in: 'body', name: 'body', schema: { type: 'string' } }
-            ],
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'string' } }],
             responses: { 200: { description: 'OK' } }
           }
         }
@@ -297,9 +295,7 @@ describe('swagger2-to-bruno body handling', () => {
         '/upload': {
           post: {
             summary: 'Upload binary',
-            parameters: [
-              { in: 'body', name: 'body', schema: { type: 'string' } }
-            ],
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'string' } }],
             responses: { 200: { description: 'OK' } }
           }
         }
@@ -378,9 +374,7 @@ describe('swagger2-to-bruno body handling', () => {
         '/test': {
           post: {
             summary: 'Post test',
-            parameters: [
-              { in: 'body', name: 'body' }
-            ],
+            parameters: [{ in: 'body', name: 'body' }],
             responses: { 200: { description: 'OK' } }
           }
         }

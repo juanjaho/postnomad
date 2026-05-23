@@ -115,7 +115,9 @@ describe('Environment Variable Translation', () => {
     const translatedCode = translateCode(code);
 
     expect(translatedCode).toContain('const envName = bru.getEnvName();');
-    expect(translatedCode).toContain('const hasToken = bru.getEnvVar("token") !== undefined && bru.getEnvVar("token") !== null;');
+    expect(translatedCode).toContain(
+      'const hasToken = bru.getEnvVar("token") !== undefined && bru.getEnvVar("token") !== null;'
+    );
     expect(translatedCode).toContain('const token = bru.getEnvVar("token");');
     expect(translatedCode).toContain('bru.setEnvVar("timestamp", new Date().toISOString());');
   });
@@ -150,7 +152,9 @@ describe('Environment Variable Translation', () => {
     expect(translatedCode).toContain('"Authorization": "Bearer " + bru.getEnvVar("token"),');
     expect(translatedCode).toContain('"X-Api-Key": bru.getEnvVar("apiKey") || "default-key"');
     expect(translatedCode).toContain('timeout: parseInt(bru.getEnvVar("timeout") || "5000"),');
-    expect(translatedCode).toContain('validate: bru.getEnvVar("validateResponses") !== undefined && bru.getEnvVar("validateResponses") !== null');
+    expect(translatedCode).toContain(
+      'validate: bru.getEnvVar("validateResponses") !== undefined && bru.getEnvVar("validateResponses") !== null'
+    );
   });
 
   it('should handle environment variables in conditionals correctly', () => {
@@ -166,7 +170,9 @@ describe('Environment Variable Translation', () => {
         }
         `;
     const translatedCode = translateCode(code);
-    expect(translatedCode).toContain('if (bru.getEnvVar("apiKey") !== undefined && bru.getEnvVar("apiKey") !== null) {');
+    expect(translatedCode).toContain(
+      'if (bru.getEnvVar("apiKey") !== undefined && bru.getEnvVar("apiKey") !== null) {'
+    );
     expect(translatedCode).toContain('if (bru.getEnvVar("apiKey").length > 0) {');
   });
 

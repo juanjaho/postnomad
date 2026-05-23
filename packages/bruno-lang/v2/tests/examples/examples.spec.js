@@ -316,7 +316,10 @@ example {
     });
 
     it('should parse multiple-examples-variations.bru correctly', () => {
-      const input = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'multiple-examples-variations.bru'), 'utf8');
+      const input = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'multiple-examples-variations.bru'),
+        'utf8'
+      );
       const expected = require('./fixtures/json/multiple-examples-variations.json');
       const output = bruToJson(input);
 
@@ -348,7 +351,10 @@ example {
 
       it('should convert multiple-examples-variations.json to BRU format and preserve examples', () => {
         const jsonInput = require('./fixtures/json/multiple-examples-variations.json');
-        const expected = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'multiple-examples-variations.bru'), 'utf8');
+        const expected = fs.readFileSync(
+          path.join(__dirname, 'fixtures', 'bru', 'multiple-examples-variations.bru'),
+          'utf8'
+        );
         const output = jsonToBru(jsonInput);
         expect(output).toEqual(expected);
       });
@@ -364,7 +370,10 @@ example {
 
   describe('Examples with multiline descriptions', () => {
     it('should parse examples with multiline descriptions', () => {
-      const input = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-description.bru'), 'utf8');
+      const input = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-description.bru'),
+        'utf8'
+      );
       const expected = require('./fixtures/json/examples-multiline-description.json');
       const output = bruToJson(input);
 
@@ -373,7 +382,10 @@ example {
 
     it('should convert examples with multiline descriptions to BRU format', () => {
       const jsonInput = require('./fixtures/json/examples-multiline-description.json');
-      const expected = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-description.bru'), 'utf8');
+      const expected = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-description.bru'),
+        'utf8'
+      );
       const output = jsonToBru(jsonInput);
 
       expect(output).toEqual(expected);
@@ -406,7 +418,10 @@ example {
 
   describe('Examples with multiline strings and contentType', () => {
     it('should parse examples with multiline strings and @contentType annotations', () => {
-      const input = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'), 'utf8');
+      const input = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'),
+        'utf8'
+      );
       const expected = require('./fixtures/json/examples-multiline-contenttype.json');
       const output = bruToJson(input);
 
@@ -414,7 +429,10 @@ example {
     });
 
     it('should correctly extract contentType from multiline values', () => {
-      const input = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'), 'utf8');
+      const input = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'),
+        'utf8'
+      );
       const output = bruToJson(input);
 
       const example = output.examples[0];
@@ -446,7 +464,10 @@ example {
     });
 
     it('should handle round-trip conversion for multiline strings with contentType', () => {
-      const originalBru = fs.readFileSync(path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'), 'utf8');
+      const originalBru = fs.readFileSync(
+        path.join(__dirname, 'fixtures', 'bru', 'examples-multiline-contenttype.bru'),
+        'utf8'
+      );
       const jsonFromBru = bruToJson(originalBru);
       const bruFromJson = jsonToBru(jsonFromBru);
       const jsonFromBruAgain = bruToJson(bruFromJson);

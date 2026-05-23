@@ -120,12 +120,7 @@ export function buildRows(parsed) {
       }
 
       // Safety: skip unknown line types so the outer loop can't stall.
-      if (
-        i < lines.length
-        && lines[i].type !== 'context'
-        && lines[i].type !== 'delete'
-        && lines[i].type !== 'insert'
-      ) {
+      if (i < lines.length && lines[i].type !== 'context' && lines[i].type !== 'delete' && lines[i].type !== 'insert') {
         i++;
       }
     }

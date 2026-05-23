@@ -81,8 +81,7 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
 
   const showNav = !!specDrift?.unifiedDiff && !parseError;
   const changeCount = changeBlocks.length;
-  const counterLabel
-    = changeCount === 0 ? 'No changes' : `${currentIndex + 1} of ${changeCount} changes`;
+  const counterLabel = changeCount === 0 ? 'No changes' : `${currentIndex + 1} of ${changeCount} changes`;
 
   return (
     <Modal size="xl" title="Spec Diff" hideFooter handleCancel={onClose}>

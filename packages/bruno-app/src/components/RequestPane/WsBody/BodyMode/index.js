@@ -26,9 +26,7 @@ const WSRequestBodyMode = ({ mode, onModeChange }) => {
   const Icon = forwardRef((props, ref) => {
     return (
       <div ref={ref} className="flex items-center justify-center pl-3 py-1 select-none selected-body-mode">
-        {humanizeRequestBodyMode(mode)}
-        {' '}
-        <IconCaretDown className="caret ml-2" size={14} strokeWidth={2} />
+        {humanizeRequestBodyMode(mode)} <IconCaretDown className="caret ml-2" size={14} strokeWidth={2} />
       </div>
     );
   });

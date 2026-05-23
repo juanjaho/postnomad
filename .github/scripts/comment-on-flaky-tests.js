@@ -13,7 +13,7 @@ try {
   changedFiles = execSync('git diff --name-only origin/main...HEAD')
     .toString()
     .split('\n')
-    .filter(f => f.endsWith('.spec.ts'));
+    .filter((f) => f.endsWith('.spec.ts'));
 } catch (error) {
   console.log('Could not determine changed files:', error.message);
   process.exit(0);
@@ -33,9 +33,7 @@ if (flakyTests.length === 0) {
 }
 
 // Find modified flaky tests
-const modifiedFlakyTests = flakyTests.filter(test =>
-  changedFiles.some(file => test.file.includes(file))
-);
+const modifiedFlakyTests = flakyTests.filter((test) => changedFiles.some((file) => test.file.includes(file)));
 
 if (modifiedFlakyTests.length === 0) {
   console.log('No modified test files are flaky');
@@ -46,7 +44,7 @@ if (modifiedFlakyTests.length === 0) {
 let comment = '## ⚠️ Warning: You modified flaky/failed test files\n\n';
 comment += 'The following test files you modified have reliability issues:\n\n';
 
-modifiedFlakyTests.forEach(test => {
+modifiedFlakyTests.forEach((test) => {
   const testType = test.status === 'failed' ? '❌ Failed' : '⚠️ Flaky';
   comment += `### ${testType}: \`${test.file}\`\n`;
   comment += `**Test:** ${test.testTitle}\n`;

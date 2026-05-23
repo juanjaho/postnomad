@@ -7,10 +7,12 @@ import { uuid, ensureString } from '../../../utils';
  * Convert Bruno pre-request variables to OpenCollection variables format.
  * Note: Post-response variables are now converted to actions (see actions.ts).
  */
-export const toOpenCollectionVariables = (variables: BrunoFolderRequest['vars'] | BrunoVariables | null | undefined): Variable[] | undefined => {
+export const toOpenCollectionVariables = (
+  variables: BrunoFolderRequest['vars'] | BrunoVariables | null | undefined
+): Variable[] | undefined => {
   // Handle folder variables (has req/res structure) - only use req vars
   const hasReqRes = variables && 'req' in variables;
-  const reqVars = hasReqRes ? variables.req : variables as BrunoVariables;
+  const reqVars = hasReqRes ? variables.req : (variables as BrunoVariables);
 
   const reqVarsArray = Array.isArray(reqVars) ? reqVars : [];
 
@@ -41,7 +43,9 @@ export const toOpenCollectionVariables = (variables: BrunoFolderRequest['vars'] 
  * Convert OpenCollection variables to Bruno pre-request variables format.
  * Note: Post-response variables come from actions (see actions.ts).
  */
-export const toBrunoVariables = (variables: Variable[] | null | undefined): { req: BrunoVariables; res: BrunoVariables } => {
+export const toBrunoVariables = (
+  variables: Variable[] | null | undefined
+): { req: BrunoVariables; res: BrunoVariables } => {
   if (!variables?.length) {
     return { req: [], res: [] };
   }
