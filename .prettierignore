@@ -1,0 +1,30 @@
+# Dependencies
+**/node_modules/
+
+# Build outputs
+**/dist/
+**/build/
+**/out/
+**/coverage/
+packages/bruno-app/.next/
+packages/bruno-app/public/static/
+packages/bruno-electron/web/
+
+# Bundled / generated sources
+packages/bruno-js/src/sandbox/bundle-browser-rollup.js
+**/*.min.js
+**/*.min.css
+
+# Lockfiles
+package-lock.json
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Bruno data files (not source code)
+**/*.bru
+
+# Misc
+.git/
+.husky/_/
