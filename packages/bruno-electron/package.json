@@ -30,9 +30,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/credential-providers": "3.1019.0",
+    "@aws-sdk/credential-providers": "^3.1045.0",
     "@grpc/grpc-js": "^1.13.2",
-    "@grpc/proto-loader": "^0.7.13",
+    "@grpc/proto-loader": "^0.8.1",
     "@lydell/node-pty": "^1.1.0",
     "@usebruno/common": "0.1.0",
     "@usebruno/converters": "^0.1.0",
