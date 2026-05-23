@@ -1,15 +1,15 @@
 {
   "version": "2.0.0",
-  "name": "bruno",
-  "description": "Opensource API Client for Exploring and Testing APIs",
-  "homepage": "https://www.usebruno.com",
+  "name": "postnomad",
+  "description": "Postnomad — open-source API client (fork of Bruno)",
+  "homepage": "https://github.com/juanjaho/postnomad",
   "repository": {
     "type": "git",
-    "url": "https://github.com/usebruno/bruno.git"
+    "url": "https://github.com/juanjaho/postnomad.git"
   },
   "private": true,
   "main": "src/index.js",
-  "author": "Anoop M D <anoop.md1421@gmail.com> (https://helloanoop.com/)",
+  "author": "juanjaho",
   "scripts": {
     "clean": "rimraf dist",
     "dev": "electron .",

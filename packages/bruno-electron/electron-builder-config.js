@@ -1,8 +1,8 @@
 require('dotenv').config({ path: process.env.DOTENV_PATH });
 
 const config = {
-  appId: 'com.usebruno.app',
-  productName: 'Bruno',
+  appId: 'com.postnomad.app',
+  productName: 'Postnomad',
   electronVersion: '37.6.1',
   directories: {
     buildResources: 'resources',
@@ -35,14 +35,14 @@ const config = {
     ],
     icon: 'resources/icons/mac/icon.icns',
     hardenedRuntime: true,
-    identity: 'Anoop MD (W7LPPWA48L)',
+    identity: null,
     entitlements: 'resources/entitlements.mac.plist',
     entitlementsInherit: 'resources/entitlements.mac.plist',
     notarize: false,
     protocols: [
       {
-        name: 'Bruno',
-        schemes: ['bruno']
+        name: 'Postnomad',
+        schemes: ['postnomad']
       }
     ]
   },
@@ -65,13 +65,13 @@ const config = {
     ],
     protocols: [
       {
-        name: 'Bruno',
-        schemes: ['bruno']
+        name: 'Postnomad',
+        schemes: ['postnomad']
       }
     ],
     category: 'Development',
     desktop: {
-      MimeType: 'x-scheme-handler/bruno;'
+      MimeType: 'x-scheme-handler/postnomad;'
     }
   },
   deb: {
@@ -99,7 +99,7 @@ const config = {
       }
     ],
     sign: null,
-    publisherName: 'Bruno Software Inc'
+    publisherName: 'juanjaho'
   },
   nsis: {
     include: 'resources/installer.nsh',

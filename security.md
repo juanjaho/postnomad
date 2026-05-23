@@ -1,20 +1,19 @@
-## Security
+# Security
 
-At Bruno, we take security seriously and are committed to providing a safe experience for all users.  
-We appreciate responsible disclosure and value contributions that help improve Bruno's security.
+Postnomad is a personal fork of [Bruno](https://github.com/usebruno/bruno) and shares essentially all of its security-relevant code with upstream.
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
-To report a security issue, please email us at [security@usebruno.com](mailto:security@usebruno.com)
+For issues you believe affect **upstream Bruno** as well, please report them to the Bruno security team — they're far better positioned to fix and disclose them across the whole user base. See [Bruno's security policy](https://github.com/usebruno/bruno/blob/main/security.md).
 
-When reporting a vulnerability, please include as many details as possible to help us investigate:
+For issues that only apply to **this fork** (changes I've made on top of upstream), open a private security advisory on the GitHub repo. Please do **not** report security issues through public GitHub issues.
 
-- **Type of issue** (e.g., cross-site scripting, malicious npm package, etc.).
-- **Full paths of source file(s)** related to the issue.
-- **Location of affected code** (tag, branch, commit, or direct URL).
-- **Any special configuration** required to reproduce the issue.
-- **Step-by-step instructions** to reproduce the issue.
-- **Proof-of-concept or exploit code** (if available).
-- **Potential impact**, including how an attacker might exploit the issue.
+When reporting, include as many details as possible:
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+- **Type of issue** (e.g., XSS, prototype pollution, RCE in the script sandbox, malicious npm package, etc.)
+- **Full paths of source file(s)** related to the issue
+- **Location of affected code** (commit SHA or direct URL)
+- **Any special configuration** required to reproduce
+- **Step-by-step reproduction**
+- **Proof-of-concept or exploit code** (if available)
+- **Potential impact** and how an attacker might exploit it

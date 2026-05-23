@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/usebruno/bruno-testbench.git"
+    "url": "git+https://github.com/juanjaho/postnomad.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "juanjaho",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/usebruno/bruno-testbench/issues"
+    "url": "https://github.com/juanjaho/postnomad/issues"
   },
-  "homepage": "https://github.com/usebruno/bruno-testbench#readme",
+  "homepage": "https://github.com/juanjaho/postnomad#readme",
   "dependencies": {
     "axios": "1.13.6",
     "body-parser": "2.2.0",

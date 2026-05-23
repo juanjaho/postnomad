@@ -18,13 +18,13 @@
 | [Dutch](docs/contributing/contributing_nl.md)
 | [فارسی](docs/contributing/contributing_fa.md)
 
-## Let's make Bruno better, together!!
+## Contributing to Postnomad
 
-We are happy that you are looking to improve Bruno. Below are the guidelines to run Bruno on your computer.
+This is a personal fork of [Bruno](https://github.com/usebruno/bruno) — most of the architecture and codebase originates there. If your contribution is generally useful, consider sending it upstream to Bruno too; it'll benefit a much wider audience.
 
 ### Technology Stack
 
-Bruno is built using React and Electron.
+Postnomad is built using React and Electron (inherited from Bruno).
 
 Libraries we use
 
@@ -43,7 +43,7 @@ Libraries we use
 
 ## Development
 
-Bruno is a desktop app. Below are the instructions to run Bruno.
+Postnomad is a desktop app. Below are the instructions to run it locally.
 
 > Note: We use React for the frontend and rsbuild for build and dev server.
 
