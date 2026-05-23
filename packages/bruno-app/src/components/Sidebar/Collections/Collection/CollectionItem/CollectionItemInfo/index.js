@@ -27,7 +27,7 @@ const CollectionItemInfo = ({ item, onClose }) => {
                   </Help>
                 ) : (
                   <Help width="300">
-                    <p>Bruno saves each request as a file in your collection's folder.</p>
+                    <p>Postnomad saves each request as a file in your collection's folder.</p>
                   </Help>
                 )}
               </td>

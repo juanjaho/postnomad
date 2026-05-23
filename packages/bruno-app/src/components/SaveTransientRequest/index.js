@@ -512,7 +512,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                           <label className="new-collection-label flex items-center">
                             Location
                             <Help width={250} placement="top">
-                              <p>Bruno stores your collections on your computer's filesystem.</p>
+                              <p>Postnomad stores your collections on your computer's filesystem.</p>
                               <p className="mt-2">Choose the location where you want to store this collection.</p>
                             </Help>
                           </label>

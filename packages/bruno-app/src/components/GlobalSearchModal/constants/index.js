@@ -24,9 +24,9 @@ export const SEARCH_CONFIG = {
 
 export const DOCUMENTATION_RESULT = {
   type: SEARCH_TYPES.DOCUMENTATION,
-  item: { id: 'docs', name: 'Bruno Documentation' },
-  name: 'Bruno Documentation',
+  item: { id: 'docs', name: 'Documentation' },
+  name: 'Documentation',
   path: '/',
-  description: 'Browse the official Bruno documentation',
+  description: 'Browse the documentation (upstream Bruno docs)',
   matchType: MATCH_TYPES.DOCUMENTATION
 };

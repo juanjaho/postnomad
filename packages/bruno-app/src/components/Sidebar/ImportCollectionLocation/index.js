@@ -40,13 +40,13 @@ const getCollectionName = (format, rawData) => {
       // Fallback to root name property
       return rawData.name || 'Insomnia Collection';
     case 'bruno':
-      return rawData.name || 'Bruno Collection';
+      return rawData.name || 'Postnomad Collection';
     case 'opencollection':
       return rawData.info?.name || 'OpenCollection';
     case 'wsdl':
       return 'WSDL Collection';
     case 'bruno-zip':
-      return rawData.collectionName || 'Bruno Collection';
+      return rawData.collectionName || 'Postnomad Collection';
     default:
       return 'Collection';
   }
@@ -243,7 +243,7 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
               <label htmlFor="collectionLocation" className="font-medium mt-4 flex items-center">
                 Location
                 <Help>
-                  <p>Bruno stores your collections on your computer's filesystem.</p>
+                  <p>Postnomad stores your collections on your computer's filesystem.</p>
                   <p className="mt-2">Choose the location where you want to store this collection.</p>
                 </Help>
               </label>

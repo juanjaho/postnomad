@@ -16,7 +16,7 @@ const highlights = [
   {
     icon: IconLock,
     title: 'Privacy-focused',
-    desc: 'No account, no login. Bruno works entirely offline, your API keys never leave your machine.'
+    desc: 'No account, no login. Postnomad works entirely offline, your API keys never leave your machine.'
   },
   {
     icon: IconRocket,

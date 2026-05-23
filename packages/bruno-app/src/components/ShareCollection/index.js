@@ -109,8 +109,8 @@ const ShareCollection = ({ onClose, collectionUid }) => {
           - An open format for API collections
         </p>
 
-        {/* Bruno Format Section */}
-        <div className="section-title">Bruno Format</div>
+        {/* .bru Format Section */}
+        <div className="section-title">.bru Format</div>
         <div className="bruno-format-grid mb-6">
           {/* ZIP Option */}
           <div
@@ -118,7 +118,7 @@ const ShareCollection = ({ onClose, collectionUid }) => {
             onClick={() => !isDisabled && setSelectedFormat(EXPORT_FORMATS.ZIP)}
           >
             <div className="card-header">
-              <span className="card-title">Bruno Collection (ZIP)</span>
+              <span className="card-title">.bru Collection (ZIP)</span>
               <span className="recommended-badge">Recommended</span>
             </div>
             <p className="card-description">OpenCollection format organized as folders and files</p>

@@ -62,7 +62,7 @@ const getCollectionName = (format, rawData) => {
       // Fallback to root name property
       return rawData.name || 'Insomnia Collection';
     case 'bruno':
-      return rawData.name || 'Bruno Collection';
+      return rawData.name || 'Postnomad Collection';
     case 'wsdl':
       return 'WSDL Collection';
     default:
