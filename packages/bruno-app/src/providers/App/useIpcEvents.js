@@ -385,6 +385,13 @@ const useIpcEvents = () => {
       dispatch(setGitVersion(val));
     });
 
+    // Phase 3b: live capture events from the HTTP capture proxy (main process).
+    const removeCaptureEventListener = ipcRenderer.on('main:capture-event', (ev) => {
+      // Lazy require to avoid pulling the slice into the import dependency cycle.
+      const { addEvent } = require('providers/ReduxStore/slices/capture');
+      dispatch(addEvent(ev));
+    });
+
     return () => {
       removeCollectionTreeUpdateListener();
       removeApiSpecTreeUpdateListener();
@@ -418,6 +425,7 @@ const useIpcEvents = () => {
       removePersistentEnvVariablesUpdateListener();
       removeSystemResourcesListener();
       gitVersionListener();
+      removeCaptureEventListener();
     };
   }, [isElectron]);
 };

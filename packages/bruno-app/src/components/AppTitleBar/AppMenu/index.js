@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { IconMenu2 } from '@tabler/icons';
 import MenuDropdown from 'ui/MenuDropdown';
 import ActionIcon from 'ui/ActionIcon';
+import { openPanel as openCapturePanel } from 'providers/ReduxStore/slices/capture';
+import CapturePane from 'components/CapturePane';
 import StyledWrapper from './StyledWrapper';
 
 const AppMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const { ipcRenderer } = window;
 
   const menuItems = [
@@ -117,6 +121,17 @@ const AppMenu = () => {
       ]
     },
     {
+      id: 'tools',
+      label: 'Tools',
+      submenu: [
+        {
+          id: 'capture-http',
+          label: 'Capture HTTP Traffic…',
+          onClick: () => dispatch(openCapturePanel())
+        }
+      ]
+    },
+    {
       id: 'help',
       label: 'Help',
       submenu: [
@@ -147,6 +162,7 @@ const AppMenu = () => {
           <IconMenu2 size={16} stroke={1.5} />
         </ActionIcon>
       </MenuDropdown>
+      <CapturePane />
     </StyledWrapper>
   );
 };
