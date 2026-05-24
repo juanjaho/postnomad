@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/Modal';
 import { closePanel, clearEvents, removeEvent, setStatus } from 'providers/ReduxStore/slices/capture';
@@ -262,6 +262,87 @@ const CapturePane = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [busy, setBusy] = useState(false);
   const [saveTargetUid, setSaveTargetUid] = useState('');
+  const [caInfo, setCaInfo] = useState(null);
+  const [caTrustStatus, setCaTrustStatus] = useState({ installed: false, platform: '' });
+  const [caBusy, setCaBusy] = useState(false);
+
+  // Pull CA + trust status once the pane opens (cheap; the main process
+  // caches everything).
+  useEffect(() => {
+    if (!panelOpen) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [info, trust] = await Promise.all([
+          window.ipcRenderer.invoke('renderer:capture-ca-info'),
+          window.ipcRenderer.invoke('renderer:capture-ca-system-trust-status')
+        ]);
+        if (cancelled) return;
+        setCaInfo(info);
+        setCaTrustStatus(trust);
+      } catch (err) {
+        // Non-fatal — fall back to manual-install instructions in the UI.
+        console.warn('Could not read CA status:', err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [panelOpen]);
+
+  const onInstallCa = useCallback(async () => {
+    const ok = window.confirm(
+      'Install the Postnomad Local CA into your system trust store?\n\n' +
+        'After install, any HTTPS connection from this machine can be decrypted by Postnomad. ' +
+        'Anyone with read access to the Postnomad CA key file can MITM your TLS traffic until you uninstall ' +
+        'it. Only do this on machines you trust.\n\n' +
+        'You will be asked for your admin password.'
+    );
+    if (!ok) return;
+    setCaBusy(true);
+    try {
+      await window.ipcRenderer.invoke('renderer:capture-ca-install-system-trust');
+      setCaTrustStatus({ ...caTrustStatus, installed: true });
+      toast.success('Postnomad CA installed into system trust');
+    } catch (err) {
+      toast.error(err.message || 'Could not install CA');
+    } finally {
+      setCaBusy(false);
+    }
+  }, [caTrustStatus]);
+
+  const onUninstallCa = useCallback(async () => {
+    setCaBusy(true);
+    try {
+      await window.ipcRenderer.invoke('renderer:capture-ca-uninstall-system-trust');
+      setCaTrustStatus({ ...caTrustStatus, installed: false });
+      toast.success('Postnomad CA removed from system trust');
+    } catch (err) {
+      toast.error(err.message || 'Could not uninstall CA');
+    } finally {
+      setCaBusy(false);
+    }
+  }, [caTrustStatus]);
+
+  const onRegenerateCa = useCallback(async () => {
+    const ok = window.confirm(
+      'Regenerate the Postnomad Local CA?\n\n' +
+        'The current CA will be wiped and a new one minted. If the old CA was installed in your system trust, ' +
+        'you should uninstall it first AND re-install the new one afterwards.'
+    );
+    if (!ok) return;
+    setCaBusy(true);
+    try {
+      const info = await window.ipcRenderer.invoke('renderer:capture-ca-regenerate');
+      setCaInfo(info);
+      setCaTrustStatus({ ...caTrustStatus, installed: false });
+      toast.success('Regenerated Postnomad CA');
+    } catch (err) {
+      toast.error(err.message || 'Could not regenerate CA');
+    } finally {
+      setCaBusy(false);
+    }
+  }, [caTrustStatus]);
 
   const onClose = useCallback(() => dispatch(closePanel()), [dispatch]);
 
@@ -388,10 +469,68 @@ const CapturePane = () => {
           </button>
         </div>
 
-        <div className="text-xs opacity-70">
-          HTTPS is intercepted via a Postnomad-local CA minted on first start. To capture HTTPS in your browser / app,
-          install the CA (under <code>~/Library/Application Support/Postnomad/postnomad-ca/postnomad-ca.crt</code>
-          on macOS) into the OS trust store. An in-app install flow lands in Phase 4d.
+        <div
+          className="text-xs p-2 rounded border"
+          style={{ borderColor: 'var(--color-border-default)' }}
+          data-testid="capture-ca-panel"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-semibold">Postnomad Local CA</span>
+            {caTrustStatus.installed ? (
+              <span style={{ color: 'var(--color-status-success-text, #16a34a)' }}>● trusted by system</span>
+            ) : (
+              <span style={{ color: 'var(--color-status-warning-text, #d97706)' }}>● not trusted</span>
+            )}
+            <div className="flex-1" />
+            {caTrustStatus.installed ? (
+              <button
+                onClick={onUninstallCa}
+                disabled={caBusy}
+                className="text-xs underline opacity-80 hover:opacity-100"
+                data-testid="capture-ca-uninstall"
+              >
+                Uninstall from system trust
+              </button>
+            ) : (
+              <button
+                onClick={onInstallCa}
+                disabled={caBusy || !caInfo}
+                className="text-xs underline opacity-80 hover:opacity-100"
+                data-testid="capture-ca-install"
+              >
+                Install in system trust
+              </button>
+            )}
+            <button
+              onClick={onRegenerateCa}
+              disabled={caBusy}
+              className="text-xs underline opacity-60 hover:opacity-100"
+              data-testid="capture-ca-regenerate"
+            >
+              Regenerate
+            </button>
+          </div>
+          {caInfo && (
+            <div className="opacity-70">
+              <div>
+                CN: <code>{caInfo.subjectCommonName}</code>
+              </div>
+              <div>
+                SHA-256: <code style={{ wordBreak: 'break-all' }}>{caInfo.fingerprintSha256}</code>
+              </div>
+              <div>
+                Valid until <code>{new Date(caInfo.validTo).toLocaleDateString()}</code> · stored at{' '}
+                <code>{caInfo.caCrtPath}</code>
+              </div>
+            </div>
+          )}
+          {!caTrustStatus.installed && (
+            <div className="mt-1 opacity-80">
+              HTTPS captures require this CA to be trusted by your browser / app. Click <em>Install</em> to add it to
+              the system trust store (you'll be asked for your admin password). Anything with read access to the CA key
+              file can MITM your TLS until you uninstall — only do this on machines you trust.
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-auto border rounded p-2" style={{ borderColor: 'var(--color-border-default)' }}>

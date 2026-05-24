@@ -21,6 +21,7 @@ const path = require('path');
 const { ipcMain, app } = require('electron');
 const { CaptureServer } = require('../proxy/captureServer');
 const { CertificateAuthority } = require('../proxy/ca');
+const { installCaInSystemTrust, uninstallCaFromSystemTrust, isCaInSystemTrust } = require('../proxy/trust-install');
 
 const DEFAULT_CAPTURE_PORT = 9999;
 
@@ -65,6 +66,27 @@ const registerCaptureIpc = (mainWindow) => {
   ipcMain.handle('renderer:capture-ca-regenerate', async () => {
     await ca.forgetAndRegenerate();
     return { ...ca.getCaInfo(), caCertPem: ca.getCaCertPem() };
+  });
+
+  // Phase 4d — install/uninstall the CA into the OS trust store so HTTPS
+  // capture works in browsers/apps without per-process trust overrides.
+  //
+  // Security note (echoed to the renderer too): once the CA is trusted,
+  // anyone with read access to the userData directory can MITM any TLS
+  // connection on the machine. Always pair this with the warning UI.
+  ipcMain.handle('renderer:capture-ca-install-system-trust', async () => {
+    await ca.ensureCa();
+    await installCaInSystemTrust(ca.caCrtPath);
+    return { installed: true };
+  });
+
+  ipcMain.handle('renderer:capture-ca-uninstall-system-trust', async () => {
+    await uninstallCaFromSystemTrust();
+    return { installed: false };
+  });
+
+  ipcMain.handle('renderer:capture-ca-system-trust-status', async () => {
+    return { installed: await isCaInSystemTrust(), platform: process.platform };
   });
 
   ipcMain.handle('renderer:capture-stop', async () => {
