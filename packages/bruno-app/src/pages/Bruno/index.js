@@ -6,6 +6,7 @@ import RequestTabPanel from 'components/RequestTabPanel';
 import Sidebar from 'components/Sidebar';
 import StatusBar from 'components/StatusBar';
 import AppTitleBar from 'components/AppTitleBar';
+import CapturePane from 'components/CapturePane';
 import ApiSpecPanel from 'components/ApiSpecPanel';
 import TabPanelErrorBoundary from 'components/RequestTabPanel/TabPanelErrorBoundary';
 // import ErrorCapture from 'components/ErrorCapture';
@@ -109,6 +110,7 @@ export default function Main() {
     // <ErrorCapture>
     <div id="main-container" className="flex flex-col h-screen max-h-screen overflow-hidden">
       <AppTitleBar />
+      <CapturePane />
       {showRosettaBanner ? (
         <Portal>
           <div
