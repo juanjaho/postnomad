@@ -625,7 +625,8 @@ const itemSchema = Yup.object({
       followRedirects: Yup.boolean().nullable(),
       maxRedirects: Yup.number().min(0).max(50).nullable(),
       timeout: Yup.mixed().nullable(),
-      throttleMs: Yup.number().min(0).max(60000).nullable()
+      throttleMs: Yup.number().min(0).max(60000).nullable(),
+      mockExampleUid: Yup.string().nullable()
     })
       .noUnknown(true)
       .strict()

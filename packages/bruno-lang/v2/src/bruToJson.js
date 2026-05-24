@@ -550,6 +550,11 @@ const sem = grammar.createSemantics().addAttribute('ast', {
       }
     }
 
+    // Parse mockExampleUid as string (Postnomad: serve a saved example instead of hitting the network).
+    if (settings.mockExampleUid !== undefined && settings.mockExampleUid !== '') {
+      parsedSettings.mockExampleUid = String(settings.mockExampleUid);
+    }
+
     // Parse timeout as number or inherit
     if (settings.timeout !== undefined) {
       if (settings.timeout === 'inherit') {
@@ -577,6 +582,10 @@ const sem = grammar.createSemantics().addAttribute('ast', {
 
     if (parsedSettings.throttleMs !== undefined) {
       _settings.throttleMs = parsedSettings.throttleMs;
+    }
+
+    if (parsedSettings.mockExampleUid !== undefined) {
+      _settings.mockExampleUid = parsedSettings.mockExampleUid;
     }
 
     if (keepAliveInterval) {

@@ -23,6 +23,7 @@
     "followRedirects": false,
     "maxRedirects": 0,
     "timeout": 60000,
-    "throttleMs": 250
+    "throttleMs": 250,
+    "mockExampleUid": "abc123example"
   }
 }

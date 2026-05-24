@@ -91,6 +91,61 @@ const hasStreamHeaders = (headers) => {
   return headerSplit.indexOf('text/event-stream') > -1;
 };
 
+/**
+ * Postnomad — synthesize an axios-shaped response from a saved example.
+ *
+ * Returns an object that mimics what `axiosInstance(request)` would resolve
+ * to AFTER `promisifyStream` has run (i.e. `.data` is already an ArrayBuffer,
+ * not a Node Readable). Used by the mock-on-real interception in runRequest:
+ * if the item has `settings.mockExampleUid` pointing at one of its examples,
+ * we short-circuit the network call and return this instead.
+ *
+ * Headers are wrapped in an AxiosHeaders instance so the downstream
+ * `response.headers.get('request-duration')` / `.delete(...)` calls keep
+ * working without branching.
+ */
+const synthesizeMockResponse = (example, request) => {
+  const exampleResp = example?.response || {};
+  const status = typeof exampleResp.status === 'number' ? exampleResp.status : 200;
+  const statusText = exampleResp.statusText || (status >= 200 && status < 300 ? 'OK' : '');
+
+  const headers = new axios.AxiosHeaders();
+  if (Array.isArray(exampleResp.headers)) {
+    exampleResp.headers.forEach((h) => {
+      if (!h || !h.name) return;
+      if (h.enabled === false) return;
+      headers.set(h.name, h.value || '');
+    });
+  }
+
+  // Serialize the example body to a UTF-8 buffer.
+  const body = exampleResp.body || {};
+  let bodyString;
+  if (body.content == null) {
+    bodyString = '';
+  } else if (typeof body.content === 'string') {
+    bodyString = body.content;
+  } else {
+    try {
+      bodyString = JSON.stringify(body.content);
+    } catch {
+      bodyString = String(body.content);
+    }
+  }
+  const buf = Buffer.from(bodyString, 'utf8');
+  const arrayBuffer = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+
+  return {
+    status,
+    statusText,
+    headers,
+    data: arrayBuffer,
+    config: request,
+    request: {},
+    __isPostnomadMock: true
+  };
+};
+
 const promisifyStream = async (stream, abortController, closeOnFirst) => {
   const chunks = [];
 
@@ -1025,54 +1080,69 @@ const registerNetworkIpc = (mainWindow) => {
         await new Promise((resolve) => setTimeout(resolve, Math.min(throttleMs, 60000)));
       }
 
+      // Mock-on-real (Postnomad): if a mock example is selected and exists on
+      // the item, serve it instead of hitting the network. Falls through to a
+      // real request if the uid points at a deleted/missing example.
+      const mockExampleUid = request.settings?.mockExampleUid;
+      const mockExample =
+        mockExampleUid && Array.isArray(item.examples)
+          ? item.examples.find((ex) => ex && ex.uid === mockExampleUid && ex.response)
+          : null;
+
       let response, responseTime, axiosDataStream;
-      try {
-        /** @type {import('axios').AxiosResponse} */
-        response = await axiosInstance(request);
-        isResponseStream = hasStreamHeaders(response.headers);
+      if (mockExample) {
+        response = synthesizeMockResponse(mockExample, request);
+        isResponseStream = false;
+        responseTime = throttleMs;
+      } else {
+        try {
+          /** @type {import('axios').AxiosResponse} */
+          response = await axiosInstance(request);
+          isResponseStream = hasStreamHeaders(response.headers);
 
-        if (!isResponseStream) {
-          response.data = await promisifyStream(response.data);
-        }
-
-        // Prevents the duration on leaking to the actual result
-        responseTime = response.headers.get('request-duration');
-        response.headers.delete('request-duration');
-      } catch (error) {
-        deleteCancelToken(cancelTokenUid);
-
-        // if it's a cancel request, don't continue
-        if (axios.isCancel(error)) {
-          // we are not rejecting the promise here and instead returning a response object with `error` which is handled in the `send-http-request` invocation
-          // timeline prop won't be accessible in the usual way in the renderer process if we reject the promise
-          return {
-            statusText: 'REQUEST_CANCELLED',
-            isCancel: true,
-            error: 'REQUEST_CANCELLED',
-            timeline: error.timeline
-          };
-        }
-        if (error?.response) {
-          response = error.response;
+          if (!isResponseStream) {
+            response.data = await promisifyStream(response.data);
+          }
 
           // Prevents the duration on leaking to the actual result
           responseTime = response.headers.get('request-duration');
           response.headers.delete('request-duration');
-          isResponseStream = hasStreamHeaders(response.headers);
-          if (!isResponseStream) {
-            response.data = await promisifyStream(response.data);
-          }
-        } else {
-          await executeRequestOnFailHandler(request, error);
+        } catch (error) {
+          deleteCancelToken(cancelTokenUid);
 
-          // if it's not a network error, don't continue
-          // we are not rejecting the promise here and instead returning a response object with `error` which is handled in the `send-http-request` invocation
-          // timeline prop won't be accessible in the usual way in the renderer process if we reject the promise
-          return {
-            statusText: error.statusText,
-            error: error.message || ERROR_OCCURRED_WHILE_EXECUTING_REQUEST,
-            timeline: error.timeline
-          };
+          // if it's a cancel request, don't continue
+          if (axios.isCancel(error)) {
+            // we are not rejecting the promise here and instead returning a response object with `error` which is handled in the `send-http-request` invocation
+            // timeline prop won't be accessible in the usual way in the renderer process if we reject the promise
+            return {
+              statusText: 'REQUEST_CANCELLED',
+              isCancel: true,
+              error: 'REQUEST_CANCELLED',
+              timeline: error.timeline
+            };
+          }
+          if (error?.response) {
+            response = error.response;
+
+            // Prevents the duration on leaking to the actual result
+            responseTime = response.headers.get('request-duration');
+            response.headers.delete('request-duration');
+            isResponseStream = hasStreamHeaders(response.headers);
+            if (!isResponseStream) {
+              response.data = await promisifyStream(response.data);
+            }
+          } else {
+            await executeRequestOnFailHandler(request, error);
+
+            // if it's not a network error, don't continue
+            // we are not rejecting the promise here and instead returning a response object with `error` which is handled in the `send-http-request` invocation
+            // timeline prop won't be accessible in the usual way in the renderer process if we reject the promise
+            return {
+              statusText: error.statusText,
+              error: error.message || ERROR_OCCURRED_WHILE_EXECUTING_REQUEST,
+              timeline: error.timeline
+            };
+          }
         }
       }
 

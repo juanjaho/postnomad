@@ -13,6 +13,10 @@ export interface HttpItemSettings {
   // Postnomad-only: per-request artificial latency before send.
   // Capped at 60s. Persisted in .bru format only (not opencollection YML).
   throttleMs?: number | null;
+  // Postnomad-only: if set, the request is intercepted and the named
+  // example's response is returned instead of hitting the network.
+  // Examples are item-scoped; uid must match one of item.examples[].uid.
+  mockExampleUid?: string | null;
 }
 
 export interface WebSocketItemSettings {

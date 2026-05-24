@@ -15,7 +15,8 @@ const DEFAULT_SETTINGS = {
   followRedirects: true,
   maxRedirects: 5,
   timeout: 'inherit',
-  throttleMs: 0
+  throttleMs: 0,
+  mockExampleUid: ''
 };
 
 const Settings = ({ item, collection }) => {
@@ -27,7 +28,8 @@ const Settings = ({ item, collection }) => {
 
   const rawSettings = getPropertyFromDraftOrRequest('settings');
   const settings = { ...DEFAULT_SETTINGS, ...rawSettings };
-  const { encodeUrl, followRedirects, maxRedirects, timeout, throttleMs } = settings;
+  const { encodeUrl, followRedirects, maxRedirects, timeout, throttleMs, mockExampleUid } = settings;
+  const examples = item.draft?.examples ?? item.examples ?? [];
 
   // Reusable function to update settings
   const updateSetting = useCallback(
@@ -86,6 +88,15 @@ const Settings = ({ item, collection }) => {
           updateSetting({ throttleMs: numericValue });
         }
       }
+    },
+    [updateSetting]
+  );
+
+  const onMockExampleChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      // Empty string disables mock; otherwise the example uid.
+      updateSetting({ mockExampleUid: value || '' });
     },
     [updateSetting]
   );
@@ -193,6 +204,37 @@ const Settings = ({ item, collection }) => {
             onKeyDown={handleKeyDown}
             data-testid="throttle-ms-input"
           />
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="mockExample" className="setting-label">
+              Mock Response
+            </label>
+            <select
+              id="mockExample"
+              data-testid="mock-example-select"
+              value={mockExampleUid || ''}
+              onChange={onMockExampleChange}
+              className="block px-2 py-1.5 text-xs rounded border bg-transparent"
+              style={{ borderColor: 'var(--color-border-default)', maxWidth: 320 }}
+            >
+              <option value="">Off (send the real request)</option>
+              {examples.map((ex) => (
+                <option key={ex.uid} value={ex.uid}>
+                  {ex.name || 'Untitled example'}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-muted">
+              When set, sends fire-and-return the chosen saved example instead of hitting the network. Useful for demos,
+              offline work, and contract-style testing without a backend running.
+            </p>
+            {mockExampleUid && examples.every((ex) => ex.uid !== mockExampleUid) && (
+              <p className="text-xs" style={{ color: 'var(--color-status-danger-text)' }}>
+                Selected example was deleted. Mock will fall through to a real request until you pick another or clear
+                this.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
