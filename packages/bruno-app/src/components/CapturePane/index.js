@@ -2,7 +2,115 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/Modal';
 import { closePanel, clearEvents, removeEvent, setStatus } from 'providers/ReduxStore/slices/capture';
+import { newHttpRequest } from 'providers/ReduxStore/slices/collections/actions';
+import { uuid } from 'utils/common';
 import toast from 'react-hot-toast';
+
+// Mirrors the lift/strip logic in the HAR converter — keeps capture-save
+// behaviour consistent with file import.
+const HOP_BY_HOP = new Set([
+  'connection',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade',
+  'proxy-connection',
+  'host',
+  'content-length'
+]);
+
+const captureToRequestFields = (event) => {
+  const req = event.request || {};
+  const url = req.url || '';
+  let cleanUrl = url;
+  try {
+    const u = new URL(url);
+    u.search = '';
+    cleanUrl = u.toString();
+  } catch {
+    // leave as-is
+  }
+
+  const auth = { mode: 'none', basic: null, bearer: null, digest: null };
+  const headers = [];
+  for (const [name, value] of Object.entries(req.headers || {})) {
+    if (HOP_BY_HOP.has(name.toLowerCase())) continue;
+    if (name.toLowerCase() === 'authorization') {
+      const v = String(value).trim();
+      const lower = v.toLowerCase();
+      if (lower.startsWith('bearer ')) {
+        auth.mode = 'bearer';
+        auth.bearer = { token: v.slice(7).trim() };
+        continue;
+      }
+      if (lower.startsWith('basic ')) {
+        try {
+          const decoded = atob(v.slice(6).trim());
+          const sep = decoded.indexOf(':');
+          auth.mode = 'basic';
+          auth.basic = {
+            username: sep >= 0 ? decoded.slice(0, sep) : decoded,
+            password: sep >= 0 ? decoded.slice(sep + 1) : ''
+          };
+          continue;
+        } catch {
+          // fall through to keep header
+        }
+      }
+    }
+    headers.push({ uid: uuid(), name, value: String(value), description: '', enabled: true });
+  }
+
+  const ctype = (req.headers?.['content-type'] || req.headers?.['Content-Type'] || '')
+    .toLowerCase()
+    .split(';')[0]
+    .trim();
+  let body = null;
+  if (req.body && req.body !== '' && !req.body.startsWith('[binary ')) {
+    body = {
+      mode: 'none',
+      json: null,
+      text: null,
+      xml: null,
+      sparql: null,
+      multipartForm: [],
+      formUrlEncoded: [],
+      file: []
+    };
+    if (ctype === 'application/json') {
+      body.mode = 'json';
+      body.json = req.body;
+    } else if (ctype === 'application/xml' || ctype === 'text/xml') {
+      body.mode = 'xml';
+      body.xml = req.body;
+    } else {
+      body.mode = 'text';
+      body.text = req.body;
+    }
+  }
+
+  let pathPart = '/';
+  try {
+    const u = new URL(url);
+    pathPart = u.pathname || '/';
+  } catch {
+    // ignore
+  }
+
+  return {
+    requestName: `Captured: ${req.method || 'GET'} ${pathPart}`,
+    filename: `captured-${(req.method || 'get').toLowerCase()}-${Date.now()}`,
+    requestType: 'http-request',
+    requestUrl: cleanUrl,
+    requestMethod: req.method || 'GET',
+    headers,
+    body,
+    auth
+  };
+};
 
 /**
  * Postnomad live HTTP capture pane (Phase 3b of the Proxyman roadmap).
@@ -43,7 +151,7 @@ const statusBadgeStyle = (status) => {
   return { color, fontSize: 11, fontWeight: 600 };
 };
 
-const CaptureEventRow = ({ event, expanded, onToggle, onRemove }) => {
+const CaptureEventRow = ({ event, expanded, onToggle, onRemove, onSave, canSave }) => {
   const req = event.request || {};
   const res = event.response;
   let host = '';
@@ -74,6 +182,18 @@ const CaptureEventRow = ({ event, expanded, onToggle, onRemove }) => {
         <span className="truncate flex-1">{path}</span>
         {res?.durationMs != null && (
           <span style={{ color: 'var(--color-text-muted)', fontSize: 11 }}>{res.durationMs}ms</span>
+        )}
+        {canSave && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onSave();
+            }}
+            className="text-xs opacity-70 hover:opacity-100 underline"
+            data-testid="capture-save"
+          >
+            Save
+          </button>
         )}
         <button
           onClick={(e) => {
@@ -137,9 +257,11 @@ const CaptureEventRow = ({ event, expanded, onToggle, onRemove }) => {
 const CapturePane = () => {
   const dispatch = useDispatch();
   const { panelOpen, running, port, events } = useSelector((state) => state.capture);
+  const collections = useSelector((state) => state.collections.collections || []);
   const [portInput, setPortInput] = useState(port || DEFAULT_PORT);
   const [expandedId, setExpandedId] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [saveTargetUid, setSaveTargetUid] = useState('');
 
   const onClose = useCallback(() => dispatch(closePanel()), [dispatch]);
 
@@ -172,6 +294,28 @@ const CapturePane = () => {
 
   const onClear = useCallback(() => dispatch(clearEvents()), [dispatch]);
   const onRemove = useCallback((id) => dispatch(removeEvent(id)), [dispatch]);
+
+  const onSave = useCallback(
+    async (event) => {
+      if (!saveTargetUid) {
+        toast.error('Pick a target collection first');
+        return;
+      }
+      try {
+        await dispatch(
+          newHttpRequest({
+            ...captureToRequestFields(event),
+            collectionUid: saveTargetUid,
+            itemUid: null
+          })
+        );
+        toast.success('Saved capture as a new request');
+      } catch (err) {
+        toast.error(err.message || 'Could not save capture');
+      }
+    },
+    [dispatch, saveTargetUid]
+  );
 
   const proxyUrl = useMemo(() => (port ? `http://127.0.0.1:${port}` : null), [port]);
 
@@ -224,6 +368,21 @@ const CapturePane = () => {
             </span>
           )}
           <div className="flex-1" />
+          <span className="font-medium">Save to</span>
+          <select
+            value={saveTargetUid}
+            onChange={(e) => setSaveTargetUid(e.target.value)}
+            className="px-2 py-1 rounded border bg-transparent text-xs"
+            style={{ borderColor: 'var(--color-border-default)', maxWidth: 200 }}
+            data-testid="capture-save-target"
+          >
+            <option value="">— pick collection —</option>
+            {collections.map((c) => (
+              <option key={c.uid} value={c.uid}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           <button onClick={onClear} className="text-xs opacity-70 hover:opacity-100" data-testid="capture-clear">
             Clear ({events.length})
           </button>
@@ -248,6 +407,8 @@ const CapturePane = () => {
                 expanded={expandedId === ev.id}
                 onToggle={() => setExpandedId(expandedId === ev.id ? null : ev.id)}
                 onRemove={() => onRemove(ev.id)}
+                onSave={() => onSave(ev)}
+                canSave={!!saveTargetUid && !!ev.request}
               />
             ))
           )}
