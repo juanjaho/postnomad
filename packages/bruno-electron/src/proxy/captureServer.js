@@ -25,6 +25,7 @@
 const http = require('http');
 const https = require('https');
 const tls = require('tls');
+const fs = require('fs');
 const { URL } = require('url');
 const { randomUUID } = require('crypto');
 const zlib = require('zlib');
@@ -78,6 +79,50 @@ const bufferToDisplayString = (buffer, contentType) => {
   return buffer.toString('utf8');
 };
 
+/**
+ * Phase 5a rule matcher.
+ *
+ * A rule looks like:
+ *   {
+ *     id, enabled, name,
+ *     matcher: { urlPattern: string, method: 'GET'|'POST'|...|'*' },
+ *     action: 'mapLocal' | 'mapRemote',
+ *     mapLocal?:  { filePath, statusCode = 200, contentType? },
+ *     mapRemote?: { targetUrl }   // absolute, replaces scheme+host[+port]+path prefix
+ *   }
+ *
+ * The urlPattern is a substring match against the absolute request URL
+ * by default; if it starts AND ends with `/`, the content between the
+ * slashes is treated as a regex. Cheap, predictable, no escape hatches
+ * for users to shoot themselves in the foot.
+ */
+const matchesRule = (rule, method, absoluteUrl) => {
+  if (!rule || rule.enabled === false) return false;
+  const m = rule.matcher || {};
+  if (m.method && m.method !== '*' && m.method.toUpperCase() !== (method || '').toUpperCase()) {
+    return false;
+  }
+  const pattern = m.urlPattern || '';
+  if (!pattern) return false;
+  if (pattern.length >= 2 && pattern.startsWith('/') && pattern.endsWith('/')) {
+    try {
+      const re = new RegExp(pattern.slice(1, -1));
+      return re.test(absoluteUrl);
+    } catch {
+      return false;
+    }
+  }
+  return absoluteUrl.includes(pattern);
+};
+
+const findMatchingRule = (rules, method, absoluteUrl) => {
+  if (!Array.isArray(rules)) return null;
+  for (const rule of rules) {
+    if (matchesRule(rule, method, absoluteUrl)) return rule;
+  }
+  return null;
+};
+
 class CaptureServer {
   constructor() {
     this.server = null;
@@ -86,6 +131,16 @@ class CaptureServer {
     this.onCapture = null;
     this.ca = null;
     this.captureCount = 0;
+    this.rules = []; // Phase 5: Map Local / Map Remote / (future) breakpoints
+  }
+
+  /**
+   * Replace the active rule list. Called by the IPC layer whenever the
+   * renderer's Rules UI updates. Always pass the full list — we don't
+   * do incremental updates, easier to reason about.
+   */
+  setRules(rules) {
+    this.rules = Array.isArray(rules) ? rules : [];
   }
 
   /**
@@ -289,6 +344,27 @@ class CaptureServer {
     const captureId = randomUUID();
     this.captureCount += 1;
     const startedAt = Date.now();
+
+    // Phase 5a: rule pre-flight. If a rule matches, divert (Map Local
+    // = synthesize response; Map Remote = rewrite target then forward
+    // normally). Rule decision happens BEFORE body buffering so we can
+    // skip the upstream call entirely for Map Local.
+    const rule = findMatchingRule(this.rules, req.method, capturedAbsoluteUrl);
+    if (rule && rule.action === 'mapLocal') {
+      this._handleMapLocal({ req, res, rule, captureId, startedAt, capturedAbsoluteUrl });
+      return;
+    }
+    if (rule && rule.action === 'mapRemote') {
+      const rewritten = this._rewriteForMapRemote({ rule, capturedAbsoluteUrl });
+      if (rewritten) {
+        targetHost = rewritten.host;
+        targetPort = rewritten.port;
+        targetPath = rewritten.path;
+        transportModule = rewritten.transportModule;
+        capturedAbsoluteUrl = rewritten.absoluteUrl;
+      }
+    }
+
     const reqHeaders = stripHopByHopHeaders(req.headers);
 
     const reqChunks = [];
@@ -307,7 +383,8 @@ class CaptureServer {
         url: capturedAbsoluteUrl,
         headers: { ...req.headers },
         body: bufferToDisplayString(requestBuffer, req.headers['content-type']),
-        bodyBytes: reqByteCount
+        bodyBytes: reqByteCount,
+        appliedRule: rule ? { id: rule.id, name: rule.name, action: rule.action } : null
       };
 
       this._emit({
@@ -405,9 +482,127 @@ class CaptureServer {
       // Client aborted — drop quietly.
     });
   }
+
+  _handleMapLocal({ req, res, rule, captureId, startedAt, capturedAbsoluteUrl }) {
+    const cfg = rule.mapLocal || {};
+    const filePath = cfg.filePath;
+    const statusCode = Number.isInteger(cfg.statusCode) ? cfg.statusCode : 200;
+    const contentType = cfg.contentType || 'application/octet-stream';
+
+    // Consume + discard the incoming body so the connection unblocks
+    // even though we're not forwarding it.
+    let reqByteCount = 0;
+    const reqChunks = [];
+    req.on('data', (chunk) => {
+      reqByteCount += chunk.length;
+      if (reqByteCount <= MAX_CAPTURED_BODY_BYTES) reqChunks.push(chunk);
+    });
+
+    req.on('end', () => {
+      const requestRecord = {
+        method: req.method,
+        url: capturedAbsoluteUrl,
+        headers: { ...req.headers },
+        body: bufferToDisplayString(Buffer.concat(reqChunks), req.headers['content-type']),
+        bodyBytes: reqByteCount,
+        appliedRule: { id: rule.id, name: rule.name, action: 'mapLocal' }
+      };
+      this._emit({
+        id: captureId,
+        phase: 'request',
+        timestamp: startedAt,
+        request: requestRecord,
+        response: null
+      });
+
+      let bodyBuffer;
+      let error = null;
+      try {
+        bodyBuffer = fs.readFileSync(filePath);
+      } catch (err) {
+        error = err.message;
+      }
+
+      if (error) {
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+        }
+        res.end(`Postnomad Map Local: cannot read ${filePath}: ${error}`);
+        this._emit({
+          id: captureId,
+          phase: 'response',
+          timestamp: startedAt,
+          request: requestRecord,
+          response: { error, durationMs: Date.now() - startedAt, appliedRule: requestRecord.appliedRule }
+        });
+        return;
+      }
+
+      const headers = {
+        'Content-Type': contentType,
+        'Content-Length': String(bodyBuffer.length),
+        'X-Postnomad-Mock': 'map-local'
+      };
+      res.writeHead(statusCode, headers);
+      res.end(bodyBuffer);
+
+      this._emit({
+        id: captureId,
+        phase: 'response',
+        timestamp: startedAt,
+        request: requestRecord,
+        response: {
+          status: statusCode,
+          statusText: 'OK',
+          headers,
+          body: bufferToDisplayString(bodyBuffer, contentType),
+          bodyBytes: bodyBuffer.length,
+          durationMs: Date.now() - startedAt,
+          appliedRule: requestRecord.appliedRule
+        }
+      });
+    });
+
+    req.on('error', () => {});
+  }
+
+  _rewriteForMapRemote({ rule, capturedAbsoluteUrl }) {
+    const targetUrl = rule.mapRemote && rule.mapRemote.targetUrl;
+    if (!targetUrl) return null;
+    try {
+      const original = new URL(capturedAbsoluteUrl);
+      const target = new URL(targetUrl);
+      // The remote target's path becomes the new base; the original
+      // path/query is appended UNLESS the rule's target URL ends with
+      // `?` or `#`, in which case we honour what they wrote.
+      let combinedPath = target.pathname || '/';
+      if (combinedPath === '/' || combinedPath === '') {
+        combinedPath = original.pathname + original.search;
+      } else if (!combinedPath.endsWith('/') && (original.search || original.pathname !== '/')) {
+        combinedPath = combinedPath + original.search;
+      }
+      const isHttps = target.protocol === 'https:';
+      return {
+        host: target.hostname,
+        port: parseInt(target.port, 10) || (isHttps ? 443 : 80),
+        path: combinedPath,
+        transportModule: isHttps ? https : http,
+        absoluteUrl: `${target.protocol}//${target.host}${combinedPath}`
+      };
+    } catch {
+      return null;
+    }
+  }
 }
 
 module.exports = {
   CaptureServer,
-  _internal: { stripHopByHopHeaders, decodeBodyForDisplay, bufferToDisplayString, HOP_BY_HOP_HEADERS }
+  _internal: {
+    stripHopByHopHeaders,
+    decodeBodyForDisplay,
+    bufferToDisplayString,
+    HOP_BY_HOP_HEADERS,
+    matchesRule,
+    findMatchingRule
+  }
 };

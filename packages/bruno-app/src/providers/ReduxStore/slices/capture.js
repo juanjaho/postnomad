@@ -19,7 +19,8 @@ const initialState = {
   running: false,
   port: null,
   panelOpen: false,
-  events: [] // newest first; each entry is the merged request+response record
+  events: [], // newest first; each entry is the merged request+response record
+  rules: [] // Phase 5: Map Local / Map Remote (future: breakpoints)
 };
 
 export const captureSlice = createSlice({
@@ -70,10 +71,39 @@ export const captureSlice = createSlice({
 
     closePanel: (state) => {
       state.panelOpen = false;
+    },
+
+    addRule: (state, action) => {
+      state.rules.push(action.payload);
+    },
+
+    updateRule: (state, action) => {
+      const { id, patch } = action.payload;
+      const idx = state.rules.findIndex((r) => r.id === id);
+      if (idx >= 0) state.rules[idx] = { ...state.rules[idx], ...patch };
+    },
+
+    removeRule: (state, action) => {
+      state.rules = state.rules.filter((r) => r.id !== action.payload);
+    },
+
+    setRules: (state, action) => {
+      state.rules = Array.isArray(action.payload) ? action.payload : [];
     }
   }
 });
 
-export const { setStatus, addEvent, removeEvent, clearEvents, openPanel, closePanel } = captureSlice.actions;
+export const {
+  setStatus,
+  addEvent,
+  removeEvent,
+  clearEvents,
+  openPanel,
+  closePanel,
+  addRule,
+  updateRule,
+  removeRule,
+  setRules
+} = captureSlice.actions;
 
 export default captureSlice.reducer;

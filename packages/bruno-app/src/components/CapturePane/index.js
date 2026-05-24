@@ -1,7 +1,15 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/Modal';
-import { closePanel, clearEvents, removeEvent, setStatus } from 'providers/ReduxStore/slices/capture';
+import {
+  closePanel,
+  clearEvents,
+  removeEvent,
+  setStatus,
+  addRule,
+  updateRule,
+  removeRule
+} from 'providers/ReduxStore/slices/capture';
 import { newHttpRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { uuid } from 'utils/common';
 import toast from 'react-hot-toast';
@@ -256,7 +264,7 @@ const CaptureEventRow = ({ event, expanded, onToggle, onRemove, onSave, canSave 
 
 const CapturePane = () => {
   const dispatch = useDispatch();
-  const { panelOpen, running, port, events } = useSelector((state) => state.capture);
+  const { panelOpen, running, port, events, rules } = useSelector((state) => state.capture);
   const collections = useSelector((state) => state.collections.collections || []);
   const [portInput, setPortInput] = useState(port || DEFAULT_PORT);
   const [expandedId, setExpandedId] = useState(null);
@@ -265,6 +273,15 @@ const CapturePane = () => {
   const [caInfo, setCaInfo] = useState(null);
   const [caTrustStatus, setCaTrustStatus] = useState({ installed: false, platform: '' });
   const [caBusy, setCaBusy] = useState(false);
+  const [activeTab, setActiveTab] = useState('traffic'); // 'traffic' | 'rules'
+
+  // Push rules to the main process whenever they change. Backend keeps
+  // its own copy and consults it per-request — Redux is the source of
+  // truth, IPC is the sync channel.
+  useEffect(() => {
+    if (!window.ipcRenderer) return;
+    window.ipcRenderer.invoke('renderer:capture-set-rules', rules).catch(() => {});
+  }, [rules]);
 
   // Pull CA + trust status once the pane opens (cheap; the main process
   // caches everything).
@@ -397,6 +414,20 @@ const CapturePane = () => {
     },
     [dispatch, saveTargetUid]
   );
+
+  const onAddRule = useCallback(() => {
+    dispatch(
+      addRule({
+        id: uuid(),
+        enabled: true,
+        name: 'New rule',
+        matcher: { urlPattern: '', method: '*' },
+        action: 'mapLocal',
+        mapLocal: { filePath: '', statusCode: 200, contentType: 'application/json' },
+        mapRemote: { targetUrl: '' }
+      })
+    );
+  }, [dispatch]);
 
   const proxyUrl = useMemo(() => (port ? `http://127.0.0.1:${port}` : null), [port]);
 
@@ -533,29 +564,206 @@ const CapturePane = () => {
           )}
         </div>
 
-        <div className="flex-1 overflow-auto border rounded p-2" style={{ borderColor: 'var(--color-border-default)' }}>
-          {events.length === 0 ? (
-            <div className="text-xs opacity-60 text-center mt-8">
-              {running
-                ? 'Listening. Configure your client/system to use this proxy and traffic will appear here.'
-                : 'Start the capture proxy to begin.'}
-            </div>
-          ) : (
-            events.map((ev) => (
-              <CaptureEventRow
-                key={ev.id}
-                event={ev}
-                expanded={expandedId === ev.id}
-                onToggle={() => setExpandedId(expandedId === ev.id ? null : ev.id)}
-                onRemove={() => onRemove(ev.id)}
-                onSave={() => onSave(ev)}
-                canSave={!!saveTargetUid && !!ev.request}
-              />
-            ))
-          )}
+        <div className="flex gap-3 text-xs border-b" style={{ borderColor: 'var(--color-border-default)' }}>
+          {['traffic', 'rules'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`pb-1 ${activeTab === tab ? 'font-semibold' : 'opacity-60 hover:opacity-100'}`}
+              style={{
+                borderBottom:
+                  activeTab === tab ? '2px solid var(--color-status-info-text, #2563eb)' : '2px solid transparent'
+              }}
+              data-testid={`capture-tab-${tab}`}
+            >
+              {tab === 'traffic' ? `Traffic (${events.length})` : `Rules (${rules.length})`}
+            </button>
+          ))}
         </div>
+
+        {activeTab === 'traffic' && (
+          <div
+            className="flex-1 overflow-auto border rounded p-2"
+            style={{ borderColor: 'var(--color-border-default)' }}
+          >
+            {events.length === 0 ? (
+              <div className="text-xs opacity-60 text-center mt-8">
+                {running
+                  ? 'Listening. Configure your client/system to use this proxy and traffic will appear here.'
+                  : 'Start the capture proxy to begin.'}
+              </div>
+            ) : (
+              events.map((ev) => (
+                <CaptureEventRow
+                  key={ev.id}
+                  event={ev}
+                  expanded={expandedId === ev.id}
+                  onToggle={() => setExpandedId(expandedId === ev.id ? null : ev.id)}
+                  onRemove={() => onRemove(ev.id)}
+                  onSave={() => onSave(ev)}
+                  canSave={!!saveTargetUid && !!ev.request}
+                />
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'rules' && (
+          <div
+            className="flex-1 overflow-auto border rounded p-2"
+            style={{ borderColor: 'var(--color-border-default)' }}
+          >
+            <div className="flex items-center mb-2">
+              <div className="text-xs opacity-70">
+                Match by substring (default) or regex (wrap in <code>/.../</code>). First matching rule wins.
+              </div>
+              <div className="flex-1" />
+              <button
+                onClick={onAddRule}
+                className="text-xs underline opacity-80 hover:opacity-100"
+                data-testid="capture-add-rule"
+              >
+                + Add rule
+              </button>
+            </div>
+
+            {rules.length === 0 ? (
+              <div className="text-xs opacity-60 text-center mt-8">
+                No rules yet. Add one to short-circuit matching requests with a local file (Map Local) or rewrite them
+                to a different host (Map Remote).
+              </div>
+            ) : (
+              rules.map((rule) => (
+                <CaptureRuleRow
+                  key={rule.id}
+                  rule={rule}
+                  onChange={(patch) => dispatch(updateRule({ id: rule.id, patch }))}
+                  onRemove={() => dispatch(removeRule(rule.id))}
+                />
+              ))
+            )}
+          </div>
+        )}
       </div>
     </Modal>
+  );
+};
+
+const CaptureRuleRow = ({ rule, onChange, onRemove }) => {
+  const setMatcher = (patch) => onChange({ matcher: { ...rule.matcher, ...patch } });
+  const setMapLocal = (patch) => onChange({ mapLocal: { ...(rule.mapLocal || {}), ...patch } });
+  const setMapRemote = (patch) => onChange({ mapRemote: { ...(rule.mapRemote || {}), ...patch } });
+
+  return (
+    <div
+      className="border rounded p-2 mb-2 text-xs"
+      style={{ borderColor: 'var(--color-border-default)' }}
+      data-testid="capture-rule-row"
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          type="checkbox"
+          checked={rule.enabled !== false}
+          onChange={(e) => onChange({ enabled: e.target.checked })}
+          data-testid="capture-rule-enabled"
+        />
+        <input
+          type="text"
+          value={rule.name}
+          onChange={(e) => onChange({ name: e.target.value })}
+          placeholder="rule name"
+          className="px-1 py-0.5 rounded border bg-transparent flex-1"
+          style={{ borderColor: 'var(--color-border-default)' }}
+        />
+        <select
+          value={rule.action}
+          onChange={(e) => onChange({ action: e.target.value })}
+          className="px-1 py-0.5 rounded border bg-transparent"
+          style={{ borderColor: 'var(--color-border-default)' }}
+          data-testid="capture-rule-action"
+        >
+          <option value="mapLocal">Map Local (serve file)</option>
+          <option value="mapRemote">Map Remote (rewrite host)</option>
+        </select>
+        <button onClick={onRemove} className="text-xs opacity-60 hover:opacity-100" aria-label="Remove rule">
+          ×
+        </button>
+      </div>
+
+      <div className="grid grid-cols-[80px,1fr,80px] gap-2 items-center mb-1">
+        <span className="opacity-70">Method</span>
+        <select
+          value={rule.matcher?.method || '*'}
+          onChange={(e) => setMatcher({ method: e.target.value })}
+          className="px-1 py-0.5 rounded border bg-transparent"
+          style={{ borderColor: 'var(--color-border-default)' }}
+        >
+          {['*', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'].map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <span />
+        <span className="opacity-70">URL pattern</span>
+        <input
+          type="text"
+          value={rule.matcher?.urlPattern || ''}
+          onChange={(e) => setMatcher({ urlPattern: e.target.value })}
+          placeholder="/api/users or /^https:\\/\\/api\\.example\\.com\\/.+/"
+          className="px-1 py-0.5 rounded border bg-transparent font-mono"
+          style={{ borderColor: 'var(--color-border-default)' }}
+        />
+        <span />
+      </div>
+
+      {rule.action === 'mapLocal' && (
+        <div className="grid grid-cols-[80px,1fr,80px,80px] gap-2 items-center">
+          <span className="opacity-70">File path</span>
+          <input
+            type="text"
+            value={rule.mapLocal?.filePath || ''}
+            onChange={(e) => setMapLocal({ filePath: e.target.value })}
+            placeholder="/absolute/path/to/response.json"
+            className="px-1 py-0.5 rounded border bg-transparent font-mono"
+            style={{ borderColor: 'var(--color-border-default)' }}
+          />
+          <input
+            type="number"
+            value={rule.mapLocal?.statusCode ?? 200}
+            onChange={(e) => setMapLocal({ statusCode: parseInt(e.target.value, 10) || 200 })}
+            min={100}
+            max={599}
+            className="px-1 py-0.5 rounded border bg-transparent"
+            style={{ borderColor: 'var(--color-border-default)' }}
+            title="HTTP status code"
+          />
+          <input
+            type="text"
+            value={rule.mapLocal?.contentType || ''}
+            onChange={(e) => setMapLocal({ contentType: e.target.value })}
+            placeholder="application/json"
+            className="px-1 py-0.5 rounded border bg-transparent font-mono"
+            style={{ borderColor: 'var(--color-border-default)' }}
+            title="Content-Type header on the synthesized response"
+          />
+        </div>
+      )}
+
+      {rule.action === 'mapRemote' && (
+        <div className="grid grid-cols-[80px,1fr] gap-2 items-center">
+          <span className="opacity-70">Target URL</span>
+          <input
+            type="text"
+            value={rule.mapRemote?.targetUrl || ''}
+            onChange={(e) => setMapRemote({ targetUrl: e.target.value })}
+            placeholder="http://127.0.0.1:8080 (the original path is appended)"
+            className="px-1 py-0.5 rounded border bg-transparent font-mono"
+            style={{ borderColor: 'var(--color-border-default)' }}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 

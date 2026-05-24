@@ -7,7 +7,7 @@ const tls = require('tls');
 const zlib = require('zlib');
 const { CaptureServer, _internal } = require('./captureServer');
 const { CertificateAuthority } = require('./ca');
-const { stripHopByHopHeaders, decodeBodyForDisplay, bufferToDisplayString } = _internal;
+const { stripHopByHopHeaders, decodeBodyForDisplay, bufferToDisplayString, matchesRule, findMatchingRule } = _internal;
 
 describe('CaptureServer internals', () => {
   it('strips RFC 7230 hop-by-hop headers', () => {
@@ -246,6 +246,224 @@ describe('CaptureServer end-to-end (real HTTP roundtrip)', () => {
     expect(proxy.isRunning()).toBe(false);
     await proxy.start({ port: 0, onCapture: () => {} });
     expect(proxy.isRunning()).toBe(true);
+  });
+});
+
+describe('Rules engine (Phase 5a) — matcher semantics', () => {
+  const ruleFor = (overrides = {}) => ({
+    id: 'r1',
+    enabled: true,
+    name: 'r',
+    matcher: { urlPattern: '', method: '*' },
+    action: 'mapLocal',
+    ...overrides
+  });
+
+  it('substring match by default', () => {
+    expect(
+      matchesRule(ruleFor({ matcher: { urlPattern: '/api/users', method: '*' } }), 'GET', 'http://x/api/users')
+    ).toBe(true);
+    expect(
+      matchesRule(ruleFor({ matcher: { urlPattern: '/api/users', method: '*' } }), 'GET', 'http://x/api/orders')
+    ).toBe(false);
+  });
+
+  it('regex match when pattern is /.../', () => {
+    const r = ruleFor({ matcher: { urlPattern: '/^https:\\/\\/api\\.example\\.com\\/users\\/\\d+$/', method: '*' } });
+    expect(matchesRule(r, 'GET', 'https://api.example.com/users/42')).toBe(true);
+    expect(matchesRule(r, 'GET', 'https://api.example.com/users/foo')).toBe(false);
+  });
+
+  it('method filter is case-insensitive; * matches any', () => {
+    const r = ruleFor({ matcher: { urlPattern: '/api', method: 'POST' } });
+    expect(matchesRule(r, 'post', 'http://x/api')).toBe(true);
+    expect(matchesRule(r, 'GET', 'http://x/api')).toBe(false);
+    expect(matchesRule(ruleFor({ matcher: { urlPattern: '/api', method: '*' } }), 'GET', 'http://x/api')).toBe(true);
+  });
+
+  it('disabled rules never match', () => {
+    expect(
+      matchesRule(ruleFor({ enabled: false, matcher: { urlPattern: '/x', method: '*' } }), 'GET', 'http://x/x')
+    ).toBe(false);
+  });
+
+  it('first matching rule wins', () => {
+    const rules = [
+      ruleFor({ id: 'a', matcher: { urlPattern: '/api', method: '*' }, action: 'mapLocal' }),
+      ruleFor({ id: 'b', matcher: { urlPattern: '/api/users', method: '*' }, action: 'mapRemote' })
+    ];
+    expect(findMatchingRule(rules, 'GET', 'http://x/api/users').id).toBe('a');
+  });
+
+  it('returns null when nothing matches', () => {
+    expect(
+      findMatchingRule([ruleFor({ matcher: { urlPattern: '/nope', method: '*' } })], 'GET', 'http://x/y')
+    ).toBeNull();
+    expect(findMatchingRule([], 'GET', 'http://x/y')).toBeNull();
+  });
+});
+
+describe('CaptureServer — Map Local (Phase 5a)', () => {
+  let proxy;
+  let captureEvents;
+  let tmpFile;
+
+  beforeEach(async () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'postnomad-maplocal-'));
+    tmpFile = path.join(tmpDir, 'response.json');
+    fs.writeFileSync(tmpFile, JSON.stringify({ mocked: true, source: 'map-local' }));
+
+    captureEvents = [];
+    proxy = new CaptureServer();
+    proxy.setRules([
+      {
+        id: 'rule1',
+        enabled: true,
+        name: 'mock users',
+        matcher: { urlPattern: '/api/users', method: '*' },
+        action: 'mapLocal',
+        mapLocal: { filePath: tmpFile, statusCode: 201, contentType: 'application/json' }
+      }
+    ]);
+    await proxy.start({ port: 0, onCapture: (ev) => captureEvents.push(ev) });
+  });
+
+  afterEach(async () => {
+    await proxy.stop();
+    if (tmpFile && fs.existsSync(tmpFile)) fs.rmSync(path.dirname(tmpFile), { recursive: true, force: true });
+  });
+
+  it('serves the local file instead of forwarding upstream', async () => {
+    const result = await new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          host: '127.0.0.1',
+          port: proxy.port,
+          method: 'GET',
+          path: 'http://unreachable.example.invalid/api/users'
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () =>
+            resolve({
+              status: res.statusCode,
+              headers: res.headers,
+              body: Buffer.concat(chunks).toString('utf8')
+            })
+          );
+        }
+      );
+      req.on('error', reject);
+      req.end();
+    });
+
+    expect(result.status).toBe(201);
+    expect(result.headers['content-type']).toBe('application/json');
+    expect(result.headers['x-postnomad-mock']).toBe('map-local');
+    expect(JSON.parse(result.body)).toEqual({ mocked: true, source: 'map-local' });
+
+    const responseEvent = captureEvents.find((e) => e.phase === 'response');
+    expect(responseEvent.request.appliedRule.action).toBe('mapLocal');
+    expect(responseEvent.response.appliedRule.id).toBe('rule1');
+  });
+
+  it('returns 500 with diagnostic when the local file is missing', async () => {
+    fs.unlinkSync(tmpFile);
+    const result = await new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          host: '127.0.0.1',
+          port: proxy.port,
+          method: 'GET',
+          path: 'http://x.invalid/api/users'
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+        }
+      );
+      req.on('error', reject);
+      req.end();
+    });
+    expect(result.status).toBe(500);
+    expect(result.body).toMatch(/Map Local/);
+  });
+});
+
+describe('CaptureServer — Map Remote (Phase 5a)', () => {
+  let originServer;
+  let originPort;
+  let proxy;
+  let captureEvents;
+
+  beforeAll(async () => {
+    originServer = http.createServer((req, res) => {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'X-Origin': 'rewritten' });
+      res.end(JSON.stringify({ rewritten: true, path: req.url }));
+    });
+    await new Promise((resolve) => originServer.listen(0, '127.0.0.1', resolve));
+    originPort = originServer.address().port;
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => originServer.close(resolve));
+  });
+
+  beforeEach(async () => {
+    captureEvents = [];
+    proxy = new CaptureServer();
+    proxy.setRules([
+      {
+        id: 'remote1',
+        enabled: true,
+        name: 'redirect users to local origin',
+        matcher: { urlPattern: 'api.example.com', method: '*' },
+        action: 'mapRemote',
+        mapRemote: { targetUrl: `http://127.0.0.1:${originPort}` }
+      }
+    ]);
+    await proxy.start({ port: 0, onCapture: (ev) => captureEvents.push(ev) });
+  });
+
+  afterEach(async () => {
+    await proxy.stop();
+  });
+
+  it('rewrites the upstream host and preserves the original path', async () => {
+    const result = await new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          host: '127.0.0.1',
+          port: proxy.port,
+          method: 'GET',
+          path: 'http://api.example.com/users/42'
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () =>
+            resolve({
+              status: res.statusCode,
+              headers: res.headers,
+              body: Buffer.concat(chunks).toString('utf8')
+            })
+          );
+        }
+      );
+      req.on('error', reject);
+      req.end();
+    });
+    expect(result.status).toBe(200);
+    expect(result.headers['x-origin']).toBe('rewritten');
+    expect(JSON.parse(result.body)).toEqual({ rewritten: true, path: '/users/42' });
+
+    const responseEvent = captureEvents.find((e) => e.phase === 'response');
+    expect(responseEvent.request.appliedRule.action).toBe('mapRemote');
+    // capturedAbsoluteUrl reflects the REWRITTEN URL so users can see
+    // what actually got sent.
+    expect(responseEvent.request.url).toBe(`http://127.0.0.1:${originPort}/users/42`);
   });
 });
 

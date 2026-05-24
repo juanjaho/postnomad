@@ -102,6 +102,15 @@ const registerCaptureIpc = (mainWindow) => {
     };
   });
 
+  // Phase 5a — Rules engine. Renderer owns the source of truth (Redux
+  // slice persisted to disk via the standard tasks middleware); on
+  // change it pushes the full list down and the server replaces its
+  // active set. Push always replaces — no diffs.
+  ipcMain.handle('renderer:capture-set-rules', async (_event, rules) => {
+    server.setRules(Array.isArray(rules) ? rules : []);
+    return { count: server.rules.length };
+  });
+
   // Make sure the proxy is shut down when the window goes away.
   if (mainWindow && mainWindow.on) {
     mainWindow.on('closed', () => {
