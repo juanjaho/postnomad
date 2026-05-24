@@ -1,6 +1,12 @@
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const tls = require('tls');
 const zlib = require('zlib');
 const { CaptureServer, _internal } = require('./captureServer');
+const { CertificateAuthority } = require('./ca');
 const { stripHopByHopHeaders, decodeBodyForDisplay, bufferToDisplayString } = _internal;
 
 describe('CaptureServer internals', () => {
@@ -180,7 +186,7 @@ describe('CaptureServer end-to-end (real HTTP roundtrip)', () => {
     expect(result.body).toMatch(/absolute URL/);
   });
 
-  it('returns 400 for non-http upstream protocols (https comes in Phase 4)', async () => {
+  it('rejects direct absolute-URL https:// (should be CONNECT)', async () => {
     const result = await new Promise((resolve, reject) => {
       const req = http.request(
         {
@@ -199,7 +205,28 @@ describe('CaptureServer end-to-end (real HTTP roundtrip)', () => {
       req.end();
     });
     expect(result.status).toBe(400);
-    expect(result.body).toMatch(/Phase 4/);
+    expect(result.body).toMatch(/CONNECT/);
+  });
+
+  it('refuses CONNECT (HTTPS tunneling) when no CA is wired', async () => {
+    // Send a raw CONNECT and read the response status line.
+    const { Socket } = require('net');
+    const status = await new Promise((resolve, reject) => {
+      const sock = new Socket();
+      let buf = '';
+      sock.on('data', (d) => {
+        buf += d.toString('utf8');
+        if (buf.includes('\r\n')) {
+          resolve(buf.split('\r\n')[0]);
+          sock.destroy();
+        }
+      });
+      sock.on('error', reject);
+      sock.connect(proxy.port, '127.0.0.1', () => {
+        sock.write('CONNECT example.com:443 HTTP/1.1\r\nHost: example.com:443\r\n\r\n');
+      });
+    });
+    expect(status).toMatch(/501/);
   });
 
   it('captures upstream errors with a 502 to the client and an error event', async () => {
@@ -220,4 +247,102 @@ describe('CaptureServer end-to-end (real HTTP roundtrip)', () => {
     await proxy.start({ port: 0, onCapture: () => {} });
     expect(proxy.isRunning()).toBe(true);
   });
+});
+
+describe('CaptureServer — HTTPS interception via minted CA (Phase 4b/c)', () => {
+  let tmpDir;
+  let ca;
+  let proxy;
+  let captureEvents;
+  let originServer;
+  let originPort;
+  let originCertPem;
+
+  beforeAll(async () => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'postnomad-capture-tls-test-'));
+    ca = new CertificateAuthority({ storageDir: tmpDir });
+    await ca.ensureCa();
+
+    // Stand up a real HTTPS origin. We re-use Postnomad-minted certs so
+    // we don't need to drag in another cert lib; the proxy's outbound
+    // leg trusts our CA via the upstreamCa option.
+    const { certPem, keyPem } = ca.mintCertForHost('localhost');
+    originCertPem = ca.getCaCertPem();
+    originServer = https.createServer({ cert: certPem, key: keyPem }, (req, res) => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, path: req.url, method: req.method, tls: true }));
+    });
+    await new Promise((resolve) => originServer.listen(0, '127.0.0.1', resolve));
+    originPort = originServer.address().port;
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => originServer.close(resolve));
+    if (tmpDir && fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  beforeEach(async () => {
+    captureEvents = [];
+    proxy = new CaptureServer();
+    await proxy.start({
+      port: 0,
+      ca,
+      upstreamCa: originCertPem,
+      onCapture: (ev) => captureEvents.push(ev)
+    });
+  });
+
+  afterEach(async () => {
+    await proxy.stop();
+  });
+
+  it('decrypts an HTTPS request tunneled through CONNECT and captures the plaintext', async () => {
+    // Use https-proxy-agent (already a project dep) to do the CONNECT
+    // dance: it speaks CONNECT to our proxy, upgrades to TLS on the
+    // returned socket trusting our Postnomad CA, and issues a real
+    // HTTPS GET. Tests the full client-facing path end-to-end.
+    const { HttpsProxyAgent } = require('https-proxy-agent');
+    const agent = new HttpsProxyAgent(`http://127.0.0.1:${proxy.port}`);
+
+    const result = await new Promise((resolve, reject) => {
+      const req = https.request(
+        {
+          host: 'localhost',
+          port: originPort,
+          path: '/api/users',
+          method: 'GET',
+          agent,
+          // Trust our Postnomad CA so the leaf the proxy mints validates.
+          // (In production, Phase 4d will install this CA into the OS
+          // trust store so apps don't need to pass it explicitly.)
+          ca: ca.getCaCertPem(),
+          servername: 'localhost'
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+        }
+      );
+      req.on('error', reject);
+      req.end();
+    });
+
+    expect(result.status).toBe(200);
+    const parsed = JSON.parse(result.body);
+    expect(parsed).toEqual({ ok: true, path: '/api/users', method: 'GET', tls: true });
+
+    // The capture pipeline saw the decrypted request + response.
+    const responseEvent = captureEvents.find((e) => e.phase === 'response');
+    expect(responseEvent).toBeTruthy();
+    expect(responseEvent.request.method).toBe('GET');
+    expect(responseEvent.request.url).toBe(`https://localhost:${originPort}/api/users`);
+    expect(responseEvent.response.status).toBe(200);
+    expect(JSON.parse(responseEvent.response.body)).toEqual({
+      ok: true,
+      path: '/api/users',
+      method: 'GET',
+      tls: true
+    });
+  }, 15000);
 });

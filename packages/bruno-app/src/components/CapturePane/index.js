@@ -389,7 +389,9 @@ const CapturePane = () => {
         </div>
 
         <div className="text-xs opacity-70">
-          Phase 3: HTTP only. HTTPS / CONNECT returns 501 — TLS interception with a minted CA lands in Phase 4.
+          HTTPS is intercepted via a Postnomad-local CA minted on first start. To capture HTTPS in your browser / app,
+          install the CA (under <code>~/Library/Application Support/Postnomad/postnomad-ca/postnomad-ca.crt</code>
+          on macOS) into the OS trust store. An in-app install flow lands in Phase 4d.
         </div>
 
         <div className="flex-1 overflow-auto border rounded p-2" style={{ borderColor: 'var(--color-border-default)' }}>
