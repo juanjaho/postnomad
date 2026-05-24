@@ -123,15 +123,22 @@ const findMatchingRule = (rules, method, absoluteUrl) => {
   return null;
 };
 
+// Phase 5b — auto-cancel a pending breakpoint after this many ms if the
+// renderer never replies (window closed, user walked away, etc.). The
+// alternative is leaking the client socket forever.
+const BREAKPOINT_TIMEOUT_MS = 60_000;
+
 class CaptureServer {
   constructor() {
     this.server = null;
     this.tlsServer = null;
     this.port = null;
     this.onCapture = null;
+    this.onBreakpoint = null;
     this.ca = null;
     this.captureCount = 0;
-    this.rules = []; // Phase 5: Map Local / Map Remote / (future) breakpoints
+    this.rules = []; // Phase 5: Map Local / Map Remote / breakpoints
+    this.pendingBreakpoints = new Map(); // id -> { resolve, timer }
   }
 
   /**
@@ -141,6 +148,21 @@ class CaptureServer {
    */
   setRules(rules) {
     this.rules = Array.isArray(rules) ? rules : [];
+  }
+
+  /**
+   * Renderer-side resolver for a paused breakpoint. action is
+   * 'forward' (with optional edited.body / edited.headers) or 'cancel'
+   * (the client gets a 499). If id is unknown the call is a no-op —
+   * happens when a breakpoint times out before the user clicks.
+   */
+  resolveBreakpoint(id, action, edited) {
+    const pending = this.pendingBreakpoints.get(id);
+    if (!pending) return false;
+    clearTimeout(pending.timer);
+    this.pendingBreakpoints.delete(id);
+    pending.resolve({ action, edited: edited || {} });
+    return true;
   }
 
   /**
@@ -156,11 +178,23 @@ class CaptureServer {
    *     CONNECT requests are intercepted and TLS-terminated using
    *     leaves minted by this CA. If null, CONNECT returns 501.
    */
-  async start({ port = 0, onCapture, ca = null, upstreamCa = null, rejectUpstreamUnauthorized = true } = {}) {
+  async start({
+    port = 0,
+    onCapture,
+    onBreakpoint,
+    ca = null,
+    upstreamCa = null,
+    rejectUpstreamUnauthorized = true
+  } = {}) {
     if (this.server) {
       throw new Error('CaptureServer already running on port ' + this.port);
     }
     this.onCapture = typeof onCapture === 'function' ? onCapture : null;
+    // Phase 5b — invoked when a request matches a 'breakpoint' rule.
+    // Receives the captured request payload + the breakpoint id. The
+    // renderer is expected to call resolveBreakpoint(id, action, edited)
+    // when the user clicks Forward or Cancel.
+    this.onBreakpoint = typeof onBreakpoint === 'function' ? onBreakpoint : null;
     this.ca = ca || null;
     // upstreamCa: extra trust roots for the outbound https leg (PEM string
     // or array of PEMs). Use for self-signed test origins or corporate
@@ -199,9 +233,17 @@ class CaptureServer {
   async stop() {
     if (!this.server) return;
     const server = this.server;
+    // Resolve any pending breakpoints as cancelled so held client
+    // sockets get a response and don't hang.
+    for (const [, pending] of this.pendingBreakpoints) {
+      clearTimeout(pending.timer);
+      pending.resolve({ action: 'cancel', edited: {} });
+    }
+    this.pendingBreakpoints.clear();
     this.server = null;
     this.port = null;
     this.onCapture = null;
+    this.onBreakpoint = null;
     this.ca = null;
     this.upstreamCa = null;
     await new Promise((resolve) => server.close(resolve));
@@ -364,8 +406,9 @@ class CaptureServer {
         capturedAbsoluteUrl = rewritten.absoluteUrl;
       }
     }
+    const isBreakpoint = !!(rule && rule.action === 'breakpoint' && this.onBreakpoint);
 
-    const reqHeaders = stripHopByHopHeaders(req.headers);
+    let reqHeaders = stripHopByHopHeaders(req.headers);
 
     const reqChunks = [];
     let reqByteCount = 0;
@@ -376,8 +419,8 @@ class CaptureServer {
       }
     });
 
-    req.on('end', () => {
-      const requestBuffer = Buffer.concat(reqChunks);
+    req.on('end', async () => {
+      let requestBuffer = Buffer.concat(reqChunks);
       const requestRecord = {
         method: req.method,
         url: capturedAbsoluteUrl,
@@ -394,6 +437,50 @@ class CaptureServer {
         request: requestRecord,
         response: null
       });
+
+      // Phase 5b: pause if this request matched a breakpoint rule.
+      // Awaits the renderer's resolve. Edits are applied before
+      // forwarding so the user can change headers/body in-flight.
+      if (isBreakpoint) {
+        const resolution = await this._awaitBreakpoint({
+          captureId,
+          ruleId: rule.id,
+          requestRecord,
+          capturedAbsoluteUrl
+        });
+        if (resolution.action === 'cancel') {
+          if (!res.headersSent) {
+            res.writeHead(499, { 'Content-Type': 'text/plain' });
+          }
+          res.end('Postnomad breakpoint: request cancelled by user.');
+          this._emit({
+            id: captureId,
+            phase: 'response',
+            timestamp: startedAt,
+            request: requestRecord,
+            response: {
+              status: 499,
+              statusText: 'Cancelled',
+              error: 'cancelled at breakpoint',
+              durationMs: Date.now() - startedAt,
+              appliedRule: requestRecord.appliedRule
+            }
+          });
+          return;
+        }
+        const edited = resolution.edited || {};
+        if (typeof edited.body === 'string') {
+          requestBuffer = Buffer.from(edited.body, 'utf8');
+          requestRecord.body = edited.body;
+          requestRecord.bodyBytes = requestBuffer.length;
+          // Match the new body length so the upstream parses correctly.
+          reqHeaders = { ...reqHeaders, 'content-length': String(requestBuffer.length) };
+        }
+        if (edited.headers && typeof edited.headers === 'object') {
+          reqHeaders = stripHopByHopHeaders({ ...req.headers, ...edited.headers });
+          requestRecord.headers = { ...req.headers, ...edited.headers };
+        }
+      }
 
       const upstream = transportModule.request(
         {
@@ -480,6 +567,33 @@ class CaptureServer {
 
     req.on('error', () => {
       // Client aborted — drop quietly.
+    });
+  }
+
+  _awaitBreakpoint({ captureId, ruleId, requestRecord, capturedAbsoluteUrl }) {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        if (this.pendingBreakpoints.delete(captureId)) {
+          resolve({ action: 'cancel', edited: {}, timedOut: true });
+        }
+      }, BREAKPOINT_TIMEOUT_MS);
+      this.pendingBreakpoints.set(captureId, { resolve, timer });
+      try {
+        if (this.onBreakpoint) {
+          this.onBreakpoint({
+            id: captureId,
+            ruleId,
+            timestamp: Date.now(),
+            request: requestRecord,
+            url: capturedAbsoluteUrl
+          });
+        }
+      } catch {
+        // never let an onBreakpoint failure leave the socket hanging
+        clearTimeout(timer);
+        this.pendingBreakpoints.delete(captureId);
+        resolve({ action: 'cancel', edited: {} });
+      }
     });
   }
 

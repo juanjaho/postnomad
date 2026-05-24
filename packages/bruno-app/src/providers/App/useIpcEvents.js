@@ -398,6 +398,16 @@ const useIpcEvents = () => {
       dispatch(openPanel());
     });
 
+    // Phase 5b: backend pauses a request matching a breakpoint rule.
+    // We push it into pendingBreakpoints; the BreakpointModal pops up
+    // automatically when the list isn't empty.
+    const removeCaptureBreakpointListener = ipcRenderer.on('main:capture-breakpoint', (pause) => {
+      const { addBreakpoint, openPanel } = require('providers/ReduxStore/slices/capture');
+      dispatch(addBreakpoint(pause));
+      // Make sure the user sees it, even if the capture pane was closed.
+      dispatch(openPanel());
+    });
+
     return () => {
       removeCollectionTreeUpdateListener();
       removeApiSpecTreeUpdateListener();
@@ -433,6 +443,7 @@ const useIpcEvents = () => {
       gitVersionListener();
       removeCaptureEventListener();
       removeOpenCapturePanelListener();
+      removeCaptureBreakpointListener();
     };
   }, [isElectron]);
 };

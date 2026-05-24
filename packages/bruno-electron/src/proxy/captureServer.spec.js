@@ -467,6 +467,196 @@ describe('CaptureServer — Map Remote (Phase 5a)', () => {
   });
 });
 
+describe('CaptureServer — Breakpoints (Phase 5b)', () => {
+  let originServer;
+  let originPort;
+  let proxy;
+  let captureEvents;
+  let pausedRequests;
+
+  beforeAll(async () => {
+    originServer = http.createServer((req, res) => {
+      const chunks = [];
+      req.on('data', (c) => chunks.push(c));
+      req.on('end', () => {
+        const body = Buffer.concat(chunks).toString('utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ method: req.method, path: req.url, gotBody: body, headers: req.headers }));
+      });
+    });
+    await new Promise((resolve) => originServer.listen(0, '127.0.0.1', resolve));
+    originPort = originServer.address().port;
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => originServer.close(resolve));
+  });
+
+  beforeEach(async () => {
+    captureEvents = [];
+    pausedRequests = [];
+    proxy = new CaptureServer();
+    proxy.setRules([
+      {
+        id: 'bp1',
+        enabled: true,
+        name: 'pause writes',
+        matcher: { urlPattern: '/api/write', method: 'POST' },
+        action: 'breakpoint'
+      }
+    ]);
+    await proxy.start({
+      port: 0,
+      onCapture: (ev) => captureEvents.push(ev),
+      onBreakpoint: (pause) => pausedRequests.push(pause)
+    });
+  });
+
+  afterEach(async () => {
+    await proxy.stop();
+  });
+
+  const proxyPost = (path, body) =>
+    new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          host: '127.0.0.1',
+          port: proxy.port,
+          method: 'POST',
+          path: `http://127.0.0.1:${originPort}${path}`,
+          headers: { 'Content-Type': 'text/plain' }
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+        }
+      );
+      req.on('error', reject);
+      req.write(body);
+      req.end();
+    });
+
+  it('pauses matching requests and resumes when the renderer forwards them', async () => {
+    const responsePromise = proxyPost('/api/write', 'original-body');
+
+    // Spin until the breakpoint fires.
+    await new Promise((resolve) => {
+      const t = setInterval(() => {
+        if (pausedRequests.length) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 10);
+    });
+
+    const paused = pausedRequests[0];
+    expect(paused.request.method).toBe('POST');
+    expect(paused.request.body).toBe('original-body');
+    expect(paused.ruleId).toBe('bp1');
+
+    const resolved = proxy.resolveBreakpoint(paused.id, 'forward', {});
+    expect(resolved).toBe(true);
+
+    const result = await responsePromise;
+    expect(result.status).toBe(200);
+    const parsed = JSON.parse(result.body);
+    expect(parsed.gotBody).toBe('original-body');
+  });
+
+  it('cancel resolves with a 499 and does not hit the origin', async () => {
+    let originHits = 0;
+    const cancelOrigin = http.createServer((req, res) => {
+      originHits += 1;
+      res.writeHead(200);
+      res.end();
+    });
+    await new Promise((resolve) => cancelOrigin.listen(0, '127.0.0.1', resolve));
+    const cancelPort = cancelOrigin.address().port;
+
+    try {
+      const responsePromise = new Promise((resolve, reject) => {
+        const r = http.request(
+          {
+            host: '127.0.0.1',
+            port: proxy.port,
+            method: 'POST',
+            path: `http://127.0.0.1:${cancelPort}/api/write`,
+            headers: { 'Content-Type': 'text/plain' }
+          },
+          (res) => {
+            const chunks = [];
+            res.on('data', (c) => chunks.push(c));
+            res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+          }
+        );
+        r.on('error', reject);
+        r.write('payload');
+        r.end();
+      });
+
+      await new Promise((resolve) => {
+        const t = setInterval(() => {
+          if (pausedRequests.length) {
+            clearInterval(t);
+            resolve();
+          }
+        }, 10);
+      });
+
+      proxy.resolveBreakpoint(pausedRequests[0].id, 'cancel');
+
+      const result = await responsePromise;
+      expect(result.status).toBe(499);
+      expect(result.body).toMatch(/cancelled/);
+      expect(originHits).toBe(0);
+    } finally {
+      await new Promise((resolve) => cancelOrigin.close(resolve));
+    }
+  });
+
+  it('forward with edited body replaces what goes upstream', async () => {
+    const responsePromise = proxyPost('/api/write', 'original');
+
+    await new Promise((resolve) => {
+      const t = setInterval(() => {
+        if (pausedRequests.length) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 10);
+    });
+
+    proxy.resolveBreakpoint(pausedRequests[0].id, 'forward', { body: 'edited-by-user' });
+
+    const result = await responsePromise;
+    const parsed = JSON.parse(result.body);
+    expect(parsed.gotBody).toBe('edited-by-user');
+  });
+
+  it('resolveBreakpoint on an unknown id is a safe no-op', () => {
+    expect(proxy.resolveBreakpoint('nope', 'cancel')).toBe(false);
+  });
+
+  it('stop() cancels any pending breakpoints so client sockets do not hang', async () => {
+    const responsePromise = proxyPost('/api/write', 'will-be-cancelled');
+
+    await new Promise((resolve) => {
+      const t = setInterval(() => {
+        if (pausedRequests.length) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 10);
+    });
+    expect(proxy.pendingBreakpoints.size).toBe(1);
+
+    await proxy.stop();
+    const result = await responsePromise;
+    expect(result.status).toBe(499);
+  });
+});
+
 describe('CaptureServer — HTTPS interception via minted CA (Phase 4b/c)', () => {
   let tmpDir;
   let ca;

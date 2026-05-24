@@ -41,6 +41,23 @@ const registerCaptureIpc = (mainWindow) => {
     }
   };
 
+  // Phase 5b — fires when a request hits a breakpoint rule. The renderer
+  // shows a modal; the user clicks Forward (optionally with edits) or
+  // Cancel, and the corresponding renderer:capture-breakpoint-resolve
+  // call wakes the held proxy promise.
+  const onBreakpoint = (pause) => {
+    if (!mainWindow || mainWindow.isDestroyed?.()) {
+      // Renderer's gone — auto-cancel so the client socket doesn't hang.
+      server.resolveBreakpoint(pause.id, 'cancel');
+      return;
+    }
+    try {
+      mainWindow.webContents.send('main:capture-breakpoint', pause);
+    } catch {
+      server.resolveBreakpoint(pause.id, 'cancel');
+    }
+  };
+
   ipcMain.handle('renderer:capture-start', async (_event, opts = {}) => {
     if (server.isRunning()) {
       return { port: server.port, alreadyRunning: true };
@@ -50,7 +67,7 @@ const registerCaptureIpc = (mainWindow) => {
       // Lazily mint/load the CA so first-run capture isn't penalised
       // by RSA generation if the user never triggers it.
       await ca.ensureCa();
-      const result = await server.start({ port, onCapture, ca });
+      const result = await server.start({ port, onCapture, onBreakpoint, ca });
       return { port: result.port, caInfo: ca.getCaInfo() };
     } catch (err) {
       // EADDRINUSE is the typical case — surface a clean error to the renderer.
@@ -109,6 +126,13 @@ const registerCaptureIpc = (mainWindow) => {
   ipcMain.handle('renderer:capture-set-rules', async (_event, rules) => {
     server.setRules(Array.isArray(rules) ? rules : []);
     return { count: server.rules.length };
+  });
+
+  // Phase 5b — renderer resolves a paused breakpoint.
+  ipcMain.handle('renderer:capture-breakpoint-resolve', async (_event, payload = {}) => {
+    const { id, action, edited } = payload;
+    if (!id) return { resolved: false };
+    return { resolved: server.resolveBreakpoint(id, action || 'cancel', edited) };
   });
 
   // Make sure the proxy is shut down when the window goes away.

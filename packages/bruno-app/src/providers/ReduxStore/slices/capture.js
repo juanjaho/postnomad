@@ -20,7 +20,8 @@ const initialState = {
   port: null,
   panelOpen: false,
   events: [], // newest first; each entry is the merged request+response record
-  rules: [] // Phase 5: Map Local / Map Remote (future: breakpoints)
+  rules: [], // Phase 5: Map Local / Map Remote / breakpoint
+  pendingBreakpoints: [] // Phase 5b: requests held by the proxy awaiting user action
 };
 
 export const captureSlice = createSlice({
@@ -89,6 +90,16 @@ export const captureSlice = createSlice({
 
     setRules: (state, action) => {
       state.rules = Array.isArray(action.payload) ? action.payload : [];
+    },
+
+    addBreakpoint: (state, action) => {
+      // De-dupe by id in case main re-emits on reconnect.
+      if (state.pendingBreakpoints.some((b) => b.id === action.payload.id)) return;
+      state.pendingBreakpoints.push(action.payload);
+    },
+
+    resolveBreakpoint: (state, action) => {
+      state.pendingBreakpoints = state.pendingBreakpoints.filter((b) => b.id !== action.payload);
     }
   }
 });
@@ -103,7 +114,9 @@ export const {
   addRule,
   updateRule,
   removeRule,
-  setRules
+  setRules,
+  addBreakpoint,
+  resolveBreakpoint
 } = captureSlice.actions;
 
 export default captureSlice.reducer;

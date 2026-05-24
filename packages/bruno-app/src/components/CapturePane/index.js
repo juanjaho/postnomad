@@ -684,6 +684,7 @@ const CaptureRuleRow = ({ rule, onChange, onRemove }) => {
         >
           <option value="mapLocal">Map Local (serve file)</option>
           <option value="mapRemote">Map Remote (rewrite host)</option>
+          <option value="breakpoint">Breakpoint (pause + edit)</option>
         </select>
         <button onClick={onRemove} className="text-xs opacity-60 hover:opacity-100" aria-label="Remove rule">
           ×
