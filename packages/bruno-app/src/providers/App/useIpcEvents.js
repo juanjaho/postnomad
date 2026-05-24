@@ -392,6 +392,12 @@ const useIpcEvents = () => {
       dispatch(addEvent(ev));
     });
 
+    // Native menu (macOS title bar) → open the capture pane.
+    const removeOpenCapturePanelListener = ipcRenderer.on('main:open-capture-panel', () => {
+      const { openPanel } = require('providers/ReduxStore/slices/capture');
+      dispatch(openPanel());
+    });
+
     return () => {
       removeCollectionTreeUpdateListener();
       removeApiSpecTreeUpdateListener();
@@ -426,6 +432,7 @@ const useIpcEvents = () => {
       removeSystemResourcesListener();
       gitVersionListener();
       removeCaptureEventListener();
+      removeOpenCapturePanelListener();
     };
   }, [isElectron]);
 };

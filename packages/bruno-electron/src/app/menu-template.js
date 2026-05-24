@@ -89,6 +89,15 @@ const template = [
     ]
   },
   {
+    label: 'Tools',
+    submenu: [
+      {
+        label: 'Capture HTTP Traffic…',
+        click: () => ipcMain.emit('menu:open-capture-panel')
+      }
+    ]
+  },
+  {
     role: 'window',
     submenu: [{ role: 'minimize' }, { role: 'close', accelerator: 'CommandOrControl+Shift+Q' }]
   },
@@ -96,7 +105,7 @@ const template = [
     role: 'help',
     submenu: [
       {
-        label: 'About Bruno',
+        label: 'About Postnomad',
         click: () => {
           const aboutWindow = new BrowserWindow({
             width: 350,

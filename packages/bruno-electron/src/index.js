@@ -316,6 +316,14 @@ app.on('ready', async () => {
     incrementZoomAndPersist(-10);
   });
 
+  // Forwards the native menu "Tools → Capture HTTP Traffic…" click to
+  // the renderer, where the capture Redux slice opens the panel.
+  ipcMain.on('menu:open-capture-panel', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('main:open-capture-panel');
+    }
+  });
+
   ipcMain.handle('renderer:set-zoom-level', (event, zoomLevel) => {
     mainWindow.webContents.setZoomLevel(zoomLevel);
   });
